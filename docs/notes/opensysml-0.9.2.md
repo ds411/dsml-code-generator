@@ -157,5 +157,8 @@ A test examines each limit. If a new OpenSysML version removes a limit, its test
 | Platform | Start of `sysml-grpc` | Parse `probe.sysml` (51 lines) | Parse `order-service.sysml` (103 lines) | Parse PRD model (10 files, 1640 lines) |
 | --- | --- | --- | --- | --- |
 | Linux x64 (development container) | 103 ms | 31 ms | 107 ms | 1183 ms |
+| Linux x64 (CI, `ubuntu-24.04`) | 123 ms | 38 ms | 139 ms | 1652 ms |
+| Linux arm64 (CI, `ubuntu-24.04-arm`) | 72 ms | 22 ms | 101 ms | 1405 ms |
+| macOS arm64 (CI, `macos-15`) | 82 ms | 11 ms | 64 ms | 1108 ms |
 
-The first start with a download of the binary (43 MB) took 3.3 s in the development container. The CI step "Start OpenSysML and measure the times" writes the times for each CI platform.
+The first start includes the download of the binary (43 MB). It took 3.3 s in the development container, and from 1.1 s to 1.8 s in CI. The CI step "Start OpenSysML and measure the times" writes the times for each CI platform. The CI values are from the CI run of pull request #19.
