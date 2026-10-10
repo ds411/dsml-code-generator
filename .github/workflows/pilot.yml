@@ -1,0 +1,71 @@
+# Check of the DSML library with the OMG pilot implementation. This is a
+# hand-written workflow, not a generated pipeline.
+#
+# trace: PRD-DSML-005
+#
+# Decision record 05 (Q60) selects this check. The job downloads the pinned
+# release of the pilot Jupyter kernel (src/dsml/versions.toml), checks its
+# SHA-256 hash and sends the library to the kernel. The job runs only on
+# Linux x64, and only when the library or the check changes.
+name: Pilot
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/pilot.yml"
+      - "scripts/check_pilot.py"
+      - "src/dsml/library/**"
+      - "src/dsml/versions.toml"
+      - "tests/models/pilot/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/pilot.yml"
+      - "scripts/check_pilot.py"
+      - "src/dsml/library/**"
+      - "src/dsml/versions.toml"
+      - "tests/models/pilot/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pilot-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pilot:
+    name: Pilot (linux-x64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # uv installs Python at the version in .python-version, and Jupyter
+      # (jupyter-client) from the dev group of pyproject.toml.
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.0"
+
+      - name: Install the Python dependencies
+        run: uv sync --frozen
+
+      # The runner image contains Java 21. The pilot kernel needs Java 17 or
+      # later.
+      - name: Find Java
+        run: |
+          echo "PILOT_JAVA=${JAVA_HOME_21_X64}/bin/java" >> "$GITHUB_ENV"
+          "${JAVA_HOME_21_X64}/bin/java" -version
+
+      - name: Check the DSML library with the pilot kernel
+        run: uv run python scripts/check_pilot.py src/dsml/library/DSML.sysml
+
+      # This step makes sure that the check fails for a construct that the
+      # pilot kernel does not accept.
+      - name: Check that the pilot kernel rejects a bad library
+        run: uv run python scripts/check_pilot.py --expect-rejection tests/models/pilot/rejected.sysml
