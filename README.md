@@ -60,6 +60,8 @@ The toolchain is a Python 3.14 project that uv manages. pnpm manages only the No
    uv build
    ```
 
+In a Claude Code cloud session, the SessionStart hook `.claude/hooks/session-start.sh` does steps 1 and 2 at the start of the session.
+
 The file `src/dsml/versions.toml` holds the version baseline of decision record 03 (Q49). To change a pinned version, change this file.
 
 ## Use with Claude Code
