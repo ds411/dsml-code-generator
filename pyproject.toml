@@ -6,7 +6,9 @@ readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 requires-python = "==3.14.*"
-dependencies = []
+dependencies = [
+    "opensysml==0.9.2",
+]
 
 [project.scripts]
 dsml = "dsml.cli:main"
@@ -41,7 +43,7 @@ select = ["B", "E", "F", "I", "RUF", "SIM", "TID", "UP", "W"]
 
 # pnpm installs pyright (package.json). Run it with "pnpm typecheck".
 [tool.pyright]
-include = ["src", "tests"]
+include = ["scripts", "src", "tests"]
 pythonVersion = "3.14"
 typeCheckingMode = "strict"
 venvPath = "."
