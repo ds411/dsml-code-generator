@@ -1,0 +1,13 @@
+# <Subject: imperative form, 72 characters or fewer, no period>
+
+# <Body: tell what changed and why. Wrap the lines at 72 characters.>
+
+# Refs #<issue>
+
+# Git removes each line that starts with "#".
+# Rules (see CONTRIBUTING.md):
+# - Use ASD-STE100 Simplified Technical English, Issue 9.
+# - Write the subject in the imperative form, for example
+#   "Add the IR writer", not "Added the IR writer".
+# - Put one blank line between the subject and the body.
+# - Give the story issue in the last paragraph, for example "Refs #12".
