@@ -5,7 +5,7 @@ The other modules of the toolchain do not see an OpenSysML object. This module
 gives the results as plain data classes.
 """
 
-from collections.abc import Sequence
+from collections.abc import Collection, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from types import TracebackType
@@ -93,6 +93,22 @@ def check_service_version(service_version: str, pinned: str) -> None:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class ModelElement:
+    """One element of a parsed model, with its names and its kind.
+
+    `kind` is the name of the SysML v2 metaclass, for example
+    "MetadataDefinition". `general` gives the qualified names of the general
+    types of a definition, sorted. It is empty if the element has none.
+    """
+
+    qualified_name: str
+    name: str
+    kind: str
+    owner: str
+    general: tuple[str, ...] = ()
+
+
 class ParsedModel:
     """A model that OpenSysML parsed from one or more source files."""
 
@@ -115,14 +131,36 @@ class ParsedModel:
 
         Both names resolve in `namespace`.
         """
-        return self._evaluate_bool(f"{element} istype {type_name}", namespace)
+        return self.evaluate_bool(f"{element} istype {type_name}", namespace)
 
     def has_metadata(self, element: str, metadata: str, namespace: str) -> bool:
         """True if `element` has the metadata `metadata` (a user-defined keyword).
 
         Both names resolve in `namespace`.
         """
-        return self._evaluate_bool(f"{element} @ {metadata}", namespace)
+        return self.evaluate_bool(f"{element} @ {metadata}", namespace)
+
+    def owned_elements(self, owner: str, kinds: Collection[str] = ()) -> tuple[ModelElement, ...]:
+        """Give the elements that `owner` owns, sorted by qualified name.
+
+        `owner` is a qualified name. If `kinds` is not empty, give only the
+        elements of these metaclasses.
+        """
+        try:
+            items: Any = self._model.query(scope=[owner])
+        except opensysml.OpenSysMLError as error:
+            raise EngineError(f"Cannot read the elements of {owner}: {error}") from None
+        elements = (_model_element(item) for item in items)
+        return tuple(
+            sorted(
+                (
+                    element
+                    for element in elements
+                    if element.owner == owner and (not kinds or element.kind in kinds)
+                ),
+                key=lambda element: element.qualified_name,
+            )
+        )
 
     # trace: PRD-CORE-054
     def evaluate_constraint(self, qualified_name: str) -> ConstraintResult:
@@ -147,7 +185,8 @@ class ParsedModel:
             ) from None
         return _constraint_result(verdict)
 
-    def _evaluate_bool(self, expression: str, namespace: str) -> bool:
+    def evaluate_bool(self, expression: str, namespace: str) -> bool:
+        """Evaluate an expression that gives a Boolean value, in `namespace`."""
         try:
             value: Any = self._model.eval(expression, context_symbol_id=namespace)
         except opensysml.OpenSysMLError as error:
@@ -237,6 +276,24 @@ def _diagnostic(item: Any) -> Diagnostic:
         severity=str(item.severity),
         code=str(item.code),
         message=str(item.message),
+    )
+
+
+def _model_element(item: Any) -> ModelElement:
+    properties: dict[str, Any] = dict(item.properties)
+    general: Any = properties.get("general")
+    if general is None:
+        generals: tuple[str, ...] = ()
+    elif isinstance(general, str):
+        generals = (general,)
+    else:
+        generals = tuple(sorted(str(name) for name in general))
+    return ModelElement(
+        qualified_name=str(item.id),
+        name=str(properties.get("name", "")),
+        kind=str(item.type),
+        owner=str(properties.get("owner", "")),
+        general=generals,
     )
 
 
