@@ -20,4 +20,5 @@ These files write the product needs and each PRD requirement in the DSML, as one
 - [`prd/prd-cicd.sysml`](prd/prd-cicd.sysml)
 - [`prd/prd-val.sysml`](prd/prd-val.sysml)
 - [`prd/prd-trace.sysml`](prd/prd-trace.sysml)
-- [`examples/order-service.sysml`](examples/order-service.sysml): the example model of the DSML PRD.
+- [`examples/order-service.sysml`](examples/order-service.sysml): the example model of the DSML PRD. It parses and resolves with the DSML library with no diagnostic.
+- [`syntax-changes.md`](syntax-changes.md): each change to the sketch syntax of the PRDs, and its reason.

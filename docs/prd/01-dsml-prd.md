@@ -136,11 +136,12 @@ Short names give stable IDs to needs, requirements and verifications. Other elem
 
 ## Example model
 
-The sketch shows the five layers for one FastAPI service. It shows the selected style, not the final syntax. Nobody has parsed it with OpenSysML yet: the first task of phase 1 is to make it parse with the first DSML library version.
+The example shows the five layers for one FastAPI service. It is a copy of `docs/model/examples/order-service.sysml`. OpenSysML 0.9.2 parses and resolves it with the DSML library 1.0.0 with no error and no warning. `docs/model/syntax-changes.md` gives each change to the first sketch and its reason.
 
 ```sysml
 package OrderService {
     private import DSML::*;
+    private import ScalarValues::*;
     @DsmlVersion { major = 1; minor = 0; }
 
     // Needs layer
@@ -215,8 +216,8 @@ package OrderService {
 
     // Infrastructure layer: AWS part
     #AwsVpc part networkAws;
-    #AwsEcsService part apiServiceAws { :>> cpu = 512; :>> memory = 1024; :>> desiredCount = 1; }
-    #AwsRdsPostgres part orderDbAws { :>> instanceClass = "db.t4g.micro"; :>> multiAz = false; }
+    #AwsEcsService part apiServiceAws { :>> cpu default = 512; :>> memory default = 1024; :>> desiredCount default = 1; }
+    #AwsRdsPostgres part orderDbAws { :>> instanceClass default = "db.t4g.micro"; :>> multiAz default = false; }
     #AwsCognito part usersAws;
     #Realizes dependency from networkAws to network;
     #Realizes dependency from apiServiceAws to apiService;
