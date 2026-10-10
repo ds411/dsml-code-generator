@@ -36,7 +36,9 @@ The sketch did not give the full form of these items. Story #13 selected each fo
 
 The PRD model needed no change to the sketch syntax. It parses and resolves with the library with no diagnostic.
 
-Story #15 changed the `doc` text of 15 requirements: PRD-APP-110, PRD-APP-121, PRD-APP-210, PRD-APP-222, PRD-CICD-001, PRD-CORE-001, PRD-CORE-039, PRD-DSML-035, PRD-IAC-001, PRD-IAC-007, PRD-IAC-015, PRD-IAC-033, PRD-TRACE-009, PRD-TRACE-013 and PRD-VAL-015. Before the change, the model text was different from the text in `docs/index/requirements.csv`. The PRD text is correct, so the model now has the CSV text without code formatting. These changes are not syntax changes and do not change a requirement.
+Story #15 changed the `doc` text of 15 requirements: PRD-APP-110, PRD-APP-121, PRD-APP-210, PRD-APP-222, PRD-CICD-001, PRD-CORE-001, PRD-CORE-039, PRD-DSML-035, PRD-IAC-001, PRD-IAC-007, PRD-IAC-015, PRD-IAC-033, PRD-TRACE-009, PRD-TRACE-013 and PRD-VAL-015. Before the change, the model text was different from the text in `docs/index/requirements.csv`. The PRD text is correct, so the model now has the CSV text without code formatting. These changes are not syntax changes.
+
+After this, Q61 (decision record 06) changed the text of 9 of these requirements in the PRDs, the CSV index and the model. A requirement now refers to a table by the name of its PRD section, not with the words "above" or "below".
 
 ## Items for later stories
 

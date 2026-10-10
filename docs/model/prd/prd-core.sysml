@@ -3,7 +3,7 @@ package PrdCore {
     private import PrdNeeds::*;
 
     #Requirement requirement <'PRD-CORE-001'> core001 {
-        doc /* The command dsml must have the subcommands and options in the table above. */
+        doc /* The command dsml must have the seven subcommands init, validate, generate, trace, ir, check-output and version, with the options in the table of the section "Command line interface". */
         :>> title = "Subcommands"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }

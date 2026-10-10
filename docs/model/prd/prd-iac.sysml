@@ -3,7 +3,7 @@ package PrdIac {
     private import PrdNeeds::*;
 
     #Requirement requirement <'PRD-IAC-001'> iac001 {
-        doc /* The generator must write the folders and root modules of the tree above in the infrastructure output folder of the configuration file. */
+        doc /* The generator must write the folders and root modules of the tree in the section "Output structure and tool compatibility" in the infrastructure output folder of the configuration file. */
         :>> title = "Folder layout"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

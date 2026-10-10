@@ -27,7 +27,7 @@ One command, `dsml`, has seven subcommands. All subcommands work in CI with no p
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-CORE-001 | The command `dsml` must have the subcommands and options in the table above. | Demonstration | Q5 |
+| PRD-CORE-001 | The command `dsml` must have the seven subcommands `init`, `validate`, `generate`, `trace`, `ir`, `check-output` and `version`, with the options in the table of the section "Command line interface". | Demonstration | Q5, Q61 |
 | PRD-CORE-002 | Each subcommand must stop with exit code 0 if it finds no error, 1 if it finds an error finding or a `--check` difference, and 2 if a usage error or an internal error occurs. | Test | Q28 |
 | PRD-CORE-003 | `dsml generate` must validate the model first. If there is an error finding, it must stop and write no file. | Test | Q28 |
 | PRD-CORE-004 | `dsml generate --check` must write no file. It must list each file that a normal run would add, change or delete. | Test | Q43 |

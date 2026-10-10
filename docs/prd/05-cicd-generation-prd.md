@@ -35,7 +35,7 @@ The generator writes three workflows. Each workflow file name ends with `.gen.ym
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-CICD-001 | The generator must write `.github/workflows/pr.gen.yml`, `main.gen.yml` and `promote.gen.yml` with the triggers and jobs in the table above. | Test | Q43 |
+| PRD-CICD-001 | The generator must write `.github/workflows/pr.gen.yml`, `main.gen.yml` and `promote.gen.yml` with the triggers and jobs in the table of the section "Workflows and jobs". | Test | Q43, Q61 |
 | PRD-CICD-002 | `pr.gen.yml` must run `dsml validate` and upload the SARIF findings to GitHub code scanning. | Test | Q28, Q43 |
 | PRD-CICD-003 | `pr.gen.yml` must run `dsml generate --check` and fail if a generated file is different from the committed file. | Test | Q16, Q43 |
 | PRD-CICD-004 | For each application, `pr.gen.yml` must install the dependencies from the committed lockfile (`uv sync --frozen` or `pnpm install --frozen-lockfile`), then run the linter, the type checker and the tests. A lockfile that does not agree with the dependency list must make the job fail. | Test | Q16, Q43 |

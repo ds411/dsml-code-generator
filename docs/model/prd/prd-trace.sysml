@@ -63,7 +63,7 @@ package PrdTrace {
         frame traceability;
     }
     #Requirement requirement <'PRD-TRACE-013'> trace013 {
-        doc /* dsml trace must write the four reports in the table above. */
+        doc /* dsml trace must write the four reports coverage, orphans, impact and suspect in the table of the section "Reports". */
         :>> title = "Four reports"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }

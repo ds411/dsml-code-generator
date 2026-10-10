@@ -22,7 +22,7 @@ This repository builds the DSML toolchain, an internal product. The toolchain ha
 ## Source of truth
 
 - Requirements: `docs/prd/`. Start with `docs/prd/00-top-level-prd.md`.
-- Decisions and their reasons: `docs/decisions/` (records 01 to 05, all closed).
+- Decisions and their reasons: `docs/decisions/` (records 01 to 06, all closed).
 - If a PRD and a decision record do not agree, the PRD is correct. Tell the user about the difference.
 - Machine-readable lists: `docs/index/requirements.csv` and `docs/index/decisions.csv`.
 - The PRD requirements as a DSML model: `docs/model/prd/*.sysml`. Example model: `docs/model/examples/order-service.sysml`.
@@ -85,5 +85,5 @@ The `DSML` library package is in `src/dsml/library/`. The example model and the 
 ## Requirement IDs
 
 - PRD requirements: `PRD-<PART>-<NNN>`. Parts: TOP, DSML, CORE, APP, IAC, CICD, VAL, TRACE.
-- Decisions: Q1 to Q60 and AD1 to AD3. The Source column of each requirement gives its decisions.
+- Decisions: Q1 to Q61 and AD1 to AD3. The Source column of each requirement gives its decisions.
 - Validation rules: `<CATEGORY>-<NNN>`, for example `COV-003`.

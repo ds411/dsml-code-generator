@@ -34,7 +34,7 @@ package PrdAppWeb {
         frame traceability;
     }
     #Requirement requirement <'PRD-APP-210'> app210 {
-        doc /* The generator must put each model element in the slice and the files that the table above gives. */
+        doc /* The generator must put each model element in the slice and the files that the table of the section "Map from model elements to FSD layers" gives. */
         :>> title = "FSD map"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

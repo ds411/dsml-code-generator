@@ -54,7 +54,7 @@ Each operation in the IR becomes one endpoint. The generator writes the endpoint
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-APP-110 | Each operation in the IR must have one endpoint with the HTTP method and the path of the operation. CRUD operations must use the defaults in the table above unless the model gives a different method or path. | Test | Q14, PRD-DSML-029 |
+| PRD-APP-110 | Each operation in the IR must have one endpoint with the HTTP method and the path of the operation. CRUD operations must use the default methods and paths in the table of the section "API operations and schemas" unless the model gives a different method or path. | Test | Q14, PRD-DSML-029, Q61 |
 | PRD-APP-111 | For each exposed entity, the generator must write Pydantic v2 models for create input, update input and output. The key field must not be in the create input. Each field of the update input must be optional. | Test | Q14 |
 | PRD-APP-112 | Field rules must become Pydantic field constraints: `minLength` and `maxLength` to `min_length` and `max_length`, `minValue` and `maxValue` to `ge` and `le`, and `pattern` to `pattern`. | Test | Q14 |
 | PRD-APP-113 | A request that breaks a field rule must get HTTP 422. A request that breaks a `unique` rule must get HTTP 409. A request for an entity that does not exist must get HTTP 404. | Test | Q14 |
@@ -83,7 +83,7 @@ Each entity becomes one SQLAlchemy model and one PostgreSQL table. The generator
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
 | PRD-APP-120 | For each entity, the generator must write one typed SQLAlchemy 2 model in `app/shared/db/models/<entity>_gen.py`. The table name must be the entity name in snake case. | Test | Q19, Q37 |
-| PRD-APP-121 | Field types must map to PostgreSQL types as the table above gives. | Test | Q19 |
+| PRD-APP-121 | Field types must map to PostgreSQL types as the table of the section "Data access and migrations" gives. | Test | Q19, Q61 |
 | PRD-APP-122 | A `[*]` to `[*]` relation must have a generated join table. A `[0..1]` or `[1]` relation must have a foreign key. | Test | Q14 |
 | PRD-APP-123 | Database access must use the SQLAlchemy mode and the database driver that decision record 03 gives. | Test | Q51 |
 | PRD-APP-124 | The generator must keep the schema snapshot in `.dsml/schema-snapshot.json`. If the IR schema is different from the snapshot, the generator must write one new Alembic migration and then update the snapshot. | Test | Q19 |

@@ -121,7 +121,7 @@ package PrdAppCommonFastApi {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-110'> app110 {
-        doc /* Each operation in the IR must have one endpoint with the HTTP method and the path of the operation. CRUD operations must use the defaults in the table above unless the model gives a different method or path. */
+        doc /* Each operation in the IR must have one endpoint with the HTTP method and the path of the operation. CRUD operations must use the default methods and paths in the table of the section "API operations and schemas" unless the model gives a different method or path. */
         :>> title = "Endpoints"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -166,7 +166,7 @@ package PrdAppCommonFastApi {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-121'> app121 {
-        doc /* Field types must map to PostgreSQL types as the table above gives. */
+        doc /* Field types must map to PostgreSQL types as the table of the section "Data access and migrations" gives. */
         :>> title = "Type map"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

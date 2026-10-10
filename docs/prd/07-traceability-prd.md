@@ -88,7 +88,7 @@ async def handle(input: CancelOrderInput, session: AsyncSession, user: User) -> 
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-TRACE-013 | `dsml trace` must write the four reports in the table above. | Test | Q31 |
+| PRD-TRACE-013 | `dsml trace` must write the four reports `coverage`, `orphans`, `impact` and `suspect` in the table of the section "Reports". | Test | Q31, Q61 |
 | PRD-TRACE-014 | The coverage report must give each requirement one status: `missing` (no satisfying element), `satisfied` (a satisfying element, no verification) or `verified` (a satisfying element and a verification). | Test | Q31 |
 | PRD-TRACE-015 | An element must count as changed if the hash of its IR form, with no source locations, is different from the hash in the baseline. | Test | Q31 |
 | PRD-TRACE-016 | The `impact` and `suspect` reports must use the baseline that `--baseline` gives, or the default baseline that decision record 03 gives. | Test | Q31, Q54 |
