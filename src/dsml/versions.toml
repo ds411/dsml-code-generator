@@ -19,6 +19,23 @@ line = "3.14"
 line = "0.9"
 version = "0.9.2"
 
+# OMG pilot implementation: the Jupyter kernel (jupyter-sysml-kernel) for
+# the CI check of the DSML library (PRD-DSML-005, Q60). The toolchain does
+# not use the pilot implementation.
+# "pilot-kernel-release": the release tag of SysML-v2-Pilot-Implementation
+# on GitHub.
+# "pilot-kernel-sha256": the SHA-256 hash of the release archive
+# jupyter-sysml-kernel-<version>.zip.
+[pilot-kernel]
+line = "0.62"
+version = "0.62.0"
+
+[pilot-kernel-release]
+value = "2026-08"
+
+[pilot-kernel-sha256]
+value = "5a015ed3f2b3d2dae14e9c3fb9602d9e1fef5f9ce33cf396c422329405cc3cb2"
+
 # FastAPI target stack (PRD-APP-101). Lines: the newest minor on
 # 10 October 2026, the start of phase 1.
 [fastapi]

@@ -12,7 +12,7 @@ Story #13 added the DSML library. This document gives the design of the library,
 - The library has 30 keywords, 7 enumerations and 4 attribute types. A test compares them with the list of story #13.
 - The wheel contains the library. A test builds the wheel and compares the packaged file with the source (PRD-DSML-006, PRD-CORE-048).
 - The library has the version 1.0.0. `@DsmlVersion { major = 1; minor = 0; patch = 0; }` on the package `DSML` gives it, and `dsml.library.LIBRARY_VERSION` must agree (PRD-DSML-056).
-- PRD-DSML-005 (the OMG pilot implementation accepts the library) is not checked yet. Story #23 adds a CI job for this check (Q60).
+- The Jupyter kernel of the OMG pilot implementation, release 2026-08 (`jupyter-sysml-kernel` 0.62.0), accepts the library with no error and no warning (PRD-DSML-005). The CI job "Pilot" of story #23 does this check (Q60). See "Results with the OMG pilot implementation".
 - 7 keywords cannot specialize `SemanticMetadata`. Q59 changed PRD-DSML-009 for these keywords.
 
 ## Structure of the library
@@ -69,6 +69,23 @@ These results are input for the stories #14 and #15. The files did not change in
 - The PRD model (`docs/model/prd/*.sysml`) parses and resolves together with the library with no diagnostic.
 - The example model (`docs/model/examples/order-service.sysml`) gives 1 error with the library: `String` does not resolve, because the model does not import `ScalarValues`. With `private import ScalarValues::*;`, it gives 2 errors with the code `feature-value-overriding`: `desiredCount` and `multiAz` use `=` on the AWS realization, and the `prod` environment changes them. These lines must use `default =` (see `docs/notes/opensysml-0.9.2.md`). Story #14 made these changes. Now the example model parses and resolves with no diagnostic. See `docs/model/syntax-changes.md`.
 - The test model `tests/models/dsml/keywords.sysml` uses each keyword. It parses and resolves with no diagnostic.
+
+## Results with the OMG pilot implementation
+
+Story #23 added this check (Q60). The pilot implementation has no command-line parser, thus the check uses its Jupyter kernel with no graphical interface.
+
+- Script: `scripts/check_pilot.py`. Workflow: `.github/workflows/pilot.yml`. Tests of the script: `tests/test_check_pilot.py`.
+- Pin: the items `pilot-kernel`, `pilot-kernel-release` and `pilot-kernel-sha256` in `src/dsml/versions.toml`. The script downloads `jupyter-sysml-kernel-0.62.0.zip` from the release 2026-08 of `SysML-v2-Pilot-Implementation` on GitHub. It stops if the SHA-256 hash is not the pinned hash.
+- The hash is the hash in the conda-forge recipe of `jupyter-sysml-kernel` 0.62.0. The conda-forge build checks the same release archive.
+- The script sends each file to a new kernel as one cell. The kernel writes each diagnostic to stderr as a line that starts with `ERROR:` or `WARNING:`. An error line, an error message or a reply status that is not `ok` rejects the file.
+- The script does not set the API base path of the kernel. Thus the kernel does not connect to a model repository.
+
+Results:
+
+1. The kernel accepts `src/dsml/library/DSML.sysml` with no diagnostic. The library did not change.
+2. The kernel rejects the test model `tests/models/pilot/rejected.sysml` (an unresolved type). The CI job makes sure that the check fails for this file.
+
+A result for the stories #14 and #15: the pilot kernel does not accept a SysML keyword after `::`, for example `RequirementKind::constraint`. OpenSysML 0.9.2 accepts it. The pilot kernel accepts the form with quotes, `RequirementKind::'constraint'`. The example model, the PRD model and `tests/models/dsml/keywords.sysml` use the form with no quotes. The library itself declares the literals with quotes, thus it is correct. The pilot check of the models is not in the scope of story #23.
 
 ## Limits of OpenSysML 0.9.2
 

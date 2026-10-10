@@ -73,6 +73,12 @@ The workflow `.github/workflows/ci.yml` runs the checks of step 4 on each pull r
 5. `pnpm typecheck`
 6. `uv run pytest`
 
+The workflow `.github/workflows/pilot.yml` checks the DSML library with the Jupyter kernel of the OMG pilot implementation (PRD-DSML-005, Q60). It runs on Linux x64 when the library or the check changes. To run the check on your computer, install Java 17 or later and use this command:
+
+```sh
+uv run python scripts/check_pilot.py src/dsml/library/DSML.sysml
+```
+
 Only the IR adapter module `src/dsml/adapter/` can import `opensysml` (PRD-CORE-020). The ruff rule TID251 in `pyproject.toml` enforces this. An import of `opensysml` in a different file causes `uv run ruff check` and the CI to fail.
 
 The file `src/dsml/versions.toml` holds the version baseline of decision record 03 (Q49). To change a pinned version, change this file.
