@@ -5,8 +5,9 @@ These files write the product needs and each PRD requirement in the DSML, as one
 - The short name of each requirement is its PRD ID, for example `<'PRD-CORE-012'>`.
 - Each requirement frames the product need that it serves most directly.
 - All requirements have the priority `must` and the status `draft`, because no part is implemented yet.
-- The text in each `doc` comment is the PRD text without code formatting. If the two are different, the PRD text is correct.
-- OpenSysML 0.9.2 parses these files with no syntax error. The names do not resolve yet, because the DSML library does not exist yet ([notes](../notes/opensysml-0.9.2.md)). PRD-TOP-011 requires a parse with no error.
+- The text in each `doc` comment is the requirement text in `docs/index/requirements.csv`, without code formatting. If the two are different, the PRD text is correct.
+- OpenSysML 0.9.2 parses these files together with the DSML library, and all names resolve. There is no diagnostic. PRD-TOP-011 requires a parse with no error.
+- `tests/test_prd_model.py` makes sure that the model parses and resolves. It also makes sure that each requirement of `docs/index/requirements.csv` has one requirement in the model with the same text.
 
 ## Files
 

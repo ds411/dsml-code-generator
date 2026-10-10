@@ -96,7 +96,7 @@ The infrastructure layer has a logical part with no AWS terms and an AWS part th
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-DSML-035 | A logical infrastructure element must be a part usage with one of the logical kinds in the table above. | Test | Q20, Q21 |
+| PRD-DSML-035 | A logical infrastructure element must be a part usage with one of the logical kinds in the table of the section "Infrastructure layer". | Test | Q20, Q21, Q61 |
 | PRD-DSML-036 | A logical element must not contain an AWS term, an AWS attribute or an AWS service name. | Inspection | Q20, N-005 |
 | PRD-DSML-037 | Each logical element must have one AWS realization: a part usage with the matching AWS kind and a dependency with the `#Realizes` metadata to the logical element. | Test | Q20 |
 | PRD-DSML-038 | An AWS realization must hold the AWS attributes, for example the RDS instance class or the Fargate CPU and memory. | Inspection | Q20 |

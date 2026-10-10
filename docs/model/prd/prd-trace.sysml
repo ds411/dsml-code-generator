@@ -43,7 +43,7 @@ package PrdTrace {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-TRACE-009'> trace009 {
-        doc /* A trace comment must be a line comment with the form trace: <ID>[, <ID>]: a hash comment in Python, HCL and YAML, and a double slash comment in TypeScript. An ID can be a short name or a qualified name. */
+        doc /* A trace comment must be a line comment with the form trace: <ID>[, <ID>]: # trace: R-001 in Python, HCL and YAML, and // trace: R-001 in TypeScript. An ID can be a short name or a qualified name. */
         :>> title = "Trace comment form"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }
@@ -63,7 +63,7 @@ package PrdTrace {
         frame traceability;
     }
     #Requirement requirement <'PRD-TRACE-013'> trace013 {
-        doc /* dsml trace must write the four reports coverage, orphans, impact and suspect. */
+        doc /* dsml trace must write the four reports coverage, orphans, impact and suspect in the table of the section "Reports". */
         :>> title = "Four reports"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }

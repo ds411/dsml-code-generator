@@ -100,6 +100,9 @@ class ModelElement:
     `kind` is the name of the SysML v2 metaclass, for example
     "MetadataDefinition". `general` gives the qualified names of the general
     types of a definition, sorted. It is empty if the element has none.
+    `short_name` is the declared short name, for example "PRD-CORE-001".
+    `documentation` is the text of the `doc` comment. Each one is empty if the
+    element has none.
     """
 
     qualified_name: str
@@ -107,6 +110,8 @@ class ModelElement:
     kind: str
     owner: str
     general: tuple[str, ...] = ()
+    short_name: str = ""
+    documentation: str = ""
 
 
 class ParsedModel:
@@ -294,6 +299,8 @@ def _model_element(item: Any) -> ModelElement:
         kind=str(item.type),
         owner=str(properties.get("owner", "")),
         general=generals,
+        short_name=str(properties.get("declaredShortName", "")),
+        documentation=str(properties.get("documentation", "")),
     )
 
 

@@ -54,7 +54,7 @@ Each model element has one home layer. The generator writes the files in the seg
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-APP-210 | The generator must put each model element in the slice and the files that the table above gives. | Test | Q35 |
+| PRD-APP-210 | The generator must put each model element in the slice and the files that the table of the section "Map from model elements to FSD layers" gives. | Test | Q35, Q61 |
 | PRD-APP-211 | The Zod schemas of an entity must apply the same field rules as the Pydantic models of PRD-APP-112. | Test | Q18 |
 | PRD-APP-212 | The generator must write the shadcn/ui components that the templates use into `shared/ui` as create-once files, from the pinned copy in the toolchain package. | Test | Q41 |
 

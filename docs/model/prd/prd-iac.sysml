@@ -3,7 +3,7 @@ package PrdIac {
     private import PrdNeeds::*;
 
     #Requirement requirement <'PRD-IAC-001'> iac001 {
-        doc /* The generator must write the folders and root modules of the infrastructure tree in the infrastructure output folder of the configuration file. */
+        doc /* The generator must write the folders and root modules of the tree in the section "Output structure and tool compatibility" in the infrastructure output folder of the configuration file. */
         :>> title = "Folder layout"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -33,7 +33,7 @@ package PrdIac {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-007'> iac007 {
-        doc /* The output must use only aws_ resources and data sources and local modules. It must not use a module from a registry or from a different repository. */
+        doc /* The output must use only aws_* resources and data sources and local modules. It must not use a module from a registry or from a different repository. */
         :>> title = "Raw resources only"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -73,7 +73,7 @@ package PrdIac {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-015'> iac015 {
-        doc /* Container service: the task execution role must permit only image pulls from the tooling ECR repository, reads of the secrets that the service uses, and log writes. The task role must permit only access to the elements that the service uses. */
+        doc /* Container service: the task execution role must permit only image pulls from the tooling ECR repository, reads of the secrets that the service uses, and log writes. The task role must permit only access to the elements that the service uses (#Uses). */
         :>> title = "Task roles"; :>> kind = RequirementKind::security; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -163,7 +163,7 @@ package PrdIac {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-033'> iac033 {
-        doc /* An IAM policy must not use the action wildcard or a service wildcard such as s3 colon wildcard. It can use the resource wildcard only for actions that have no resource-level permissions in AWS. */
+        doc /* An IAM policy must not use the action * or a service wildcard such as s3:*. It can use the resource * only for actions that have no resource-level permissions in AWS. */
         :>> title = "Least privilege"; :>> kind = RequirementKind::security; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

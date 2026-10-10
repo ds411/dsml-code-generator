@@ -38,7 +38,7 @@ infra/
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-IAC-001 | The generator must write the folders and root modules of the tree above in the infrastructure output folder of the configuration file. | Test | Q23, Q24 |
+| PRD-IAC-001 | The generator must write the folders and root modules of the tree in the section "Output structure and tool compatibility" in the infrastructure output folder of the configuration file. | Test | Q23, Q24, Q61 |
 | PRD-IAC-002 | Each generated HCL file must have a name that ends with `.gen.tf`. A platform engineer can add hand-written `.tf` files to a root module, and the generator must not change them. | Test | Q15 |
 | PRD-IAC-003 | With the default configuration, the HCL must be valid for the pinned OpenTofu version and for the pinned Terraform version. The `required_version` constraint must accept the two pinned versions. | Test | Q22 |
 | PRD-IAC-004 | A feature of only one tool must be available only through an IaC option in the configuration file, for example OpenTofu state encryption. With such an option, the generator must write a comment that names the one tool that accepts the output. | Test | Q22 |

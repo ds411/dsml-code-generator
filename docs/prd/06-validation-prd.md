@@ -45,7 +45,7 @@ The catalog has 45 rules in eight categories. Each rule reports a finding when t
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-VAL-015 | The validator must contain each rule in the catalog below, with its default severity. | Test | Q27 |
+| PRD-VAL-015 | The validator must contain each rule in the catalog of the section "Rule catalog for phase 1", with its default severity. | Test | Q27, Q61 |
 
 | Rule | Severity | The rule reports a finding when |
 | --- | --- | --- |

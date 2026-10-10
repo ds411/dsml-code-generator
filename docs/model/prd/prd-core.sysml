@@ -3,7 +3,7 @@ package PrdCore {
     private import PrdNeeds::*;
 
     #Requirement requirement <'PRD-CORE-001'> core001 {
-        doc /* The command dsml must have the subcommands init, validate, generate, trace, ir, check-output and version, with the options in the table of the toolchain core PRD. */
+        doc /* The command dsml must have the seven subcommands init, validate, generate, trace, ir, check-output and version, with the options in the table of the section "Command line interface". */
         :>> title = "Subcommands"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
@@ -193,7 +193,7 @@ package PrdCore {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-039'> core039 {
-        doc /* A generated file must have a name that ends with .gen.<ext> or _gen.py, or be on the fixed-name list of its target. Each generation PRD gives its fixed-name list. */
+        doc /* A generated file must have a name that ends with .gen.<ext> or _gen.py, or be on the fixed-name list of its target. Each generation PRD gives its fixed-name list, for example pyproject.toml, package.json, Dockerfile and the Next.js app/ folder. */
         :>> title = "Generated file names"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

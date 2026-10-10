@@ -4,6 +4,7 @@ The SysML syntax in the PRDs was a sketch. Nobody had parsed it with OpenSysML. 
 
 - Example model: `docs/model/examples/order-service.sysml`. The DSML PRD (`docs/prd/01-dsml-prd.md`, "Example model") contains a copy. A test makes sure that the two agree.
 - Test: `tests/test_example_model.py`.
+- PRD model: `docs/model/prd/*.sysml`. Test: `tests/test_prd_model.py`.
 - The limits of OpenSysML 0.9.2 that cause the changes: `docs/notes/opensysml-0.9.2.md` and `docs/notes/dsml-library.md`.
 
 ## Changes to the example model (story #14)
@@ -31,7 +32,14 @@ The sketch did not give the full form of these items. Story #13 selected each fo
 | `@DsmlVersion`, `@Waiver`, `@FieldRules`, `#Destructive` | Plain metadata with attributes. Write the attributes in a metadata usage, for example `@DsmlVersion { major = 1; minor = 0; }`. | The attributes belong to the metadata usage, not to the annotated element (Q59). |
 | `'public'` | The attribute `public` of `#Exposed` needs single quotes: `:>> 'public' = true;`. | `public` is a SysML keyword. |
 
+## PRD model (story #15)
+
+The PRD model needed no change to the sketch syntax. It parses and resolves with the library with no diagnostic.
+
+Story #15 changed the `doc` text of 15 requirements: PRD-APP-110, PRD-APP-121, PRD-APP-210, PRD-APP-222, PRD-CICD-001, PRD-CORE-001, PRD-CORE-039, PRD-DSML-035, PRD-IAC-001, PRD-IAC-007, PRD-IAC-015, PRD-IAC-033, PRD-TRACE-009, PRD-TRACE-013 and PRD-VAL-015. Before the change, the model text was different from the text in `docs/index/requirements.csv`. The PRD text is correct, so the model now has the CSV text without code formatting. These changes are not syntax changes.
+
+After this, Q61 (decision record 06) changed the text of 9 of these requirements in the PRDs, the CSV index and the model. A requirement now refers to a table by the name of its PRD section, not with the words "above" or "below".
+
 ## Items for later stories
 
-- The PRD model (`docs/model/prd/*.sysml`) parses and resolves with the library with no diagnostic. Story #15 adds its test. If story #15 changes the sketch syntax, it must add the changes to this list.
 - A feature chain does not use the type that a keyword gives (`docs/notes/opensysml-0.9.2.md`, limit 1). The chain `prod.orderDbProd.multiAz` of the example model resolves, because `orderDbProd` redefines `multiAz` in its body. A chain to an attribute that the part does not redefine needs an explicit type or subset on the part, for example `:> databases`.

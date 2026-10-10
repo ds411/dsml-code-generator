@@ -154,7 +154,7 @@ Story #13 found more limits with the DSML library. See `docs/notes/dsml-library.
 
 ## Times
 
-`scripts/measure_opensysml.py` measures the times. Each parse uses a new service, because the service keeps a parsed model in memory. The values are medians of 5 runs. The parse of the example model and of the PRD model gives `unresolved` errors only, because the DSML library does not exist yet. These files have no syntax error.
+`scripts/measure_opensysml.py` measures the times. Each parse uses a new service, because the service keeps a parsed model in memory. The values are medians of 5 runs. The parse of the example model and of the PRD model gives `unresolved` errors only, because the DSML library did not exist at the time of the measurement (story #12). These files have no syntax error.
 
 | Platform | Start of `sysml-grpc` | Parse `probe.sysml` (51 lines) | Parse `order-service.sysml` (103 lines) | Parse PRD model (10 files, 1640 lines) |
 | --- | --- | --- | --- | --- |
