@@ -1,0 +1,12 @@
+{
+  "name": "dsml-toolchain-dev-tools",
+  "private": true,
+  "description": "Node.js dev tools of the DSML toolchain. The toolchain itself is a Python project that uv manages.",
+  "packageManager": "pnpm@12.11.2",
+  "scripts": {
+    "typecheck": "pyright"
+  },
+  "devDependencies": {
+    "pyright": "1.1.414"
+  }
+}

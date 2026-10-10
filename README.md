@@ -28,14 +28,15 @@ docs/
 
 ## Development
 
-The toolchain is a Python 3.14 project that uv manages. The package is in `src/dsml/`, and the tests are in `tests/`.
+The toolchain is a Python 3.14 project that uv manages. pnpm manages only the Node.js dev tools, for example the type checker pyright. The package is in `src/dsml/`, and the tests are in `tests/`.
 
-1. Install uv.
+1. Install uv and pnpm 12.
 2. Install Python 3.14 and the dependencies:
 
    ```sh
    uv python install 3.14
    uv sync
+   pnpm install
    ```
 
 3. Run the command `dsml`:
@@ -49,7 +50,7 @@ The toolchain is a Python 3.14 project that uv manages. The package is in `src/d
    ```sh
    uv run ruff check
    uv run ruff format --check
-   uv run mypy
+   pnpm typecheck
    uv run pytest
    ```
 

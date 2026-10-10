@@ -3,7 +3,7 @@
 import tomllib
 from dataclasses import dataclass
 from importlib import resources
-from typing import Any
+from typing import cast
 
 BASELINE_FILE = "versions.toml"
 SCHEMA = 1
@@ -39,18 +39,23 @@ def load_baseline(text: str | None = None) -> dict[str, Pin]:
     return {pin.name: pin for pin in sorted(pins, key=lambda pin: pin.name)}
 
 
-def _read_item(name: str, item: Any) -> Pin:
+def _read_item(name: str, item: object) -> Pin:
     if not isinstance(item, dict) or not item:
         raise BaselineError(f'Item "{name}" must be a table with "line", "version" or "value".')
-    unknown = sorted(set(item) - _ITEM_KEYS)
+    table = cast(dict[str, object], item)
+    unknown = sorted(set(table) - _ITEM_KEYS)
     if unknown:
         raise BaselineError(f'Item "{name}" has an unknown key: {", ".join(unknown)}.')
-    for key, value in item.items():
+    texts: dict[str, str] = {}
+    for key, value in table.items():
         if not isinstance(value, str) or not value:
             raise BaselineError(
                 f'The key "{key}" of item "{name}" must be a text that is not empty.'
             )
-    pin = Pin(name=name, **item)
+        texts[key] = value
+    pin = Pin(
+        name=name, line=texts.get("line"), version=texts.get("version"), value=texts.get("value")
+    )
     if pin.line and pin.version and not _in_line(pin.version, pin.line):
         raise BaselineError(
             f'The version {pin.version} of item "{name}" is not in the line {pin.line}.'

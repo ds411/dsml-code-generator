@@ -1,0 +1,9 @@
+# pnpm manages only the Node.js dev tools. uv manages the Python project.
+python:
+  enabled: false
+
+# The platforms of decision record 03 (Q50).
+supportedArchitectures:
+  - linux-x64
+  - linux-arm64
+  - darwin-arm64
