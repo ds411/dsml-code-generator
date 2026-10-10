@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# uv and build output
+.venv/
+build/
+dist/
+
+# pnpm
+node_modules/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/

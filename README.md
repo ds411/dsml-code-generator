@@ -26,6 +26,44 @@ docs/
     └── decisions.csv                      One row for each decision
 ```
 
+## Development
+
+The toolchain is a Python 3.14 project that uv manages. pnpm manages only the Node.js dev tools, for example the type checker pyright. pnpm also installs the Node.js runtime that `package.json` gives (Node.js 26). The package is in `src/dsml/`, and the tests are in `tests/`.
+
+1. Install uv and pnpm 12.
+2. Install Python 3.14 and the dependencies:
+
+   ```sh
+   uv python install 3.14
+   uv sync
+   pnpm install
+   ```
+
+3. Run the command `dsml`:
+
+   ```sh
+   uv run dsml version
+   ```
+
+4. Run the checks. Each check must pass before you open a pull request:
+
+   ```sh
+   uv run ruff check
+   uv run ruff format --check
+   pnpm typecheck
+   uv run pytest
+   ```
+
+5. Build the package. The wheel and the source archive go to `dist/`:
+
+   ```sh
+   uv build
+   ```
+
+In a Claude Code cloud session, the SessionStart hook `.claude/hooks/session-start.sh` does steps 1 and 2 at the start of the session.
+
+The file `src/dsml/versions.toml` holds the version baseline of decision record 03 (Q49). To change a pinned version, change this file.
+
 ## Use with Claude Code
 
 1. Unzip the bundle into the root of the toolchain repository. `CLAUDE.md` goes to the root, and the documents go to `docs/`.
