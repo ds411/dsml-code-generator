@@ -62,6 +62,19 @@ The toolchain is a Python 3.14 project that uv manages. pnpm manages only the No
 
 In a Claude Code cloud session, the SessionStart hook `.claude/hooks/session-start.sh` does steps 1 and 2 at the start of the session.
 
+### CI
+
+The workflow `.github/workflows/ci.yml` runs the checks of step 4 on each pull request and on each push to `main`. It runs on Linux x64 (`ubuntu-24.04`), Linux arm64 (`ubuntu-24.04-arm`) and macOS arm64 (`macos-15`), the operating systems of decision record 03 (Q50). The steps are:
+
+1. `uv sync --frozen`
+2. `pnpm install --frozen-lockfile`
+3. `uv run ruff check`
+4. `uv run ruff format --check`
+5. `pnpm typecheck`
+6. `uv run pytest`
+
+Only the IR adapter module `src/dsml/adapter/` can import `opensysml` (PRD-CORE-020). The ruff rule TID251 in `pyproject.toml` enforces this. An import of `opensysml` in a different file causes `uv run ruff check` and the CI to fail.
+
 The file `src/dsml/versions.toml` holds the version baseline of decision record 03 (Q49). To change a pinned version, change this file.
 
 ## Use with Claude Code

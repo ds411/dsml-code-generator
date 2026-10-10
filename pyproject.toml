@@ -28,7 +28,16 @@ line-length = 100
 extend-exclude = ["docs"]
 
 [tool.ruff.lint]
-select = ["B", "E", "F", "I", "RUF", "SIM", "UP", "W"]
+select = ["B", "E", "F", "I", "RUF", "SIM", "TID", "UP", "W"]
+
+# trace: PRD-CORE-020
+# Only the IR adapter module can import opensysml. Rule TID251 stops an
+# import of opensysml in all other files.
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"opensysml".msg = "Only the IR adapter module (src/dsml/adapter/) can import opensysml (PRD-CORE-020)."
+
+[tool.ruff.lint.per-file-ignores]
+"src/dsml/adapter/**" = ["TID251"]
 
 # pnpm installs pyright (package.json). Run it with "pnpm typecheck".
 [tool.pyright]
