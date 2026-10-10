@@ -26,6 +26,41 @@ docs/
     └── decisions.csv                      One row for each decision
 ```
 
+## Development
+
+The toolchain is a Python 3.14 project that uv manages. The package is in `src/dsml/`, and the tests are in `tests/`.
+
+1. Install uv.
+2. Install Python 3.14 and the dependencies:
+
+   ```sh
+   uv python install 3.14
+   uv sync
+   ```
+
+3. Run the command `dsml`:
+
+   ```sh
+   uv run dsml version
+   ```
+
+4. Run the checks. Each check must pass before you open a pull request:
+
+   ```sh
+   uv run ruff check
+   uv run ruff format --check
+   uv run mypy
+   uv run pytest
+   ```
+
+5. Build the package. The wheel and the source archive go to `dist/`:
+
+   ```sh
+   uv build
+   ```
+
+The file `src/dsml/versions.toml` holds the version baseline of decision record 03 (Q49). To change a pinned version, change this file.
+
 ## Use with Claude Code
 
 1. Unzip the bundle into the root of the toolchain repository. `CLAUDE.md` goes to the root, and the documents go to `docs/`.

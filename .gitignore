@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# uv and build output
+.venv/
+build/
+dist/
+
+# Tool caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/

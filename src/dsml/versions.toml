@@ -1,0 +1,66 @@
+# Version baseline of the DSML toolchain (decision record 03, Q49).
+#
+# "line" is the release line that decision record 03 selects.
+# "version" is the exact version. The first phase 1 release sets each
+# exact version that is not here yet. Later releases update this file.
+# "value" is a fixed setting that is not a version.
+#
+# This file holds only the phase 1 items. A new decision record sets the
+# TypeScript items at the start of phase 2.
+
+schema = 1
+
+# Toolchain and FastAPI target.
+[python]
+line = "3.14"
+
+# SysML v2 engine: the Python client and sysml-grpc (PRD-CORE-018).
+[opensysml]
+line = "0.9"
+version = "0.9.2"
+
+# FastAPI target stack (PRD-APP-101). Lines: the newest minor on
+# 10 October 2026, the start of phase 1.
+[fastapi]
+line = "0.143"
+
+[pydantic]
+line = "2.14"
+
+[sqlalchemy]
+line = "2.1"
+
+[alembic]
+line = "1.20"
+
+[pytest]
+line = "9.1"
+
+[uv]
+line = "0.13"
+
+[postgresql]
+line = "18"
+
+# Infrastructure target.
+[opentofu]
+line = "1.13"
+
+[terraform]
+line = "1.16"
+
+[hcl-required-version]
+value = ">= 1.13.0"
+
+# The minor is set before the infrastructure generator starts (M6).
+[aws-provider]
+line = "6"
+
+[alb-tls-policy]
+value = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+
+[checkov]
+line = "3.3"
+
+[github-runner]
+value = "ubuntu-24.04"
