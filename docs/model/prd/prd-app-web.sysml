@@ -34,7 +34,7 @@ package PrdAppWeb {
         frame traceability;
     }
     #Requirement requirement <'PRD-APP-210'> app210 {
-        doc /* The generator must put each model element in the slice and the files that the FSD map of the application generation PRD gives. */
+        doc /* The generator must put each model element in the slice and the files that the table above gives. */
         :>> title = "FSD map"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -59,7 +59,7 @@ package PrdAppWeb {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-222'> app222 {
-        doc /* The beforeLoad function of each route must check the session and the roles of the view. With no session, it must start the login. With no permitted role, it must show a not permitted page. */
+        doc /* The beforeLoad function of each route must check the session and the roles of the view. With no session, it must start the login. With no permitted role, it must show a "not permitted" page. */
         :>> title = "Route guards"; :>> kind = RequirementKind::security; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

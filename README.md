@@ -99,6 +99,6 @@ The bundle is a copy. The live documents are on claude.ai:
 
 If you change a live document, export the bundle again.
 
-## Open action
+## Model status
 
-Nobody has parsed the `.sysml` files with OpenSysML yet. This is the first task of phase 1 (PRD-TOP-011, PRD-DSML-004).
+The example model and the PRD model parse and resolve with OpenSysML 0.9.2 and the DSML library with no error (PRD-TOP-011, PRD-DSML-004). The tests `tests/test_example_model.py` and `tests/test_prd_model.py` make sure of this. `docs/model/syntax-changes.md` gives each change to the sketch syntax of the PRDs.

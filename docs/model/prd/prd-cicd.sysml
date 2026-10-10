@@ -3,7 +3,7 @@ package PrdCicd {
     private import PrdNeeds::*;
 
     #Requirement requirement <'PRD-CICD-001'> cicd001 {
-        doc /* The generator must write .github/workflows/pr.gen.yml, main.gen.yml and promote.gen.yml with the triggers and jobs in the table of the CI/CD PRD. */
+        doc /* The generator must write .github/workflows/pr.gen.yml, main.gen.yml and promote.gen.yml with the triggers and jobs in the table above. */
         :>> title = "Three workflows"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

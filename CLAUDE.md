@@ -78,9 +78,9 @@ This uses the trace comment form of PRD-TRACE-009, so the toolchain can later tr
 - Use the issue templates in `.github/ISSUE_TEMPLATE/` and the commit template `.gitmessage`.
 - To change a PRD requirement, obey "Changes to a PRD requirement" in `CONTRIBUTING.md`.
 
-## First task
+## Model status
 
-The DSML library does not exist yet. Nobody has parsed the example model or the PRD model with OpenSysML. Create the `DSML` library package, then make `docs/model/examples/order-service.sysml` and `docs/model/prd/*.sysml` parse and resolve with no error (PRD-DSML-004, PRD-TOP-011). The SysML syntax in the PRDs is a sketch. If OpenSysML does not accept it, change the sketch, not the requirement, and record each change.
+The `DSML` library package is in `src/dsml/library/`. The example model and the PRD model parse and resolve with the library with no error (PRD-DSML-004, PRD-TOP-011). The tests `tests/test_example_model.py` and `tests/test_prd_model.py` make sure of this. The SysML syntax in the PRDs is a sketch. If OpenSysML does not accept it, change the sketch, not the requirement. Record each change in `docs/model/syntax-changes.md`.
 
 ## Requirement IDs
 

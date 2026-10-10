@@ -73,7 +73,7 @@ package PrdVal {
         frame correctModel;
     }
     #Requirement requirement <'PRD-VAL-015'> val015 {
-        doc /* The validator must contain each rule in the catalog of the validation PRD, with its default severity. */
+        doc /* The validator must contain each rule in the catalog below, with its default severity. */
         :>> title = "Rule catalog"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }

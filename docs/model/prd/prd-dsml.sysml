@@ -173,7 +173,7 @@ package PrdDsml {
         frame correctModel;
     }
     #Requirement requirement <'PRD-DSML-035'> dsml035 {
-        doc /* A logical infrastructure element must be a part usage with one of the logical kinds in the table of the DSML PRD. */
+        doc /* A logical infrastructure element must be a part usage with one of the logical kinds in the table above. */
         :>> title = "Logical kinds"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame cloudIndependence;
     }
