@@ -6,7 +6,7 @@ These files write the product needs and each PRD requirement in the DSML, as one
 - Each requirement frames the product need that it serves most directly.
 - All requirements have the priority `must` and the status `draft`, because no part is implemented yet.
 - The text in each `doc` comment is the PRD text without code formatting. If the two are different, the PRD text is correct.
-- Nobody has parsed these files with OpenSysML yet ([decision record 03](../decisions/dr-03-versions-and-prd-details.md)). PRD-TOP-011 requires that check.
+- OpenSysML 0.9.2 parses these files with no syntax error. The names do not resolve yet, because the DSML library does not exist yet ([notes](../notes/opensysml-0.9.2.md)). PRD-TOP-011 requires a parse with no error.
 
 ## Files
 
