@@ -128,7 +128,7 @@ package PrdCore {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-026'> core026 {
-        doc /* Validators and generators must read only the IR. */
+        doc /* Validators and generators must read only the IR. They get the results of formal constraints from the IR (PRD-CORE-054), not from OpenSysML. */
         :>> title = "IR only"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -265,6 +265,11 @@ package PrdCore {
     #Requirement requirement <'PRD-CORE-053'> core053 {
         doc /* Before each release, the toolchain CI must generate and deploy each reference model to a sandbox AWS account, and remove it after the test. */
         :>> title = "Sandbox deployment test"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
+        frame correctModel;
+    }
+    #Requirement requirement <'PRD-CORE-054'> core054 {
+        doc /* The adapter must evaluate each formal constraint of a requirement through OpenSysML, one time for each environment, and write each result into the IR. The evaluation uses the attribute values of that environment. A result is true, false or unknown. An unknown result gives the features that have no value. */
+        :>> title = "Constraint results in the IR"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
 }

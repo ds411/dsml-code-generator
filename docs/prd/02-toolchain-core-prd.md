@@ -53,7 +53,7 @@ One TOML file, `dsml.toml`, configures the toolchain for a repository. The model
 
 ## OpenSysML integration and the IR
 
-OpenSysML stays behind one adapter module. The adapter writes the IR, and only the IR reaches the validators and generators. OpenSysML 0.9.2 is not at version 1.0, so golden IR tests protect each version change ([OpenSysML](https://pkg.go.dev/github.com/Open-MBEE/OpenSysML)).
+OpenSysML stays behind one adapter module. The adapter writes the IR, and only the IR reaches the validators and generators. The adapter also evaluates the formal constraints and writes the results into the IR. OpenSysML 0.9.2 is not at version 1.0, so golden IR tests protect each version change ([OpenSysML](https://pkg.go.dev/github.com/Open-MBEE/OpenSysML)).
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
@@ -66,8 +66,9 @@ OpenSysML stays behind one adapter module. The adapter writes the IR, and only t
 | PRD-CORE-023 | The IR must have a semantic version in the field `irVersion`. A change that removes or renames a field must increase the major version. | Inspection | Q8 |
 | PRD-CORE-024 | The IR must hold each element of the five layers, its DSML attributes, its trace links and its source location (file, line, column). | Test | Q8, Q29 |
 | PRD-CORE-025 | The IR must not contain an OpenSysML type, an OpenSysML object or an OpenSysML internal ID. | Inspection | Q8 |
-| PRD-CORE-026 | Validators and generators must read only the IR. | Inspection | Q8 |
+| PRD-CORE-026 | Validators and generators must read only the IR. They get the results of formal constraints from the IR (PRD-CORE-054), not from OpenSysML. | Inspection | Q8, Q57 |
 | PRD-CORE-027 | The toolchain CI must compare the IR of each reference model with a stored golden IR file. A change of the OpenSysML version must pass this comparison before a release. | Test | Q38 |
+| PRD-CORE-054 | The adapter must evaluate each formal constraint of a requirement through OpenSysML, one time for each environment, and write each result into the IR. The evaluation uses the attribute values of that environment. A result is `true`, `false` or `unknown`. An `unknown` result gives the features that have no value. | Test | Q12, Q57 |
 
 ## Determinism
 

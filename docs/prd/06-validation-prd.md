@@ -28,14 +28,14 @@ The validator runs all enabled rules on the IR and writes the findings in a fixe
 
 ## Waivers, baselines, formal constraints and text rules
 
-A waiver stops one rule for one element and stays visible in the report. Identity rules compare the model with a Git baseline. OpenSysML evaluates formal constraints. The STE text rules are optional.
+A waiver stops one rule for one element and stays visible in the report. Identity rules compare the model with a Git baseline. The IR adapter evaluates formal constraints, and the validator reads the results from the IR. The STE text rules are optional.
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
 | PRD-VAL-009 | A `#Waiver` must stop the findings of its rule on its element only. The report must list waived findings in a separate group, and SARIF must give them as suppressions with the reason. | Test | Q28 |
 | PRD-VAL-010 | After the `expires` date of a waiver, its findings must come back, and the validator must report rule `STR-014`. | Test | Q28 |
 | PRD-VAL-011 | The identity rules (category IDN) must run only when the user gives `--baseline <git-ref>` or the configuration file gives a default baseline. The validator must read the baseline model from the local Git repository. | Test | Q10, Q54 |
-| PRD-VAL-012 | The validator must evaluate each formal constraint of a requirement through the OpenSysML adapter, one time for each environment, with the attribute values of that environment. | Test | Q12 |
+| PRD-VAL-012 | The validator must read the result of each formal constraint for each environment from the IR (PRD-CORE-054). It reports rule `FCN-001` for a `false` result and rule `FCN-002` for an `unknown` result. | Test | Q12, Q57 |
 | PRD-VAL-013 | The text rules (category TXT) must be off by default. The configuration file must be able to turn them on. | Test | Q3 |
 | PRD-VAL-014 | The text rules must use the project dictionary of the top-level PRD as a list of additional approved words. The toolchain must not claim full STE compliance. | Inspection | Q2, Q3 |
 
@@ -87,7 +87,7 @@ The catalog has 45 rules in eight categories. Each rule reports a finding when t
 | AWS-004 | warning | The prod database has `multiAz = false`. |
 | AWS-005 | warning | A prod container service has `minCount` less than 2. |
 | FCN-001 | error | A formal constraint is false for an environment. |
-| FCN-002 | warning | The validator cannot evaluate a formal constraint, because a feature has no value. |
+| FCN-002 | warning | The adapter cannot evaluate a formal constraint for an environment, because a feature has no value. |
 | IDN-001 | error | A short name that the baseline used for an element of a different kind is used again. |
 | IDN-002 | info | An element with a short name has a different qualified name from the baseline. |
 | IDN-003 | warning | An element with no short name has a different qualified name from the baseline, so its trace identity changes. |

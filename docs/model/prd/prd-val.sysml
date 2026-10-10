@@ -58,7 +58,7 @@ package PrdVal {
         frame traceability;
     }
     #Requirement requirement <'PRD-VAL-012'> val012 {
-        doc /* The validator must evaluate each formal constraint of a requirement through the OpenSysML adapter, one time for each environment, with the attribute values of that environment. */
+        doc /* The validator must read the result of each formal constraint for each environment from the IR (PRD-CORE-054). It reports rule FCN-001 for a false result and rule FCN-002 for an unknown result. */
         :>> title = "Formal constraint check"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }

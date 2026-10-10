@@ -79,7 +79,7 @@ These items are out of scope for phases 1 to 3: the VS Code extension with a lan
 
 ## Document map
 
-The PRD set has this top-level PRD and seven PRDs. Three decision records hold the decisions that the PRDs come from.
+The PRD set has this top-level PRD and seven PRDs. Four decision records hold the decisions that the PRDs come from.
 
 | Document | ID prefix | Scope | Phase |
 | --- | --- | --- | --- |
@@ -94,6 +94,7 @@ The PRD set has this top-level PRD and seven PRDs. Three decision records hold t
 | [DSML decision record 01: scope and architecture](../decisions/dr-01-scope-and-architecture.md) | Q1 to Q33, AD1 to AD3 | Scope and architecture | Closed |
 | [DSML decision record 02: generated code, integration and PRD set](../decisions/dr-02-generated-code-integration-and-prd-set.md) | Q34 to Q48 | Generated code layout, integration, PRD set | Closed |
 | [DSML decision record 03: versions and PRD details](../decisions/dr-03-versions-and-prd-details.md) | Q49 to Q56 | Version baseline and PRD details | Closed |
+| [DSML decision record 04: formal constraints and the AWS test schedule](../decisions/dr-04-formal-constraints-and-aws-test-schedule.md) | Q57 to Q58 | Formal constraint results in the IR, schedule of the AWS deployment tests | Closed |
 
 The [DSML appendix](../model/README.md) holds all PRD requirements as a DSML model (Q48).
 
@@ -104,7 +105,7 @@ All documents of the PRD set use the same language, IDs and table form.
 - **Language.** The text uses ASD-STE100 Simplified Technical English, Issue 9. The project dictionary below gives the approved technical nouns and technical verbs.
 - **Modal verbs.** "Must" marks an obligation. "Can" marks a possibility or a permission. The documents do not use "shall", "should" or "may".
 - **Requirement IDs.** Each requirement has the ID `PRD-<PART>-<NNN>`, for example `PRD-CORE-012`. `<PART>` is the prefix of the PRD. `<NNN>` has three digits. A deleted ID is not used again.
-- **Requirement tables.** Each requirement table has four columns: ID, Requirement, Verification and Source. Source gives the decisions (Q1 to Q56, AD1 to AD3) that the requirement comes from.
+- **Requirement tables.** Each requirement table has four columns: ID, Requirement, Verification and Source. Source gives the decisions (Q1 to Q58, AD1 to AD3) that the requirement comes from.
 - **Goals.** The lead of each PRD gives the goals (N-001 to N-005) that its requirements cover.
 - **Phase.** The lead of each PRD gives its phase. A requirement for a different phase states that phase in its text.
 - **Verification methods.**

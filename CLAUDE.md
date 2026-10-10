@@ -22,7 +22,7 @@ This repository builds the DSML toolchain, an internal product. The toolchain ha
 ## Source of truth
 
 - Requirements: `docs/prd/`. Start with `docs/prd/00-top-level-prd.md`.
-- Decisions and their reasons: `docs/decisions/` (records 01 to 03, all closed).
+- Decisions and their reasons: `docs/decisions/` (records 01 to 04, all closed).
 - If a PRD and a decision record do not agree, the PRD is correct. Tell the user about the difference.
 - Machine-readable lists: `docs/index/requirements.csv` and `docs/index/decisions.csv`.
 - The PRD requirements as a DSML model: `docs/model/prd/*.sysml`. Example model: `docs/model/examples/order-service.sysml`.
@@ -44,11 +44,13 @@ Do not load all documents at the start. Read the PRD for the part that you work 
 
 Phase 1 contains: the DSML library with all five layers; OpenSysML integration, IR, CLI and GitHub Action; validation; traceability; the FastAPI generator; the infrastructure generator (network, container service, database, user directory, secrets); and the GitHub Actions generator. React, Next.js and the static site are not in phase 1.
 
+The product owner has no AWS account at this time. The tests that deploy to AWS wait for an AWS account (Q58). Do not try to deploy to AWS.
+
 ## Rules for all toolchain code
 
 - Python 3.14. uv manages the project (PRD-TOP-001, Q49).
 - OpenSysML 0.9.2 is the SysML v2 engine. Only the IR adapter module imports `opensysml` (PRD-CORE-020).
-- Validators and generators read only the IR (PRD-CORE-026).
+- Validators and generators read only the IR (PRD-CORE-026). The IR adapter evaluates formal constraints and writes the results into the IR (PRD-CORE-054, Q57).
 - Validation, generation and trace reports do not use the network or an AI model (PRD-TOP-004, PRD-TOP-005).
 - Output is byte-identical for the same model, configuration and toolchain version: sorted lists, no timestamps, no random values, no absolute paths, UTF-8, LF line ends (PRD-CORE-028 to PRD-CORE-038).
 - Generated file names end with `.gen.<ext>` or `_gen.py`, or are on the fixed-name list of the target (PRD-CORE-039). The generator never changes a hand-written file (PRD-CORE-042).
@@ -65,6 +67,17 @@ Put a trace comment above each module, class or function that implements a PRD r
 
 This uses the trace comment form of PRD-TRACE-009, so the toolchain can later trace its own code.
 
+## Work process
+
+`CONTRIBUTING.md` gives the full work process. Obey these rules:
+
+- The GitHub issue tracker holds all open items. Each branch and each pull request is for one story issue.
+- Do each story on a new branch from the newest `main`. Use the name `story/<issue>-<short-name>`, or the branch name that the session gives.
+- Merge work into `main` only through a pull request. Do not merge it: the product owner does a squash merge.
+- Fill in `.github/pull_request_template.md`. Then add a comment with the recommended squash commit message (`.github/squash_commit_comment_template.md`). Edit the comment after each push that changes the scope.
+- Use the issue templates in `.github/ISSUE_TEMPLATE/` and the commit template `.gitmessage`.
+- To change a PRD requirement, obey "Changes to a PRD requirement" in `CONTRIBUTING.md`.
+
 ## First task
 
 The DSML library does not exist yet. Nobody has parsed the example model or the PRD model with OpenSysML. Create the `DSML` library package, then make `docs/model/examples/order-service.sysml` and `docs/model/prd/*.sysml` parse and resolve with no error (PRD-DSML-004, PRD-TOP-011). The SysML syntax in the PRDs is a sketch. If OpenSysML does not accept it, change the sketch, not the requirement, and record each change.
@@ -72,5 +85,5 @@ The DSML library does not exist yet. Nobody has parsed the example model or the 
 ## Requirement IDs
 
 - PRD requirements: `PRD-<PART>-<NNN>`. Parts: TOP, DSML, CORE, APP, IAC, CICD, VAL, TRACE.
-- Decisions: Q1 to Q56 and AD1 to AD3. The Source column of each requirement gives its decisions.
+- Decisions: Q1 to Q58 and AD1 to AD3. The Source column of each requirement gives its decisions.
 - Validation rules: `<CATEGORY>-<NNN>`, for example `COV-003`.
