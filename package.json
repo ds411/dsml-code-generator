@@ -8,5 +8,12 @@
   },
   "devDependencies": {
     "pyright": "1.1.414"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.11.1",
+      "onFail": "download"
+    }
   }
 }
