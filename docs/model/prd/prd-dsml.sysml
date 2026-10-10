@@ -43,7 +43,7 @@ package PrdDsml {
         frame oneModel;
     }
     #Requirement requirement <'PRD-DSML-009'> dsml009 {
-        doc /* Each DSML keyword must be a metadata definition that specializes Metaobjects::SemanticMetadata. Its base type must hold the attributes of the element kind. */
+        doc /* Each DSML keyword of an element kind must be a metadata definition that specializes Metaobjects::SemanticMetadata. Its base type must hold the attributes of the element kind. A keyword on a dependency, and a metadata definition that holds its own attributes, must be a plain metadata definition. */
         :>> title = "Semantic metadata"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }

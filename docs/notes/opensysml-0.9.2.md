@@ -150,6 +150,8 @@ These limits change the SysML sketch of the DSML, not a requirement. The stories
 
 A test examines each limit. If a new OpenSysML version removes a limit, its test fails.
 
+Story #13 found more limits with the DSML library. See `docs/notes/dsml-library.md`.
+
 ## Times
 
 `scripts/measure_opensysml.py` measures the times. Each parse uses a new service, because the service keeps a parsed model in memory. The values are medians of 5 runs. The parse of the example model and of the PRD model gives `unresolved` errors only, because the DSML library does not exist yet. These files have no syntax error.

@@ -47,7 +47,7 @@ Needs are SysML v2 concerns, and requirements frame them. Each DSML keyword give
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-DSML-009 | Each DSML keyword must be a metadata definition that specializes `Metaobjects::SemanticMetadata`. Its base type must hold the attributes of the element kind. | Inspection | Q7 |
+| PRD-DSML-009 | Each DSML keyword of an element kind must be a metadata definition that specializes `Metaobjects::SemanticMetadata`. Its base type must hold the attributes of the element kind. A keyword on a dependency, and a metadata definition that holds its own attributes, must be a plain metadata definition. | Inspection | Q7, Q59 |
 | PRD-DSML-010 | The model must give attribute values with redefinitions of the base type features, for example `:>> priority = Priority::must;`. | Test | Q7, Q11 |
 | PRD-DSML-011 | A stakeholder must be a part definition with the keyword `#Stakeholder`. | Test | Q29 |
 | PRD-DSML-012 | A need must be a concern usage with the keyword `#Need`. It must have one or more `stakeholder` members that refer to a stakeholder. | Test | Q29, Q46 |
