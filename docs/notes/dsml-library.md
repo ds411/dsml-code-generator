@@ -67,7 +67,7 @@ Some names of the PRD are SysML keywords. The library writes them as unrestricte
 These results are input for the stories #14 and #15. The files did not change in story #13.
 
 - The PRD model (`docs/model/prd/*.sysml`) parses and resolves together with the library with no diagnostic.
-- The example model (`docs/model/examples/order-service.sysml`) gives 1 error with the library: `String` does not resolve, because the model does not import `ScalarValues`. With `private import ScalarValues::*;`, it gives 2 errors with the code `feature-value-overriding`: `desiredCount` and `multiAz` use `=` on the AWS realization, and the `prod` environment changes them. These lines must use `default =` (see `docs/notes/opensysml-0.9.2.md`).
+- The example model (`docs/model/examples/order-service.sysml`) gives 1 error with the library: `String` does not resolve, because the model does not import `ScalarValues`. With `private import ScalarValues::*;`, it gives 2 errors with the code `feature-value-overriding`: `desiredCount` and `multiAz` use `=` on the AWS realization, and the `prod` environment changes them. These lines must use `default =` (see `docs/notes/opensysml-0.9.2.md`). Story #14 made these changes. Now the example model parses and resolves with no diagnostic. See `docs/model/syntax-changes.md`.
 - The test model `tests/models/dsml/keywords.sysml` uses each keyword. It parses and resolves with no diagnostic.
 
 ## Limits of OpenSysML 0.9.2
