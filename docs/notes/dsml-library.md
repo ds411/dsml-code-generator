@@ -12,8 +12,8 @@ Story #13 added the DSML library. This document gives the design of the library,
 - The library has 30 keywords, 7 enumerations and 4 attribute types. A test compares them with the list of story #13.
 - The wheel contains the library. A test builds the wheel and compares the packaged file with the source (PRD-DSML-006, PRD-CORE-048).
 - The library has the version 1.0.0. `@DsmlVersion { major = 1; minor = 0; patch = 0; }` on the package `DSML` gives it, and `dsml.library.LIBRARY_VERSION` must agree (PRD-DSML-056).
-- PRD-DSML-005 (the OMG pilot implementation accepts the library) is not checked yet. Decision issue #20 asks how to check it.
-- 7 keywords cannot specialize `SemanticMetadata`, as PRD-DSML-009 tells. Decision issue #21 asks for a change of PRD-DSML-009.
+- PRD-DSML-005 (the OMG pilot implementation accepts the library) is not checked yet. Story #23 adds a CI job for this check (Q60).
+- 7 keywords cannot specialize `SemanticMetadata`. Q59 changed PRD-DSML-009 for these keywords.
 
 ## Structure of the library
 
@@ -35,7 +35,7 @@ The definition in `BaseTypes` has the same name as its keyword, for example `DSM
 | Plain metadata definition. | `Calls`, `Realizes`, `Uses` | These go on a dependency. OpenSysML 0.9.2 refuses semantic metadata on a dependency ("Cannot annotate Dependency", code `metadata-annotated-element`). |
 | Plain metadata definition with attributes. | `Waiver`, `DsmlVersion`, `FieldRules`, `Destructive` | The attributes belong to the metadata usage, not to the annotated element. |
 
-PRD-DSML-009 tells that each keyword specializes `SemanticMetadata`. The 7 plain keywords do not agree with this text. Decision issue #21 asks for a change of PRD-DSML-009.
+PRD-DSML-009 (changed by Q59) tells that only the keywords of element kinds specialize `SemanticMetadata`.
 
 ## Selected forms
 
