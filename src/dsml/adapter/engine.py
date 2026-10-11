@@ -14,6 +14,7 @@ from typing import Any, Literal, Self
 import opensysml
 
 from dsml import versions
+from dsml.errors import ToolchainError
 
 ConstraintValue = Literal["true", "false", "unknown"]
 
@@ -25,12 +26,16 @@ _STATUS_VALUES: dict[str, ConstraintValue] = {
 }
 
 
-class EngineVersionError(Exception):
-    """The version of OpenSysML is not the pinned version."""
+# trace: PRD-CORE-019
+class EngineVersionError(ToolchainError):
+    """The version of OpenSysML is not the pinned version.
+
+    The command stops with exit code 2 (PRD-CORE-019).
+    """
 
 
-class EngineError(Exception):
-    """OpenSysML cannot do the operation."""
+class EngineError(ToolchainError):
+    """OpenSysML cannot do the operation. The command stops with exit code 2."""
 
 
 @dataclass(frozen=True, slots=True)

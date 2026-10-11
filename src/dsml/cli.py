@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from importlib import metadata
 
 from dsml import versions
+from dsml.errors import ToolchainError
 
 PROG = "dsml"
 
@@ -46,12 +47,25 @@ def run_version() -> int:
     return 0
 
 
-# trace: PRD-TOP-002
+# trace: PRD-TOP-002, PRD-CORE-002, PRD-CORE-019
 def main(argv: Sequence[str] | None = None) -> int:
-    """Run the command `dsml` and give its exit code."""
+    """Run the command `dsml` and give its exit code.
+
+    A `ToolchainError`, for example a different version of `sysml-grpc`, gives
+    exit code 2 and a message on standard error, not a traceback.
+    """
     args = build_parser().parse_args(argv)
-    match args.command:
+    try:
+        return run_command(args.command)
+    except ToolchainError as error:
+        sys.stderr.write(f"{PROG}: error: {error}\n")
+        return 2
+
+
+def run_command(command: str) -> int:
+    """Run one subcommand and give its exit code."""
+    match command:
         case "version":
             return run_version()
         case _:
-            raise AssertionError(f"Unknown subcommand: {args.command}")
+            raise AssertionError(f"Unknown subcommand: {command}")
