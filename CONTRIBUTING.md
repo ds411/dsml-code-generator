@@ -18,6 +18,7 @@ This document gives the work process for this repository. It applies to people a
 5. Add a comment with the recommended squash commit message.
 6. Correct the pull request until the review and CI pass.
 7. The product owner does a squash merge. The story issue closes.
+8. After the last story of the last step of a milestone merges, examine the exit criteria of the milestone. Follow "Milestone exit" below.
 
 ## Issues
 
@@ -40,8 +41,18 @@ Use these rules for issues:
 6. In the milestone issue, write which stories can go in parallel. Put them in the same step, and give the stories that each step needs.
 7. When you add a story to a milestone, put it in a step. Then make sure that the order is still correct.
 8. Put the label `deferred` on an item that waits for a resource, for example an AWS account. Give the reason in the issue.
-9. A pull request closes its story with the line `Closes #<issue>`. Close a milestone when all its stories are closed.
+9. A pull request closes its story with the line `Closes #<issue>`. Close a milestone only when all its stories are closed and all its exit criteria are true (see "Milestone exit").
 10. When the product owner answers a decision issue, record the answer. If the answer changes a PRD, follow "Changes to a PRD requirement" below. Then close the issue.
+
+## Milestone exit
+
+The exit criteria of a milestone tell when the milestone is complete. Examine them after the last step of the milestone, when all its stories are closed.
+
+1. Examine each exit criterion on the newest `main`. Use the code, the documents and the CI results.
+2. Add a comment to the milestone issue. For each criterion, give the result and the data that shows it, for example a file, a test or a CI run.
+3. If all exit criteria are true, mark each criterion as complete in the milestone issue. Then close the milestone issue.
+4. If one or more exit criteria are not true, add one or more stories that make them true. Put these stories in one or more new steps at the end of the milestone issue.
+5. Do the new steps. Then examine the exit criteria again from step 1.
 
 ## Branches
 
