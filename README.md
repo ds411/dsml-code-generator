@@ -91,7 +91,8 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | --- | --- |
 | `init` | Writes a starter configuration file and a starter model as create-once files. See "Command `dsml init`". |
 | `validate` | Runs the validation rules on the model and writes the findings as text or as JSON. See "Command `dsml validate`". |
-| `trace`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
+| `trace` | Writes the coverage report or the orphans report as JSON or as CSV. See "Command `dsml trace`". |
+| `check-output` | Not available yet. The subcommand stops with exit code 2. |
 | `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. There are no generators yet (M6). `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
@@ -154,6 +155,24 @@ uv run dsml validate --format json --output findings.json
 The rules are in `src/dsml/validate/rules/`. `docs/notes/validator.md` tells how to add a rule.
 
 The golden IR files of the two reference models are in `tests/golden/ir/`. CI compares the IR with these files on each platform (PRD-CORE-027, PRD-CORE-029). After a change of the IR, run `uv run python scripts/write_golden_ir.py` and examine the differences before you commit them.
+
+### Command `dsml trace`
+
+`dsml trace <report> --format json|csv` reads the model, the trace manifest `.dsml/trace.gen.json` and the trace comments in the hand-written files. Then it writes one report (PRD-TRACE-013). For example:
+
+```sh
+uv run dsml trace coverage --format csv --output coverage.csv
+```
+
+- The report `coverage` has one row for each requirement: its needs, its satisfying elements, its generated files, its trace comments, its verifications and its status. The status is `missing` (no satisfying element), `satisfied` (no verification) or `verified` (PRD-TRACE-014).
+- The report `orphans` has one row for each item with no link: a need with no requirement, a requirement with no need, an application or infrastructure element that satisfies no requirement, a trace comment ID that is not in the model (PRD-TRACE-012) and a test file that no verification names.
+- The command reads the trace comments and the test files in the output folders and in the test folders of the configuration file (`trace.tests`). A test file has a name such as `test_*.py`, `*_test.py`, `*.test.ts` or `*.spec.ts`.
+- Each report gives the model commit, the commit `HEAD` of the local Git repository. If the folder is not in a Git repository, the report says so in place of the commit. A report gives no date or time (PRD-TRACE-018).
+- The JSON format gives the report name, the columns, the rows, the model commit and the baseline commit. The CSV format starts with three comment lines that start with `#`, then one header line. A list cell has its items with `; ` between them.
+- A trace comment that the command cannot read gives a warning on standard error. The exit code is 0 also if a requirement is `missing`.
+- The reports `impact` and `suspect`, the format `html` and `--baseline` are not available yet. They stop the command with exit code 2.
+
+The golden reports of the example model are in `tests/golden/trace/`. After a change of the reports, run `uv run python scripts/write_golden_reports.py` and examine the differences before you commit them.
 
 ## Use with Claude Code
 
