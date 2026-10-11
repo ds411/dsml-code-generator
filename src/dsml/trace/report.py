@@ -1,5 +1,5 @@
 # trace: PRD-TRACE-013, PRD-TRACE-017, PRD-TRACE-018, PRD-CORE-028
-"""The report model of the trace reports and its JSON and CSV writers.
+"""The report model of the trace reports and its JSON, CSV and HTML writers.
 
 All trace reports use one model: a table with fixed columns and sorted rows.
 A cell is one text, or a list of texts. The writers take any report table,
@@ -17,6 +17,10 @@ The output is the same for the same table (PRD-CORE-028):
   and the baseline commit), then one header line and one line for each row.
   A list cell has its items in one field, with "; " between them. The line
   end is LF.
+- HTML: one file with its styles in the file, and no script and no external
+  resource (PRD-TRACE-017). The page gives the report, the model commit, the
+  baseline commit and one table. A list cell is a list in its table cell.
+  The template is `trace/report.html.j2` of the template engine.
 """
 
 import csv
@@ -25,10 +29,18 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import Final
 
+from dsml.generate.templates import TemplateEngine
 from dsml.ir.writer import JsonValue, canonical_json
 
 REPORT_VERSION: Final = 1
 """The version of the JSON form of the trace reports."""
+
+HTML_TEMPLATE: Final = "trace/report.html.j2"
+"""The template of the HTML form of the trace reports."""
+
+STATUS_COLUMN: Final = "status"
+STATUS_STYLES: Final = frozenset({"missing", "satisfied", "verified"})
+"""The values of the column `status` that have a style in the HTML form."""
 
 LIST_SEPARATOR: Final = "; "
 """The text between the items of a list cell in a CSV field."""
@@ -110,6 +122,25 @@ def csv_report(report: Report) -> str:
     writer.writerow(report.columns)
     writer.writerows(_csv_fields(row) for row in report.rows)
     return "".join(f"{line}\n" for line in head) + buffer.getvalue()
+
+
+# trace: PRD-TRACE-017, PRD-TRACE-018, PRD-CORE-028, PRD-CORE-033, PRD-CORE-034
+def html_report(report: Report, engine: TemplateEngine | None = None) -> str:
+    """Write the report as one HTML file with no external resources."""
+    baseline = "none" if report.baseline_commit is None else report.baseline_commit
+    rows = [
+        [_html_cell(column, cell) for column, cell in zip(report.columns, row, strict=True)]
+        for row in report.rows
+    ]
+    engine = TemplateEngine() if engine is None else engine
+    return engine.render(HTML_TEMPLATE, {"report": report, "baseline": baseline, "rows": rows})
+
+
+def _html_cell(column: str, cell: Cell) -> dict[str, object]:
+    if not isinstance(cell, str):
+        return {"texts": list(cell), "list": True, "style": ""}
+    style = f"status-{cell}" if column == STATUS_COLUMN and cell in STATUS_STYLES else ""
+    return {"texts": [cell], "list": False, "style": style}
 
 
 def _csv_fields(row: Sequence[Cell]) -> list[str]:

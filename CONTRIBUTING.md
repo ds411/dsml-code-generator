@@ -38,7 +38,7 @@ Use these rules for issues:
 3. Make each story small enough for one pull request. If a story is too large, divide it into two or more stories before you start the work.
 4. Add each story as a sub-issue of its milestone.
 5. Give the order of all the stories in the milestone issue. Put the stories into numbered steps in the section "Stories". Do the steps in their order.
-6. In the milestone issue, write which stories can go in parallel. Put them in the same step, and give the stories that each step needs.
+6. In the milestone issue, write which stories can go in parallel. Put them in the same step, and give the stories that each step needs. Obey "Parallel stories" below.
 7. When you add a story to a milestone, put it in a step. Then make sure that the order is still correct.
 8. Put the label `deferred` on an item that waits for a resource, for example an AWS account. Give the reason in the issue.
 9. A pull request closes its story with the line `Closes #<issue>`. Close a milestone only when all its stories are closed and all its exit criteria are true (see "Milestone exit").
@@ -53,6 +53,16 @@ The exit criteria of a milestone tell when the milestone is complete. Examine th
 3. If all exit criteria are true, mark each criterion as complete in the milestone issue. Then close the milestone issue.
 4. If one or more exit criteria are not true, add one or more stories that make them true. Put these stories in one or more new steps at the end of the milestone issue.
 5. Do the new steps. Then examine the exit criteria again from step 1.
+
+## Parallel stories
+
+The stories in one step go in parallel. Use these rules to make a step:
+
+1. Put 4 or fewer stories in a step. If more stories can go in parallel, divide them into two or more steps.
+2. For each story, write the main files that it changes in the milestone issue.
+3. Put stories in the same step only if they change different files.
+4. If two or more stories must change the same file, for example a test fixture, a registry or the CLI, make a setup story. The setup story changes the shared file before the step starts. Put it in the step before.
+5. Make the setup story as small as possible. After it merges, the stories of the step only add new files, or change files that no other story of the step changes.
 
 ## Merge order
 

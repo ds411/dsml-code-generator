@@ -1,0 +1,19 @@
+{#- The outputs of the tooling root module (PRD-IAC-022). -#}
+{% include "common/header.j2" %}
+
+output "aws_account_id" {
+  description = "The AWS account ID of the tooling account."
+  value       = local.aws_account_id
+}
+
+output "aws_region" {
+  description = "The AWS Region of the ECR repositories."
+  value       = local.aws_region
+}
+{% for repository in repositories %}
+
+output "{{ repository.address }}_repository_url" {
+  description = {{ ("The URL of the ECR repository of the application " ~ repository.element ~ ".") | hcl_string }}
+  value       = aws_ecr_repository.{{ repository.address }}.repository_url
+}
+{% endfor %}

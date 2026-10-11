@@ -2,12 +2,12 @@
 """The trace manifest `.dsml/trace.gen.json`.
 
 Each generator gives the symbols of its generated files: a class, a
-function, a route or an HCL resource address. Each symbol has a line range
-and the identities of its model elements. The file writer collects the
-symbols and writes the trace manifest. For each element, the manifest gives
-each generated file and each symbol in that file (PRD-TRACE-006). The HCL
-resource addresses of an infrastructure element are its symbols of the kind
-`resource` (PRD-TRACE-007).
+function, a route, an HCL resource address or a workflow job. Each symbol
+has a line range and the identities of its model elements. The file writer
+collects the symbols and writes the trace manifest. For each element, the
+manifest gives each generated file and each symbol in that file
+(PRD-TRACE-006). The HCL resource addresses of an infrastructure element
+are its symbols of the kind `resource` (PRD-TRACE-007).
 
 The manifest is sorted by element identity, then by file path, then by line
 (PRD-TRACE-008). It is canonical JSON, like the manifest
@@ -41,6 +41,8 @@ class SymbolKind(enum.StrEnum):
     """An HTTP route. The name is the method and the path, for example `POST /orders`."""
     RESOURCE = "resource"
     """An HCL resource address, for example `aws_ecs_service.order_api`."""
+    JOB = "job"
+    """A job of a GitHub Actions workflow. The name is the job ID, for example `plan-dev`."""
 
 
 # trace: PRD-TRACE-006
