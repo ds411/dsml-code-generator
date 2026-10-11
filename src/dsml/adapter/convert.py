@@ -7,7 +7,7 @@ module puts them into one `Ir` with the SYN findings of the parse.
 
 from collections.abc import Sequence
 
-from dsml.adapter import needs
+from dsml.adapter import needs, solution
 from dsml.adapter.engine import ParsedModel
 from dsml.adapter.findings import syn_findings
 from dsml.adapter.source import SourceGraph
@@ -27,8 +27,11 @@ def build_ir(model: ParsedModel, files: Sequence[str]) -> Ir:
     if any(item.severity == "error" for item in model.diagnostics):
         return Ir(files=tuple(sorted(files)), findings=findings)
     graph = SourceGraph(model.api_elements(), files)
-    elements: list[Element] = list(needs.convert_elements(graph))
-    links: list[Link] = list(needs.convert_links(graph))
+    elements: list[Element] = [
+        *needs.convert_elements(graph),
+        *solution.convert_elements(graph, model),
+    ]
+    links: list[Link] = [*needs.convert_links(graph), *solution.convert_links(graph)]
     return Ir(
         files=tuple(sorted(files)),
         elements=tuple(elements),
