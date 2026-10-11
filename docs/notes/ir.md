@@ -80,7 +80,7 @@ A link has a `type`, a `source`, a `target` and a `location`. The source and the
 
 ### Constraint results
 
-A constraint result gives the `requirement`, the `index` of the constraint in the requirement (from 1, in the order of the model), the `environment`, the `value` (`true`, `false` or `unknown`) and the `location` of the constraint. For an `unknown` value, `missingFeatures` gives the features that have no value.
+A constraint result gives the `requirement`, the `index` of the constraint in the requirement (from 1, in the order of the model), the `environment`, the `value` (`true`, `false` or `unknown`) and the `location` of the constraint. For an `unknown` value, `missingFeatures` gives the features that have no value. Story #32 added the evaluation. See `docs/notes/ir-constraints.md`.
 
 ### Findings
 

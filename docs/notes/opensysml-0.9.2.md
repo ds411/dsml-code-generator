@@ -145,7 +145,7 @@ The verdict has a `status` field. The adapter changes it into the result of PRD-
 | `violated` | `false` |
 | `undecided` | `unknown` |
 
-An `undecided` verdict has an `error` text that names the feature with no value, for example `orderDb.storage has no value in the model`. The IR needs a list of feature names. OpenSysML gives only this text. The IR story (M2) must get the names from the text or from the constraint expression.
+An `undecided` verdict has an `error` text that names the feature with no value, for example `orderDb.storage has no value in the model`. The IR needs a list of feature names. OpenSysML gives only this text. Story #32 gets the names from the constraint expression. See `docs/notes/ir-constraints.md`.
 
 The questions `holds` and `satisfiable` of `verify_constraint()` need an SMT solver (z3 or cvc5). The toolchain does not need these questions.
 
