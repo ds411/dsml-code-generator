@@ -9,8 +9,10 @@ The comment must be on a line of its own.
 
 The reader reads the files in the output folders and in the test folders of
 the configuration file. It does not read a generated file of the manifest
-`.dsml/generated.json` (PRD-TRACE-010). It does not go into the folders of
-`SKIPPED_FOLDERS` and it does not follow a symbolic link.
+`.dsml/generated.json` (PRD-TRACE-010). The caller gives these folders and
+files, so the module does not read the configuration file or the manifest.
+The reader does not go into the folders of `SKIPPED_FOLDERS`, and it does
+not follow a symbolic link.
 
 A trace comment applies to the next symbol in the file. If no symbol
 follows, it applies to the file (PRD-TRACE-011). These are the symbols:
@@ -32,13 +34,10 @@ import enum
 import io
 import re
 import tokenize
-from collections.abc import Iterator
+from collections.abc import Collection, Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Final
-
-from dsml.config import Configuration
-from dsml.generate.manifest import read_manifest
 
 
 class Language(enum.Enum):
@@ -111,30 +110,26 @@ class TraceComments:
     problems: tuple[TraceProblem, ...] = ()
 
 
-# trace: PRD-TRACE-010
-def trace_folders(configuration: Configuration) -> tuple[PurePosixPath, ...]:
-    """Give the output folders and the test folders of the configuration, sorted."""
-    folders = {app.output for app in configuration.applications if app.output is not None}
-    folders.update(
-        folder
-        for folder in (configuration.infrastructure, configuration.pipelines)
-        if folder is not None
-    )
-    folders.update(configuration.trace.tests)
-    return tuple(sorted(folders))
-
-
 # trace: PRD-TRACE-010, PRD-CORE-032
-def read_trace_comments(configuration: Configuration) -> TraceComments:
-    """Read the trace comments in the hand-written files of the trace folders."""
-    root = configuration.root
-    generated = {entry.path for entry in read_manifest(root).generated}
+def read_trace_comments(
+    root: Path, folders: Iterable[PurePosixPath], generated: Collection[str]
+) -> TraceComments:
+    """Read the trace comments in the hand-written files of the folders.
+
+    `root` is the folder of the configuration file. `folders` are the output
+    folders and the test folders of the configuration file, relative to
+    `root`. `generated` are the paths of the generated files of the manifest
+    `.dsml/generated.json`. The reader does not read these files.
+
+    The caller gives the folders and the generated files, so this package
+    reads only the IR and the files on disk (PRD-CORE-026).
+    """
     paths: set[str] = set()
-    for folder in trace_folders(configuration):
+    for folder in folders:
         paths.update(_files(root, folder))
     comments: list[TraceComment] = []
     problems: list[TraceProblem] = []
-    for path in sorted(paths - generated):
+    for path in sorted(paths.difference(generated)):
         language = LANGUAGES[PurePosixPath(path).suffix]
         try:
             text = (root / path).read_bytes().decode("utf-8-sig")

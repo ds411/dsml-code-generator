@@ -1,12 +1,17 @@
 """Tests of the trace comments in hand-written files (story #71)."""
 
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pytest
 
-from dsml.config import Configuration, parse_configuration
-from dsml.generate.manifest import MANIFEST_PATH, CreateOnceEntry, GeneratedEntry, Manifest
+from dsml.generate.manifest import (
+    MANIFEST_PATH,
+    CreateOnceEntry,
+    GeneratedEntry,
+    Manifest,
+    read_manifest,
+)
 from dsml.trace.comments import (
     Language,
     TraceComment,
@@ -14,24 +19,19 @@ from dsml.trace.comments import (
     TraceProblem,
     parse_trace_comments,
     read_trace_comments,
-    trace_folders,
 )
 
-CONFIGURATION = """\
-schema = 1
-
-[applications.orders]
-output = "services/orders"
-
-[infrastructure]
-output = "infra"
-
-[pipelines]
-output = ".github/workflows"
-
-[trace]
-tests = ["tests", "services/orders/tests"]
-"""
+FOLDERS = tuple(
+    PurePosixPath(folder)
+    for folder in (
+        ".github/workflows",
+        "infra",
+        "services/orders",
+        "services/orders/tests",
+        "tests",
+    )
+)
+"""The output folders and the test folders of a configuration file."""
 
 
 def comment(
@@ -46,10 +46,9 @@ def parse(text: str, language: Language) -> list[TraceComment]:
     return comments
 
 
-def configure(root: Path) -> Configuration:
-    path = root / "dsml.toml"
-    path.write_text(CONFIGURATION)
-    return parse_configuration(CONFIGURATION, path)
+def read(root: Path) -> TraceComments:
+    generated = [entry.path for entry in read_manifest(root).generated]
+    return read_trace_comments(root, FOLDERS, generated)
 
 
 def write(root: Path, path: str, text: str) -> None:
@@ -260,19 +259,7 @@ def test_crlf_line_ends_give_the_same_result() -> None:
 # The folders and the manifest.
 
 
-def test_trace_folders_are_the_output_and_test_folders(tmp_path: Path) -> None:
-    folders = [folder.as_posix() for folder in trace_folders(configure(tmp_path))]
-    assert folders == [
-        ".github/workflows",
-        "infra",
-        "services/orders",
-        "services/orders/tests",
-        "tests",
-    ]
-
-
 def test_reader_reads_hand_written_files_and_skips_generated_files(tmp_path: Path) -> None:
-    configuration = configure(tmp_path)
     write(tmp_path, "services/orders/app/routes_gen.py", "# trace: R-900\ndef route(): ...\n")
     write(tmp_path, "services/orders/app/handlers.py", "# trace: R-001\ndef handle(): ...\n")
     write(tmp_path, "services/orders/tests/test_handlers.py", "# trace: V-001\ndef test(): ...\n")
@@ -292,7 +279,7 @@ def test_reader_reads_hand_written_files_and_skips_generated_files(tmp_path: Pat
     )
     write(tmp_path, MANIFEST_PATH, manifest.to_bytes().decode())
 
-    assert read_trace_comments(configuration) == TraceComments(
+    assert read(tmp_path) == TraceComments(
         comments=(
             TraceComment(".github/workflows/extra.yml", 1, ("R-003",), None, None),
             TraceComment("infra/main.tf", 1, ("R-002",), "a.b", 2),
@@ -304,26 +291,24 @@ def test_reader_reads_hand_written_files_and_skips_generated_files(tmp_path: Pat
 
 
 def test_reader_reports_a_file_that_is_not_utf_8(tmp_path: Path) -> None:
-    configuration = configure(tmp_path)
     (tmp_path / "infra").mkdir()
     (tmp_path / "infra" / "main.tf").write_bytes(b"# trace: R-001 \xff\n")
-    assert read_trace_comments(configuration) == TraceComments(
+    assert read(tmp_path) == TraceComments(
         problems=(TraceProblem("infra/main.tf", None, "The file does not have UTF-8 encoding."),)
     )
 
 
 def test_reader_with_no_folders_on_disk_gives_no_comments(tmp_path: Path) -> None:
-    assert read_trace_comments(configure(tmp_path)) == TraceComments()
+    assert read(tmp_path) == TraceComments()
 
 
 @pytest.mark.skipif(os.name == "nt", reason="Symbolic links need extra rights on Windows.")
 def test_reader_does_not_follow_symbolic_links(tmp_path: Path) -> None:
-    configuration = configure(tmp_path)
     write(tmp_path, "other/main.py", "# trace: R-001\n")
     (tmp_path / "infra").mkdir()
     (tmp_path / "infra" / "link.py").symlink_to(tmp_path / "other" / "main.py")
     (tmp_path / "infra" / "folder").symlink_to(tmp_path / "other")
-    assert read_trace_comments(configuration) == TraceComments()
+    assert read(tmp_path) == TraceComments()
 
 
 def test_order_of_the_files_on_disk_does_not_change_the_result(tmp_path: Path) -> None:
@@ -333,8 +318,8 @@ def test_order_of_the_files_on_disk_does_not_change_the_result(tmp_path: Path) -
         root.mkdir()
         for path in order:
             write(root, path, files[path])
-    assert read_trace_comments(configure(first)) == read_trace_comments(configure(second))
-    assert [item.path for item in read_trace_comments(configure(first)).comments] == [
+    assert read(first) == read(second)
+    assert [item.path for item in read(first).comments] == [
         "tests/test_a.py",
         "tests/test_b.py",
         "tests/test_c.py",
