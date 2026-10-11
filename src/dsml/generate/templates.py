@@ -35,6 +35,7 @@ from jinja2.sandbox import ImmutableSandboxedEnvironment
 
 from dsml.generate import names
 from dsml.generate.header import FileType, header
+from dsml.generate.infrastructure import hcl
 
 PACKAGE = "dsml"
 TEMPLATE_FOLDER = "templates"
@@ -97,6 +98,7 @@ def _header(file_type: str, elements: list[str]) -> str:
 
 _FILTERS: dict[str, Callable[..., Any]] = {
     "camel_case": names.camel_case,
+    "hcl_string": hcl.string,
     "kebab_case": names.kebab_case,
     "pascal_case": names.pascal_case,
     "python_name": names.python_name,

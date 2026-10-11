@@ -1,0 +1,272 @@
+{
+  "elements": [
+    {
+      "element": "OrderService::dev",
+      "files": [
+        {
+          "path": "infra/envs/dev/backend.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.aws_account_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.aws_region"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.environment"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.product"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::prod",
+      "files": [
+        {
+          "path": "infra/envs/prod/backend.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.aws_account_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.aws_region"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.environment"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.product"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::staging",
+      "files": [
+        {
+          "path": "infra/envs/staging/backend.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.aws_account_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.aws_region"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.environment"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.product"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}

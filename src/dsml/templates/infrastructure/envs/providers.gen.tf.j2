@@ -1,0 +1,15 @@
+{#- The AWS provider of an environment root module (PRD-IAC-024, PRD-IAC-035). -#}
+{% include "common/header.j2" %}
+
+provider "aws" {
+  region              = local.aws_region
+  allowed_account_ids = [local.aws_account_id]
+
+  default_tags {
+    tags = {
+      "dsml:environment"  = {{ environment_tag | hcl_string }}
+      "dsml:model-commit" = var.model_commit
+      "dsml:product"      = {{ product_tag | hcl_string }}
+    }
+  }
+}

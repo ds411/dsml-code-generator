@@ -1,0 +1,10 @@
+{#- The values of an environment root module. The local modules of the
+    environment come in this file (PRD-IAC-023). -#}
+{% include "common/header.j2" %}
+
+locals {
+  aws_account_id = {{ account_id | hcl_string }}
+  aws_region     = {{ region | hcl_string }}
+  environment    = {{ environment | hcl_string }}
+  product        = {{ product | hcl_string }}
+}

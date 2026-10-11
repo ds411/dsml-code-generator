@@ -1,0 +1,14 @@
+{#- The tool versions and the provider versions of an environment root module
+    (PRD-IAC-003, PRD-IAC-005). -#}
+{% include "common/header.j2" %}
+
+terraform {
+  required_version = {{ required_version | hcl_string }}
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = {{ aws_provider_version | hcl_string }}
+    }
+  }
+}

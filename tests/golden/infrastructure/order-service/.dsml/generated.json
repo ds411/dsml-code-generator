@@ -1,0 +1,96 @@
+{
+  "createOnce": [],
+  "generated": [
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/backend.gen.tf",
+      "sha256": "a6a031073c34bbe8d355e2ef096c12b2e9dc9bd6d903c2e461d49160e5791b29"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/main.gen.tf",
+      "sha256": "06a549f0962864b7e18ef7aac285d2209a6a573c5fdcec8d3dfbabb68b9e97b1"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/outputs.gen.tf",
+      "sha256": "57d0247b3c558659dc3e1a981eab719f141b4ddd50b5d84bb0257183dbd18b88"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/providers.gen.tf",
+      "sha256": "0c4de9276a44ba61bc04a089f18d04ad9e61786f27b5d19618cb08d33f7ad0cc"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/variables.gen.tf",
+      "sha256": "7f858995d0ccdd669d52560dbf432227e4907b433d6b67ba088743ce7c036a09"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/versions.gen.tf",
+      "sha256": "103bf0d14cd2d17f8c801321b301fa1e18ab74b55485b12c9e1b1e3fa37631d5"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/backend.gen.tf",
+      "sha256": "ff004f5dfb8dcf9c44851c7463d3f6479dc97da1412dff398057da001f8940ab"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/main.gen.tf",
+      "sha256": "e575da3052aa9c83a9e4ecb828d93fff6653cb5b01cc5653c779a508b1ee3a8e"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/outputs.gen.tf",
+      "sha256": "39d949cc7a19869e54d4af06a9ecfc011bf2d6f1661c96f94b8b4ab889ab46c4"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/providers.gen.tf",
+      "sha256": "db47f6276aa6a58eca5026e28b59d6903084c6ff3de1c3fe91ffba2200507699"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/variables.gen.tf",
+      "sha256": "87141f37f123836a9e632b012d529fc8d262c5052c4dc674404aebf202ecea1b"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/versions.gen.tf",
+      "sha256": "1abfa402d8bdd2c356c5f33aadd5a203591b1c758b7786e399402fd231c1f6b1"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/backend.gen.tf",
+      "sha256": "7f285b742be2d1bfe5aa810a25c662a2f1edbf0612a9860bdcbe6c9dd899a880"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/main.gen.tf",
+      "sha256": "f72a879dcb2d61b5b7dbda73f59031e3acb3b1f7b0d0738979982aecdf26382c"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/outputs.gen.tf",
+      "sha256": "3e8e49ea5eb387ba0833c3f490825eca099f1ecbaf620113473a7b6f2e2b26f5"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/providers.gen.tf",
+      "sha256": "d24607bfd93d9c16df66e6569ace41c5bd6b73fae12c4f07a8a71e296b2ea2e2"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/variables.gen.tf",
+      "sha256": "edb70810479d21e8e2883ead046e1950488359002243bc7a6cf2604f03f9a2c8"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/versions.gen.tf",
+      "sha256": "73866eb00e8296ee46a98c9d0f000eb9bacfcb8a5181ab6c9f9f7f244fd328a1"
+    }
+  ],
+  "manifestVersion": 1
+}
