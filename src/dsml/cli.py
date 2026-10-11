@@ -511,7 +511,7 @@ def run_trace(args: argparse.Namespace) -> Outcome:
         sys.stderr.write(f"{PROG}: warning: {where}: {problem.message}\n")
     data = TraceData(
         ir=ir,
-        entries=tuple(read_trace(root)),
+        generated=tuple((entry.element, entry.path) for entry in read_trace(root)),
         comments=found.comments,
         files=tuple(hand_written_files(root, folders, generated)),
         model_commit=model_commit(root),

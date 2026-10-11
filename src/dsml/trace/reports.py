@@ -22,7 +22,6 @@ from dataclasses import dataclass
 from pathlib import PurePosixPath
 from typing import Final
 
-from dsml.generate.trace import TraceEntry
 from dsml.ir.model import Element, ElementKind, Ir, ListValue, StringValue
 from dsml.trace.comments import TraceComment
 from dsml.trace.graph import LinkGraph
@@ -110,8 +109,8 @@ class TraceData:
     """
 
     ir: Ir
-    entries: tuple[TraceEntry, ...] = ()
-    """The entries of the trace manifest `.dsml/trace.gen.json`."""
+    generated: tuple[tuple[str, str], ...] = ()
+    """The pairs (element identity, file path) of the trace manifest `.dsml/trace.gen.json`."""
     comments: tuple[TraceComment, ...] = ()
     """The trace comments in the hand-written files."""
     files: tuple[str, ...] = ()
@@ -135,8 +134,8 @@ def coverage_report(data: TraceData) -> Report:
     """
     graph = LinkGraph(data.ir)
     files: dict[str, set[str]] = {}
-    for entry in data.entries:
-        files.setdefault(entry.element, set()).add(entry.path)
+    for element, path in data.generated:
+        files.setdefault(element, set()).add(path)
     places = _comment_places(data)
     rows: list[tuple[Cell, ...]] = []
     for requirement in _of_kind(data.ir, "Requirement"):

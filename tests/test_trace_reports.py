@@ -14,7 +14,6 @@ from typing import Any
 import pytest
 
 from dsml.cli import main
-from dsml.generate.trace import SymbolKind, TraceEntry
 from dsml.ir.model import (
     Attribute,
     Element,
@@ -172,14 +171,14 @@ def test_coverage_report_gives_each_requirement_one_status() -> None:
         TraceComment("app/handler.py", 3, ("M::R-001", "R-002"), None, None),
         TraceComment("tests/test_api.py", 1, ("R-001",), None, None),
     )
-    entries = (
-        TraceEntry("M::api", "app/api_gen.py", SymbolKind.ROUTE, "GET /orders", 1, 9),
-        TraceEntry("M::apiService", "infra/service.gen.tf", SymbolKind.RESOURCE, "a.b", 1, 5),
-        TraceEntry("R-001", "app/routes_gen.py", SymbolKind.ROUTE, "GET /x", 3, 4),
-        TraceEntry("M::db", "infra/db.gen.tf", SymbolKind.RESOURCE, "c.d", 1, 5),
-        TraceEntry("M::unknown", "app/old_gen.py", SymbolKind.ROUTE, "GET /y", 1, 2),
+    generated = (
+        ("M::api", "app/api_gen.py"),
+        ("M::apiService", "infra/service.gen.tf"),
+        ("R-001", "app/routes_gen.py"),
+        ("M::db", "infra/db.gen.tf"),
+        ("M::unknown", "app/old_gen.py"),
     )
-    report = coverage_report(TraceData(_ir(), entries, comments, (), "abc"))
+    report = coverage_report(TraceData(_ir(), generated, comments, (), "abc"))
     assert report.model_commit == "abc"
     assert _rows(report) == {
         "R-001": (
