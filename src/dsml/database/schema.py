@@ -1,4 +1,4 @@
-# trace: PRD-APP-120, PRD-APP-122
+# trace: PRD-APP-120, PRD-APP-121, PRD-APP-122
 """Get the database schema of one application from the IR.
 
 The schema holds the tables and the columns of the entities of the
@@ -15,7 +15,9 @@ These rules make the tables and the columns:
   case (PRD-APP-120).
 - Each field gives one column. The column name is the field name in snake
   case. A field with `#Key` is a primary key column. A field with the lower
-  multiplicity 0 gives a nullable column.
+  multiplicity 0 gives a nullable column. The field type gives the column
+  type (PRD-APP-121). A foreign key column has the type of the key field
+  that it refers to.
 - A `[0..1]` or `[1]` relation gives a foreign key column for each key field
   of the related entity: `<relation>_<key>` (PRD-APP-122).
 - A `[*]` relation gives a join table `<table>_<relation>`, with a foreign
@@ -33,13 +35,53 @@ from typing import Final
 
 from dsml.errors import ToolchainError
 from dsml.generate import names
-from dsml.ir.model import Element, Ir, StringValue
+from dsml.ir.model import Element, EnumValue, IntegerValue, Ir, ListValue, StringValue
 
 DESTRUCTIVE: Final = "Destructive"
 """The annotation of a destructive database change (PRD-DSML-034)."""
 
 KEY: Final = "Key"
 """The annotation of a primary key field."""
+
+FIELD_RULES: Final = "FieldRules"
+"""The annotation of the constraints of a field (PRD-DSML-025)."""
+
+# trace: PRD-APP-121, PRD-DSML-023
+SCALAR_TYPES: Final = {
+    "ScalarValues::Boolean": "Boolean",
+    "ScalarValues::Integer": "Integer",
+    "ScalarValues::Real": "Real",
+    "ScalarValues::String": "String",
+    "DSML::Date": "Date",
+    "DSML::DateTime": "DateTime",
+    "DSML::Decimal": "Decimal",
+    "DSML::Uuid": "Uuid",
+}
+"""The DSML field type of each scalar type identity of the IR."""
+
+ENUMERATION: Final = "Enumeration"
+"""The DSML field type of a field that an enumeration definition types."""
+
+ENUMERATION_KINDS: Final = frozenset({"Enumeration", "Roles"})
+"""The element kinds of an enumeration definition that can type a field."""
+
+DECIMAL_PRECISION: Final = 18
+"""The precision of a `Decimal` field with no `precision` rule (PRD-APP-121)."""
+
+DECIMAL_SCALE: Final = 4
+"""The scale of a `Decimal` field with no `scale` rule (PRD-APP-121)."""
+
+ENUMERATION_LENGTH: Final = 64
+"""The length of the `VARCHAR` column of an enumeration field (PRD-APP-121)."""
+
+_POSTGRESQL_TYPES: Final = {
+    "Boolean": "BOOLEAN",
+    "Date": "DATE",
+    "DateTime": "TIMESTAMPTZ",
+    "Integer": "BIGINT",
+    "Real": "DOUBLE PRECISION",
+    "Uuid": "UUID",
+}
 
 
 # trace: PRD-APP-120
@@ -56,13 +98,45 @@ class ForeignKey:
     column: str
 
 
-# trace: PRD-APP-120, PRD-APP-122
+# trace: PRD-APP-121
+@dataclass(frozen=True, slots=True)
+class ColumnType:
+    """The DSML field type of a column, with the data of its PostgreSQL type.
+
+    `name` is a key of `SCALAR_TYPES` or `ENUMERATION`. `length` is the
+    `maxLength` of a `String` field. `precision` and `scale` are set for a
+    `Decimal` field. `values` are the literals of an enumeration, in the
+    order of the model.
+    """
+
+    name: str
+    length: int | None = None
+    precision: int | None = None
+    scale: int | None = None
+    values: tuple[str, ...] = ()
+
+    @property
+    def postgresql(self) -> str:
+        """Give the PostgreSQL type, for example `VARCHAR(500)` (PRD-APP-121)."""
+        match self.name:
+            case "String":
+                return "TEXT" if self.length is None else f"VARCHAR({self.length})"
+            case "Decimal":
+                return f"NUMERIC({self.precision}, {self.scale})"
+            case "Enumeration":
+                return f"VARCHAR({ENUMERATION_LENGTH})"
+            case _:
+                return _POSTGRESQL_TYPES[self.name]
+
+
+# trace: PRD-APP-120, PRD-APP-121, PRD-APP-122
 @dataclass(frozen=True, slots=True)
 class Column:
     """One column of a table.
 
-    `element` and `renamed_from` come from the model. The snapshot does not
-    keep them, and a comparison of two columns ignores them.
+    `element`, `renamed_from` and `type` come from the model. The snapshot
+    does not keep them, and a comparison of two columns ignores them. The
+    type is `None` if the field type is not a supported type (STR-007).
     """
 
     name: str
@@ -73,6 +147,8 @@ class Column:
     """The identity of the field or the relation of the column."""
     renamed_from: str | None = field(default=None, compare=False)
     """The old name of the column, from `@Destructive { renamedFrom }`."""
+    type: ColumnType | None = field(default=None, compare=False)
+    """The type of the column (PRD-APP-121)."""
 
 
 # trace: PRD-APP-120, PRD-APP-122
@@ -214,6 +290,7 @@ class _SchemaReader:
                     primary_key=any(note.name == KEY for note in item.annotations),
                     element=item.identity,
                     renamed_from=_snake(renamed_from(item)),
+                    type=self._type(item),
                 )
             )
         for relation in self._children(entity.identity, "Relation"):
@@ -241,6 +318,7 @@ class _SchemaReader:
                 references=ForeignKey(snake_case(target.name), snake_case(key.name)),
                 element=relation.identity,
                 renamed_from=None if old_name is None else f"{old_name}_{snake_case(key.name)}",
+                type=self._type(key),
             )
             for key in self._keys(target)
         ]
@@ -256,6 +334,7 @@ class _SchemaReader:
                 primary_key=True,
                 references=ForeignKey(table, snake_case(key.name)),
                 element=key.identity,
+                type=self._type(key),
             )
             for key in self._keys(entity)
         ]
@@ -266,6 +345,7 @@ class _SchemaReader:
                 references=column.references,
                 element=column.element,
                 renamed_from=column.renamed_from,
+                type=column.type,
             )
             for column in self._foreign_keys(relation, target, nullable=False)
         )
@@ -279,12 +359,54 @@ class _SchemaReader:
             renamed_from=renamed,
         )
 
+    def _type(self, item: Element) -> ColumnType | None:
+        """Give the column type of a field, or `None` for a type that is not supported."""
+        for identity in item.types:
+            name = SCALAR_TYPES.get(identity)
+            if name == "String":
+                return ColumnType(name, length=_rule(item, "maxLength"))
+            if name == "Decimal":
+                precision = _rule(item, "precision")
+                scale = _rule(item, "scale")
+                return ColumnType(
+                    name,
+                    precision=DECIMAL_PRECISION if precision is None else precision,
+                    scale=DECIMAL_SCALE if scale is None else scale,
+                )
+            if name is not None:
+                return ColumnType(name)
+            enumeration = self.elements.get(identity)
+            if enumeration is not None and enumeration.kind in ENUMERATION_KINDS:
+                return ColumnType(ENUMERATION, values=_literals(enumeration))
+        return None
+
     def _has_back_reference(self, target: Element, entity: Element) -> bool:
         """Tell if the target has a `[0..1]` or `[1]` relation to the entity."""
         return any(
             _single(relation) and entity.identity in relation.types
             for relation in self._children(target.identity, "Relation")
         )
+
+
+def _rule(item: Element, name: str) -> int | None:
+    """Give the integer value of a `@FieldRules` attribute of a field, or `None`."""
+    for annotation in item.annotations:
+        if annotation.name != FIELD_RULES:
+            continue
+        for attribute in annotation.attributes:
+            if attribute.name == name and isinstance(attribute.value, IntegerValue):
+                return attribute.value.value
+    return None
+
+
+def _literals(enumeration: Element) -> tuple[str, ...]:
+    """Give the literals of an enumeration definition, in the order of the model."""
+    for attribute in enumeration.attributes:
+        if attribute.name == "literals" and isinstance(attribute.value, ListValue):
+            return tuple(
+                item.literal for item in attribute.value.items if isinstance(item, EnumValue)
+            )
+    return ()
 
 
 def _single(element: Element) -> bool:

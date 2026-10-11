@@ -38,6 +38,7 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "pilot-kernel-release",
         "pilot-kernel-sha256",
         "postgresql",
+        "psycopg",
         "pydantic",
         "pyjwt",
         "pyright",

@@ -1,11 +1,12 @@
 # FastAPI generator: project files and shared code
 
-Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #78 added the Cognito token check and the role check. Other M6 stories add the slices, the database code, the migrations and `openapi.gen.json`.
+Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Other M6 stories add the slices, the migrations and `openapi.gen.json`.
 
 - Generator: `src/dsml/generate/fastapi.py`. It is in the list `GENERATORS` of `src/dsml/generate/generators.py`.
+- Database code: `src/dsml/generate/fastapi_database.py`. The tables and the column types come from `src/dsml/database/schema.py` (see `docs/notes/schema-snapshot.md`).
 - Templates: `src/dsml/templates/fastapi/`.
 - Symbols of Python files: `src/dsml/generate/python_symbols.py`.
-- Tests: `tests/test_fastapi_generator.py`.
+- Tests: `tests/test_fastapi_generator.py` and `tests/test_fastapi_database.py`.
 - Golden files: `tests/golden/fastapi/order-service/`. Write them again with `uv run python scripts/write_golden_fastapi.py`.
 - CI: the job "FastAPI golden project" in `.github/workflows/ci.yml`.
 
@@ -35,7 +36,33 @@ All files are generated files. The generator writes them again at each run.
 | `tests/test_auth_gen.py` | The tests of the token check and the role check, with a local key pair and a local JWKS. | PRD-APP-008, PRD-APP-130, PRD-APP-131 |
 | `app/__init__.py`, `app/shared/__init__.py`, `app/shared/auth/__init__.py` | The header only. | PRD-APP-134 |
 
-Each file starts with the trace header (PRD-APP-017, PRD-TRACE-005). The elements of the header are the application.
+If the application has one or more entities, the generator also writes the database code:
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `app/shared/db/base_gen.py` | The declarative base `Base`. Its metadata gives a fixed name to each constraint. | PRD-APP-104 |
+| `app/shared/db/models/<entity>_gen.py` | One typed SQLAlchemy 2 model for each entity, and the join tables of its `[*]` relations. | PRD-APP-120, PRD-APP-121, PRD-APP-122 |
+| `app/shared/db/session_gen.py` | The asynchronous engine, the session factory and the FastAPI dependency `get_session`. | PRD-APP-123 |
+| `tests/test_db_gen.py` | Tests that compare the PostgreSQL DDL of each table with the model. They need no database. | PRD-APP-121, PRD-APP-135 |
+| `app/shared/db/__init__.py`, `app/shared/db/models/__init__.py` | The header only. | PRD-APP-134 |
+
+The run-time dependencies then also have `sqlalchemy[asyncio]` and `psycopg[binary]`.
+
+Each file starts with the trace header (PRD-APP-017, PRD-TRACE-005). The elements of the header are the application. In a model file, the elements are the entity and the relations of its join tables.
+
+## Database code
+
+The database code uses SQLAlchemy 2 in the asynchronous mode with the psycopg 3 driver (PRD-APP-123, Q51).
+
+- The table name is the entity name in snake case (PRD-APP-120). The class name is the entity name in Pascal case.
+- The type map of PRD-APP-121 gives the SQLAlchemy type and the Python type of each column. For example, `Uuid` gives `Mapped[UUID] = mapped_column(Uuid)`.
+- A field with the lower multiplicity 0 gives `Mapped[<type> | None]`, thus a nullable column.
+- An enumeration column has a `CHECK` constraint with the name `ck_<table>_<column>_values`. The constant `<COLUMN>_VALUES` holds the permitted values.
+- A `[0..1]` or `[1]` relation gives a foreign key column. A `[*]` relation gives a join table `<table>_<relation>` in the file of the entity (PRD-APP-122).
+- A column with the name of a Python keyword, `metadata` or `registry` gets a class attribute with `_` at the end, for example `class_`.
+- The models do not have ORM relationships. The slices use the foreign key columns.
+
+The engine connects to the database only when a request uses a session. Thus `GET /healthz` operates with no database. The function `create_app` makes the engine, and the application closes the engine when it stops.
 
 The fixed-name list of the target is `pyproject.toml`, `Dockerfile`, `.dockerignore`, `alembic.ini`, `migrations/env.py` and `__init__.py` (PRD-APP-134).
 
@@ -57,7 +84,18 @@ If a mandatory variable is missing, the process stops with exit code 1 and this 
 The application cannot start. The environment variable APP_ENVIRONMENT is missing. Set it before the application starts.
 ```
 
-The infrastructure generator must set these variables in the task definition. Later stories add the variables of the database.
+If the application has entities, it also reads these variables:
+
+| Variable | Mandatory | Default | Use |
+| --- | --- | --- | --- |
+| `DATABASE_HOST` | Yes | None | The host name of the PostgreSQL database. |
+| `DATABASE_PORT` | No | `5432` | The port of the database. It must be a number. |
+| `DATABASE_NAME` | Yes | None | The name of the database. |
+| `DATABASE_USER` | Yes | None | The user name. |
+| `DATABASE_PASSWORD` | Yes | None | The password. ECS sets it from Secrets Manager (PRD-APP-011). The text of the settings does not show it. |
+| `DATABASE_SSL_MODE` | No | `require` | The TLS mode of the connection, the libpq value `sslmode`. |
+
+The infrastructure generator must set these variables in the task definition. The container service module (story #80) sets them from the outputs of the database module.
 
 ## Token check and role check
 
@@ -104,7 +142,8 @@ Story #75 added the exact versions of the FastAPI stack to `src/dsml/versions.to
 | `uvicorn` | 0.54.0 | Run-time dependency, the ASGI server. |
 | `pyjwt` | 2.15.1 | Run-time dependency, the check of the access token (story #78). |
 | `cryptography` | 50.0.2 | Run-time dependency, the RSA code of PyJWT (story #78). |
-| `sqlalchemy` | 2.1.4 | For the database story. |
+| `sqlalchemy` | 2.1.4 | Run-time dependency with the extra `asyncio`, if the application has entities. |
+| `psycopg` | 3.3.6 | Run-time dependency with the extra `binary`, if the application has entities (story #77). |
 | `alembic` | 1.20.0 | For the migration story. |
 | `pytest` | 9.1.1 | Dev dependency. |
 | `httpx2` | 2.13.1 | Dev dependency, the HTTP client of the test client of Starlette 1.x. |

@@ -10,7 +10,11 @@ names the variable.
 
 import os
 from collections.abc import Mapping
+{% if variables | selectattr("secret") | list %}
+from dataclasses import dataclass, field
+{% else %}
 from dataclasses import dataclass
+{% endif %}
 
 LOG_LEVELS = ("DEBUG", "INFO", "WARNING", "ERROR")
 """The permitted values of the variable LOG_LEVEL."""
@@ -25,7 +29,8 @@ class Settings:
     """The configuration of the application."""
 {% for variable in variables %}
 
-    {{ variable.field }}: str
+    {{ variable.field }}: str{% if variable.secret %} = field(repr=False){% endif %}
+
     """{{ variable.doc }} Variable: `{{ variable.name }}`."""
 {% endfor %}
 
@@ -50,6 +55,13 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
             f'The environment variable LOG_LEVEL has the value "{settings.log_level}". '
             f"Use one of these values: {', '.join(LOG_LEVELS)}."
         )
+{% if database %}
+    if not settings.database_port.isdecimal():
+        raise ConfigurationError(
+            f'The environment variable DATABASE_PORT has the value "{settings.database_port}". '
+            "Use a port number, for example 5432."
+        )
+{% endif %}
     return settings
 
 

@@ -170,7 +170,8 @@ jobs:
           docker run --detach --name order-api --publish 8000:8000 \
             --env APP_ENVIRONMENT=ci --env AWS_REGION=eu-west-1 \
             --env COGNITO_USER_POOL_ID=eu-west-1_ci --env COGNITO_APP_CLIENT_ID=ci \
-            order-api:test
+            --env DATABASE_HOST=db.invalid --env DATABASE_NAME=orders \
+            --env DATABASE_USER=app --env DATABASE_PASSWORD=ci order-api:test
           for attempt in $(seq 1 30); do
             if curl --silent --fail http://127.0.0.1:8000/healthz; then
               echo

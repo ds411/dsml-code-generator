@@ -60,6 +60,13 @@ version = "2.14.1"
 line = "2.1"
 version = "2.1.4"
 
+# The PostgreSQL driver of the FastAPI target: psycopg 3 (Q51). The target
+# installs it with the extra "binary". "version": the newest release of the
+# line on 11 October 2026 (story #77).
+[psycopg]
+line = "3.3"
+version = "3.3.6"
+
 [alembic]
 line = "1.20"
 version = "1.20.0"

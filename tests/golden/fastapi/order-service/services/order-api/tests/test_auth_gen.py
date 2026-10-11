@@ -34,6 +34,10 @@ ENVIRON = {
     "AWS_REGION": "test",
     "COGNITO_USER_POOL_ID": "test",
     "COGNITO_APP_CLIENT_ID": "test",
+    "DATABASE_HOST": "test",
+    "DATABASE_NAME": "test",
+    "DATABASE_USER": "test",
+    "DATABASE_PASSWORD": "test",
 }
 """A value for each mandatory environment variable."""
 
