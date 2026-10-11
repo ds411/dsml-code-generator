@@ -1,5 +1,5 @@
 # trace: PRD-CORE-004, PRD-CORE-034, PRD-CORE-036, PRD-CORE-039, PRD-CORE-040,
-# PRD-CORE-041, PRD-CORE-042, PRD-CORE-043, PRD-CORE-044
+# PRD-CORE-041, PRD-CORE-042, PRD-CORE-043, PRD-CORE-044, PRD-TRACE-006
 """The file writer of all generators.
 
 The generators do not write files. Each generator gives the full list of its
@@ -9,9 +9,11 @@ writer then does these steps:
 1. It checks each file: the path, the name, the encoding and the line ends.
 2. It compares the files with the old manifest and with the files on disk.
    The result is a `Plan`: the files to add, change and delete, and the
-   conflicts.
+   conflicts. The plan also has the new manifest and the new trace
+   manifest.
 3. If there is no conflict, or if the user gives `--overwrite`, it writes
-   and deletes the files of the plan. Then it writes the new manifest.
+   and deletes the files of the plan. Then it writes the new manifest and
+   the new trace manifest.
 
 These are the rules of the plan:
 
@@ -27,7 +29,12 @@ These are the rules of the plan:
   or the new manifest, except to write a new create-once file
   (PRD-CORE-042).
 - If the run selects some parts of the output, the writer keeps the
-  manifest entries and the files of the other parts (PRD-CORE-005).
+  manifest entries, the trace manifest entries and the files of the other
+  parts (PRD-CORE-005).
+- The writer writes the trace manifest `.dsml/trace.gen.json` from the
+  symbols of the generated files (PRD-TRACE-006). Like the manifest, it is
+  in the list of changes, so `--check` finds a trace manifest that is not
+  current.
 """
 
 import enum
@@ -46,6 +53,15 @@ from dsml.generate.manifest import (
     is_safe_path,
     read_manifest,
     sha256,
+)
+from dsml.generate.trace import (
+    TRACE_PATH,
+    Symbol,
+    TraceEntry,
+    check_symbols,
+    read_trace,
+    trace_bytes,
+    trace_entries,
 )
 
 INFRASTRUCTURE: Final = "infrastructure"
@@ -76,19 +92,21 @@ class Kind(enum.StrEnum):
     """The generator writes the file only if no file exists. A developer owns it."""
 
 
-# trace: PRD-CORE-040
+# trace: PRD-CORE-040, PRD-TRACE-006
 @dataclass(frozen=True, slots=True)
 class OutputFile:
     """One output file of a generator.
 
     The path is relative to the folder of the configuration file and uses
-    "/" as the separator.
+    "/" as the separator. The symbols go into the trace manifest. Only a
+    generated file can have symbols.
     """
 
     path: str
     content: bytes
     kind: Kind
     part: str
+    symbols: tuple[Symbol, ...] = ()
 
 
 # trace: PRD-CORE-004
@@ -130,13 +148,23 @@ class Plan:
     """The conflicts, sorted by path."""
     manifest: bytes
     """The bytes of the new manifest."""
+    trace: bytes
+    """The bytes of the new trace manifest."""
     changes: tuple[Change, ...]
-    """Each file to add, change or delete, sorted by path. The manifest is included."""
+    """Each file to add, change or delete, sorted by path.
+
+    The manifest and the trace manifest are included.
+    """
 
     @property
     def manifest_changes(self) -> bool:
         """Tell if the run writes the manifest."""
         return any(change.path == MANIFEST_PATH for change in self.changes)
+
+    @property
+    def trace_changes(self) -> bool:
+        """Tell if the run writes the trace manifest."""
+        return any(change.path == TRACE_PATH for change in self.changes)
 
 
 # trace: PRD-CORE-039
@@ -170,7 +198,7 @@ def is_generated_name(path: str, fixed_names: Collection[str]) -> bool:
     return False
 
 
-# trace: PRD-CORE-034, PRD-CORE-036, PRD-CORE-039
+# trace: PRD-CORE-034, PRD-CORE-036, PRD-CORE-039, PRD-TRACE-006
 def check_files(files: Sequence[OutputFile], fixed_names: Collection[str] = ()) -> None:
     """Check the output files of a generator. An error stops the command with exit code 2.
 
@@ -198,6 +226,10 @@ def check_files(files: Sequence[OutputFile], fixed_names: Collection[str] = ()) 
         problem = _text_problem(file.content)
         if problem is not None:
             errors.append(f'The file "{path}" {problem}.')
+        elif file.symbols and file.kind is not Kind.GENERATED:
+            errors.append(f'The create-once file "{path}" must not have symbols.')
+        else:
+            errors.extend(check_symbols(path, file.symbols, file.content.count(b"\n")))
     if errors:
         raise ToolchainError("\n".join(f"Generator output: {error}" for error in errors))
 
@@ -219,7 +251,7 @@ def _text_problem(content: bytes) -> str | None:
 
 
 # trace: PRD-CORE-004, PRD-CORE-005, PRD-CORE-040, PRD-CORE-041, PRD-CORE-042,
-# PRD-CORE-043, PRD-CORE-044
+# PRD-CORE-043, PRD-CORE-044, PRD-TRACE-006, PRD-TRACE-008
 def make_plan(root: Path, files: Sequence[OutputFile], parts: Collection[str] | None) -> Plan:
     """Compare the output files with the old manifest and with the files on disk.
 
@@ -300,24 +332,41 @@ def make_plan(root: Path, files: Sequence[OutputFile], parts: Collection[str] | 
             [*kept_create_once] + [CreateOnceEntry(file.path, file.part) for file in create_once]
         ),
     ).to_bytes()
-    old_manifest = _read(root, MANIFEST_PATH)
-    if old_manifest is None:
-        changes.append(Change("add", MANIFEST_PATH))
-    elif old_manifest != manifest:
-        changes.append(Change("change", MANIFEST_PATH))
+    _add_change(root, MANIFEST_PATH, manifest, changes)
+
+    # A run of some parts keeps the trace entries of the generated files of
+    # the other parts.
+    kept_paths = {entry.path for entry in kept_generated}
+    trace_list: list[TraceEntry] = []
+    if kept_paths:
+        trace_list.extend(entry for entry in read_trace(root) if entry.path in kept_paths)
+    for file in generated:
+        trace_list.extend(trace_entries(file.path, file.symbols))
+    trace = trace_bytes(trace_list)
+    _add_change(root, TRACE_PATH, trace, changes)
 
     return Plan(
         writes=tuple(sorted(writes)),
         deletes=tuple(sorted(deletes)),
         conflicts=tuple(sorted(conflicts, key=lambda conflict: conflict.path)),
         manifest=manifest,
+        trace=trace,
         changes=tuple(sorted(changes, key=lambda change: change.path)),
     )
 
 
-# trace: PRD-CORE-034, PRD-CORE-040, PRD-CORE-041
+def _add_change(root: Path, path: str, content: bytes, changes: list[Change]) -> None:
+    """Add a change if the file at the path is missing or has other bytes."""
+    old = _read(root, path)
+    if old is None:
+        changes.append(Change("add", path))
+    elif old != content:
+        changes.append(Change("change", path))
+
+
+# trace: PRD-CORE-034, PRD-CORE-040, PRD-CORE-041, PRD-TRACE-006
 def apply_plan(root: Path, plan: Plan) -> None:
-    """Write and delete the files of a plan, then write the new manifest.
+    """Write and delete the files of a plan, then write the new manifests.
 
     The function writes the bytes with no change, so each file keeps its LF
     line ends on each operating system. After it deletes a file, it also
@@ -334,6 +383,8 @@ def apply_plan(root: Path, plan: Plan) -> None:
         _write(root, path, content)
     if plan.manifest_changes:
         _write(root, MANIFEST_PATH, plan.manifest)
+    if plan.trace_changes:
+        _write(root, TRACE_PATH, plan.trace)
 
 
 # trace: PRD-CORE-034, PRD-CORE-042, PRD-CORE-044

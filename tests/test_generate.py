@@ -8,7 +8,7 @@ import json
 import os
 import shutil
 from collections.abc import Collection, Iterator, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 import pytest
@@ -18,6 +18,7 @@ from dsml.errors import ToolchainError
 from dsml.generate import generators
 from dsml.generate.generators import collect
 from dsml.generate.manifest import MANIFEST_PATH, read_manifest, sha256
+from dsml.generate.trace import TRACE_PATH, Symbol, SymbolKind
 from dsml.generate.writer import (
     INFRASTRUCTURE,
     PIPELINES,
@@ -105,6 +106,7 @@ def test_first_run_writes_the_files_and_the_manifest(tmp_path: Path) -> None:
     assert conflicts == []
     assert changes == [
         "add .dsml/generated.json",
+        "add .dsml/trace.gen.json",
         "add app/orders/api_gen.py",
         "add app/orders/handler.py",
         "add infra/main.gen.tf",
@@ -164,6 +166,7 @@ def test_folder_with_a_hand_written_file_stays_after_a_delete(tmp_path: Path) ->
     assert files_on_disk(tmp_path) == {
         "app/notes.md": b"notes\n",
         MANIFEST_PATH: (tmp_path / MANIFEST_PATH).read_bytes(),
+        TRACE_PATH: (tmp_path / TRACE_PATH).read_bytes(),
     }
 
 
@@ -186,7 +189,7 @@ def test_create_once_file_is_written_one_time(tmp_path: Path) -> None:
 def test_create_once_file_is_not_written_over_a_hand_written_file(tmp_path: Path) -> None:
     (tmp_path / "handler.py").write_bytes(b"mine\n")
     changes, _ = run(tmp_path, [create_once("handler.py")])
-    assert changes == ["add .dsml/generated.json"]
+    assert changes == ["add .dsml/generated.json", "add .dsml/trace.gen.json"]
     assert (tmp_path / "handler.py").read_bytes() == b"mine\n"
     assert [entry.path for entry in read_manifest(tmp_path).create_once] == ["handler.py"]
 
@@ -286,7 +289,7 @@ def test_writer_does_not_touch_a_file_that_is_not_in_a_manifest(tmp_path: Path) 
     for path, content in hand_written.items():
         assert disk[path] == content
         assert (tmp_path / path).stat().st_mtime_ns == times[path]
-    assert set(disk) == {*hand_written, MANIFEST_PATH}
+    assert set(disk) == {*hand_written, MANIFEST_PATH, TRACE_PATH}
 
 
 # trace: PRD-CORE-005
@@ -545,6 +548,7 @@ def test_generate_writes_the_files(
     assert dsml("generate") == 0
     assert capsys.readouterr().out == (
         "add .dsml/generated.json\n"
+        "add .dsml/trace.gen.json\n"
         "add .github/workflows/pr.gen.yml\n"
         "add infra/main.gen.tf\n"
         "add services/orders/api_gen.py\n"
@@ -562,6 +566,7 @@ def test_generate_check_lists_the_changes_and_writes_no_file(
     assert dsml("generate", "--check") == 1
     assert capsys.readouterr().out.splitlines() == [
         "add .dsml/generated.json",
+        "add .dsml/trace.gen.json",
         "add .github/workflows/pr.gen.yml",
         "add infra/main.gen.tf",
         "add services/orders/api_gen.py",
@@ -589,6 +594,41 @@ def test_generate_check_lists_the_changes_and_writes_no_file(
         "add infra/new.gen.tf",
     ]
     assert files_on_disk(tmp_path) == before
+
+
+# trace: PRD-CORE-004, PRD-TRACE-006
+def test_generate_check_reports_a_trace_manifest_that_is_not_current(
+    project: StaticGenerator, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert dsml("generate") == 0
+    (tmp_path / TRACE_PATH).write_bytes(b'{"elements": [], "traceVersion": 1}\n')
+    capsys.readouterr()
+    assert dsml("generate", "--check") == 1
+    assert capsys.readouterr().out == "change .dsml/trace.gen.json\n"
+
+    (tmp_path / TRACE_PATH).unlink()
+    assert dsml("generate", "--check") == 1
+    assert capsys.readouterr().out == "add .dsml/trace.gen.json\n"
+
+    assert dsml("generate") == 0
+    capsys.readouterr()
+    symbol = Symbol(SymbolKind.FUNCTION, "api", 1, 1, ("OrderService::orderApi",))
+    project.files = [replace(CLI_FILES[0], symbols=(symbol,)), *CLI_FILES[1:]]
+    assert dsml("generate", "--check") == 1
+    assert capsys.readouterr().out == "change .dsml/trace.gen.json\n"
+    assert dsml("generate") == 0
+    assert capsys.readouterr().out == "change .dsml/trace.gen.json\n"
+    assert json.loads((tmp_path / TRACE_PATH).read_bytes())["elements"] == [
+        {
+            "element": "OrderService::orderApi",
+            "files": [
+                {
+                    "path": CLI_FILES[0].path,
+                    "symbols": [{"firstLine": 1, "kind": "function", "lastLine": 1, "name": "api"}],
+                }
+            ],
+        }
+    ]
 
 
 # trace: PRD-CORE-043
@@ -649,10 +689,11 @@ def test_generate_one_part(
     assert dsml("generate", *argv) == 0
     assert capsys.readouterr().out.splitlines() == [
         "add .dsml/generated.json",
+        "add .dsml/trace.gen.json",
         *(f"add {path}" for path in paths),
     ]
     assert sorted(set(files_on_disk(tmp_path)) - {"dsml.toml", "model/order-service.sysml"}) == (
-        sorted([MANIFEST_PATH, *paths])
+        sorted([MANIFEST_PATH, TRACE_PATH, *paths])
     )
 
 

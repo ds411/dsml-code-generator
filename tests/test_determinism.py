@@ -184,6 +184,7 @@ def test_reference_run_writes_the_output_of_the_test_generator(
 ) -> None:
     assert sorted(reference) == [
         ".dsml/generated.json",
+        ".dsml/trace.gen.json",
         "app/orderApi/handler.py",
         "app/orderApi/service_gen.py",
         "dsml generate: exit code",
@@ -194,6 +195,7 @@ def test_reference_run_writes_the_output_of_the_test_generator(
         "dsml ir: standard output",
         "dsml.toml",
         "infra/ir.gen.json",
+        "infra/main.gen.tf",
         "model/order-service.sysml",
     ]
     assert reference["dsml ir: standard error"] == b""
@@ -202,9 +204,11 @@ def test_reference_run_writes_the_output_of_the_test_generator(
     assert "Straße, 東京".encode() in reference["dsml ir: standard output"]
     assert reference["dsml generate: standard output"] == (
         b"add .dsml/generated.json\n"
+        b"add .dsml/trace.gen.json\n"
         b"add app/orderApi/handler.py\n"
         b"add app/orderApi/service_gen.py\n"
         b"add infra/ir.gen.json\n"
+        b"add infra/main.gen.tf\n"
     )
 
 

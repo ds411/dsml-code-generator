@@ -80,3 +80,5 @@ A conflict is not an internal error or a usage error, so the exit code is 1, not
 6. Write and delete the files. Then write the manifest. The report lists each file to add, change or delete, one line for each file, for example `add services/orders/api_gen.py`.
 
 The manifest is also in the list of changes. Thus `dsml generate --check` finds a manifest that does not agree with the files.
+
+Story #70 added the trace manifest `.dsml/trace.gen.json`. The writer writes it after the manifest, and it is also in the list of changes. See `docs/notes/trace-manifest.md`.
