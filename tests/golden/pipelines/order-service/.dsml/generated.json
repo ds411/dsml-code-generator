@@ -3,8 +3,18 @@
   "generated": [
     {
       "part": "pipelines",
+      "path": ".github/workflows/main.gen.yml",
+      "sha256": "ad36001e0988f4efa004986bb856a2be759f97d3a4f91068eb48409d1f90e433"
+    },
+    {
+      "part": "pipelines",
       "path": ".github/workflows/pr.gen.yml",
       "sha256": "cd158e629ec3ee81e35ef9f0746abdf148179e14f1b599c49ef5381fd8ad7dd2"
+    },
+    {
+      "part": "pipelines",
+      "path": ".github/workflows/promote.gen.yml",
+      "sha256": "ca58bc1b776079dd666d152beb60ada3ff5f7f311af4d12b21fafb5c33d9c737"
     }
   ],
   "manifestVersion": 1

@@ -7,8 +7,9 @@ writes its files in the folder of the key `pipelines.output`, normally
 run their commands in the folder of the configuration file. Thus the
 configuration file must be in the root of the repository.
 
-This module writes `pr.gen.yml` (PRD-CICD-001). The trigger is
-`pull_request`. These are the jobs:
+This module writes `pr.gen.yml`, `main.gen.yml` and `promote.gen.yml`
+(PRD-CICD-001). The trigger of `pr.gen.yml` is `pull_request`. These are
+its jobs:
 
 - `validate`: `dsml validate`, and the upload of the SARIF findings to
   GitHub code scanning (PRD-CICD-002).
@@ -20,6 +21,13 @@ This module writes `pr.gen.yml` (PRD-CICD-001). The trigger is
   the plan role, and the plan text in the job summary (PRD-CICD-006). The
   job is only in the workflow if the model has the environment `dev` and the
   configuration has the key `infrastructure.output`.
+
+`main.gen.yml` and `promote.gen.yml` are only in the output if the
+configuration has the key `infrastructure.output` and the model has a
+container application. `main.gen.yml` builds each image one time and
+deploys it to `dev`. `promote.gen.yml` deploys the images of one main
+build to `staging`, then to `prod`. The module
+`dsml.generate.pipelines.deploy` gives their jobs.
 
 Until the toolchain GitHub Action of PRD-CORE-050 is available, the jobs
 install the toolchain with `uv tool install`. The package index is the
@@ -39,14 +47,40 @@ from dsml.generate import names as safe_names
 from dsml.generate.header import PROG, FileType
 from dsml.generate.infrastructure import names
 from dsml.generate.infrastructure.generator import EnvironmentRoot, environment_roots
+from dsml.generate.infrastructure.modules import CONTAINER_NAME
+from dsml.generate.pipelines.deploy import (
+    MAIN_ENVIRONMENT,
+    MIGRATION_STREAM_PREFIX,
+    PROMOTE_ENVIRONMENTS,
+    BuildJob,
+    DeployJob,
+    build_jobs,
+    deploy_jobs,
+)
 from dsml.generate.pipelines.workflow import job_symbols, pinned_action
 from dsml.generate.templates import TemplateEngine
+from dsml.generate.trace import Symbol
 from dsml.generate.writer import PIPELINES, Kind, OutputFile
 from dsml.ir.model import Element, Ir
 from dsml.versions import Pin, load_baseline, pinned_version
 
 PR_WORKFLOW: Final = "pr.gen.yml"
 """The file name of the pull request workflow."""
+
+MAIN_WORKFLOW: Final = "main.gen.yml"
+"""The file name of the main workflow."""
+
+PROMOTE_WORKFLOW: Final = "promote.gen.yml"
+"""The file name of the promote workflow."""
+
+MAIN_BRANCH: Final = "main"
+"""The main branch. The trust policy of the push role permits only this branch (PRD-IAC-028)."""
+
+RELEASE_TAGS: Final = "v*"
+"""The pattern of the release tags that start `promote.gen.yml` (PRD-CICD-001)."""
+
+FIND_BUILD_JOB: Final = "find-build"
+"""The job of `promote.gen.yml` that finds the image digests of a main build."""
 
 PLAN_ENVIRONMENT: Final = "dev"
 """The environment that the pull request workflow plans (PRD-CICD-006)."""
@@ -201,6 +235,125 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
     }
 
 
+# trace: PRD-CICD-008, PRD-CICD-010
+@dataclass(frozen=True, slots=True)
+class FindBuildJob:
+    """The job of `promote.gen.yml` that finds the image digests of a main build."""
+
+    build: BuildJob
+    """A build job. All build jobs use the same tooling account and push role."""
+
+    @property
+    def job(self) -> str:
+        """The job ID."""
+        return FIND_BUILD_JOB
+
+    @property
+    def role_arn(self) -> str:
+        """The ARN of the push role of the tooling account (PRD-IAC-028)."""
+        return self.build.role_arn
+
+    @property
+    def region(self) -> str:
+        """The AWS Region of the tooling account."""
+        return self.build.region
+
+
+def _base_data(baseline: dict[str, Pin]) -> dict[str, Any]:
+    """Give the template data that the workflows with deploy jobs use."""
+    return {
+        "file_type": FileType.YAML.value,
+        "actions": actions(baseline),
+        "container_name": CONTAINER_NAME,
+        "migration_stream_prefix": MIGRATION_STREAM_PREFIX,
+        "opentofu_version": pinned_version("opentofu", baseline),
+        "runner": _value(baseline, "github-runner"),
+    }
+
+
+def _deploy_elements(builds: Sequence[BuildJob], deploys: Sequence[DeployJob]) -> list[str]:
+    """Give the identities of the elements of a workflow with deploy jobs, sorted."""
+    identities = {build.account.element.identity for build in builds}
+    for build in builds:
+        identities.update((build.application.identity, build.repository.service.identity))
+    identities.update(deploy.root.element.identity for deploy in deploys)
+    return sorted(identities)
+
+
+# trace: PRD-CICD-001, PRD-CICD-007, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011,
+# PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-021
+def main_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
+    """Give the template data of `main.gen.yml`, or `None` if the workflow has no build job."""
+    builds = build_jobs(ir, configuration)
+    if not builds:
+        return None
+    deploys = deploy_jobs(
+        ir,
+        configuration,
+        (MAIN_ENVIRONMENT,),
+        builds,
+        digest="needs.{job}.outputs.{output}",
+        commit="github.sha",
+        first_needs=tuple(build.job for build in builds),
+    )
+    return {
+        **_base_data(load_baseline()),
+        "elements": _deploy_elements(builds, deploys),
+        "builds": builds,
+        "deploys": deploys,
+        "main_branch": MAIN_BRANCH,
+    }
+
+
+# trace: PRD-CICD-001, PRD-CICD-008, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011,
+# PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-020,
+# PRD-CICD-021
+def promote_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
+    """Give the template data of `promote.gen.yml`, or `None` if the workflow has no deploy job.
+
+    The first deploy job needs the job that finds the build. Each next
+    deploy job also needs the deploy job before it. Thus prod starts only
+    after the deployment of the same build to staging succeeded
+    (PRD-CICD-020).
+    """
+    builds = build_jobs(ir, configuration)
+    deploys = deploy_jobs(
+        ir,
+        configuration,
+        PROMOTE_ENVIRONMENTS,
+        builds,
+        digest=f"needs.{FIND_BUILD_JOB}.outputs.{{output}}",
+        commit=f"needs.{FIND_BUILD_JOB}.outputs.commit",
+        first_needs=(FIND_BUILD_JOB,),
+    )
+    if not deploys:
+        return None
+    return {
+        **_base_data(load_baseline()),
+        "elements": _deploy_elements(builds, deploys),
+        "builds": builds,
+        "deploys": deploys,
+        "release_tags": RELEASE_TAGS,
+        "resolve": FindBuildJob(builds[0]),
+    }
+
+
+def _deploy_symbols(content: bytes, data: dict[str, Any]) -> tuple[Symbol, ...]:
+    """Give the job symbols of a workflow with deploy jobs.
+
+    A build job gives the application. The job that finds the build gives
+    the applications. A deploy job gives its environment.
+    """
+    builds: Sequence[BuildJob] = data["builds"]
+    job_elements: dict[str, tuple[str, ...]] = {
+        build.job: (build.application.identity,) for build in builds
+    }
+    job_elements[FIND_BUILD_JOB] = tuple(sorted(build.application.identity for build in builds))
+    for deploy in data["deploys"]:
+        job_elements[deploy.job] = (deploy.root.element.identity,)
+    return job_symbols(content.decode("utf-8"), lambda job: job_elements.get(job, ()))
+
+
 # trace: PRD-CICD-001, PRD-CORE-005, PRD-CORE-026, PRD-TRACE-006
 class PipelineGenerator:
     """The generator of the GitHub Actions workflows."""
@@ -228,5 +381,29 @@ class PipelineGenerator:
         if data["plan"] is not None:
             job_elements[data["plan"].job] = (data["plan"].root.element.identity,)
         symbols = job_symbols(content.decode("utf-8"), lambda job: job_elements.get(job, ()))
-        path = PurePosixPath(output, PR_WORKFLOW).as_posix()
-        return [OutputFile(path, content, Kind.GENERATED, PIPELINES, symbols)]
+        files = [
+            OutputFile(
+                PurePosixPath(output, PR_WORKFLOW).as_posix(),
+                content,
+                Kind.GENERATED,
+                PIPELINES,
+                symbols,
+            )
+        ]
+        for name, workflow_data in (
+            (MAIN_WORKFLOW, main_data(ir, configuration)),
+            (PROMOTE_WORKFLOW, promote_data(ir, configuration)),
+        ):
+            if workflow_data is None:
+                continue
+            content = engine.render_bytes(f"pipelines/{name}.j2", workflow_data)
+            files.append(
+                OutputFile(
+                    PurePosixPath(output, name).as_posix(),
+                    content,
+                    Kind.GENERATED,
+                    PIPELINES,
+                    _deploy_symbols(content, workflow_data),
+                )
+            )
+        return files

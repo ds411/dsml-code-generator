@@ -1,7 +1,8 @@
 # CI of the DSML toolchain. This is a hand-written workflow, not a
 # generated pipeline.
 #
-# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-027, PRD-CORE-029, PRD-CORE-035, PRD-CORE-049
+# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-027, PRD-CORE-029, PRD-CORE-035, PRD-CORE-049,
+# PRD-VAL-008
 #
 # CI runs only on Linux x64 (Q62, decision record 07). The toolchain
 # still supports the operating systems of decision record 03 (Q50).
@@ -92,6 +93,12 @@ jobs:
       # reference models with tests/golden/ir/ (PRD-CORE-027, PRD-CORE-029).
       - name: Test
         run: uv run pytest
+
+      # The example model must have no error finding (story #68). The
+      # findings of the reference models are also golden files, which the
+      # step "Test" compares in tests/test_rule_catalog.py.
+      - name: Validate the example model
+        run: uv run dsml validate --config docs/model/examples/dsml.toml
 
       # The golden workflows of the pipeline generator must have no
       # actionlint error (story #83). The step downloads the actionlint

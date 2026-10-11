@@ -1,5 +1,8 @@
 """Tests of the pipeline generator: the pull request workflow (story #83).
 
+`tests/test_pipeline_deploy.py` has the tests of `main.gen.yml` and
+`promote.gen.yml` (story #87).
+
 The golden files in `tests/golden/pipelines/order-service/` are the output
 of the pipeline generator for the example model, with the manifest and the
 trace manifest. If a change of the output is correct, run
@@ -58,7 +61,7 @@ def ir() -> Ir:
 
 def _workflow(ir: Ir, configuration: Configuration = CONFIGURATION) -> str:
     files = PipelineGenerator(version="0.1.0").generate(ir, configuration, None)
-    assert [file.path for file in files] == [PR_PATH]
+    assert files[0].path == PR_PATH
     return files[0].content.decode("utf-8")
 
 
@@ -98,11 +101,16 @@ def test_generator_is_in_the_list_of_generators() -> None:
 
 
 # trace: PRD-CICD-001, PRD-CORE-005
-def test_generator_writes_one_workflow_in_the_pipelines_part(ir: Ir) -> None:
+def test_generator_writes_three_workflows_in_the_pipelines_part(ir: Ir) -> None:
     files = PipelineGenerator().generate(ir, CONFIGURATION, None)
-    assert [file.path for file in files] == [PR_PATH]
-    assert files[0].kind is Kind.GENERATED
-    assert files[0].part == PIPELINES
+    assert [file.path for file in files] == [
+        PR_PATH,
+        ".github/workflows/main.gen.yml",
+        ".github/workflows/promote.gen.yml",
+    ]
+    for file in files:
+        assert file.kind is Kind.GENERATED
+        assert file.part == PIPELINES
     check_files(files)
 
 
@@ -110,7 +118,7 @@ def test_no_output_folder_or_other_part_gives_no_file(ir: Ir) -> None:
     generator = PipelineGenerator()
     assert generator.generate(ir, Configuration(), None) == []
     assert generator.generate(ir, CONFIGURATION, {application_part("orderApi")}) == []
-    assert len(generator.generate(ir, CONFIGURATION, {PIPELINES})) == 1
+    assert len(generator.generate(ir, CONFIGURATION, {PIPELINES})) == 3
 
 
 # trace: PRD-CICD-001

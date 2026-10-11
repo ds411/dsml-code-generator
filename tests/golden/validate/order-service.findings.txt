@@ -1,0 +1,7 @@
+docs/model/examples/order-service.sysml:28:5: warning: COV-003: The requirement R-002 has the status "approved" but no satisfying element.
+  fix: Add `satisfy <requirement> by <element>;` to the application layer.
+docs/model/examples/order-service.sysml:28:5: warning: COV-004: The requirement R-002 has the status "approved" but no verification.
+  fix: Add a verification with `verify <requirement>;` in its objective.
+docs/model/examples/order-service.sysml:102:9: warning: COV-006: The verification V-001 refers to the test file "app/features/order/read_order/test_endpoint.py". This file does not exist.
+  fix: Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file.
+Findings: 0 errors, 3 warnings, 0 info.
