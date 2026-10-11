@@ -164,3 +164,17 @@ def test_kms_alias_of_an_element() -> None:
     alias = names.kms_alias("shop", "dev", "k" * 300)
     assert alias.startswith("alias/shop-dev-k")
     assert len(alias) == names.NAME_LIMITS["kms_alias"]
+
+
+# trace: PRD-IAC-015, PRD-IAC-022
+def test_container_service_names() -> None:
+    assert names.ecr_repository("order-service", "orderApi") == "order-service-tooling-order-api"
+    assert (
+        names.task_execution_role("order-service", "dev", "apiService")
+        == "order-service-dev-api-service-execution"
+    )
+    assert names.task_role("order-service", "dev", "apiService") == (
+        "order-service-dev-api-service-task"
+    )
+    long_role = names.task_role("order-service", "staging", "a" * 60)
+    assert len(long_role) == names.NAME_LIMITS["iam_role"]

@@ -95,8 +95,13 @@ def test_generator_writes_a_module_only_for_a_kind_with_an_element(shop: Ir, exa
     def folders(ir: Ir) -> set[str]:
         return {path.split("/")[2] for path in _files(ir) if path.startswith("infra/modules/")}
 
-    assert folders(shop) == {"network", "secret-store"}
-    assert folders(example) == {"network"}
+    assert folders(shop) == {"container-service", "network", "secret-store"}
+    assert folders(example) == {
+        "container-service",
+        "network",
+        "relational-database",
+        "user-directory",
+    }
     for folder in ("network", "secret-store"):
         for name in MODULE_FILES:
             assert f"infra/modules/{folder}/{name}.gen.tf" in _files(shop)
@@ -267,4 +272,10 @@ def test_two_elements_with_the_same_address_give_an_error(shop: Ir) -> None:
 
 
 def test_modules_are_in_the_order_of_their_calls() -> None:
-    assert [module.folder for module in modules.MODULES] == ["network", "secret-store"]
+    assert [module.folder for module in modules.MODULES] == [
+        "network",
+        "secret-store",
+        "relational-database",
+        "user-directory",
+        "container-service",
+    ]

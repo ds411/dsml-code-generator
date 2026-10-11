@@ -29,12 +29,14 @@ TAG_VALUE_LIMIT: Final = 256
 NAME_LIMITS: Final = {
     "alb": 32,
     "cloudwatch_log_group": 512,
+    "cognito_app_client": 128,
     "cognito_domain": 63,
     "cognito_user_pool": 128,
     "db_instance": 63,
     "ecr_repository": 256,
     "ecs_cluster": 255,
     "ecs_service": 255,
+    "ecs_task_definition": 255,
     "iam_policy": 128,
     "iam_role": 64,
     "kms_alias": 256,
@@ -169,3 +171,36 @@ def deploy_role(product: str, environment: str) -> str:
 def push_role(product: str) -> str:
     """Give the name of the push role of the tooling account."""
     return aws_name(product, TOOLING, PUSH_ROLE, "iam_role")
+
+
+# trace: PRD-IAC-008, PRD-IAC-022
+def ecr_repository(product: str, application: str) -> str:
+    """Give the name of the ECR repository of an application in the tooling account."""
+    return aws_name(product, TOOLING, application, "ecr_repository")
+
+
+# trace: PRD-IAC-015, PRD-IAC-022
+def task_execution_role(product: str, environment: str, element: str) -> str:
+    """Give the name of the task execution role of a container service.
+
+    The ECR repository policy of the tooling account permits pulls by this role.
+    """
+    return aws_name(product, environment, f"{names.kebab_case(element)}-execution", "iam_role")
+
+
+# trace: PRD-IAC-015
+def task_role(product: str, environment: str, element: str) -> str:
+    """Give the name of the task role of a container service."""
+    return aws_name(product, environment, f"{names.kebab_case(element)}-task", "iam_role")
+
+
+# trace: PRD-IAC-006, PRD-IAC-022
+def tooling_state_key() -> str:
+    """Give the key of the state file of the tooling root module in its bucket."""
+    return f"{TOOLING}/terraform.tfstate"
+
+
+# trace: PRD-IAC-029
+def bootstrap_state_key() -> str:
+    """Give the key of the state file of a bootstrap root module in its bucket."""
+    return "bootstrap/terraform.tfstate"

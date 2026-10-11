@@ -1,0 +1,33 @@
+{#- The IAM roles for CI of an AWS account (PRD-IAC-027, PRD-IAC-028,
+    PRD-IAC-033). An environment account has a plan role and a deploy role.
+    The tooling account has a push role. -#}
+{% from "infrastructure/policy.j2" import policy_document %}
+{% include "common/header.j2" %}
+{% for role in roles %}
+
+resource "aws_iam_role" "{{ role.address }}" {
+  name               = {{ role.name | hcl_string }}
+  description        = {{ role.description | hcl_string }}
+  assume_role_policy = data.aws_iam_policy_document.{{ role.trust.name }}.json
+
+  tags = {
+    "dsml:element" = {{ element | hcl_string }}
+  }
+}
+
+resource "aws_iam_role_policy" "{{ role.address }}" {
+  name   = {{ role.policy.name | hcl_string }}
+  role   = aws_iam_role.{{ role.address }}.id
+  policy = data.aws_iam_policy_document.{{ role.policy.name }}.json
+}
+{% if role.managed %}
+
+resource "aws_iam_role_policy_attachment" "{{ role.address }}" {
+  role       = aws_iam_role.{{ role.address }}.name
+  policy_arn = {{ role.managed | hcl_string }}
+}
+{% endif %}
+
+{{ policy_document(role.trust) }}
+{{ policy_document(role.policy) -}}
+{% endfor %}

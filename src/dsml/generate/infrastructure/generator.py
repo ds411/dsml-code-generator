@@ -19,13 +19,18 @@ For each environment, the folder `envs/<environment>/` gets these files
   `default_tags` (PRD-IAC-024, PRD-IAC-035).
 - `main.gen.tf`: the values of the environment, and one call of a local
   module for each logical element (PRD-IAC-023).
-- `variables.gen.tf`: the variable `model_commit` (PRD-IAC-036).
+- `variables.gen.tf`: the variable `model_commit` (PRD-IAC-036) and the
+  variables of the module calls, for example the image digest of an
+  application (PRD-IAC-009).
 - `outputs.gen.tf`: the values that the pipelines need, and the outputs of
   the module calls (PRD-IAC-010).
 
 For each logical kind with one or more elements, the folder
 `modules/<module>/` gets the files `main.gen.tf`, `variables.gen.tf` and
 `outputs.gen.tf`. `dsml.generate.infrastructure.modules` gives the modules.
+
+The module `dsml.generate.infrastructure.accounts` gives the files of the
+folders `tooling/` and `bootstrap/<account>/` (PRD-IAC-022, PRD-IAC-026).
 
 All environments use the same templates. Only the attributes of the
 environment make two root modules different (PRD-IAC-023).
@@ -41,6 +46,7 @@ from dsml.errors import ToolchainError
 from dsml.generate import names as safe_names
 from dsml.generate.header import FileType
 from dsml.generate.infrastructure import hcl, modules, names
+from dsml.generate.infrastructure.accounts import Account, account_files
 from dsml.generate.templates import TemplateEngine
 from dsml.generate.writer import INFRASTRUCTURE, Kind, OutputFile
 from dsml.ir.environments import environments
@@ -162,7 +168,8 @@ class InfrastructureGenerator:
         for module in modules.MODULES:
             if module.folder in module_elements:
                 identities = tuple(sorted(module_elements[module.folder]))
-                files.extend(self._module_files(module.folder, identities, output))
+                files.extend(self._module_files(module, identities, output))
+        files.extend(_account_files(self._engine, ir, configuration, PurePosixPath(output)))
         return files
 
     # trace: PRD-IAC-001, PRD-IAC-023, PRD-TRACE-005, PRD-TRACE-007
@@ -175,8 +182,8 @@ class InfrastructureGenerator:
     ) -> list[OutputFile]:
         """Give the files of one environment root module.
 
-        A module call and its outputs are symbols of the logical element and
-        of its AWS realization. The other blocks are symbols of the
+        A module call, its outputs and its variables are symbols of the
+        logical element and of its AWS realization. The other blocks are symbols of the
         environment.
         """
         data = template_data(root, configuration)
@@ -187,6 +194,11 @@ class InfrastructureGenerator:
             by_address[f"module.{call.address}"] = call.identities
             for item in call.outputs:
                 by_address[f"output.{item.name}"] = call.identities
+            for variable in call.variables:
+                by_address[f"var.{variable.name}"] = call.identities
+        variable_elements = tuple(
+            sorted({item for call in calls if call.variables for item in call.identities})
+        )
         identity = root.element.identity
 
         def elements(address: str) -> tuple[str, ...]:
@@ -197,6 +209,8 @@ class InfrastructureGenerator:
             file_elements = [identity]
             if file in CALL_FILES:
                 file_elements.extend(call_elements)
+            elif file == "variables":
+                file_elements.extend(variable_elements)
             content = self._engine.render_bytes(
                 f"{TEMPLATE_FOLDER}/{file}.gen.tf.j2",
                 {**data, "elements": sorted(file_elements)},
@@ -208,14 +222,19 @@ class InfrastructureGenerator:
 
     # trace: PRD-IAC-001, PRD-IAC-007, PRD-TRACE-005, PRD-TRACE-007
     def _module_files(
-        self, folder: str, identities: tuple[str, ...], output: PurePosixPath
+        self, module: modules.LocalModule, identities: tuple[str, ...], output: PurePosixPath
     ) -> list[OutputFile]:
         """Give the files of one local module.
 
         Each block of the module is a symbol of each element that calls the
         module, and of its AWS realization.
         """
-        data = {"file_type": FileType.HCL.value, "elements": list(identities)}
+        folder = module.folder
+        data = {
+            **module.template_data(),
+            "file_type": FileType.HCL.value,
+            "elements": list(identities),
+        }
         files: list[OutputFile] = []
         for file in modules.MODULE_FILES:
             content = self._engine.render_bytes(
@@ -225,3 +244,17 @@ class InfrastructureGenerator:
             symbols = hcl.block_symbols(content.decode("utf-8"), lambda _: identities)
             files.append(OutputFile(path, content, Kind.GENERATED, INFRASTRUCTURE, symbols))
         return files
+
+
+# trace: PRD-IAC-001, PRD-IAC-022, PRD-IAC-026
+def _account_files(
+    engine: TemplateEngine, ir: Ir, configuration: Configuration, output: PurePosixPath
+) -> list[OutputFile]:
+    """Give the files of the tooling root module and of the bootstrap root modules."""
+    accounts = [
+        Account(root.element, root.name, root.product, root.account_id, root.region)
+        for root in environment_roots(ir)
+    ]
+    return account_files(
+        engine, ir, configuration, output, lambda element: product_name(ir, element), accounts
+    )
