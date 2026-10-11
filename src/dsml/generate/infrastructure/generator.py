@@ -162,7 +162,7 @@ class InfrastructureGenerator:
         for module in modules.MODULES:
             if module.folder in module_elements:
                 identities = tuple(sorted(module_elements[module.folder]))
-                files.extend(self._module_files(module.folder, identities, output))
+                files.extend(self._module_files(module, identities, output))
         return files
 
     # trace: PRD-IAC-001, PRD-IAC-023, PRD-TRACE-005, PRD-TRACE-007
@@ -208,14 +208,19 @@ class InfrastructureGenerator:
 
     # trace: PRD-IAC-001, PRD-IAC-007, PRD-TRACE-005, PRD-TRACE-007
     def _module_files(
-        self, folder: str, identities: tuple[str, ...], output: PurePosixPath
+        self, module: modules.LocalModule, identities: tuple[str, ...], output: PurePosixPath
     ) -> list[OutputFile]:
         """Give the files of one local module.
 
         Each block of the module is a symbol of each element that calls the
         module, and of its AWS realization.
         """
-        data = {"file_type": FileType.HCL.value, "elements": list(identities)}
+        folder = module.folder
+        data = {
+            **module.template_data(),
+            "file_type": FileType.HCL.value,
+            "elements": list(identities),
+        }
         files: list[OutputFile] = []
         for file in modules.MODULE_FILES:
             content = self._engine.render_bytes(

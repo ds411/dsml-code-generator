@@ -29,6 +29,7 @@ TAG_VALUE_LIMIT: Final = 256
 NAME_LIMITS: Final = {
     "alb": 32,
     "cloudwatch_log_group": 512,
+    "cognito_app_client": 128,
     "cognito_domain": 63,
     "cognito_user_pool": 128,
     "db_instance": 63,

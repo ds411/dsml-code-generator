@@ -15,7 +15,7 @@ The modules use only `aws_*` resources and data sources (PRD-IAC-007).
 This module reads only the IR (PRD-CORE-026).
 """
 
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Final
 
@@ -23,7 +23,18 @@ from dsml.errors import ToolchainError
 from dsml.generate import names as safe_names
 from dsml.generate.infrastructure import hcl, names
 from dsml.ir.environments import realization_attributes
-from dsml.ir.model import Attribute, Element, IntegerValue, Ir
+from dsml.ir.model import (
+    Attribute,
+    BooleanValue,
+    Element,
+    EnumValue,
+    IntegerValue,
+    Ir,
+    LinkType,
+    ListValue,
+    StringValue,
+)
+from dsml.versions import load_baseline
 
 MODULE_FILES: Final = ("main", "outputs", "variables")
 """The files of each local module, without `.gen.tf`."""
@@ -76,14 +87,60 @@ class ModuleCall:
 
     @property
     def lines(self) -> tuple[str, ...]:
-        """Give the argument lines of the call, aligned in the format of `tofu fmt`."""
-        width = max(len(name) for name, _ in self.arguments)
-        return tuple(f"{name.ljust(width)} = {value}" for name, value in self.arguments)
+        """Give the argument lines of the call, aligned in the format of `tofu fmt`.
+
+        `tofu fmt` aligns the "=" of each run of one-line arguments. An
+        argument with a value of more than one line is not aligned, and it
+        ends the run. The value of such an argument gives its next lines with
+        their indent relative to the argument.
+        """
+        result: list[str] = []
+        run: list[tuple[str, str]] = []
+
+        def close_run() -> None:
+            width = max((len(name) for name, _ in run), default=0)
+            result.extend(f"{name.ljust(width)} = {value}" for name, value in run)
+            run.clear()
+
+        for name, value in self.arguments:
+            if "\n" in value:
+                close_run()
+                result.extend(f"{name} = {value}".split("\n"))
+            else:
+                run.append((name, value))
+        close_run()
+        return tuple(result)
 
 
-type Arguments = Callable[[Element, Mapping[str, Attribute], str, str], dict[str, str]]
+# trace: PRD-IAC-023, PRD-CORE-026
+@dataclass(frozen=True, slots=True)
+class CallContext:
+    """The values of one environment root module that the arguments of a call can use."""
+
+    ir: Ir
+    environment: Element
+    """The environment element."""
+    product: str
+    """The product name in kebab case."""
+
+    @property
+    def environment_name(self) -> str:
+        """Give the name of the environment in kebab case, for example `dev`."""
+        return safe_names.kebab_case(self.environment.name)
+
+
+type Arguments = Callable[[Element, Mapping[str, Attribute], CallContext], dict[str, str]]
 """Give the arguments of a call from the element, the attributes of its
-realization in the environment, the product and the environment."""
+realization in the environment, and the values of the root module."""
+
+type TemplateData = Callable[[], Mapping[str, str]]
+"""Give the template data of the files of a module, in addition to the header data."""
+
+
+def no_template_data() -> Mapping[str, str]:
+    """Give no template data."""
+    return {}
+
 
 type Outputs = Callable[[str], tuple[RootOutput, ...]]
 """Give the root module outputs of a call from the address of the call."""
@@ -102,6 +159,7 @@ class LocalModule:
     """The folder of the module in `modules/`, for example `network`."""
     arguments: Arguments
     outputs: Outputs
+    template_data: TemplateData = no_template_data
 
 
 def _integer(attributes: Mapping[str, Attribute], name: str, default: int) -> int:
@@ -126,8 +184,9 @@ def zone_count(nat_gateway_count: int) -> int:
 
 # trace: PRD-IAC-008, PRD-IAC-011, PRD-IAC-035, PRD-IAC-037
 def _network_arguments(
-    element: Element, attributes: Mapping[str, Attribute], product: str, environment: str
+    element: Element, attributes: Mapping[str, Attribute], context: CallContext
 ) -> dict[str, str]:
+    product, environment = context.product, context.environment_name
     nat_gateways = _integer(attributes, "natGatewayCount", DEFAULT_NAT_GATEWAYS)
     if nat_gateways < 0:
         raise ToolchainError(f'The network "{element.identity}" has a negative natGatewayCount.')
@@ -162,8 +221,9 @@ def _network_outputs(address: str) -> tuple[RootOutput, ...]:
 
 # trace: PRD-IAC-008, PRD-IAC-020, PRD-IAC-035, PRD-IAC-037
 def _secret_store_arguments(
-    element: Element, attributes: Mapping[str, Attribute], product: str, environment: str
+    element: Element, attributes: Mapping[str, Attribute], context: CallContext
 ) -> dict[str, str]:
+    product, environment = context.product, context.environment_name
     return {
         "element": hcl.string(names.tag_value(element.identity)),
         "key_alias": hcl.string(names.kms_alias(product, environment, element.name)),
@@ -182,10 +242,257 @@ def _secret_store_outputs(address: str) -> tuple[RootOutput, ...]:
     )
 
 
+PROD: Final = "prod"
+"""The name of the environment with deletion protection of the databases (PRD-IAC-017)."""
+
+MASTER_USERNAME: Final = "dsml_admin"
+"""The name of the master user of each database."""
+
+CALLBACK_PATH: Final = "/auth/callback"
+"""The path of the callback URL of each app client (PRD-IAC-019)."""
+
+LOGOUT_PATH: Final = "/"
+"""The path of the logout URL of each app client (PRD-IAC-019)."""
+
+
+def _element(ir: Ir, identity: str) -> Element:
+    """Give the element with an identity."""
+    for item in ir.elements:
+        if item.identity == identity:
+            return item
+    raise ToolchainError(f'The IR has no element "{identity}".')
+
+
+def _sources(ir: Ir, link_type: LinkType, target: str) -> tuple[Element, ...]:
+    """Give the sources of the links of one type to a target, sorted by identity."""
+    identities = {
+        link.source for link in ir.links if link.type == link_type and link.target == target
+    }
+    return tuple(sorted((_element(ir, item) for item in identities), key=Element.sort_key))
+
+
+def _the_network(ir: Ir) -> str:
+    """Give the address of the call of the one network of the model."""
+    found = [item for item in ir.elements if item.kind == "Network"]
+    if len(found) != 1:
+        raise ToolchainError(f"The model must have one #Network element, not {len(found)}.")
+    return f"module.{names.hcl_address(found[0].name)}"
+
+
+def hcl_map(entries: Sequence[tuple[str, str]]) -> str:
+    """Give an HCL map in the format of `tofu fmt`, with the indent of an argument value.
+
+    Each entry is a key and its HCL value. A value of more than one line has
+    its next lines with their indent relative to the key. A map with no entry
+    gives `{}`.
+    """
+    if not entries:
+        return "{}"
+    lines = ["{"]
+    run: list[tuple[str, str]] = []
+
+    def close_run() -> None:
+        width = max((len(key) for key, _ in run), default=0)
+        lines.extend(f"  {key.ljust(width)} = {value}" for key, value in run)
+        run.clear()
+
+    for key, value in entries:
+        if "\n" in value:
+            close_run()
+            lines.extend(f"  {line}" for line in f"{key} = {value}".split("\n"))
+        else:
+            run.append((key, value))
+    close_run()
+    lines.append("}")
+    return "\n".join(lines)
+
+
+def _text(attributes: Mapping[str, Attribute], element: Element, name: str) -> str:
+    attribute = attributes.get(name)
+    if attribute is None or not isinstance(attribute.value, StringValue):
+        raise ToolchainError(f'The realization of "{element.identity}" has no text "{name}".')
+    return attribute.value.value
+
+
+def _boolean(attributes: Mapping[str, Attribute], element: Element, name: str) -> bool:
+    attribute = attributes.get(name)
+    if attribute is None or not isinstance(attribute.value, BooleanValue):
+        raise ToolchainError(f'The realization of "{element.identity}" has no Boolean "{name}".')
+    return attribute.value.value
+
+
+def _hcl_bool(value: bool) -> str:
+    return "true" if value else "false"
+
+
+# trace: PRD-IAC-008, PRD-IAC-017, PRD-IAC-018, PRD-IAC-031, PRD-IAC-035
+def _database_arguments(
+    element: Element, attributes: Mapping[str, Attribute], context: CallContext
+) -> dict[str, str]:
+    """Give the arguments of a database call.
+
+    The security group of the database permits port 5432 only from the
+    security group of each container service with a `#Uses` link to the
+    database (PRD-IAC-018).
+    """
+    product, environment = context.product, context.environment_name
+    network = _the_network(context.ir)
+    services = [
+        (names.hcl_address(item.name), f"module.{names.hcl_address(item.name)}.security_group_id")
+        for item in _sources(context.ir, "uses", element.identity)
+        if item.kind == "ContainerService"
+    ]
+    return {
+        "database_name": hcl.string(names.hcl_address(element.name)),
+        "deletion_protection": _hcl_bool(environment == PROD),
+        "element": hcl.string(names.tag_value(element.identity)),
+        "instance_class": hcl.string(_text(attributes, element, "instanceClass")),
+        "master_username": hcl.string(MASTER_USERNAME),
+        "multi_az": _hcl_bool(_boolean(attributes, element, "multiAz")),
+        "name": hcl.string(names.aws_name(product, environment, element.name, "db_instance")),
+        "source_security_group_ids": hcl_map(sorted(services)),
+        "subnet_ids": f"{network}.private_subnet_ids",
+        "vpc_id": f"{network}.vpc_id",
+    }
+
+
+def _database_outputs(address: str) -> tuple[RootOutput, ...]:
+    return ()
+
+
+# trace: PRD-IAC-017
+def _database_template_data() -> Mapping[str, str]:
+    """Give the PostgreSQL release line of the version baseline."""
+    pin = load_baseline().get("postgresql")
+    if pin is None or pin.line is None:
+        raise ToolchainError('The version baseline has no release line for "postgresql".')
+    return {"engine_version": pin.line}
+
+
+# trace: PRD-DSML-033, PRD-IAC-019
+def role_values(ir: Ir) -> tuple[str, ...]:
+    """Give the sorted values of the `#Roles` enumerations of the model."""
+    values: set[str] = set()
+    for roles in (item for item in ir.elements if item.kind == "Roles"):
+        for attribute in roles.attributes:
+            if attribute.name == "literals" and isinstance(attribute.value, ListValue):
+                values.update(
+                    item.literal for item in attribute.value.items if isinstance(item, EnumValue)
+                )
+    return tuple(sorted(values))
+
+
+# trace: PRD-IAC-019
+def directory_applications(ir: Ir, directory: Element) -> tuple[Element, ...]:
+    """Give the applications that use a user directory, sorted by identity.
+
+    An application uses the user directory if it has a `#Uses` link to it,
+    or if it is allocated to a container service with a `#Uses` link to it.
+    """
+    found: dict[str, Element] = {}
+    for user in _sources(ir, "uses", directory.identity):
+        if user.kind == "Application":
+            found[user.identity] = user
+        elif user.kind == "ContainerService":
+            for item in _sources(ir, "allocate", user.identity):
+                if item.kind == "Application":
+                    found[item.identity] = item
+    return tuple(sorted(found.values(), key=Element.sort_key))
+
+
+def _environment_domain(environment: Element) -> str:
+    for attribute in environment.attributes:
+        if attribute.name == "domain" and isinstance(attribute.value, StringValue):
+            return attribute.value.value
+    raise ToolchainError(
+        f'The environment "{environment.identity}" has no text value for the attribute "domain".'
+    )
+
+
+# trace: PRD-IAC-008, PRD-IAC-019, PRD-IAC-035
+def _user_directory_arguments(
+    element: Element, attributes: Mapping[str, Attribute], context: CallContext
+) -> dict[str, str]:
+    """Give the arguments of a user directory call.
+
+    The user pool gets one group for each role value, and one app client for
+    each application that uses it. The callback URLs are on the domain of
+    the environment (PRD-IAC-019).
+    """
+    product, environment = context.product, context.environment_name
+    domain = _environment_domain(context.environment)
+    clients = [
+        (
+            names.hcl_address(application.name),
+            hcl_map(
+                [
+                    (
+                        "name",
+                        hcl.string(
+                            names.aws_name(
+                                product, environment, application.name, "cognito_app_client"
+                            )
+                        ),
+                    ),
+                    ("callback_urls", f"[{hcl.string(f'https://{domain}{CALLBACK_PATH}')}]"),
+                    ("logout_urls", f"[{hcl.string(f'https://{domain}{LOGOUT_PATH}')}]"),
+                ]
+            ),
+        )
+        for application in directory_applications(context.ir, element)
+    ]
+    groups = ", ".join(hcl.string(value) for value in role_values(context.ir))
+    return {
+        "clients": hcl_map(clients),
+        "domain_prefix": hcl.string(
+            names.aws_name(product, environment, element.name, "cognito_domain")
+        ),
+        "element": hcl.string(names.tag_value(element.identity)),
+        "groups": f"[{groups}]",
+        "name": hcl.string(names.aws_name(product, environment, element.name, "cognito_user_pool")),
+    }
+
+
+# trace: PRD-IAC-010
+def _user_directory_outputs(address: str) -> tuple[RootOutput, ...]:
+    return (
+        RootOutput(
+            f"{address}_app_client_ids",
+            f"The ID of the app client of each application of module.{address}, by HCL name.",
+            f"module.{address}.app_client_ids",
+        ),
+        RootOutput(
+            f"{address}_login_domain",
+            f"The managed login domain of module.{address}.",
+            f"module.{address}.login_domain",
+        ),
+        RootOutput(
+            f"{address}_user_pool_id",
+            f"The ID of the user pool of module.{address}.",
+            f"module.{address}.user_pool_id",
+        ),
+    )
+
+
 MODULES: Final = (
     LocalModule("Network", "AwsVpc", "network", _network_arguments, _network_outputs),
     LocalModule(
         "SecretStore", "AwsSecrets", "secret-store", _secret_store_arguments, _secret_store_outputs
+    ),
+    LocalModule(
+        "RelationalDatabase",
+        "AwsRdsPostgres",
+        "relational-database",
+        _database_arguments,
+        _database_outputs,
+        _database_template_data,
+    ),
+    LocalModule(
+        "UserDirectory",
+        "AwsCognito",
+        "user-directory",
+        _user_directory_arguments,
+        _user_directory_outputs,
     ),
 )
 """The local modules of this toolchain version, in the order of their calls."""
@@ -224,7 +531,7 @@ def module_calls(ir: Ir, environment: Element, product: str) -> tuple[ModuleCall
     The calls are in the order of `MODULES`, then sorted by element identity.
     """
     attributes = realization_attributes(ir, environment.identity)
-    environment_name = safe_names.kebab_case(environment.name)
+    context = CallContext(ir, environment, product)
     calls: list[ModuleCall] = []
     for module in MODULES:
         elements = sorted(
@@ -233,9 +540,7 @@ def module_calls(ir: Ir, environment: Element, product: str) -> tuple[ModuleCall
         )
         for element in elements:
             aws = realization(ir, element, module.realization_kind)
-            arguments = module.arguments(
-                element, attributes.get(aws.identity, {}), product, environment_name
-            )
+            arguments = module.arguments(element, attributes.get(aws.identity, {}), context)
             address = names.hcl_address(element.name)
             calls.append(
                 ModuleCall(
