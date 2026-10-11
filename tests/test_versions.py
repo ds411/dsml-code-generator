@@ -1,5 +1,7 @@
 """Tests of the version baseline."""
 
+from importlib import metadata
+
 import pytest
 
 from dsml.versions import BaselineError, Pin, load_baseline, pinned_version
@@ -20,6 +22,7 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "fastapi",
         "github-runner",
         "hcl-required-version",
+        "jinja2",
         "opensysml",
         "opentofu",
         "pilot-kernel",
@@ -33,6 +36,10 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "terraform",
         "uv",
     }
+
+
+def test_package_baseline_pins_jinja2() -> None:
+    assert pinned_version("jinja2") == metadata.version("jinja2")
 
 
 def test_package_baseline_python_line() -> None:

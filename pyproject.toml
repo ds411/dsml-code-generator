@@ -7,6 +7,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 requires-python = "==3.14.*"
 dependencies = [
+    "jinja2==3.1.6",
     "opensysml==0.9.2",
 ]
 

@@ -36,6 +36,13 @@ value = "2026-08"
 [pilot-kernel-sha256]
 value = "5a015ed3f2b3d2dae14e9c3fb9602d9e1fef5f9ce33cf396c422329405cc3cb2"
 
+# Template engine of the generators: Jinja 3.x, the PyPI package Jinja2
+# (story #37, PRD-CORE-035). "version": the newest 3.x release on
+# 11 October 2026.
+[jinja2]
+line = "3"
+version = "3.1.6"
+
 # FastAPI target stack (PRD-APP-101). Lines: the newest minor on
 # 10 October 2026, the start of phase 1.
 [fastapi]
