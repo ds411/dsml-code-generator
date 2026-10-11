@@ -7,7 +7,7 @@ folder, so that an absolute path in the output gives a difference. The tests
 compare all output bytes: standard output, standard error, the exit codes
 and each file in the project folder.
 
-CI runs these tests on Linux x64, Linux arm64 and macOS arm64.
+CI runs these tests on Linux x64 (Q62).
 
 The tests do not change `HOME`, because the `opensysml` client keeps the
 `sysml-grpc` binary in a cache below the home folder.

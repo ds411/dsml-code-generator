@@ -1,7 +1,7 @@
 """Measure the start time of sysml-grpc and the parse time of OpenSysML.
 
 Story #12 records the results in docs/notes/opensysml-0.9.2.md. CI runs this
-script on each platform. Run it from the root of the repository:
+script on Linux x64. Run it from the root of the repository:
 
     uv run python scripts/measure_opensysml.py
 """
