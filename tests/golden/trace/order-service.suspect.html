@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSML trace report: suspect</title>
+<style>
+:root { color-scheme: light dark; }
+body { margin: 1rem; font-family: system-ui, sans-serif; font-size: 0.9rem; }
+h1 { font-size: 1.3rem; }
+dl { display: grid; grid-template-columns: max-content auto; gap: 0.2rem 1rem; }
+dt { font-weight: bold; }
+dd { margin: 0; font-family: monospace; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #8888; padding: 0.3rem 0.5rem; text-align: left; vertical-align: top; }
+th { background: #8882; }
+td { font-family: monospace; }
+ul { margin: 0; padding-left: 1rem; }
+.status-missing { color: #c62828; font-weight: bold; }
+.status-satisfied { color: #b26a00; }
+.status-verified { color: #2e7d32; }
+</style>
+</head>
+<body>
+<h1>DSML trace report: suspect</h1>
+<dl>
+<dt>Model commit</dt>
+<dd>f52a76dbc31f7bfda3b8f704135ce0519a213ce9</dd>
+<dt>Baseline commit</dt>
+<dd>fb5b749134ea7b2f2735c254c43eb3da13d035d9</dd>
+<dt>Rows</dt>
+<dd>4</dd>
+</dl>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th scope="col">linkType</th>
+<th scope="col">source</th>
+<th scope="col">target</th>
+<th scope="col">changedEnds</th>
+<th scope="col">changedElements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>allocate</td>
+<td>OrderService::orderApi</td>
+<td>OrderService::apiService</td>
+<td><ul><li>source</li></ul></td>
+<td><ul><li>OrderService::Order</li><li>OrderService::Order::note</li></ul></td>
+</tr>
+<tr>
+<td>frame</td>
+<td>R-001</td>
+<td>N-001</td>
+<td><ul><li>source</li></ul></td>
+<td><ul><li>R-001</li></ul></td>
+</tr>
+<tr>
+<td>satisfy</td>
+<td>OrderService::orderApi</td>
+<td>R-001</td>
+<td><ul><li>source</li><li>target</li></ul></td>
+<td><ul><li>OrderService::Order</li><li>OrderService::Order::note</li><li>R-001</li></ul></td>
+</tr>
+<tr>
+<td>verify</td>
+<td>V-001</td>
+<td>R-001</td>
+<td><ul><li>target</li></ul></td>
+<td><ul><li>R-001</li></ul></td>
+</tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

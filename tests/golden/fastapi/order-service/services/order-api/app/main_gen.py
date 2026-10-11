@@ -7,10 +7,14 @@ Uvicorn calls `create_app` at start:
     uvicorn app.main_gen:create_app --factory
 """
 
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, FastAPI
 from pydantic import BaseModel
 
 from app.shared.config_gen import ConfigurationError, Settings, load_settings
+from app.shared.db.session_gen import create_engine, create_session_factory
 from app.shared.errors_gen import register_error_handlers
 from app.shared.logs_gen import configure_logging, request_context
 
@@ -42,8 +46,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         except ConfigurationError as error:
             raise SystemExit(f"The application cannot start. {error}") from None
     configure_logging(settings.log_level)
-    app = FastAPI(title="orderApi", version="0.1.0")
+    engine = create_engine(settings)
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
+        yield
+        await engine.dispose()
+
+    app = FastAPI(title="orderApi", version="0.1.0", lifespan=lifespan)
     app.state.settings = settings
+    app.state.session_factory = create_session_factory(engine)
     register_error_handlers(app)
     app.middleware("http")(request_context)
     app.include_router(health_router)

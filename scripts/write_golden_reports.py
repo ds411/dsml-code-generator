@@ -2,11 +2,12 @@
 """Write the golden trace reports of the example model again.
 
 Story #72 added the golden coverage and orphans reports in
-tests/golden/trace/. Story #73 added the golden impact and suspect reports.
-The tests tests/test_trace_reports.py and tests/test_trace_changes.py
-compare the output of `dsml trace` with these files. Run this script from
-the root of the repository after a change that changes the reports, for
-example a new generator that writes trace manifest entries:
+tests/golden/trace/. Story #74 added the HTML reports, and story #73 added
+the golden impact and suspect reports. The tests tests/test_trace_reports.py
+and tests/test_trace_changes.py compare the output of `dsml trace` with
+these files. Run this script from the root of the repository after a change
+that changes the reports, for example a new generator that writes trace
+manifest entries:
 
     uv run python scripts/write_golden_reports.py
 
@@ -40,7 +41,7 @@ GOLDEN = ROOT / "tests" / "golden" / "trace"
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 REPORTS = ("coverage", "orphans")
 CHANGE_REPORTS = ("impact", "suspect")
-FORMATS = ("csv", "json")
+FORMATS = ("csv", "html", "json")
 
 CONFIGURATION = """\
 schema = 1

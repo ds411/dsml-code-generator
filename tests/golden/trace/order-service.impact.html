@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSML trace report: impact</title>
+<style>
+:root { color-scheme: light dark; }
+body { margin: 1rem; font-family: system-ui, sans-serif; font-size: 0.9rem; }
+h1 { font-size: 1.3rem; }
+dl { display: grid; grid-template-columns: max-content auto; gap: 0.2rem 1rem; }
+dt { font-weight: bold; }
+dd { margin: 0; font-family: monospace; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #8888; padding: 0.3rem 0.5rem; text-align: left; vertical-align: top; }
+th { background: #8882; }
+td { font-family: monospace; }
+ul { margin: 0; padding-left: 1rem; }
+.status-missing { color: #c62828; font-weight: bold; }
+.status-satisfied { color: #b26a00; }
+.status-verified { color: #2e7d32; }
+</style>
+</head>
+<body>
+<h1>DSML trace report: impact</h1>
+<dl>
+<dt>Model commit</dt>
+<dd>f52a76dbc31f7bfda3b8f704135ce0519a213ce9</dd>
+<dt>Baseline commit</dt>
+<dd>fb5b749134ea7b2f2735c254c43eb3da13d035d9</dd>
+<dt>Rows</dt>
+<dd>3</dd>
+</dl>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th scope="col">element</th>
+<th scope="col">change</th>
+<th scope="col">needs</th>
+<th scope="col">requirements</th>
+<th scope="col">verifications</th>
+<th scope="col">generatedFiles</th>
+<th scope="col">hclAddresses</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OrderService::Order</td>
+<td>changed</td>
+<td><ul><li>N-001</li></ul></td>
+<td><ul><li>R-001</li></ul></td>
+<td><ul><li>V-001</li></ul></td>
+<td><ul><li>app/main_gen.py</li><li>app/models_gen.py</li><li>infra/envs/prod/main.gen.tf</li></ul></td>
+<td><ul><li>aws_ecs_service.api_service</li></ul></td>
+</tr>
+<tr>
+<td>OrderService::Order::note</td>
+<td>changed</td>
+<td><ul><li>N-001</li></ul></td>
+<td><ul><li>R-001</li></ul></td>
+<td><ul><li>V-001</li></ul></td>
+<td><ul><li>app/main_gen.py</li><li>app/models_gen.py</li><li>infra/envs/prod/main.gen.tf</li></ul></td>
+<td><ul><li>aws_ecs_service.api_service</li></ul></td>
+</tr>
+<tr>
+<td>R-001</td>
+<td>changed</td>
+<td><ul><li>N-001</li></ul></td>
+<td><ul><li>R-001</li></ul></td>
+<td><ul><li>V-001</li></ul></td>
+<td><ul><li>app/main_gen.py</li><li>infra/envs/prod/main.gen.tf</li></ul></td>
+<td><ul><li>aws_ecs_service.api_service</li></ul></td>
+</tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

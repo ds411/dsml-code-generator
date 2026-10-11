@@ -93,7 +93,7 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | `validate` | Runs the validation rules on the model and writes the findings as text or as JSON. See "Command `dsml validate`". |
 | `trace` | Writes the coverage report or the orphans report as JSON or as CSV. See "Command `dsml trace`". |
 | `check-output` | Not available yet. The subcommand stops with exit code 2. |
-| `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. The infrastructure generator writes the root modules of the environments. The other generators come in M6. `docs/notes/file-writer.md` gives the rules. |
+| `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. The infrastructure generator writes the root modules of the environments and the local modules of the databases and the user directories. The other generators come in M6. `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
 
@@ -158,7 +158,7 @@ The golden IR files of the two reference models are in `tests/golden/ir/`. CI co
 
 ### Command `dsml trace`
 
-`dsml trace <report> --format json|csv [--baseline <git-ref>]` reads the model, the trace manifest `.dsml/trace.gen.json` and the trace comments in the hand-written files. Then it writes one report (PRD-TRACE-013). For example:
+`dsml trace <report> --format html|csv|json [--baseline <git-ref>]` reads the model, the trace manifest `.dsml/trace.gen.json` and the trace comments in the hand-written files. Then it writes one report (PRD-TRACE-013). For example:
 
 ```sh
 uv run dsml trace coverage --format csv --output coverage.csv
@@ -175,7 +175,7 @@ uv run dsml trace coverage --format csv --output coverage.csv
 - A change of an element also changes its owners and the elements that use it. For example, a changed field changes its entity, and the application that exposes the entity.
 - The reports `impact` and `suspect` compare the model in the work tree with a Git baseline (PRD-TRACE-016). `--baseline <git-ref>` gives the baseline. If it does not, the key `trace.baseline` of the configuration file gives it. If neither gives it, the baseline is the newest release tag `v*` before `HEAD` (Q54). If there is no baseline, the command stops with exit code 2. These reports also give the baseline commit.
 - The reports `coverage` and `orphans` use no baseline. With `--baseline`, they stop the command with exit code 2.
-- The format `html` is not available yet. It stops the command with exit code 2.
+- The HTML format is the default. It gives one HTML file with its styles in the file, and no script and no external resource (PRD-TRACE-017). The file shows the model commit, the baseline commit and the table of the report.
 
 The golden reports of the example model are in `tests/golden/trace/`. After a change of the reports, run `uv run python scripts/write_golden_reports.py` and examine the differences before you commit them.
 

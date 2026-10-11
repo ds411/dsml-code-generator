@@ -40,7 +40,7 @@ from dsml.library import LIBRARY_VERSION
 from dsml.trace.changes import IMPACT, ChangeData, impact_report, suspect_report
 from dsml.trace.comments import hand_written_files, read_trace_comments
 from dsml.trace.commit import model_commit
-from dsml.trace.report import Report, csv_report
+from dsml.trace.report import Report, csv_report, html_report
 from dsml.trace.report import json_report as json_trace_report
 from dsml.trace.reports import COVERAGE, ORPHANS, TraceData, coverage_report, orphans_report
 from dsml.validate.engine import Validator, fails
@@ -540,7 +540,7 @@ def read_trace_baseline(args: argparse.Namespace, configuration: Configuration) 
 # trace: PRD-CORE-001, PRD-CORE-006, PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013,
 # PRD-TRACE-016, PRD-TRACE-017, PRD-TRACE-018
 def run_trace(args: argparse.Namespace) -> Outcome:
-    """Write a trace report as JSON or as CSV.
+    """Write a trace report as HTML, CSV or JSON.
 
     The coverage and orphans reports read the model, the trace manifest
     `.dsml/trace.gen.json` and the trace comments in the hand-written files
@@ -554,10 +554,6 @@ def run_trace(args: argparse.Namespace) -> Outcome:
     The exit code is 0, also if the report has a requirement with the status
     `missing`, an orphan, a changed element or a suspect link.
     """
-    if args.format == "html":
-        raise ToolchainError(
-            "The format html is not available in this version. Use --format json or --format csv."
-        )
     if args.report in (COVERAGE, ORPHANS) and args.baseline is not None:
         raise ToolchainError(
             f"The {args.report} report uses no baseline. Remove the option --baseline."
@@ -567,8 +563,8 @@ def run_trace(args: argparse.Namespace) -> Outcome:
         report = coverage_orphans_report(args.report, configuration)
     else:
         report = change_report(args, configuration)
-    write = json_trace_report if args.format == "json" else csv_report
-    write_report(write(report), args.output)
+    writers = {"csv": csv_report, "html": html_report, "json": json_trace_report}
+    write_report(writers[args.format](report), args.output)
     return Outcome.SUCCESS
 
 

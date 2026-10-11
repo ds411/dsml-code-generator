@@ -76,6 +76,7 @@ This uses the trace comment form of PRD-TRACE-009, so the toolchain can later tr
 - After the last step of a milestone, examine its exit criteria. Give the result in a comment on the milestone issue. If all criteria are true, close the milestone. If a criterion is not true, add one or more steps with the stories that make it true.
 - Do each story on a new branch from the newest `main`. Use the name `story/<issue>-<short-name>`, or the branch name that the session gives.
 - Merge work into `main` only through a pull request. Do not merge it: the product owner does a squash merge.
+- Put 4 or fewer stories in a step, and give the main files of each story. Stories in one step must change different files. If they must change the same file, a setup story changes that file in the step before. `CONTRIBUTING.md` ("Parallel stories") gives the rules.
 - When the stories of one step go in parallel, merge their pull requests one at a time, in the order of the milestone. Stop each pull request when its CI passes, and report that it is ready. Merge `main` into its branch only immediately before its turn. The pull request merges after CI passes on that update. `CONTRIBUTING.md` ("Merge order") gives the steps.
 - Fill in `.github/pull_request_template.md`. Then add a comment with the recommended squash commit message (`.github/squash_commit_comment_template.md`). Edit the comment after each push that changes the scope.
 - Use the issue templates in `.github/ISSUE_TEMPLATE/` and the commit template `.gitmessage`.

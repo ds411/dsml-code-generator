@@ -4,6 +4,7 @@ import dataclasses
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 from collections.abc import Iterator
@@ -27,7 +28,7 @@ from dsml.ir.model import (
 )
 from dsml.trace.comments import TraceComment
 from dsml.trace.commit import NO_COMMIT, NOT_IN_REPOSITORY, model_commit
-from dsml.trace.report import Report, csv_report, json_report
+from dsml.trace.report import Report, csv_report, html_report, json_report
 from dsml.trace.reports import (
     ELEMENT_WITHOUT_REQUIREMENT,
     MISSING,
@@ -320,14 +321,56 @@ def test_folder_outside_git_repository_has_no_commit(project: Path) -> None:
 
 
 # trace: PRD-TRACE-017
-def test_html_format_is_not_available(project: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    assert main(["trace", "coverage"]) == 2
-    captured = capsys.readouterr()
-    assert captured.out == ""
-    assert captured.err == (
-        "dsml: error: The format html is not available in this version. "
-        "Use --format json or --format csv.\n"
+def test_html_is_the_default_format(
+    project: Path, capsysbinary: pytest.CaptureFixture[bytes]
+) -> None:
+    assert main(["trace", "coverage"]) == 0
+    golden: Path = write_golden_reports.golden_file("coverage", "html")
+    assert capsysbinary.readouterr().out == golden.read_bytes()
+
+
+_REFERENCE = re.compile(r"""\b(?:src|href)\s*=\s*["']?([^"'\s>]*)""", re.IGNORECASE)
+
+
+# trace: PRD-TRACE-017
+@pytest.mark.parametrize("report", write_golden_reports.REPORTS)
+def test_html_report_has_no_external_resource(report: str) -> None:
+    text = write_golden_reports.golden_file(report, "html").read_text("utf-8")
+    for reference in _REFERENCE.findall(text):
+        lower = reference.lower()
+        assert not lower.startswith(("http:", "https:", "//")), reference
+    assert "<script" not in text.lower()
+    assert "<link" not in text.lower()
+    assert "@import" not in text
+    assert "url(" not in text
+
+
+# trace: PRD-TRACE-017
+def test_html_reference_test_finds_external_resource() -> None:
+    page = '<img src="https://example.com/a.png"><a href=//example.com>x</a><a HREF="http:x">'
+    assert _REFERENCE.findall(page) == ["https://example.com/a.png", "//example.com", "http:x"]
+
+
+# trace: PRD-TRACE-017, PRD-TRACE-018
+def test_html_report_escapes_texts_and_gives_both_commits() -> None:
+    report = Report(
+        "example",
+        ("id", "items", "status"),
+        (("<b>&", ("x", '"y"'), "missing"), ("c", (), "<other>")),
+        "abc",
+        "def",
     )
+    page = html_report(report)
+    assert "<dd>abc</dd>" in page
+    assert "<dd>def</dd>" in page
+    assert "<td>&lt;b&gt;&amp;</td>" in page
+    assert "<li>x</li><li>&#34;y&#34;</li>" in page
+    assert '<td class="status-missing">missing</td>' in page
+    assert "<td>&lt;other&gt;</td>" in page
+    assert "<b>" not in page
+    assert page.endswith("</html>\n")
+    assert "\r" not in page
+    assert html_report(Report("example", ("id",), (), "abc")).count("<dd>none</dd>") == 1
 
 
 # trace: PRD-TRACE-016

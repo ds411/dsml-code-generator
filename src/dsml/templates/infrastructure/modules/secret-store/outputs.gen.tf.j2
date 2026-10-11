@@ -1,0 +1,12 @@
+{#- The outputs of the secret store module (PRD-IAC-020). -#}
+{% include "common/header.j2" %}
+
+output "key_arn" {
+  description = "The ARN of the KMS key of the secret."
+  value       = aws_kms_key.this.arn
+}
+
+output "secret_arn" {
+  description = "The ARN of the secret."
+  value       = aws_secretsmanager_secret.this.arn
+}

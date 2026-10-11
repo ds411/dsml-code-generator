@@ -15,6 +15,7 @@ from dsml.config import Configuration
 from dsml.errors import ToolchainError
 from dsml.generate.fastapi import FastApiGenerator
 from dsml.generate.infrastructure.generator import InfrastructureGenerator
+from dsml.generate.pipelines.generator import PipelineGenerator
 from dsml.generate.writer import OutputFile, check_files
 from dsml.ir.model import Ir
 
@@ -40,7 +41,11 @@ class Generator(Protocol):
         ...
 
 
-GENERATORS: list[Generator] = [FastApiGenerator(), InfrastructureGenerator()]
+GENERATORS: list[Generator] = [
+    FastApiGenerator(),
+    InfrastructureGenerator(),
+    PipelineGenerator(),
+]
 """The generators that `dsml generate` runs, in a fixed order."""
 
 
