@@ -9,12 +9,12 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/dev/main.gen.tf",
-      "sha256": "06a549f0962864b7e18ef7aac285d2209a6a573c5fdcec8d3dfbabb68b9e97b1"
+      "sha256": "e2a9909310d96f353d25271e08b1ae4471694c59fea6d96c4c2e0eac28b345eb"
     },
     {
       "part": "infrastructure",
       "path": "infra/envs/dev/outputs.gen.tf",
-      "sha256": "57d0247b3c558659dc3e1a981eab719f141b4ddd50b5d84bb0257183dbd18b88"
+      "sha256": "ee0adf75dde04bc01bf83c19182aa43496bff1cddf88ea532faeaa35006e1486"
     },
     {
       "part": "infrastructure",
@@ -24,7 +24,7 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/dev/variables.gen.tf",
-      "sha256": "7f858995d0ccdd669d52560dbf432227e4907b433d6b67ba088743ce7c036a09"
+      "sha256": "b5d2df1cf91a177e980aa8d772d9517945e074c0f269052a0ef974c2398a2150"
     },
     {
       "part": "infrastructure",
@@ -39,12 +39,12 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/prod/main.gen.tf",
-      "sha256": "e575da3052aa9c83a9e4ecb828d93fff6653cb5b01cc5653c779a508b1ee3a8e"
+      "sha256": "efe08c6373dfb0b6f86bc35e9e0b825a5dc5bd7e1c38dc92fd489906b6f20dde"
     },
     {
       "part": "infrastructure",
       "path": "infra/envs/prod/outputs.gen.tf",
-      "sha256": "39d949cc7a19869e54d4af06a9ecfc011bf2d6f1661c96f94b8b4ab889ab46c4"
+      "sha256": "ca22b8e7b1bf3d856df106a597dd8c58d8a09ef318229ef6d6bc1181705b1b0c"
     },
     {
       "part": "infrastructure",
@@ -54,7 +54,7 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/prod/variables.gen.tf",
-      "sha256": "87141f37f123836a9e632b012d529fc8d262c5052c4dc674404aebf202ecea1b"
+      "sha256": "bc70a699a31fec7167ae86ee50d2726c9d3572b8d6426e97f9494f2b2f2bf29c"
     },
     {
       "part": "infrastructure",
@@ -69,12 +69,12 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/staging/main.gen.tf",
-      "sha256": "f72a879dcb2d61b5b7dbda73f59031e3acb3b1f7b0d0738979982aecdf26382c"
+      "sha256": "f2b51043575beca2c994afa4f39857620002e1ff2be3bdb7df42e7f563b60d2b"
     },
     {
       "part": "infrastructure",
       "path": "infra/envs/staging/outputs.gen.tf",
-      "sha256": "3e8e49ea5eb387ba0833c3f490825eca099f1ecbaf620113473a7b6f2e2b26f5"
+      "sha256": "2c5925b6a60531eb00cf1b6e57726d9f38f10741b4df5f3aae2b088768c0ae99"
     },
     {
       "part": "infrastructure",
@@ -84,12 +84,27 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/staging/variables.gen.tf",
-      "sha256": "edb70810479d21e8e2883ead046e1950488359002243bc7a6cf2604f03f9a2c8"
+      "sha256": "982fbd08352e894385cf7ff13768468846a4f26b5a78880ac9314ebc251dec4c"
     },
     {
       "part": "infrastructure",
       "path": "infra/envs/staging/versions.gen.tf",
       "sha256": "73866eb00e8296ee46a98c9d0f000eb9bacfcb8a5181ab6c9f9f7f244fd328a1"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/container-service/main.gen.tf",
+      "sha256": "cd8896a46e40d41b7429a9d425f5dc6747b651526c70087394b42c7d9776eb32"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/container-service/outputs.gen.tf",
+      "sha256": "8df191eb4e5b40c8b3f672bc6f3d498b12bb3163891388ad0bcac8b2f89865c8"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/container-service/variables.gen.tf",
+      "sha256": "af53c1fd8b3af823ce496fcaddbf5bf6e3ba0c2113b6980c43defb48a9cc02cc"
     }
   ],
   "manifestVersion": 1

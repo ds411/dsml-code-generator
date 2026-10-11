@@ -156,3 +156,18 @@ def test_hcl_block_with_no_end_gives_an_error() -> None:
         hcl.block_symbols(
             'resource "aws_vpc" "x" {\n  cidr_block = "10.0.0.0/16"\n', lambda _: ("A",)
         )
+
+
+# trace: PRD-IAC-015, PRD-IAC-022
+def test_container_service_names() -> None:
+    assert names.ecr_repository("order-service", "orderApi") == "order-service-tooling-order-api"
+    assert (
+        names.task_execution_role("order-service", "dev", "apiService")
+        == "order-service-dev-api-service-execution"
+    )
+    assert (
+        names.task_role("order-service", "dev", "apiService")
+        == "order-service-dev-api-service-task"
+    )
+    long_role = names.task_role("order-service", "staging", "a" * 60)
+    assert len(long_role) == names.NAME_LIMITS["iam_role"]

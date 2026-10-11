@@ -35,6 +35,7 @@ NAME_LIMITS: Final = {
     "ecr_repository": 256,
     "ecs_cluster": 255,
     "ecs_service": 255,
+    "ecs_task_definition": 255,
     "iam_policy": 128,
     "iam_role": 64,
     "kms_alias": 256,
@@ -155,3 +156,24 @@ def deploy_role(product: str, environment: str) -> str:
 def push_role(product: str) -> str:
     """Give the name of the push role of the tooling account."""
     return aws_name(product, TOOLING, PUSH_ROLE, "iam_role")
+
+
+# trace: PRD-IAC-008, PRD-IAC-022
+def ecr_repository(product: str, application: str) -> str:
+    """Give the name of the ECR repository of an application in the tooling account."""
+    return aws_name(product, TOOLING, application, "ecr_repository")
+
+
+# trace: PRD-IAC-015, PRD-IAC-022
+def task_execution_role(product: str, environment: str, element: str) -> str:
+    """Give the name of the task execution role of a container service.
+
+    The ECR repository policy of the tooling account permits pulls by this role.
+    """
+    return aws_name(product, environment, f"{names.kebab_case(element)}-execution", "iam_role")
+
+
+# trace: PRD-IAC-015
+def task_role(product: str, environment: str, element: str) -> str:
+    """Give the name of the task role of a container service."""
+    return aws_name(product, environment, f"{names.kebab_case(element)}-task", "iam_role")

@@ -11,3 +11,16 @@ variable "model_commit" {
     error_message = "The variable model_commit must be a full Git commit hash with 40 or 64 lowercase hexadecimal characters."
   }
 }
+{% for service in container_services %}
+
+variable "{{ service.image_variable }}" {
+  description = "The digest of the image of the application {{ service.application_tag }}. The pipeline gives it (PRD-IAC-009)."
+  type        = string
+  nullable    = false
+
+  validation {
+    condition     = can(regex("^sha256:[0-9a-f]{64}$", var.{{ service.image_variable }}))
+    error_message = "The variable {{ service.image_variable }} must be an image digest: sha256: and 64 lowercase hexadecimal characters."
+  }
+}
+{% endfor %}
