@@ -1,0 +1,8 @@
+# report: suspect
+# model commit: f52a76dbc31f7bfda3b8f704135ce0519a213ce9
+# baseline commit: fb5b749134ea7b2f2735c254c43eb3da13d035d9
+linkType,source,target,changedEnds,changedElements
+allocate,OrderService::orderApi,OrderService::apiService,source,OrderService::Order; OrderService::Order::note
+frame,R-001,N-001,source,R-001
+satisfy,OrderService::orderApi,R-001,source; target,OrderService::Order; OrderService::Order::note; R-001
+verify,V-001,R-001,target,R-001

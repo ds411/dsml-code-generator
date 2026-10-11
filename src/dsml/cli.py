@@ -14,12 +14,18 @@ from pathlib import Path, PurePosixPath
 from typing import NoReturn
 
 from dsml import starter, versions
-from dsml.baseline import read_baseline
+from dsml.baseline import (
+    Baseline,
+    load_baseline,
+    newest_release_tag,
+    read_baseline,
+    repository_root,
+)
 from dsml.config import Configuration, load_configuration
 from dsml.errors import NotAvailableError, ToolchainError, UsageError
 from dsml.generate import generators
 from dsml.generate.manifest import read_manifest
-from dsml.generate.trace import read_trace
+from dsml.generate.trace import SymbolKind, read_trace
 from dsml.generate.writer import (
     INFRASTRUCTURE,
     PIPELINES,
@@ -33,9 +39,10 @@ from dsml.generate.writer import (
 from dsml.ir.model import IR_VERSION, Ir
 from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
+from dsml.trace.changes import IMPACT, ChangeData, impact_report, suspect_report
 from dsml.trace.comments import hand_written_files, read_trace_comments
 from dsml.trace.commit import model_commit
-from dsml.trace.report import csv_report, html_report
+from dsml.trace.report import Report, csv_report, html_report
 from dsml.trace.report import json_report as json_trace_report
 from dsml.trace.reports import COVERAGE, ORPHANS, TraceData, coverage_report, orphans_report
 from dsml.validate.engine import Validator, fails
@@ -540,22 +547,65 @@ def trace_folders(configuration: Configuration) -> list[PurePosixPath]:
     return sorted(folders, key=lambda folder: folder.as_posix())
 
 
-# trace: PRD-CORE-001, PRD-CORE-006, PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013,
-# PRD-TRACE-017, PRD-TRACE-018
-def run_trace(args: argparse.Namespace) -> Outcome:
-    """Write the coverage report or the orphans report as HTML, CSV or JSON.
+# trace: PRD-TRACE-016, PRD-TRACE-018
+def read_trace_baseline(args: argparse.Namespace, configuration: Configuration) -> Baseline:
+    """Make the IR of the baseline of the impact and suspect reports.
 
-    The command reads the model, the trace manifest `.dsml/trace.gen.json`
-    and the trace comments in the hand-written files of the output folders
-    and the test folders. A trace comment that the reader cannot read gives
-    a warning on standard error. The exit code is 0, also if the report has
-    a requirement with the status `missing` or an orphan.
+    `--baseline` gives the baseline. If it does not, the key `trace.baseline`
+    of the configuration file gives it. If neither gives it, the baseline is
+    the newest release tag `v*` before `HEAD` (Q54). If there is no baseline,
+    the command stops with exit code 2.
     """
-    if args.report not in (COVERAGE, ORPHANS):
-        raise NotAvailableError()
-    if args.baseline is not None:
-        raise ToolchainError("The option --baseline is not available in this version.")
+    cwd = Path.cwd()
+    ref: str | None = args.baseline if args.baseline is not None else configuration.trace.baseline
+    if ref is None:
+        repository_root(cwd)
+        ref = newest_release_tag(cwd)
+        if ref is None:
+            raise ToolchainError(
+                f"There is no baseline for the {args.report} report. "
+                "The repository has no release tag v* before HEAD. "
+                "Give a baseline with --baseline <git-ref>, "
+                "or set the key trace.baseline in the configuration file."
+            )
+    LOG.debug("Baseline: %s.", ref)
+    return load_baseline(ref, configuration, cwd)
+
+
+# trace: PRD-CORE-001, PRD-CORE-006, PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013,
+# PRD-TRACE-016, PRD-TRACE-017, PRD-TRACE-018
+def run_trace(args: argparse.Namespace) -> Outcome:
+    """Write a trace report as HTML, CSV or JSON.
+
+    The coverage and orphans reports read the model, the trace manifest
+    `.dsml/trace.gen.json` and the trace comments in the hand-written files
+    of the output folders and the test folders. A trace comment that the
+    reader cannot read gives a warning on standard error. These reports use
+    no baseline.
+
+    The impact and suspect reports compare the model with a Git baseline
+    (PRD-TRACE-016). The impact report also reads the trace manifest.
+
+    The exit code is 0, also if the report has a requirement with the status
+    `missing`, an orphan, a changed element or a suspect link.
+    """
+    if args.report in (COVERAGE, ORPHANS) and args.baseline is not None:
+        raise ToolchainError(
+            f"The {args.report} report uses no baseline. Remove the option --baseline."
+        )
     configuration = read_configuration(args)
+    if args.report in (COVERAGE, ORPHANS):
+        report = coverage_orphans_report(args.report, configuration)
+    else:
+        report = change_report(args, configuration)
+    writers = {"csv": csv_report, "html": html_report, "json": json_trace_report}
+    write_report(writers[args.format](report), args.output)
+    return Outcome.SUCCESS
+
+
+# trace: PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013, PRD-TRACE-018
+def coverage_orphans_report(name: str, configuration: Configuration) -> Report:
+    """Make the coverage report or the orphans report."""
     ir = read_model(configuration)
     root = configuration.root
     generated = [entry.path for entry in read_manifest(root).generated]
@@ -571,10 +621,27 @@ def run_trace(args: argparse.Namespace) -> Outcome:
         files=tuple(hand_written_files(root, folders, generated)),
         model_commit=model_commit(root),
     )
-    report = coverage_report(data) if args.report == COVERAGE else orphans_report(data)
-    writers = {"csv": csv_report, "html": html_report, "json": json_trace_report}
-    write_report(writers[args.format](report), args.output)
-    return Outcome.SUCCESS
+    return coverage_report(data) if name == COVERAGE else orphans_report(data)
+
+
+# trace: PRD-TRACE-013, PRD-TRACE-015, PRD-TRACE-016, PRD-TRACE-018
+def change_report(args: argparse.Namespace, configuration: Configuration) -> Report:
+    """Make the impact report or the suspect report."""
+    baseline = read_trace_baseline(args, configuration)
+    ir = read_model(configuration)
+    root = configuration.root
+    entries = read_trace(root)
+    data = ChangeData(
+        ir=ir,
+        baseline=baseline.ir,
+        model_commit=model_commit(root),
+        baseline_commit=baseline.commit,
+        generated=tuple((entry.element, entry.path) for entry in entries),
+        addresses=tuple(
+            (entry.element, entry.name) for entry in entries if entry.kind == SymbolKind.RESOURCE
+        ),
+    )
+    return impact_report(data) if args.report == IMPACT else suspect_report(data)
 
 
 def not_available(args: argparse.Namespace) -> Outcome:

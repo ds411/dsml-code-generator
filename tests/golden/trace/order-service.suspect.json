@@ -1,0 +1,63 @@
+{
+  "baselineCommit": "fb5b749134ea7b2f2735c254c43eb3da13d035d9",
+  "columns": [
+    "linkType",
+    "source",
+    "target",
+    "changedEnds",
+    "changedElements"
+  ],
+  "modelCommit": "f52a76dbc31f7bfda3b8f704135ce0519a213ce9",
+  "report": "suspect",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "changedElements": [
+        "OrderService::Order",
+        "OrderService::Order::note"
+      ],
+      "changedEnds": [
+        "source"
+      ],
+      "linkType": "allocate",
+      "source": "OrderService::orderApi",
+      "target": "OrderService::apiService"
+    },
+    {
+      "changedElements": [
+        "R-001"
+      ],
+      "changedEnds": [
+        "source"
+      ],
+      "linkType": "frame",
+      "source": "R-001",
+      "target": "N-001"
+    },
+    {
+      "changedElements": [
+        "OrderService::Order",
+        "OrderService::Order::note",
+        "R-001"
+      ],
+      "changedEnds": [
+        "source",
+        "target"
+      ],
+      "linkType": "satisfy",
+      "source": "OrderService::orderApi",
+      "target": "R-001"
+    },
+    {
+      "changedElements": [
+        "R-001"
+      ],
+      "changedEnds": [
+        "target"
+      ],
+      "linkType": "verify",
+      "source": "V-001",
+      "target": "R-001"
+    }
+  ]
+}

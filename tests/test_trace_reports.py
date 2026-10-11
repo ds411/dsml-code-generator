@@ -373,13 +373,16 @@ def test_html_report_escapes_texts_and_gives_both_commits() -> None:
     assert html_report(Report("example", ("id",), (), "abc")).count("<dd>none</dd>") == 1
 
 
-def test_baseline_option_is_not_available(
+# trace: PRD-TRACE-016
+def test_coverage_and_orphans_reports_use_no_baseline(
     project: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     assert main(["trace", "orphans", "--format", "json", "--baseline", "v1.0.0"]) == 2
     captured = capsys.readouterr()
     assert captured.out == ""
-    assert captured.err == "dsml: error: The option --baseline is not available in this version.\n"
+    assert captured.err == (
+        "dsml: error: The orphans report uses no baseline. Remove the option --baseline.\n"
+    )
 
 
 def test_trace_comment_problem_is_a_warning(

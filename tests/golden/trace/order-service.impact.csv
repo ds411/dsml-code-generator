@@ -1,0 +1,7 @@
+# report: impact
+# model commit: f52a76dbc31f7bfda3b8f704135ce0519a213ce9
+# baseline commit: fb5b749134ea7b2f2735c254c43eb3da13d035d9
+element,change,needs,requirements,verifications,generatedFiles,hclAddresses
+OrderService::Order,changed,N-001,R-001,V-001,app/main_gen.py; app/models_gen.py; infra/envs/prod/main.gen.tf,aws_ecs_service.api_service
+OrderService::Order::note,changed,N-001,R-001,V-001,app/main_gen.py; app/models_gen.py; infra/envs/prod/main.gen.tf,aws_ecs_service.api_service
+R-001,changed,N-001,R-001,V-001,app/main_gen.py; infra/envs/prod/main.gen.tf,aws_ecs_service.api_service
