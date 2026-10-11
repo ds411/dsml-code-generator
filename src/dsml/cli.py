@@ -3,9 +3,11 @@
 import argparse
 import logging
 import os
+import re
 import sys
 import traceback
 from collections.abc import Callable, Sequence
+from datetime import date
 from enum import IntEnum
 from importlib import metadata
 from pathlib import Path, PurePosixPath
@@ -46,6 +48,7 @@ from dsml.trace.reports import COVERAGE, ORPHANS, TraceData, coverage_report, or
 from dsml.validate.engine import Validator, fails
 from dsml.validate.report import finding_line, json_report, text_report
 from dsml.validate.sarif import sarif_report
+from dsml.validate.waivers import check_date
 
 PROG = "dsml"
 DEFAULT_CONFIG = Path("dsml.toml")
@@ -83,6 +86,17 @@ Handler = Callable[[argparse.Namespace], Outcome]
 
 
 # trace: PRD-TOP-002, PRD-CORE-001, PRD-CORE-006, PRD-CORE-010, PRD-CORE-012
+# trace: PRD-VAL-010
+def check_date_option(text: str) -> date:
+    """Read the value of the option `--date`. It must have the form YYYY-MM-DD."""
+    try:
+        if re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", text):
+            return date.fromisoformat(text)
+    except ValueError:
+        pass
+    raise argparse.ArgumentTypeError(f'"{text}" is not a date. Use the form YYYY-MM-DD.')
+
+
 def build_parser() -> ArgumentParser:
     """Make the argument parser of the command `dsml`.
 
@@ -155,6 +169,12 @@ def build_parser() -> ArgumentParser:
         metavar="<git-ref>",
         help="the baseline model for the identity rules",
     )
+    validate.add_argument(
+        "--date",
+        type=check_date_option,
+        metavar="<YYYY-MM-DD>",
+        help="the date of the expiry check of the waivers (default: the commit date of HEAD)",
+    )
 
     generate = add("generate", "validate the model, then write all generated files")
     generate.add_argument(
@@ -181,6 +201,12 @@ def build_parser() -> ArgumentParser:
         "--overwrite",
         action="store_true",
         help="replace the generated files that are different from the manifest",
+    )
+    generate.add_argument(
+        "--date",
+        type=check_date_option,
+        metavar="<YYYY-MM-DD>",
+        help="the date of the expiry check of the waivers (default: the commit date of HEAD)",
     )
 
     trace = add("trace", "write a trace report")
@@ -428,7 +454,7 @@ def read_baseline_model(args: argparse.Namespace, configuration: Configuration) 
 
 
 # trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-VAL-003, PRD-VAL-005, PRD-VAL-006,
-# PRD-VAL-011
+# PRD-VAL-009, PRD-VAL-010, PRD-VAL-011
 def run_validate(args: argparse.Namespace) -> Outcome:
     """Run all enabled rules on the IR and write the findings.
 
@@ -437,30 +463,38 @@ def run_validate(args: argparse.Namespace) -> Outcome:
     if a finding has the severity `error`, or the severity `warning` with
     `--fail-on warning` (PRD-VAL-005). The IDN rules run only if there is a
     baseline (PRD-VAL-011).
+
+    The report gives the waived findings in a separate group. A waived
+    finding does not change the exit code (PRD-VAL-009). `--date` gives the
+    date of the expiry check of the waivers. The default is the commit date
+    of `HEAD` (PRD-VAL-010).
     """
     configuration = read_configuration(args)
     validator = Validator(configuration)
     baseline = read_baseline_model(args, configuration)
-    findings = validator.run(read_model(configuration), baseline)
+    ir = read_model(configuration)
+    result = validator.validate(ir, baseline, check_date(ir, configuration.root, args.date))
+    findings, waived = result.findings, result.waived
     if args.format == "sarif":
         base = Path(os.path.relpath(configuration.root.resolve(), Path.cwd().resolve()))
-        report = sarif_report(findings, validator.rules, toolchain_version(), base.as_posix())
+        version = toolchain_version()
+        report = sarif_report(findings, validator.rules, version, base.as_posix(), waived)
     elif args.format == "json":
-        report = json_report(findings, validator.rules)
+        report = json_report(findings, validator.rules, waived)
     else:
-        report = text_report(findings, validator.rules)
+        report = text_report(findings, validator.rules, waived)
     write_report(report, args.output)
     return Outcome.ERROR_FINDING if fails(findings, args.fail_on) else Outcome.SUCCESS
 
 
 # trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-003, PRD-CORE-004, PRD-CORE-005, PRD-CORE-043,
-# PRD-VAL-003
+# PRD-VAL-003, PRD-VAL-009
 def run_generate(args: argparse.Namespace) -> Outcome:
     """Validate the model, then write the generated files through the file writer.
 
     - The validator runs all enabled rules on the IR. An error finding stops
       the command before it writes a file. The exit code is 1 (PRD-CORE-003,
-      PRD-VAL-003).
+      PRD-VAL-003). A waived finding does not stop the command (PRD-VAL-009).
     - With `--check`, the command writes no file. It lists each file that a
       normal run adds, changes or deletes. The exit code is 1 if there is a
       difference (PRD-CORE-004).
@@ -472,7 +506,8 @@ def run_generate(args: argparse.Namespace) -> Outcome:
     configuration = read_configuration(args)
     validator = Validator(configuration)
     ir = read_model(configuration)
-    errors = [finding for finding in validator.run(ir) if finding.severity == "error"]
+    today = check_date(ir, configuration.root, args.date)
+    errors = [finding for finding in validator.run(ir, today=today) if finding.severity == "error"]
     if errors:
         for finding in errors:
             sys.stderr.write(f"{PROG}: {finding_line(finding)}\n")

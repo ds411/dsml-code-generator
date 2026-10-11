@@ -1,9 +1,11 @@
-# trace: PRD-VAL-006, PRD-CORE-028, PRD-CORE-033
+# trace: PRD-VAL-006, PRD-VAL-009, PRD-CORE-028, PRD-CORE-033
 """Write the findings of the validator as SARIF 2.1.0.
 
 GitHub code scanning and other code review tools read SARIF. The log has one
 run. `tool.driver.rules` has the metadata of each rule of the registry, sorted
 by rule ID. Each result has the rule, the level, the message and the location.
+A waived finding is a result with a suppression that gives the reason of the
+waiver (PRD-VAL-009).
 
 The output is byte-identical for the same findings (PRD-CORE-028): the writer
 uses the canonical JSON writer of the IR, the lists are sorted, and the log
@@ -18,6 +20,7 @@ from urllib.parse import quote
 from dsml.ir.model import Finding, Location, Severity
 from dsml.ir.writer import JsonValue, canonical_json
 from dsml.validate.rule import Rule, RuleCheck
+from dsml.validate.waivers import WaivedFinding, Waiver
 
 SCHEMA: Final = "https://json.schemastore.org/sarif-2.1.0.json"
 """The JSON Schema of SARIF 2.1.0."""
@@ -91,18 +94,34 @@ def result(finding: Finding, index: Mapping[str, int], base: str) -> dict[str, J
     return data
 
 
-# trace: PRD-VAL-006, PRD-CORE-028, PRD-CORE-033
+# trace: PRD-VAL-009
+def suppression(waiver: Waiver) -> dict[str, JsonValue]:
+    """Give the SARIF suppression of a waiver.
+
+    The waiver is in the model, thus the kind is `inSource`. The
+    justification is the reason of the waiver.
+    """
+    properties: dict[str, JsonValue] = {"owner": waiver.owner}
+    if waiver.expires is not None:
+        properties["expires"] = waiver.expires
+    return {"justification": waiver.reason, "kind": "inSource", "properties": properties}
+
+
+# trace: PRD-VAL-006, PRD-VAL-009, PRD-CORE-028, PRD-CORE-033
 def sarif_report(
     findings: tuple[Finding, ...],
     rules: Mapping[str, RuleCheck],
     version: str,
     base: str = "",
+    waived: tuple[WaivedFinding, ...] = (),
 ) -> str:
     """Write the findings as a SARIF 2.1.0 log.
 
     `version` is the version of the toolchain. `base` is the folder of the
     configuration file, relative to the root of the IR. Each URI is relative
     to that folder. The results keep the order of the findings (PRD-VAL-007).
+    The waived findings come after them, each with a suppression
+    (PRD-VAL-009).
     """
     ids = sorted(rules)
     index = {rule_id: number for number, rule_id in enumerate(ids)}
@@ -113,7 +132,13 @@ def sarif_report(
     }
     run: dict[str, JsonValue] = {
         "columnKind": "unicodeCodePoints",
-        "results": [result(finding, index, base) for finding in findings],
+        "results": [
+            *(result(finding, index, base) for finding in findings),
+            *(
+                {**result(item.finding, index, base), "suppressions": [suppression(item.waiver)]}
+                for item in waived
+            ),
+        ],
         "tool": {"driver": driver},
     }
     log: dict[str, JsonValue] = {"$schema": SCHEMA, "runs": [run], "version": VERSION}

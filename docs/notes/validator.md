@@ -99,3 +99,32 @@ Story #59 added the module `str_core.py` with the rules STR-001, STR-002, STR-00
 - STR-003: the patterns come from the keys `ids.need`, `ids.requirement` and `ids.verification` of `dsml.toml`. The full short name must match the pattern.
 - STR-004: the rule gives one finding for each element of a group of elements with the same short name.
 - STR-016: an AWS attribute is an attribute of an AWS realization (PRD-DSML-042), `accountId`, `region`, or an attribute with a name that starts with "aws". The IR adapter writes each attribute with a value that the model declares on a logical element into the IR.
+
+## Waivers, STR-014 and STR-015
+
+Story #67 added the waivers. The module `src/dsml/validate/waivers.py` reads them from the IR and applies them. The module `str_waiver.py` holds the rules STR-014 and STR-015. The tests are in `tests/test_waivers.py`.
+
+A waiver is a `@Waiver` metadata usage on an element (PRD-DSML-055):
+
+```sysml
+#Requirement requirement <'R-001'> listOrders {
+    // ...
+    @Waiver { rule = "COV-003"; reason = "The API comes in the next release."; owner = "Order team"; expires = "2027-01-31"; }
+}
+```
+
+- A waiver stops the findings of its rule on its element only (PRD-VAL-009). A finding with a different rule, or on a different element, stays.
+- A waiver with a STR-015 problem stops no finding. A waiver cannot stop STR-014 or STR-015.
+- The text report gives the waived findings in the group "Waived findings" after the summary line. The JSON report gives them in the list `waived`, each with the key `waiver`. The key `summary.waived` gives their number. SARIF gives them as results with a suppression of the kind `inSource`. The justification is the reason of the waiver.
+- A waived finding does not change the exit code of `dsml validate`, and it does not stop `dsml generate`.
+- STR-015 reports a waiver with no rule, a rule that does not exist, no reason or no owner. It also reports an `expires` value that is not a date YYYY-MM-DD.
+
+### Date of the expiry check
+
+On its `expires` date, a waiver applies. After that date, the waiver stops no finding, and the engine reports STR-014 (PRD-VAL-010). The same input must give the same report (PRD-CORE-028), thus the check does not read the clock:
+
+1. The option `--date <YYYY-MM-DD>` of `dsml validate` and `dsml generate` gives the date.
+2. If there is no option, the date is the commit date of `HEAD` of the Git repository of the configuration file, in UTC.
+3. If there is no commit, the date is the date of today in UTC. Only in this case does the clock change the report.
+
+The command reads the date only if a waiver has an `expires` date. A rule function reads only the IR and the configuration. Thus the function of STR-014 gives no hit, and the rule engine reports STR-014 when it applies the waivers.

@@ -282,7 +282,8 @@ def test_text_and_json_reports() -> None:
                 "severity": "warning",
             },
         ],
-        "summary": {"error": 1, "info": 0, "warning": 1},
+        "summary": {"error": 1, "info": 0, "waived": 0, "warning": 1},
+        "waived": [],
     }
 
 
@@ -316,7 +317,8 @@ def test_validate_writes_the_findings_of_the_example_model(
     assert main(["validate", "--format", "json"]) == 0
     assert json.loads(capsys.readouterr().out) == {
         "findings": [],
-        "summary": {"error": 0, "info": 0, "warning": 0},
+        "summary": {"error": 0, "info": 0, "waived": 0, "warning": 0},
+        "waived": [],
     }
 
 
