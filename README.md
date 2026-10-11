@@ -137,7 +137,7 @@ uv run dsml ir docs/model/prd/*.sysml --output prd.ir.json
 
 ### Command `dsml validate`
 
-`dsml validate [--format text|json] [--fail-on error|warning]` reads the model files of the key `model.paths`, runs all enabled rules on the IR and writes the findings. For example:
+`dsml validate [--format text|json] [--fail-on error|warning] [--baseline <git-ref>]` reads the model files of the key `model.paths`, runs all enabled rules on the IR and writes the findings. For example:
 
 ```sh
 uv run dsml validate --format json --output findings.json
@@ -148,7 +148,8 @@ uv run dsml validate --format json --output findings.json
 - The JSON format gives the list `findings` and the object `summary`.
 - The exit code is 1 if there is a finding with the severity `error`. With `--fail-on warning`, the exit code is also 1 if there is a warning (PRD-VAL-005).
 - The keys `rules.severity` and `rules.optional` of the configuration file change the severities and turn on the optional rule sets. `docs/configuration.md` gives the rules.
-- The SARIF format and `--baseline` are not available yet. They stop the command with exit code 2.
+- The identity rules (IDN) run only with a baseline: `--baseline <git-ref>`, or the key `trace.baseline` of the configuration file (PRD-VAL-011). The toolchain reads the baseline model from the local Git repository. A Git reference that does not exist stops the command with exit code 2.
+- The SARIF format is not available yet. It stops the command with exit code 2.
 
 The rules are in `src/dsml/validate/rules/`. `docs/notes/validator.md` tells how to add a rule.
 

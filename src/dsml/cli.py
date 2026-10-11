@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import NoReturn
 
 from dsml import starter, versions
+from dsml.baseline import read_baseline
 from dsml.config import Configuration, load_configuration
 from dsml.errors import NotAvailableError, ToolchainError, UsageError
 from dsml.generate import generators
@@ -395,21 +396,37 @@ def read_model(configuration: Configuration) -> Ir:
     return make_ir(files, Path.cwd())
 
 
-# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-VAL-003, PRD-VAL-005, PRD-VAL-006
+# trace: PRD-VAL-011
+def read_baseline_model(args: argparse.Namespace, configuration: Configuration) -> Ir | None:
+    """Make the IR of the baseline model, or give `None` if there is no baseline.
+
+    `--baseline` gives the baseline. If it does not, the key `trace.baseline`
+    of the configuration file gives it. A Git reference that does not exist
+    stops the command with exit code 2.
+    """
+    ref: str | None = args.baseline if args.baseline is not None else configuration.trace.baseline
+    if ref is None:
+        return None
+    LOG.debug("Baseline: %s.", ref)
+    return read_baseline(ref, configuration, Path.cwd())
+
+
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-VAL-003, PRD-VAL-005, PRD-VAL-006,
+# PRD-VAL-011
 def run_validate(args: argparse.Namespace) -> Outcome:
     """Run all enabled rules on the IR and write the findings.
 
     The report is text or JSON (`--format`). The exit code is 1 if a finding
     has the severity `error`, or the severity `warning` with
-    `--fail-on warning` (PRD-VAL-005).
+    `--fail-on warning` (PRD-VAL-005). The IDN rules run only if there is a
+    baseline (PRD-VAL-011).
     """
     if args.format == "sarif":
         raise ToolchainError("The format sarif is not available in this version.")
-    if args.baseline is not None:
-        raise ToolchainError("The option --baseline is not available in this version.")
     configuration = read_configuration(args)
     validator = Validator(configuration)
-    findings = validator.run(read_model(configuration))
+    baseline = read_baseline_model(args, configuration)
+    findings = validator.run(read_model(configuration), baseline)
     write = json_report if args.format == "json" else text_report
     write_report(write(findings, validator.rules), args.output)
     return Outcome.ERROR_FINDING if fails(findings, args.fail_on) else Outcome.SUCCESS

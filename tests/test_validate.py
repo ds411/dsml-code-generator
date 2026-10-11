@@ -369,7 +369,6 @@ def test_generate_writes_no_file_when_there_is_an_error_finding(
     ("argv", "message"),
     [
         (["--format", "sarif"], "The format sarif is not available in this version."),
-        (["--baseline", "v1.0.0"], "The option --baseline is not available in this version."),
     ],
 )
 def test_options_of_later_stories_are_not_available(
