@@ -2,7 +2,7 @@
 """Measure the time of `dsml ir` for a generated model with 1,000 elements.
 
 Story #33 records the results in docs/notes/ir-performance.md. CI runs this
-script on each platform. Run it from the root of the repository:
+script on Linux x64. Run it from the root of the repository:
 
     uv run python scripts/measure_ir.py
 

@@ -64,7 +64,7 @@ In a Claude Code cloud session, the SessionStart hook `.claude/hooks/session-sta
 
 ### CI
 
-The workflow `.github/workflows/ci.yml` runs the checks of step 4 on each pull request and on each push to `main`. It runs on Linux x64 (`ubuntu-24.04`), Linux arm64 (`ubuntu-24.04-arm`) and macOS arm64 (`macos-15`), the operating systems of decision record 03 (Q50). The steps are:
+The workflow `.github/workflows/ci.yml` runs the checks of step 4 on each pull request and on each push to `main`. It runs only on Linux x64 (`ubuntu-24.04`), as decision record 07 gives (Q62). The steps are:
 
 1. `uv sync --frozen`
 2. `pnpm install --frozen-lockfile`
@@ -154,7 +154,7 @@ uv run dsml validate --format json --output findings.json
 
 The rules are in `src/dsml/validate/rules/`. `docs/notes/validator.md` tells how to add a rule.
 
-The golden IR files of the two reference models are in `tests/golden/ir/`. CI compares the IR with these files on each platform (PRD-CORE-027, PRD-CORE-029). After a change of the IR, run `uv run python scripts/write_golden_ir.py` and examine the differences before you commit them.
+The golden IR files of the two reference models are in `tests/golden/ir/`. CI compares the IR with these files on Linux x64 (PRD-CORE-027, PRD-CORE-029). After a change of the IR, run `uv run python scripts/write_golden_ir.py` and examine the differences before you commit them.
 
 ### Command `dsml trace`
 

@@ -143,8 +143,8 @@ package PrdCore {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-029'> core029 {
-        doc /* The toolchain CI must run each reference model on Linux x64, Linux arm64 and macOS arm64, and compare the outputs byte by byte. */
-        :>> title = "Cross-platform comparison"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
+        doc /* The toolchain CI must run each reference model on Linux x64, and compare the outputs byte by byte with the golden files. */
+        :>> title = "CI output comparison"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-030'> core030 {
