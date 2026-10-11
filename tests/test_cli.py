@@ -19,9 +19,6 @@ NOT_AVAILABLE_ARGV = [
     ["init", "--target", "fastapi"],
     ["validate"],
     ["validate", "--format", "sarif", "--baseline", "v1.0.0"],
-    ["generate"],
-    ["generate", "--application", "orders", "--check"],
-    ["generate", "--infrastructure", "--pipelines"],
     ["trace", "coverage"],
     ["trace", "impact", "--format", "csv", "--baseline", "v1.0.0"],
     ["check-output"],
@@ -210,6 +207,11 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     if command == "ir":
         (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
         argv = [command, "model.sysml"]
+    if command == "generate":
+        (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
+        (tmp_path / "dsml.toml").write_text(
+            'schema = 1\n\n[model]\npaths = ["model.sysml"]\n', encoding="utf-8"
+        )
     with subprocess.Popen(
         [sys.executable, "-m", "dsml", *argv],
         stdin=subprocess.PIPE,
@@ -230,5 +232,7 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     elif command == "ir":
         assert (returncode, err) == (0, "")
         assert '"files": [\n    "model.sysml"\n  ]' in out
+    elif command == "generate":
+        assert (returncode, out, err) == (0, "add .dsml/generated.json\n", "")
     else:
         assert (returncode, out, err) == (2, "", f"dsml: error: {NOT_AVAILABLE}\n")
