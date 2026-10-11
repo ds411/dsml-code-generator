@@ -234,7 +234,8 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
         assert (returncode, err) == (0, "")
         assert '"files": [\n    "model.sysml"\n  ]' in out
     elif command == "generate":
-        assert (returncode, out, err) == (0, "add .dsml/generated.json\n", "")
+        manifests = "add .dsml/generated.json\nadd .dsml/trace.gen.json\n"
+        assert (returncode, out, err) == (0, manifests, "")
     elif command == "init":
         assert (returncode, out, err) == (0, "add dsml.toml\nadd model/model.sysml\n", "")
     else:

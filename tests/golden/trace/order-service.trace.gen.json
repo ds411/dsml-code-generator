@@ -1,0 +1,165 @@
+{
+  "elements": [
+    {
+      "element": "OrderService::CancelOrder",
+      "files": [
+        {
+          "path": "app/orderApi/service_gen.py",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "function",
+              "lastLine": 7,
+              "name": "cancel_order"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::apiService",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "aws_ecs_service.api_service_aws"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::apiServiceAws",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "aws_ecs_service.api_service_aws"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::network",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "aws_vpc.network_aws"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::networkAws",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "aws_vpc.network_aws"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderApi",
+      "files": [
+        {
+          "path": "app/orderApi/service_gen.py",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 11,
+              "name": "OrderApi"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderDb",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "aws_db_instance.order_db_aws"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderDbAws",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "aws_db_instance.order_db_aws"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::users",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "aws_cognito_user_pool.users_aws"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::usersAws",
+      "files": [
+        {
+          "path": "infra/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "aws_cognito_user_pool.users_aws"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}
