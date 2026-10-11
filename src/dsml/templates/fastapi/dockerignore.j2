@@ -1,0 +1,9 @@
+{#- The .dockerignore of the FastAPI target. Only the listed files go into
+    the build context, so no local secret file goes into the image
+    (PRD-APP-013). -#}
+{% include "common/header.j2" %}
+**
+!app/
+!pyproject.toml
+!uv.lock
+**/__pycache__

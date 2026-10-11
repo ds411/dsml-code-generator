@@ -1,0 +1,47 @@
+{#- The pyproject.toml of the FastAPI target (PRD-APP-101, PRD-CORE-046).
+    The generator does not write uv.lock (PRD-CORE-036). -#}
+{% include "common/header.j2" %}
+#
+# Add a dependency to the key "applications.{{ application }}.dependencies"
+# of the configuration file, not to this file. Make uv.lock with "uv lock"
+# and keep it in Git.
+
+[project]
+name = "{{ project }}"
+version = "{{ version }}"
+description = "The application {{ application }}."
+requires-python = "=={{ python_line }}.*"
+dependencies = [
+{% for dependency in dependencies %}
+    "{{ dependency }}",
+{% endfor %}
+]
+
+[dependency-groups]
+dev = [
+{% for dependency in dev_dependencies %}
+    "{{ dependency }}",
+{% endfor %}
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py{{ python_line | replace('.', '') }}"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "UP", "W"]
+
+[tool.pyright]
+include = ["app", "tests"]
+pythonVersion = "{{ python_line }}"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = ["-ra", "--strict-config", "--strict-markers"]

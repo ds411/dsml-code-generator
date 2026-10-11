@@ -3,8 +3,8 @@
 
 Each generator reads only the IR and the configuration (PRD-CORE-026). It
 gives its output files to the file writer and writes no file itself. The
-real generators come in a later milestone (M6). Until then, the list
-`GENERATORS` is empty, and the tests use a test generator.
+list `GENERATORS` holds the generators of phase 1. The M6 stories add them
+one by one. Some tests use a test generator in place of the list.
 """
 
 from collections import Counter
@@ -13,6 +13,7 @@ from typing import Protocol
 
 from dsml.config import Configuration
 from dsml.errors import ToolchainError
+from dsml.generate.fastapi import FastApiGenerator
 from dsml.generate.writer import OutputFile, check_files
 from dsml.ir.model import Ir
 
@@ -38,7 +39,7 @@ class Generator(Protocol):
         ...
 
 
-GENERATORS: list[Generator] = []
+GENERATORS: list[Generator] = [FastApiGenerator()]
 """The generators that `dsml generate` runs, in a fixed order."""
 
 
