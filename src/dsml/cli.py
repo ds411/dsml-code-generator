@@ -13,7 +13,15 @@ from typing import NoReturn
 from dsml import versions
 from dsml.config import Configuration, load_configuration
 from dsml.errors import NotAvailableError, ToolchainError, UsageError
-from dsml.ir.model import IR_VERSION
+from dsml.generate import generators
+from dsml.generate.writer import (
+    INFRASTRUCTURE,
+    PIPELINES,
+    application_part,
+    apply_plan,
+    make_plan,
+)
+from dsml.ir.model import IR_VERSION, Finding, Ir
 from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
 
@@ -134,6 +142,11 @@ def build_parser() -> ArgumentParser:
         "--check",
         action="store_true",
         help="write no file and list each file that a normal run changes",
+    )
+    generate.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="replace the generated files that are different from the manifest",
     )
 
     trace = add("trace", "write a trace report")
@@ -287,6 +300,90 @@ def run_ir(args: argparse.Namespace) -> Outcome:
     return Outcome.SUCCESS
 
 
+# trace: PRD-CORE-005
+def selected_parts(args: argparse.Namespace, ir: Ir) -> frozenset[str] | None:
+    """Give the parts of the output that the options select, or `None` for all parts.
+
+    The application of `--application` must be an application of the model.
+    """
+    parts: set[str] = set()
+    if args.application is not None:
+        names = sorted({element.name for element in ir.elements if element.kind == "Application"})
+        if args.application not in names:
+            known = ", ".join(names) if names else "none"
+            raise ToolchainError(
+                f'The model has no application "{args.application}". '
+                f"The applications of the model are: {known}."
+            )
+        parts.add(application_part(args.application))
+    if args.infrastructure:
+        parts.add(INFRASTRUCTURE)
+    if args.pipelines:
+        parts.add(PIPELINES)
+    return frozenset(parts) if parts else None
+
+
+# trace: PRD-CORE-007
+def finding_line(finding: Finding) -> str:
+    """Give one line for a finding: the location, the rule and the message."""
+    location = finding.location
+    where = "" if location is None else f"{location.file}:{location.line}:{location.column}: "
+    return f"{where}{finding.severity}: {finding.rule}: {finding.message}"
+
+
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-003, PRD-CORE-004, PRD-CORE-005, PRD-CORE-043
+def run_generate(args: argparse.Namespace) -> Outcome:
+    """Validate the model, then write the generated files through the file writer.
+
+    - An error finding stops the command before it writes a file. The exit
+      code is 1 (PRD-CORE-003).
+    - With `--check`, the command writes no file. It lists each file that a
+      normal run adds, changes or deletes. The exit code is 1 if there is a
+      difference (PRD-CORE-004).
+    - If a generated file is different from its hash in the manifest, the
+      command writes no file. It lists the changed files and the exit code is
+      1. With `--overwrite`, the command replaces them (PRD-CORE-043).
+    - Each file to add, change or delete is one line of the report.
+    """
+    configuration = read_configuration(args)
+    files = model_files(configuration)
+    if not files:
+        raise ToolchainError(
+            "Give one or more model files in the key model.paths of the configuration file."
+        )
+    # The adapter imports OpenSysML. Only the subcommands that read the model
+    # need it.
+    from dsml.adapter.convert import make_ir
+
+    LOG.debug("Model files: %s.", ", ".join(str(file) for file in files))
+    ir = make_ir(files, Path.cwd())
+    errors = [finding for finding in ir.findings if finding.severity == "error"]
+    if errors:
+        for finding in errors:
+            sys.stderr.write(f"{PROG}: {finding_line(finding)}\n")
+        count = "1 error finding" if len(errors) == 1 else f"{len(errors)} error findings"
+        sys.stderr.write(f"{PROG}: error: The model has {count}. No file was written.\n")
+        return Outcome.ERROR_FINDING
+    parts = selected_parts(args, ir)
+    output = generators.collect(generators.GENERATORS, ir, configuration, parts)
+    plan = make_plan(configuration.root, output, parts)
+    report = "".join(f"{change}\n" for change in plan.changes)
+    if args.check:
+        write_report(report, args.output)
+        return Outcome.ERROR_FINDING if plan.changes else Outcome.SUCCESS
+    if plan.conflicts and not args.overwrite:
+        for conflict in plan.conflicts:
+            sys.stderr.write(f"{PROG}: error: {conflict}\n")
+        sys.stderr.write(
+            f"{PROG}: error: No file was written. "
+            "Use --overwrite to replace or delete these files.\n"
+        )
+        return Outcome.ERROR_FINDING
+    apply_plan(configuration.root, plan)
+    write_report(report, args.output)
+    return Outcome.SUCCESS
+
+
 def not_available(args: argparse.Namespace) -> Outcome:
     """Stop a subcommand that has no implementation in this version."""
     raise NotAvailableError()
@@ -294,7 +391,7 @@ def not_available(args: argparse.Namespace) -> Outcome:
 
 HANDLERS: dict[str, Handler] = {
     "check-output": not_available,
-    "generate": not_available,
+    "generate": run_generate,
     "init": not_available,
     "ir": run_ir,
     "trace": not_available,
