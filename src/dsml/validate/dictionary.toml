@@ -1,0 +1,161 @@
+# trace: PRD-VAL-014
+# A packaged copy of the project dictionary of the top-level PRD
+# (docs/prd/00-top-level-prd.md, "Project dictionary"). The text rules use
+# these terms as additional approved words. A test makes sure that this copy
+# agrees with the PRD.
+
+[[term]]
+word = "application"
+type = "noun"
+
+[[term]]
+word = "baseline"
+type = "noun"
+
+[[term]]
+word = "create-once file"
+type = "noun"
+
+[[term]]
+word = "DSML"
+type = "noun"
+
+[[term]]
+word = "element"
+type = "noun"
+
+[[term]]
+word = "entity"
+type = "noun"
+
+[[term]]
+word = "environment"
+type = "noun"
+
+[[term]]
+word = "finding"
+type = "noun"
+
+[[term]]
+word = "generated file"
+type = "noun"
+
+[[term]]
+word = "hand-written file"
+type = "noun"
+
+[[term]]
+word = "IR"
+type = "noun"
+
+[[term]]
+word = "layer"
+type = "noun"
+
+[[term]]
+word = "manifest"
+type = "noun"
+
+[[term]]
+word = "need"
+type = "noun"
+
+[[term]]
+word = "operation"
+type = "noun"
+
+[[term]]
+word = "pipeline"
+type = "noun"
+
+[[term]]
+word = "realization"
+type = "noun"
+
+[[term]]
+word = "requirement"
+type = "noun"
+
+[[term]]
+word = "role"
+type = "noun"
+
+[[term]]
+word = "rule"
+type = "noun"
+
+[[term]]
+word = "slice"
+type = "noun"
+
+[[term]]
+word = "stakeholder"
+type = "noun"
+
+[[term]]
+word = "suspect link"
+type = "noun"
+
+[[term]]
+word = "target"
+type = "noun"
+
+[[term]]
+word = "trace link"
+type = "noun"
+
+[[term]]
+word = "verification"
+type = "noun"
+
+[[term]]
+word = "view"
+type = "noun"
+
+[[term]]
+word = "waiver"
+type = "noun"
+
+[[term]]
+word = "build"
+type = "verb"
+
+[[term]]
+word = "commit"
+type = "verb"
+
+[[term]]
+word = "deploy"
+type = "verb"
+
+[[term]]
+word = "generate"
+type = "verb"
+
+[[term]]
+word = "lint"
+type = "verb"
+
+[[term]]
+word = "parse"
+type = "verb"
+
+[[term]]
+word = "pin"
+type = "verb"
+
+[[term]]
+word = "promote"
+type = "verb"
+
+[[term]]
+word = "push"
+type = "verb"
+
+[[term]]
+word = "trace"
+type = "verb"
+
+[[term]]
+word = "validate"
+type = "verb"
