@@ -15,8 +15,6 @@ from dsml.errors import NOT_AVAILABLE, ToolchainError
 
 SUBCOMMANDS = ("init", "validate", "generate", "trace", "ir", "check-output", "version")
 NOT_AVAILABLE_ARGV = [
-    ["validate"],
-    ["validate", "--format", "sarif", "--baseline", "v1.0.0"],
     ["trace", "coverage"],
     ["trace", "impact", "--format", "csv", "--baseline", "v1.0.0"],
     ["check-output"],
@@ -208,7 +206,7 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
         argv = [command, "model.sysml"]
     if command == "init":
         argv = [command]
-    if command == "generate":
+    if command in ("generate", "validate"):
         (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
         (tmp_path / "dsml.toml").write_text(
             'schema = 1\n\n[model]\npaths = ["model.sysml"]\n', encoding="utf-8"
@@ -235,6 +233,8 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
         assert '"files": [\n    "model.sysml"\n  ]' in out
     elif command == "generate":
         assert (returncode, out, err) == (0, "add .dsml/generated.json\n", "")
+    elif command == "validate":
+        assert (returncode, out, err) == (0, "Findings: 0 errors, 0 warnings, 0 info.\n", "")
     elif command == "init":
         assert (returncode, out, err) == (0, "add dsml.toml\nadd model/model.sysml\n", "")
     else:

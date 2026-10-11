@@ -16,13 +16,16 @@ from dsml.adapter.engine import Diagnostic, Engine, EngineVersionError
 from dsml.adapter.findings import syn_finding, syn_findings
 from dsml.errors import ToolchainError
 from dsml.ir.model import Finding, Location
-from dsml.rules import RULES, SYN_001, SYN_002
+from dsml.validate.rule import Rule
+from dsml.validate.rules import syn
+from dsml.validate.rules.syn import SYN_001, SYN_002
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # The test changes the connect function of the client through the adapter
 # module, because only the adapter can import opensysml (PRD-CORE-020).
 CONNECT = "dsml.adapter.engine.opensysml.connect"
 RULE_MODELS = Path(__file__).resolve().parent / "models" / "rules"
+RULES: dict[str, Rule] = {check.rule.id: check.rule for check in syn.RULES}
 
 
 @pytest.fixture(scope="module")

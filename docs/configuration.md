@@ -94,4 +94,10 @@ All keys are optional, except `schema`. The milestone that uses a key tells what
 
 - An ID pattern is a Python regular expression. An ID agrees with the pattern if the full ID matches it.
 - The schema gives the IaC options for OpenTofu only in the table `iac.opentofu`. The default HCL is correct for OpenTofu and for Terraform (PRD-IAC-003). A table for a different tool is an unknown key.
-- The validator rules for the values, for example the rule that a severity `error` cannot decrease (PRD-VAL-004), are in the validator. The configuration reader checks only the form of each value.
+- The configuration reader checks only the form of each value. The validator checks the keys `rules.severity` and `rules.optional` against the rules of the toolchain:
+  - You can increase the severity of each rule.
+  - You can decrease the severity of a rule with the default severity `warning` or `info`, or turn it off with `off`.
+  - You cannot decrease the severity of a rule with the default severity `error` or turn it off (PRD-VAL-004).
+  - A key `rules.severity.<rule>` must name a rule of the toolchain.
+  - The rules of an optional rule set, for example `TXT`, run only if `rules.optional` contains the set (PRD-VAL-013).
+- An error of these checks stops `dsml validate` and `dsml generate` with exit code 2, before they read the model.
