@@ -13,8 +13,8 @@ A generator gives the symbols of each generated file in the field `symbols` of `
 
 | Property | Value |
 | --- | --- |
-| `kind` | `class`, `function`, `route` or `resource`. |
-| `name` | The name of the class or function, the method and path of a route (for example `POST /orders`), or the HCL resource address (for example `aws_ecs_service.order_api`). |
+| `kind` | `class`, `function`, `route`, `resource` or `job`. |
+| `name` | The name of the class or function, the method and path of a route (for example `POST /orders`), the HCL resource address (for example `aws_ecs_service.order_api`), or the ID of a workflow job (for example `plan-dev`). |
 | `first_line`, `last_line` | The line range of the symbol. The first line of the file is line 1. The range includes the two lines. |
 | `elements` | The identities of the model elements of the symbol. A symbol must have one or more elements. |
 

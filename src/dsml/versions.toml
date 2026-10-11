@@ -115,8 +115,11 @@ value = "ghcr.io/astral-sh/uv:0.13.0@sha256:cdc6093146eb3ff6a40107b38f008b789e05
 line = "18"
 
 # Infrastructure target.
+# "version": the OpenTofu release that the generated pipelines install
+# (story #83). The newest release of the line on 11 October 2026.
 [opentofu]
 line = "1.13"
+version = "1.13.1"
 
 [terraform]
 line = "1.16"
@@ -138,3 +141,38 @@ line = "3.3"
 
 [github-runner]
 value = "ubuntu-24.04"
+
+# The third-party actions of the generated pipelines (PRD-CICD-014, story
+# #83). "version": the release tag without "v". "value": the action and the
+# full commit SHA of the release tag. The workflows give the version in a
+# comment after the SHA. Each version is the newest release on
+# 11 October 2026.
+[action-checkout]
+version = "7.0.1"
+value = "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+
+[action-configure-aws-credentials]
+version = "6.3.0"
+value = "aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd"
+
+[action-setup-opentofu]
+version = "2.0.2"
+value = "opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4"
+
+[action-setup-uv]
+version = "10.3.0"
+value = "astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884"
+
+[action-upload-sarif]
+version = "4.38.3"
+value = "github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d"
+
+# The linter of GitHub Actions workflows. The toolchain CI runs it on the
+# golden workflows (story #83). "actionlint-sha256": the SHA-256 hash of
+# the release archive actionlint_<version>_linux_amd64.tar.gz.
+[actionlint]
+line = "1.7"
+version = "1.7.12"
+
+[actionlint-sha256]
+value = "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
