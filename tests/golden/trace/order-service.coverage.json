@@ -1,0 +1,45 @@
+{
+  "baselineCommit": null,
+  "columns": [
+    "requirement",
+    "needs",
+    "satisfiedBy",
+    "generatedFiles",
+    "traceComments",
+    "verifications",
+    "status"
+  ],
+  "modelCommit": "none: the folder is not in a Git repository",
+  "report": "coverage",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "generatedFiles": [],
+      "needs": [
+        "N-001"
+      ],
+      "requirement": "R-001",
+      "satisfiedBy": [
+        "OrderService::orderApi"
+      ],
+      "status": "verified",
+      "traceComments": [
+        "app/features/order/read_order/test_endpoint.py:1"
+      ],
+      "verifications": [
+        "V-001"
+      ]
+    },
+    {
+      "generatedFiles": [],
+      "needs": [
+        "N-001"
+      ],
+      "requirement": "R-002",
+      "satisfiedBy": [],
+      "status": "missing",
+      "traceComments": [],
+      "verifications": []
+    }
+  ]
+}
