@@ -5,6 +5,8 @@ The other modules of the toolchain do not see an OpenSysML object. This module
 gives the results as plain data classes.
 """
 
+import json
+import warnings
 from collections.abc import Collection, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -12,6 +14,7 @@ from types import TracebackType
 from typing import Any, Literal, Self
 
 import opensysml
+import opensysml.connection
 
 from dsml import versions
 from dsml.errors import ToolchainError
@@ -24,6 +27,10 @@ _STATUS_VALUES: dict[str, ConstraintValue] = {
     "violated": "false",
     "undecided": "unknown",
 }
+
+# The gRPC client of OpenSysML refuses a message larger than 4 MiB. The API
+# JSON form of the PRD model is approximately 12 MB. -1 removes the limit.
+_CHANNEL_OPTION_MAX_RECEIVE = ("grpc.max_receive_message_length", -1)
 
 
 # trace: PRD-CORE-019
@@ -172,6 +179,31 @@ class ParsedModel:
             )
         )
 
+    # trace: PRD-CORE-024
+    def api_elements(self) -> tuple[dict[str, Any], ...]:
+        """Give the elements of the model in the SysML v2 API JSON form.
+
+        Only this form gives the source location of each element, the
+        metadata usages and the values of the features. OpenSysML 0.9.2 marks
+        the form as experimental, so this method does not show its warning.
+        `dsml.adapter.source` reads the elements. Each item is a JSON object.
+        """
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                conversion: Any = self._model.to_api_json()
+        except opensysml.OpenSysMLError as error:
+            raise EngineError(f"Cannot convert the model to the API JSON form: {error}") from None
+        items: Any = json.loads(str(conversion))
+        if not isinstance(items, list):
+            raise EngineError("The API JSON form of the model is not a list of elements.")
+        elements: list[dict[str, Any]] = []
+        for item in items:  # pyright: ignore[reportUnknownVariableType]
+            if not isinstance(item, dict):
+                raise EngineError("An item of the API JSON form is not an object.")
+            elements.append(item)  # pyright: ignore[reportUnknownArgumentType]
+        return tuple(elements)
+
     # trace: PRD-CORE-054
     def evaluate_constraint(self, qualified_name: str) -> ConstraintResult:
         """Evaluate a constraint with the attribute values of the model.
@@ -216,6 +248,7 @@ class Engine:
     def __init__(self) -> None:
         pinned = versions.pinned_version("opensysml")
         check_client_version(opensysml.__version__, pinned)
+        _allow_large_messages()
         try:
             # The client has no type annotations for the arguments of connect().
             client: Any = opensysml
@@ -274,6 +307,18 @@ class Engine:
         except opensysml.OpenSysMLError as error:
             raise EngineError(f"OpenSysML cannot parse the model: {error}") from None
         return ParsedModel(model)
+
+
+def _allow_large_messages() -> None:
+    """Remove the size limit of a gRPC message that the client receives.
+
+    The client reads the options of a new channel from the module constant
+    `CHANNEL_OPTIONS`. The function adds the option one time.
+    """
+    module: Any = opensysml.connection
+    options: tuple[tuple[str, Any], ...] = tuple(module.CHANNEL_OPTIONS)
+    if _CHANNEL_OPTION_MAX_RECEIVE not in options:
+        module.CHANNEL_OPTIONS = (*options, _CHANNEL_OPTION_MAX_RECEIVE)
 
 
 def _diagnostic(item: Any) -> Diagnostic:

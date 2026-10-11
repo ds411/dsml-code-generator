@@ -60,6 +60,17 @@ Write an enumeration literal that is a SysML keyword with single quotes, also af
 
 Story #27 also changed the base type of `#Exposed`. This is not a change to the sketch syntax. A model writes `#Exposed` as before. The pilot kernel does not accept an action usage with a type that is not an action definition. The base type `BaseTypes::exposures` was typed by the occurrence definition `BaseTypes::Exposed`, thus `#Exposed action cancelOrder : CancelOrder` had such a type. Now `exposures` is an occurrence usage with no definition, and it holds the attributes `crud`, `allowedRoles` and `'public'`.
 
+## Forms of the links between requirements (story #30)
+
+The sketch did not give the full form of `#derivation` and `#refinement` (PRD-DSML-017). Story #30 selected these forms. The test model `tests/models/ir/needs-links.sysml` uses them, and OpenSysML 0.9.2 accepts them with no diagnostic. The example model and the PRD model do not use them, so they did not change.
+
+| Link | Form | Imports |
+| --- | --- | --- |
+| Derivation | `#derivation connection { end #original ::> r1; end #derive ::> r2; }`. A connection can have more than one `#derive` end. | `private import RequirementDerivation::*;` |
+| Refinement | `#refinement dependency r2 to r1;` | `private import ModelingMetadata::*;` |
+
+A project keyword can specialize a DSML keyword, for example `metadata def SafetyRequirement :> DSML::Requirement;`. It cannot redefine `baseType`, because the DSML keyword gives the value with `=` (code `feature-value-overriding`). To add attributes, the project library specializes the base type, for example `requirement def ProjectRequirement :> BaseTypes::Requirement { ... }`. Then the model types the element with it: `#Requirement requirement <'R-001'> r : ProjectRequirement { ... }`. See `tests/models/ir/project-library/`.
+
 ## Items for later stories
 
 - A feature chain does not use the type that a keyword gives (`docs/notes/opensysml-0.9.2.md`, limit 1). The chain `prod.orderDbProd.multiAz` of the example model resolves, because `orderDbProd` redefines `multiAz` in its body. A chain to an attribute that the part does not redefine needs an explicit type or subset on the part, for example `:> databases`.

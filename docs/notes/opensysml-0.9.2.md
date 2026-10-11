@@ -111,6 +111,8 @@ metadata def RelationalDatabase :> SemanticMetadata {
 - An unknown keyword, for example `#Unknown`, gives the error `unresolved reference: Unknown` with the code `unresolved`.
 - The SysML v2 API JSON form (`Model.to_api_json()`) contains a `MetadataUsage` element with its type and its source position. OpenSysML marks this form as experimental.
 - `Model.query()` does not give metadata usages.
+- `Model.query()` and `Connection.get_symbol()` do not give a source location. Thus the IR adapter reads the API JSON form (story #30, `docs/notes/ir.md`).
+- The gRPC client refuses a message larger than 4 MiB. The API JSON form of the PRD model is approximately 12 MB. The adapter removes the limit with the channel option `grpc.max_receive_message_length`.
 
 ## Evaluation of constraints
 
