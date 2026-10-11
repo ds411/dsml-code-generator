@@ -1,4 +1,5 @@
-# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-011, PRD-VAL-013, PRD-CORE-026
+# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-009, PRD-VAL-010,
+# PRD-VAL-011, PRD-VAL-013, PRD-CORE-026
 """The rule engine. It runs the enabled rules on the IR.
 
 The engine reads only the IR and the configuration (PRD-CORE-026). It applies
@@ -14,16 +15,24 @@ the keys `rules.severity` and `rules.optional` of the configuration file:
   `rules.optional` turns the set on (PRD-VAL-013).
 - A baseline rule, for example an IDN rule, runs only if there is a
   baseline IR (PRD-VAL-011).
+
+Then the engine applies the waivers of the model (PRD-VAL-009). A waiver
+stops the findings of its rule on its element. An expired waiver stops no
+finding, and the engine reports STR-014 for it (PRD-VAL-010).
 """
 
 from collections.abc import Mapping
+from dataclasses import dataclass
+from datetime import date
 from typing import Final
 
 from dsml.config import Configuration, ConfigurationError, RuleSeverity
 from dsml.ir.model import Finding, Ir, Severity
 from dsml.validate.rule import RuleCheck
 from dsml.validate.rules import registry
+from dsml.validate.rules.str_waiver import STR_014
 from dsml.validate.rules.syn import SYN_001
+from dsml.validate.waivers import WaivedFinding, apply_waivers, problems, read_waivers
 
 RANK: Final[Mapping[Severity, int]] = {"info": 0, "warning": 1, "error": 2}
 """The order of the severities, from low to high."""
@@ -61,7 +70,25 @@ def severities(configuration: Configuration, rules: Mapping[str, RuleCheck]) -> 
     return result
 
 
-# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-011
+# trace: PRD-VAL-009
+@dataclass(frozen=True, slots=True)
+class Validation:
+    """The result of the validator.
+
+    `findings` are the findings that stay after the waivers. `waived` are the
+    findings that a waiver stops. Both are sorted (PRD-VAL-007).
+    """
+
+    findings: tuple[Finding, ...]
+    waived: tuple[WaivedFinding, ...] = ()
+
+
+def _sorted(findings: list[Finding]) -> tuple[Finding, ...]:
+    return tuple(sorted(findings, key=lambda item: (*item.sort_key(), item.element or "")))
+
+
+# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-009, PRD-VAL-010,
+# PRD-VAL-011
 class Validator:
     """Run the enabled rules on the IR.
 
@@ -76,14 +103,28 @@ class Validator:
         self.rules = registry() if rules is None else rules
         self.severities = severities(configuration, self.rules)
 
-    def run(self, ir: Ir, baseline: Ir | None = None) -> tuple[Finding, ...]:
-        """Give the findings of all enabled rules, sorted (PRD-VAL-007).
+    def run(
+        self, ir: Ir, baseline: Ir | None = None, today: date | None = None
+    ) -> tuple[Finding, ...]:
+        """Give the findings of all enabled rules that no waiver stops, sorted.
+
+        `validate()` tells more.
+        """
+        return self.validate(ir, baseline, today).findings
+
+    def validate(self, ir: Ir, baseline: Ir | None = None, today: date | None = None) -> Validation:
+        """Run all enabled rules, then apply the waivers. Sort the findings (PRD-VAL-007).
 
         The findings are sorted by file, line, column and rule ID. A finding
         with no location comes first. If the IR has a SYN-001 finding, only
         the SYN rules run, because the elements of the IR are not complete.
         The baseline rules run only if `baseline` gives the IR of a baseline
         (PRD-VAL-011).
+
+        `today` is the date of the expiry check of the waivers. With no date,
+        no waiver is expired. Only a waiver with no STR-015 problem applies
+        (PRD-VAL-009). For each expired waiver, the engine reports STR-014 if
+        that rule is enabled (PRD-VAL-010).
         """
         broken = any(finding.rule == SYN_001.id for finding in ir.findings)
         findings: list[Finding] = []
@@ -101,7 +142,26 @@ class Validator:
                         element=hit.element,
                     )
                 )
-        return tuple(sorted(findings, key=lambda item: (*item.sort_key(), item.element or "")))
+        rule_ids = {*registry(), *self.rules}
+        waivers = [item for item in read_waivers(ir) if not any(problems(item, rule_ids))]
+        severity = self.severities.get(STR_014.id)
+        if severity is not None and not broken:
+            for waiver in waivers:
+                if waiver.expired(today):
+                    findings.append(
+                        Finding(
+                            rule=STR_014.id,
+                            severity=severity,
+                            message=(
+                                f"The waiver of {waiver.rule} on {waiver.element} expired on "
+                                f"{waiver.expires}. The date of the check is {today}."
+                            ),
+                            location=waiver.location,
+                            element=waiver.element,
+                        )
+                    )
+        kept, waived = apply_waivers(_sorted(findings), waivers, today)
+        return Validation(kept, waived)
 
 
 # trace: PRD-VAL-003, PRD-VAL-005

@@ -138,7 +138,7 @@ uv run dsml ir docs/model/prd/*.sysml --output prd.ir.json
 
 ### Command `dsml validate`
 
-`dsml validate [--format text|json|sarif] [--fail-on error|warning] [--baseline <git-ref>]` reads the model files of the key `model.paths`, runs all enabled rules on the IR and writes the findings. For example:
+`dsml validate [--format text|json|sarif] [--fail-on error|warning] [--baseline <git-ref>] [--date <YYYY-MM-DD>]` reads the model files of the key `model.paths`, runs all enabled rules on the IR and writes the findings. For example:
 
 ```sh
 uv run dsml validate --format json --output findings.json
@@ -146,7 +146,9 @@ uv run dsml validate --format json --output findings.json
 
 - The findings are sorted by file, line, column and rule ID (PRD-VAL-007).
 - The text format gives one line for each finding, then one line with the fix hint of the rule. The last line gives the number of findings of each severity. This is the default format.
-- The JSON format gives the list `findings` and the object `summary`.
+- The JSON format gives the list `findings`, the list `waived` and the object `summary`.
+- A `@Waiver` on an element stops the findings of one rule on that element (PRD-VAL-009). The reports give the waived findings in a separate group, and SARIF gives them as suppressions with the reason. A waived finding does not change the exit code.
+- After the `expires` date of a waiver, its findings come back, and the validator reports STR-014 (PRD-VAL-010). `--date` gives the date of this check. The default is the commit date of `HEAD`, thus the clock does not change the report. `docs/notes/validator.md` tells more.
 - The SARIF format gives a SARIF 2.1.0 log for GitHub code scanning (PRD-VAL-006). `tool.driver.rules` has the metadata of each rule: the ID, the message, the fix hint as help text and the default severity. The levels are `error`, `warning` and `note` (for `info`). Each URI is relative to the folder of the configuration file.
 - The exit code is 1 if there is a finding with the severity `error`. With `--fail-on warning`, the exit code is also 1 if there is a warning (PRD-VAL-005).
 - The keys `rules.severity` and `rules.optional` of the configuration file change the severities and turn on the optional rule sets. `docs/configuration.md` gives the rules.
