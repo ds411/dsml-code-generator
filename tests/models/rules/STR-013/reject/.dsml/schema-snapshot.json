@@ -1,0 +1,56 @@
+{
+  "snapshotVersion": 1,
+  "tables": [
+    {
+      "columns": [
+        {
+          "name": "email",
+          "nullable": true,
+          "primaryKey": false,
+          "references": null
+        },
+        {
+          "name": "id",
+          "nullable": false,
+          "primaryKey": true,
+          "references": null
+        },
+        {
+          "name": "name",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null
+        }
+      ],
+      "name": "customer"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "nullable": false,
+          "primaryKey": true,
+          "references": null
+        },
+        {
+          "name": "title",
+          "nullable": true,
+          "primaryKey": false,
+          "references": null
+        }
+      ],
+      "name": "item"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "nullable": false,
+          "primaryKey": true,
+          "references": null
+        }
+      ],
+      "name": "legacy"
+    }
+  ]
+}
