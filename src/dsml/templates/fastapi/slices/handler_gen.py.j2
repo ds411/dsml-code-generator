@@ -1,0 +1,64 @@
+{#- The handler of one CRUD slice (PRD-APP-103, PRD-APP-113, PRD-APP-114).
+    Data: "operation" (a dsml.generate.fastapi_slices.Slice). -#}
+{% include "common/header.j2" %}
+"""The handler of the operation {{ operation.name }}: {{ operation.route }}.
+
+The generator writes this file again at each run.
+"""
+
+{% for line in operation.handler_import_lines %}
+{{ line }}
+{% endfor %}
+{% if operation.parameter %}
+
+NOT_FOUND = "No entity {{ operation.entity_name }} has this key."
+"""The detail of the response HTTP 404."""
+{% endif %}
+
+
+{% for line in operation.handler_signature_lines %}
+{{ line }}
+{% endfor %}
+{% if operation.operation == "create" %}
+{% if operation.key.rules.kind == "Uuid" %}
+    """Add the entity with a new random key. Return the entity."""
+{% else %}
+    """Add the entity. The database gives the key. Return the entity."""
+{% endif %}
+{{ operation.new_row_line }}
+    session.add(row)
+    await commit(session)
+    return {{ operation.output_class }}.model_validate(row)
+{% elif operation.operation == "list" %}
+    """Give the entities from `offset`, sorted by key, and the number of all entities."""
+    total = await session.scalar(select(func.count()).select_from({{ operation.model_class }}))
+    statement = select({{ operation.model_class }}).order_by({{ operation.model_class }}.{{ operation.key.attribute }})
+    rows = await session.scalars(statement.limit(limit).offset(offset))
+    items = [{{ operation.output_class }}.model_validate(row) for row in rows]
+    return {{ operation.page_class }}(items=items, total=total or 0)
+{% else %}
+{% if operation.operation == "read" %}
+    """Give the entity with the key. Raise HTTP 404 if there is none."""
+{% elif operation.operation == "update" %}
+    """Change the fields of the request body. Raise HTTP 404 if there is no entity."""
+{% else %}
+    """Delete the entity with the key. Raise HTTP 404 if there is none.
+
+    If other entities refer to the entity, the response is HTTP 409.
+    """
+{% endif %}
+    row = await session.get({{ operation.model_class }}, key)
+    if row is None:
+        raise ProblemError(HTTPStatus.NOT_FOUND, NOT_FOUND)
+{% if operation.operation == "read" %}
+    return {{ operation.output_class }}.model_validate(row)
+{% elif operation.operation == "update" %}
+    for name, value in data.model_dump(exclude_unset=True).items():
+        setattr(row, name, value)
+    await commit(session)
+    return {{ operation.output_class }}.model_validate(row)
+{% else %}
+    await session.delete(row)
+    await commit(session, foreign_key_status=HTTPStatus.CONFLICT)
+{% endif %}
+{% endif %}

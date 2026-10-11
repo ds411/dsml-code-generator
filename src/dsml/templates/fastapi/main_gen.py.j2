@@ -15,6 +15,9 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from pydantic import BaseModel
 
+{% for line in router_import_lines %}
+{{ line }}
+{% endfor %}
 from app.shared.config_gen import ConfigurationError, Settings, load_settings
 {% if database %}
 from app.shared.db.session_gen import create_engine, create_session_factory
@@ -68,4 +71,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_error_handlers(app)
     app.middleware("http")(request_context)
     app.include_router(health_router)
+{% for item in slices %}
+    app.include_router({{ item.router }})
+{% endfor %}
     return app

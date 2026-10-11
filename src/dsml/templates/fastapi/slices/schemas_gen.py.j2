@@ -1,0 +1,73 @@
+{#- The Pydantic v2 models of one CRUD slice (PRD-APP-102, PRD-APP-111, PRD-APP-112,
+    PRD-APP-115). Data: "operation" (a dsml.generate.fastapi_slices.Slice). -#}
+{% include "common/header.j2" %}
+"""The schemas of the operation {{ operation.name }}: {{ operation.route }}.
+
+{% if operation.operation == "delete" %}
+The operation has no request body and no response body. The generator
+writes this file again at each run.
+"""
+{% else %}
+A related entity is its key, not a nested object. The generator writes
+this file again at each run.
+"""
+
+{% for line in operation.schema_import_lines %}
+{{ line }}
+{% endfor %}
+{% for item in operation.value_alias_fields %}
+
+{% for line in item.value_alias_lines %}
+{{ line }}
+{% endfor %}
+{% endfor %}
+{% if operation.input_class %}
+
+
+class {{ operation.input_class }}(BaseModel):
+{% if operation.operation == "create" %}
+    """The request body. The key `{{ operation.key.name }}` is not in the body."""
+{% else %}
+    """The request body. Each field is optional. A missing field does not change."""
+{% endif %}
+
+    model_config = ConfigDict(extra="forbid")
+{% if operation.input_field_lines %}
+
+{% for line in operation.input_field_lines %}
+{{ line }}
+{% endfor %}
+{% endif %}
+{% if operation.operation == "update" and operation.required_fields %}
+
+{% for line in operation.validator_lines %}
+{{ line }}
+{% endfor %}
+    @classmethod
+    def refuse_null(cls, value: object) -> object:
+        """Refuse the value null for a field that the entity must have."""
+        if value is None:
+            raise ValueError("The field must have a value.")
+        return value
+{% endif %}
+{% endif %}
+
+
+class {{ operation.output_class }}(BaseModel):
+    """The entity {{ operation.entity_name }} in a response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+{% for line in operation.output_field_lines %}
+{{ line }}
+{% endfor %}
+{% if operation.page_class %}
+
+
+class {{ operation.page_class }}(BaseModel):
+    """One page of the entities, sorted by key, and the number of all entities."""
+
+    items: list[{{ operation.output_class }}]
+    total: int
+{% endif %}
+{% endif %}
