@@ -15,6 +15,9 @@ from app.shared.errors_gen import PROBLEM_MEDIA_TYPE
 
 ENVIRON = {
     "APP_ENVIRONMENT": "test",
+    "AWS_REGION": "test",
+    "COGNITO_USER_POOL_ID": "test",
+    "COGNITO_APP_CLIENT_ID": "test",
 }
 """A value for each mandatory environment variable."""
 
