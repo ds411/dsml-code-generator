@@ -89,7 +89,8 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 
 | Subcommand | Status |
 | --- | --- |
-| `init`, `validate`, `generate`, `trace`, `ir`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
+| `init`, `validate`, `generate`, `trace`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
+| `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
 
 Each subcommand has these common options:
@@ -105,6 +106,20 @@ The exit codes are (PRD-CORE-002):
 - 2: a usage error or an internal error occurred. The command writes a short message, not a traceback. With `--verbose`, the traceback is a debug message.
 
 No subcommand reads from a terminal (PRD-CORE-009).
+
+### Command `dsml ir`
+
+`dsml ir <model-file>...` parses the model files with the DSML library and writes the IR as JSON. For example:
+
+```sh
+uv run dsml ir docs/model/prd/*.sysml --output prd.ir.json
+```
+
+- The model files must be in the current folder or below it. The IR gives each file name relative to the current folder.
+- This version reads the model files only from the command line. M3 adds the model files of `dsml.toml`.
+- The exit code is 1 if the IR has an error finding, for example SYN-001. The command writes the IR also in this case.
+
+The golden IR files of the two reference models are in `tests/golden/ir/`. CI compares the IR with these files on each platform (PRD-CORE-027, PRD-CORE-029). After a change of the IR, run `uv run python scripts/write_golden_ir.py` and examine the differences before you commit them.
 
 ## Use with Claude Code
 
