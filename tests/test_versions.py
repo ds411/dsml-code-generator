@@ -22,6 +22,7 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "fastapi",
         "github-runner",
         "hcl-required-version",
+        "httpx2",
         "jinja2",
         "opensysml",
         "opentofu",
@@ -30,11 +31,16 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "pilot-kernel-sha256",
         "postgresql",
         "pydantic",
+        "pyright",
         "pytest",
         "python",
+        "python-image",
+        "ruff",
         "sqlalchemy",
         "terraform",
         "uv",
+        "uv-image",
+        "uvicorn",
     }
 
 

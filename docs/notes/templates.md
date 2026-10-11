@@ -30,6 +30,7 @@ Each generated source file that permits comments starts with two comment lines (
 | YAML | `#` | Yes |
 | TOML | `#` | Yes |
 | Dockerfile | `#` | Yes |
+| Ignore file, for example `.dockerignore` | `#` | Yes |
 | JSON | None | No |
 
 A template writes the header with this line at the start:

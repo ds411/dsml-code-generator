@@ -1,0 +1,81 @@
+{#- The error types of the FastAPI target (PRD-APP-014). -#}
+{% include "common/header.j2" %}
+"""API errors as problem details (RFC 9457).
+
+Each error response has the media type `application/problem+json`. A slice
+raises `ProblemError` to return an error. The handlers also change the
+errors of FastAPI and Starlette into problem details.
+"""
+
+from collections.abc import Mapping
+from http import HTTPStatus
+
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, Response
+from starlette.exceptions import HTTPException
+
+PROBLEM_MEDIA_TYPE = "application/problem+json"
+"""The media type of problem details (RFC 9457)."""
+
+
+class ProblemError(Exception):
+    """An API error that the application returns as problem details."""
+
+    def __init__(self, status: int, detail: str | None = None) -> None:
+        super().__init__(detail or HTTPStatus(status).phrase)
+        self.status = status
+        self.detail = detail
+
+
+def problem_response(
+    status: int,
+    detail: str | None = None,
+    errors: list[dict[str, object]] | None = None,
+    headers: Mapping[str, str] | None = None,
+) -> JSONResponse:
+    """Give a problem details response with the status and the title of the status."""
+    body: dict[str, object] = {
+        "type": "about:blank",
+        "title": HTTPStatus(status).phrase,
+        "status": status,
+    }
+    if detail:
+        body["detail"] = detail
+    if errors is not None:
+        body["errors"] = errors
+    return JSONResponse(body, status_code=status, headers=headers, media_type=PROBLEM_MEDIA_TYPE)
+
+
+def register_error_handlers(app: FastAPI) -> None:
+    """Add the handlers that change errors into problem details."""
+    app.add_exception_handler(ProblemError, _problem)
+    app.add_exception_handler(HTTPException, _http)
+    app.add_exception_handler(RequestValidationError, _validation)
+
+
+async def _problem(request: Request, error: Exception) -> Response:
+    assert isinstance(error, ProblemError)
+    return problem_response(error.status, error.detail)
+
+
+async def _http(request: Request, error: Exception) -> Response:
+    assert isinstance(error, HTTPException)
+    status = HTTPStatus(error.status_code)
+    detail = None if error.detail == status.phrase else error.detail
+    return problem_response(status, detail, headers=error.headers)
+
+
+async def _validation(request: Request, error: Exception) -> Response:
+    # The errors do not include the input values, because an input value
+    # can be a secret value.
+    assert isinstance(error, RequestValidationError)
+    errors: list[dict[str, object]] = [
+        {
+            "location": [str(part) for part in item["loc"]],
+            "message": str(item["msg"]),
+            "type": str(item["type"]),
+        }
+        for item in error.errors()
+    ]
+    return problem_response(HTTPStatus.UNPROCESSABLE_CONTENT, "The request is not correct.", errors)

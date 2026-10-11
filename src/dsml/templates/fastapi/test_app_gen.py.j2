@@ -1,0 +1,56 @@
+{#- The tests of the shared code of the FastAPI target (PRD-APP-012,
+    PRD-APP-132, PRD-APP-135). -#}
+{% include "common/header.j2" %}
+"""Tests of the generated shared code of {{ application }}.
+
+The generator writes this file again at each run. Put your tests in other
+files of this folder.
+"""
+
+import pytest
+from fastapi.testclient import TestClient
+
+from app.main_gen import create_app
+from app.shared.config_gen import ConfigurationError, load_settings
+from app.shared.errors_gen import PROBLEM_MEDIA_TYPE
+
+ENVIRON = {
+{% for variable in variables if variable.mandatory %}
+    "{{ variable.name }}": "test",
+{% endfor %}
+}
+"""A value for each mandatory environment variable."""
+
+
+def test_healthz_returns_200_with_no_token() -> None:
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.get("/healthz")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+    assert response.headers["X-Request-ID"]
+
+
+def test_request_id_of_the_request_is_in_the_response() -> None:
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.get("/healthz", headers={"X-Request-ID": "abc-123"})
+    assert response.headers["X-Request-ID"] == "abc-123"
+
+
+def test_unknown_path_returns_problem_details() -> None:
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.get("/unknown")
+    assert response.status_code == 404
+    assert response.headers["content-type"] == PROBLEM_MEDIA_TYPE
+    assert response.json() == {"type": "about:blank", "title": "Not Found", "status": 404}
+
+
+@pytest.mark.parametrize("name", sorted(ENVIRON))
+def test_missing_mandatory_variable_stops_the_app(name: str) -> None:
+    environ = {key: value for key, value in ENVIRON.items() if key != name}
+    with pytest.raises(ConfigurationError, match=name):
+        load_settings(environ)
+
+
+def test_log_level_that_is_not_correct_stops_the_app() -> None:
+    with pytest.raises(ConfigurationError, match="LOG_LEVEL"):
+        load_settings({**ENVIRON, "LOG_LEVEL": "LOUD"})

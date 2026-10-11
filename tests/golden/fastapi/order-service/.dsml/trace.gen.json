@@ -1,0 +1,167 @@
+{
+  "elements": [
+    {
+      "element": "OrderService::orderApi",
+      "files": [
+        {
+          "path": "services/order-api/app/main_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "Health"
+            },
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 29,
+              "name": "healthz"
+            },
+            {
+              "firstLine": 26,
+              "kind": "route",
+              "lastLine": 29,
+              "name": "GET /healthz"
+            },
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "create_app"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/config_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "ConfigurationError"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 31,
+              "name": "Settings"
+            },
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 49,
+              "name": "load_settings"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "_mandatory"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/errors_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "ProblemError"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "problem_response"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "register_error_handlers"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 59,
+              "name": "_problem"
+            },
+            {
+              "firstLine": 62,
+              "kind": "function",
+              "lastLine": 66,
+              "name": "_http"
+            },
+            {
+              "firstLine": 69,
+              "kind": "function",
+              "lastLine": 81,
+              "name": "_validation"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/logs_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "class",
+              "lastLine": 52,
+              "name": "JsonFormatter"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 67,
+              "name": "configure_logging"
+            },
+            {
+              "firstLine": 70,
+              "kind": "function",
+              "lastLine": 101,
+              "name": "request_context"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_app_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "test_healthz_returns_200_with_no_token"
+            },
+            {
+              "firstLine": 30,
+              "kind": "function",
+              "lastLine": 33,
+              "name": "test_request_id_of_the_request_is_in_the_response"
+            },
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "test_unknown_path_returns_problem_details"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "test_missing_mandatory_variable_stops_the_app"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 53,
+              "name": "test_log_level_that_is_not_correct_stops_the_app"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}
