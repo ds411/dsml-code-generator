@@ -120,7 +120,7 @@ def test_ir_with_no_model_file_gives_exit_code_2(capsys: pytest.CaptureFixture[s
     assert main(["ir"]) == 2
     captured = capsys.readouterr()
     assert captured.out == ""
-    assert captured.err.startswith("dsml: error: Give one or more model files.")
+    assert captured.err.startswith("dsml: error: Give one or more model files ")
 
 
 # trace: PRD-CORE-002, PRD-CORE-033

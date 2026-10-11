@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import NoReturn
 
 from dsml import versions
+from dsml.config import Configuration, load_configuration
 from dsml.errors import NotAvailableError, ToolchainError, UsageError
 from dsml.ir.model import IR_VERSION
 from dsml.ir.writer import write_ir
@@ -63,7 +64,6 @@ def build_parser() -> ArgumentParser:
     common.add_argument(
         "--config",
         type=Path,
-        default=DEFAULT_CONFIG,
         metavar="<file>",
         help=f"read the configuration from this file (default: {DEFAULT_CONFIG})",
     )
@@ -217,19 +217,64 @@ def run_version(args: argparse.Namespace) -> Outcome:
     return Outcome.SUCCESS
 
 
-# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-CORE-028
+# trace: PRD-CORE-012
+def config_path(args: argparse.Namespace) -> Path:
+    """Give the configuration file of the command line, or the default file."""
+    path: Path | None = args.config
+    return DEFAULT_CONFIG if path is None else path
+
+
+# trace: PRD-CORE-012, PRD-CORE-014
+def read_configuration(args: argparse.Namespace) -> Configuration:
+    """Read the configuration file of the command line.
+
+    The file that `--config` gives must exist. If there is no `--config` and
+    no `dsml.toml` in the current folder, the function gives the default
+    configuration. An error in the file stops the command with exit code 2.
+    """
+    path = config_path(args)
+    if args.config is None and not path.is_file():
+        LOG.debug("The file %s does not exist. Use the default configuration.", path)
+        return Configuration()
+    return load_configuration(path)
+
+
+# trace: PRD-CORE-032, PRD-DSML-007
+def model_files(configuration: Configuration) -> list[Path]:
+    """Give the model files of the configuration, sorted by path.
+
+    A folder gives each `.sysml` file in it and in its subfolders.
+    """
+    files: set[Path] = set()
+    for entry in configuration.model:
+        path = configuration.root / entry
+        if path.is_dir():
+            files.update(file for file in path.rglob("*.sysml") if file.is_file())
+        elif path.is_file():
+            files.add(path)
+        else:
+            raise ToolchainError(
+                f'The model path "{entry}" of the configuration file does not exist.'
+            )
+    return sorted(files, key=lambda file: file.as_posix())
+
+
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-CORE-012, PRD-CORE-028
 def run_ir(args: argparse.Namespace) -> Outcome:
     """Write the IR of the model files as canonical JSON.
 
-    The IR gives each file name relative to the current folder. The exit code
-    is 1 if the IR has an error finding, for example SYN-001. The command
-    writes the IR also in this case.
+    The model files come from the command line. If the command line gives no
+    model file, they come from the key `model.paths` of the configuration
+    file. The IR gives each file name relative to the current folder. The
+    exit code is 1 if the IR has an error finding, for example SYN-001. The
+    command writes the IR also in this case.
     """
-    files: list[Path] = args.model
+    configuration = read_configuration(args)
+    files: list[Path] = args.model or model_files(configuration)
     if not files:
         raise ToolchainError(
-            "Give one or more model files. "
-            "This version does not read the model files from the configuration file."
+            "Give one or more model files on the command line "
+            "or in the key model.paths of the configuration file."
         )
     # The adapter imports OpenSysML. Only this subcommand needs it.
     from dsml.adapter.convert import make_ir
@@ -267,8 +312,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     - The subcommand gives an `Outcome`. Its value is the exit code.
     - A usage error gives exit code 2, a message and the usage.
-    - A `ToolchainError`, for example a different version of `sysml-grpc`,
-      gives exit code 2 and its message.
+    - A `ToolchainError`, for example a different version of `sysml-grpc`
+      or an error in the configuration file, gives exit code 2 and its
+      message. Each line of the message is one error line.
     - An internal error gives exit code 2 and a short message, not a
       traceback. With `--verbose`, the traceback is a debug message.
 
@@ -283,10 +329,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     handler = _start_debug_log() if args.verbose else None
     try:
         LOG.debug("Subcommand: %s.", args.command)
-        LOG.debug("Configuration file: %s.", args.config)
+        LOG.debug("Configuration file: %s.", config_path(args))
         return HANDLERS[args.command](args)
     except ToolchainError as error:
-        sys.stderr.write(f"{PROG}: error: {error}\n")
+        for line in str(error).splitlines():
+            sys.stderr.write(f"{PROG}: error: {line}\n")
         return Outcome.FAILURE
     except Exception as error:
         LOG.debug("Traceback of the internal error:\n%s", traceback.format_exc().rstrip("\n"))
