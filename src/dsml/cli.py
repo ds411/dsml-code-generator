@@ -10,16 +10,19 @@ from importlib import metadata
 from pathlib import Path
 from typing import NoReturn
 
-from dsml import versions
+from dsml import starter, versions
 from dsml.config import Configuration, load_configuration
 from dsml.errors import NotAvailableError, ToolchainError, UsageError
 from dsml.generate import generators
 from dsml.generate.writer import (
     INFRASTRUCTURE,
     PIPELINES,
+    Kind,
+    OutputFile,
     application_part,
     apply_plan,
     make_plan,
+    write_create_once,
 )
 from dsml.ir.model import IR_VERSION, Finding, Ir
 from dsml.ir.writer import write_ir
@@ -107,7 +110,12 @@ def build_parser() -> ArgumentParser:
         )
 
     init = add("init", "write a starter configuration file and a starter model")
-    init.add_argument("--target", metavar="<name>", help="the target of the starter files")
+    init.add_argument(
+        "--target",
+        choices=starter.TARGETS,
+        default=starter.DEFAULT_TARGET,
+        help=f"the target of the starter files (default: {starter.DEFAULT_TARGET})",
+    )
 
     validate = add("validate", "validate the model and write the findings")
     validate.add_argument(
@@ -252,6 +260,40 @@ def read_configuration(args: argparse.Namespace) -> Configuration:
     return load_configuration(path)
 
 
+INIT_PART = "init"
+"""The part of the output that has the starter files of `dsml init`."""
+
+
+# trace: PRD-CORE-001, PRD-CORE-006, PRD-CORE-012, PRD-CORE-042, PRD-CORE-044
+def run_init(args: argparse.Namespace) -> Outcome:
+    """Write the starter configuration file and the starter model as create-once files.
+
+    The configuration file goes to the path of `--config`, or to `dsml.toml`
+    in the current folder. The model goes to `model/` in the folder of the
+    configuration file. The command writes only a file that does not exist.
+    It does not change a file that exists, and it writes no manifest.
+
+    The report has one line for each file, sorted by path: `add <path>` for a
+    file that the command wrote, or a message for a file that exists.
+    """
+    path = config_path(args)
+    root = path.parent
+    output = [
+        OutputFile(
+            path.name if name == starter.CONFIG_FILE else name, content, Kind.CREATE_ONCE, INIT_PART
+        )
+        for name, content in starter.starter_files(args.target).items()
+    ]
+    written, kept = write_create_once(root, output)
+    lines = {name: f"add {(root / name).as_posix()}" for name in written}
+    lines |= {
+        name: f"keep {(root / name).as_posix()}: The file exists. The command did not change it."
+        for name in kept
+    }
+    write_report("".join(f"{lines[name]}\n" for name in sorted(lines)), args.output)
+    return Outcome.SUCCESS
+
+
 # trace: PRD-CORE-032, PRD-DSML-007
 def model_files(configuration: Configuration) -> list[Path]:
     """Give the model files of the configuration, sorted by path.
@@ -392,7 +434,7 @@ def not_available(args: argparse.Namespace) -> Outcome:
 HANDLERS: dict[str, Handler] = {
     "check-output": not_available,
     "generate": run_generate,
-    "init": not_available,
+    "init": run_init,
     "ir": run_ir,
     "trace": not_available,
     "validate": not_available,

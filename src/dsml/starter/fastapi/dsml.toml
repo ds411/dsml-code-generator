@@ -1,0 +1,12 @@
+# The configuration file of the DSML toolchain.
+# docs/configuration.md in the toolchain repository gives all keys.
+schema = 1
+
+[model]
+paths = ["model"]
+
+# Add one table for each application of the model. <name> is the name of
+# the application in the model. The target of phase 1 is FastAPI.
+#
+# [applications.<name>]
+# output = "services/<name>"

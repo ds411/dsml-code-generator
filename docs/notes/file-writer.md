@@ -64,6 +64,8 @@ The manifest gives the part of each file. Thus a run of one part keeps the entri
 | A create-once file, and a file at its path | Do not touch the file (PRD-CORE-044). |
 | A file that is not a generated file of the old or the new manifest | Do not touch the file (PRD-CORE-042). |
 
+The function `write_create_once` writes only create-once files, with the same rule. It does not read or write the manifest. `dsml init` uses it for the starter files (story #38).
+
 If there is a conflict, `dsml generate` writes no file. It lists the conflicts and stops with exit code 1. With `--overwrite`, it replaces or deletes the files of the conflicts.
 
 A conflict is not an internal error or a usage error, so the exit code is 1, not 2 (PRD-CORE-002). The user must look at the listed files.
