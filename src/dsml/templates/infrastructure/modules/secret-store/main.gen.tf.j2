@@ -1,0 +1,32 @@
+{#- The resources of the secret store module (PRD-IAC-020, PRD-IAC-030): one
+    Secrets Manager secret and one KMS key. The HCL contains no secret value.
+    Each resource has the tag dsml:element (PRD-IAC-035). -#}
+{% include "common/header.j2" %}
+
+locals {
+  tags = { "dsml:element" = var.element }
+}
+
+resource "aws_kms_key" "this" {
+  description             = "The key of the secret ${var.name}."
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+
+  tags = merge(local.tags, { Name = var.name })
+}
+
+resource "aws_kms_alias" "this" {
+  name          = var.key_alias
+  target_key_id = aws_kms_key.this.key_id
+}
+
+# The secret has no value in the HCL. A person or a process puts the value
+# into Secrets Manager after the apply.
+resource "aws_secretsmanager_secret" "this" {
+  name                    = var.name
+  description             = "The secret of the model element ${var.element}."
+  kms_key_id              = aws_kms_key.this.arn
+  recovery_window_in_days = 30
+
+  tags = merge(local.tags, { Name = var.name })
+}

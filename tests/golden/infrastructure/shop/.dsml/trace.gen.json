@@ -1,0 +1,2468 @@
+{
+  "elements": [
+    {
+      "element": "Shop::api",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "module.api"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 44,
+              "kind": "resource",
+              "lastLine": 47,
+              "name": "output.api_api_url"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.api_cluster_name"
+            },
+            {
+              "firstLine": 54,
+              "kind": "resource",
+              "lastLine": 57,
+              "name": "output.api_migration_task_definition"
+            },
+            {
+              "firstLine": 59,
+              "kind": "resource",
+              "lastLine": 62,
+              "name": "output.api_private_subnet_ids"
+            },
+            {
+              "firstLine": 64,
+              "kind": "resource",
+              "lastLine": 67,
+              "name": "output.api_security_group_id"
+            },
+            {
+              "firstLine": 69,
+              "kind": "resource",
+              "lastLine": 72,
+              "name": "output.api_service_name"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.shop_api_image_digest"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "module.api"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 44,
+              "kind": "resource",
+              "lastLine": 47,
+              "name": "output.api_api_url"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.api_cluster_name"
+            },
+            {
+              "firstLine": 54,
+              "kind": "resource",
+              "lastLine": 57,
+              "name": "output.api_migration_task_definition"
+            },
+            {
+              "firstLine": 59,
+              "kind": "resource",
+              "lastLine": 62,
+              "name": "output.api_private_subnet_ids"
+            },
+            {
+              "firstLine": 64,
+              "kind": "resource",
+              "lastLine": 67,
+              "name": "output.api_security_group_id"
+            },
+            {
+              "firstLine": 69,
+              "kind": "resource",
+              "lastLine": 72,
+              "name": "output.api_service_name"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.shop_api_image_digest"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/container-service/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 30,
+              "name": "locals"
+            },
+            {
+              "firstLine": 36,
+              "kind": "resource",
+              "lastLine": 39,
+              "name": "data.aws_route53_zone.main"
+            },
+            {
+              "firstLine": 42,
+              "kind": "resource",
+              "lastLine": 46,
+              "name": "aws_cloudwatch_log_group.main"
+            },
+            {
+              "firstLine": 48,
+              "kind": "resource",
+              "lastLine": 56,
+              "name": "aws_ecs_cluster.main"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 69,
+              "name": "data.aws_iam_policy_document.ecs_tasks_trust"
+            },
+            {
+              "firstLine": 71,
+              "kind": "resource",
+              "lastLine": 75,
+              "name": "aws_iam_role.execution"
+            },
+            {
+              "firstLine": 77,
+              "kind": "resource",
+              "lastLine": 120,
+              "name": "data.aws_iam_policy_document.execution"
+            },
+            {
+              "firstLine": 122,
+              "kind": "resource",
+              "lastLine": 126,
+              "name": "aws_iam_role_policy.execution"
+            },
+            {
+              "firstLine": 130,
+              "kind": "resource",
+              "lastLine": 134,
+              "name": "aws_iam_role.task"
+            },
+            {
+              "firstLine": 136,
+              "kind": "resource",
+              "lastLine": 170,
+              "name": "aws_ecs_task_definition.service"
+            },
+            {
+              "firstLine": 174,
+              "kind": "resource",
+              "lastLine": 203,
+              "name": "aws_ecs_task_definition.migration"
+            },
+            {
+              "firstLine": 207,
+              "kind": "resource",
+              "lastLine": 212,
+              "name": "aws_security_group.alb"
+            },
+            {
+              "firstLine": 214,
+              "kind": "resource",
+              "lastLine": 224,
+              "name": "aws_vpc_security_group_ingress_rule.alb"
+            },
+            {
+              "firstLine": 226,
+              "kind": "resource",
+              "lastLine": 234,
+              "name": "aws_vpc_security_group_egress_rule.alb_to_service"
+            },
+            {
+              "firstLine": 236,
+              "kind": "resource",
+              "lastLine": 241,
+              "name": "aws_security_group.service"
+            },
+            {
+              "firstLine": 243,
+              "kind": "resource",
+              "lastLine": 251,
+              "name": "aws_vpc_security_group_ingress_rule.service_from_alb"
+            },
+            {
+              "firstLine": 255,
+              "kind": "resource",
+              "lastLine": 263,
+              "name": "aws_vpc_security_group_egress_rule.service_https"
+            },
+            {
+              "firstLine": 265,
+              "kind": "resource",
+              "lastLine": 273,
+              "name": "aws_lb.main"
+            },
+            {
+              "firstLine": 275,
+              "kind": "resource",
+              "lastLine": 290,
+              "name": "aws_lb_target_group.main"
+            },
+            {
+              "firstLine": 292,
+              "kind": "resource",
+              "lastLine": 300,
+              "name": "aws_acm_certificate.main"
+            },
+            {
+              "firstLine": 302,
+              "kind": "resource",
+              "lastLine": 313,
+              "name": "aws_route53_record.certificate_validation"
+            },
+            {
+              "firstLine": 315,
+              "kind": "resource",
+              "lastLine": 318,
+              "name": "aws_acm_certificate_validation.main"
+            },
+            {
+              "firstLine": 321,
+              "kind": "resource",
+              "lastLine": 333,
+              "name": "aws_lb_listener.https"
+            },
+            {
+              "firstLine": 335,
+              "kind": "resource",
+              "lastLine": 350,
+              "name": "aws_lb_listener.http"
+            },
+            {
+              "firstLine": 352,
+              "kind": "resource",
+              "lastLine": 362,
+              "name": "aws_route53_record.api"
+            },
+            {
+              "firstLine": 367,
+              "kind": "resource",
+              "lastLine": 399,
+              "name": "aws_ecs_service.main"
+            },
+            {
+              "firstLine": 403,
+              "kind": "resource",
+              "lastLine": 410,
+              "name": "aws_appautoscaling_target.main"
+            },
+            {
+              "firstLine": 412,
+              "kind": "resource",
+              "lastLine": 426,
+              "name": "aws_appautoscaling_policy.cpu"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/container-service/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.cluster_name"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.service_name"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.api_url"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.migration_task_definition"
+            },
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.security_group_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.private_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.execution_role_arn"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 42,
+              "name": "output.task_role_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/container-service/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 19,
+              "name": "var.names"
+            },
+            {
+              "firstLine": 21,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 26,
+              "kind": "resource",
+              "lastLine": 29,
+              "name": "var.application"
+            },
+            {
+              "firstLine": 31,
+              "kind": "resource",
+              "lastLine": 34,
+              "name": "var.vpc_id"
+            },
+            {
+              "firstLine": 36,
+              "kind": "resource",
+              "lastLine": 39,
+              "name": "var.public_subnet_ids"
+            },
+            {
+              "firstLine": 41,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "var.private_subnet_ids"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 49,
+              "name": "var.domain_name"
+            },
+            {
+              "firstLine": 51,
+              "kind": "resource",
+              "lastLine": 54,
+              "name": "var.zone_name"
+            },
+            {
+              "firstLine": 56,
+              "kind": "resource",
+              "lastLine": 59,
+              "name": "var.cpu"
+            },
+            {
+              "firstLine": 61,
+              "kind": "resource",
+              "lastLine": 64,
+              "name": "var.memory"
+            },
+            {
+              "firstLine": 66,
+              "kind": "resource",
+              "lastLine": 69,
+              "name": "var.desired_count"
+            },
+            {
+              "firstLine": 71,
+              "kind": "resource",
+              "lastLine": 74,
+              "name": "var.min_count"
+            },
+            {
+              "firstLine": 76,
+              "kind": "resource",
+              "lastLine": 79,
+              "name": "var.max_count"
+            },
+            {
+              "firstLine": 81,
+              "kind": "resource",
+              "lastLine": 84,
+              "name": "var.container_port"
+            },
+            {
+              "firstLine": 86,
+              "kind": "resource",
+              "lastLine": 89,
+              "name": "var.migration_command"
+            },
+            {
+              "firstLine": 91,
+              "kind": "resource",
+              "lastLine": 94,
+              "name": "var.ecr_account_id"
+            },
+            {
+              "firstLine": 96,
+              "kind": "resource",
+              "lastLine": 99,
+              "name": "var.ecr_region"
+            },
+            {
+              "firstLine": 101,
+              "kind": "resource",
+              "lastLine": 104,
+              "name": "var.ecr_repository"
+            },
+            {
+              "firstLine": 106,
+              "kind": "resource",
+              "lastLine": 115,
+              "name": "var.image_digest"
+            },
+            {
+              "firstLine": 117,
+              "kind": "resource",
+              "lastLine": 121,
+              "name": "var.environment_variables"
+            },
+            {
+              "firstLine": 123,
+              "kind": "resource",
+              "lastLine": 127,
+              "name": "var.secrets"
+            },
+            {
+              "firstLine": 129,
+              "kind": "resource",
+              "lastLine": 133,
+              "name": "var.secret_arns"
+            },
+            {
+              "firstLine": 135,
+              "kind": "resource",
+              "lastLine": 139,
+              "name": "var.kms_key_arns"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::apiAws",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "module.api"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 44,
+              "kind": "resource",
+              "lastLine": 47,
+              "name": "output.api_api_url"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.api_cluster_name"
+            },
+            {
+              "firstLine": 54,
+              "kind": "resource",
+              "lastLine": 57,
+              "name": "output.api_migration_task_definition"
+            },
+            {
+              "firstLine": 59,
+              "kind": "resource",
+              "lastLine": 62,
+              "name": "output.api_private_subnet_ids"
+            },
+            {
+              "firstLine": 64,
+              "kind": "resource",
+              "lastLine": 67,
+              "name": "output.api_security_group_id"
+            },
+            {
+              "firstLine": 69,
+              "kind": "resource",
+              "lastLine": 72,
+              "name": "output.api_service_name"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.shop_api_image_digest"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "module.api"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 44,
+              "kind": "resource",
+              "lastLine": 47,
+              "name": "output.api_api_url"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.api_cluster_name"
+            },
+            {
+              "firstLine": 54,
+              "kind": "resource",
+              "lastLine": 57,
+              "name": "output.api_migration_task_definition"
+            },
+            {
+              "firstLine": 59,
+              "kind": "resource",
+              "lastLine": 62,
+              "name": "output.api_private_subnet_ids"
+            },
+            {
+              "firstLine": 64,
+              "kind": "resource",
+              "lastLine": 67,
+              "name": "output.api_security_group_id"
+            },
+            {
+              "firstLine": 69,
+              "kind": "resource",
+              "lastLine": 72,
+              "name": "output.api_service_name"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.shop_api_image_digest"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/container-service/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 30,
+              "name": "locals"
+            },
+            {
+              "firstLine": 36,
+              "kind": "resource",
+              "lastLine": 39,
+              "name": "data.aws_route53_zone.main"
+            },
+            {
+              "firstLine": 42,
+              "kind": "resource",
+              "lastLine": 46,
+              "name": "aws_cloudwatch_log_group.main"
+            },
+            {
+              "firstLine": 48,
+              "kind": "resource",
+              "lastLine": 56,
+              "name": "aws_ecs_cluster.main"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 69,
+              "name": "data.aws_iam_policy_document.ecs_tasks_trust"
+            },
+            {
+              "firstLine": 71,
+              "kind": "resource",
+              "lastLine": 75,
+              "name": "aws_iam_role.execution"
+            },
+            {
+              "firstLine": 77,
+              "kind": "resource",
+              "lastLine": 120,
+              "name": "data.aws_iam_policy_document.execution"
+            },
+            {
+              "firstLine": 122,
+              "kind": "resource",
+              "lastLine": 126,
+              "name": "aws_iam_role_policy.execution"
+            },
+            {
+              "firstLine": 130,
+              "kind": "resource",
+              "lastLine": 134,
+              "name": "aws_iam_role.task"
+            },
+            {
+              "firstLine": 136,
+              "kind": "resource",
+              "lastLine": 170,
+              "name": "aws_ecs_task_definition.service"
+            },
+            {
+              "firstLine": 174,
+              "kind": "resource",
+              "lastLine": 203,
+              "name": "aws_ecs_task_definition.migration"
+            },
+            {
+              "firstLine": 207,
+              "kind": "resource",
+              "lastLine": 212,
+              "name": "aws_security_group.alb"
+            },
+            {
+              "firstLine": 214,
+              "kind": "resource",
+              "lastLine": 224,
+              "name": "aws_vpc_security_group_ingress_rule.alb"
+            },
+            {
+              "firstLine": 226,
+              "kind": "resource",
+              "lastLine": 234,
+              "name": "aws_vpc_security_group_egress_rule.alb_to_service"
+            },
+            {
+              "firstLine": 236,
+              "kind": "resource",
+              "lastLine": 241,
+              "name": "aws_security_group.service"
+            },
+            {
+              "firstLine": 243,
+              "kind": "resource",
+              "lastLine": 251,
+              "name": "aws_vpc_security_group_ingress_rule.service_from_alb"
+            },
+            {
+              "firstLine": 255,
+              "kind": "resource",
+              "lastLine": 263,
+              "name": "aws_vpc_security_group_egress_rule.service_https"
+            },
+            {
+              "firstLine": 265,
+              "kind": "resource",
+              "lastLine": 273,
+              "name": "aws_lb.main"
+            },
+            {
+              "firstLine": 275,
+              "kind": "resource",
+              "lastLine": 290,
+              "name": "aws_lb_target_group.main"
+            },
+            {
+              "firstLine": 292,
+              "kind": "resource",
+              "lastLine": 300,
+              "name": "aws_acm_certificate.main"
+            },
+            {
+              "firstLine": 302,
+              "kind": "resource",
+              "lastLine": 313,
+              "name": "aws_route53_record.certificate_validation"
+            },
+            {
+              "firstLine": 315,
+              "kind": "resource",
+              "lastLine": 318,
+              "name": "aws_acm_certificate_validation.main"
+            },
+            {
+              "firstLine": 321,
+              "kind": "resource",
+              "lastLine": 333,
+              "name": "aws_lb_listener.https"
+            },
+            {
+              "firstLine": 335,
+              "kind": "resource",
+              "lastLine": 350,
+              "name": "aws_lb_listener.http"
+            },
+            {
+              "firstLine": 352,
+              "kind": "resource",
+              "lastLine": 362,
+              "name": "aws_route53_record.api"
+            },
+            {
+              "firstLine": 367,
+              "kind": "resource",
+              "lastLine": 399,
+              "name": "aws_ecs_service.main"
+            },
+            {
+              "firstLine": 403,
+              "kind": "resource",
+              "lastLine": 410,
+              "name": "aws_appautoscaling_target.main"
+            },
+            {
+              "firstLine": 412,
+              "kind": "resource",
+              "lastLine": 426,
+              "name": "aws_appautoscaling_policy.cpu"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/container-service/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.cluster_name"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.service_name"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.api_url"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.migration_task_definition"
+            },
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.security_group_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.private_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.execution_role_arn"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 42,
+              "name": "output.task_role_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/container-service/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 19,
+              "name": "var.names"
+            },
+            {
+              "firstLine": 21,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 26,
+              "kind": "resource",
+              "lastLine": 29,
+              "name": "var.application"
+            },
+            {
+              "firstLine": 31,
+              "kind": "resource",
+              "lastLine": 34,
+              "name": "var.vpc_id"
+            },
+            {
+              "firstLine": 36,
+              "kind": "resource",
+              "lastLine": 39,
+              "name": "var.public_subnet_ids"
+            },
+            {
+              "firstLine": 41,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "var.private_subnet_ids"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 49,
+              "name": "var.domain_name"
+            },
+            {
+              "firstLine": 51,
+              "kind": "resource",
+              "lastLine": 54,
+              "name": "var.zone_name"
+            },
+            {
+              "firstLine": 56,
+              "kind": "resource",
+              "lastLine": 59,
+              "name": "var.cpu"
+            },
+            {
+              "firstLine": 61,
+              "kind": "resource",
+              "lastLine": 64,
+              "name": "var.memory"
+            },
+            {
+              "firstLine": 66,
+              "kind": "resource",
+              "lastLine": 69,
+              "name": "var.desired_count"
+            },
+            {
+              "firstLine": 71,
+              "kind": "resource",
+              "lastLine": 74,
+              "name": "var.min_count"
+            },
+            {
+              "firstLine": 76,
+              "kind": "resource",
+              "lastLine": 79,
+              "name": "var.max_count"
+            },
+            {
+              "firstLine": 81,
+              "kind": "resource",
+              "lastLine": 84,
+              "name": "var.container_port"
+            },
+            {
+              "firstLine": 86,
+              "kind": "resource",
+              "lastLine": 89,
+              "name": "var.migration_command"
+            },
+            {
+              "firstLine": 91,
+              "kind": "resource",
+              "lastLine": 94,
+              "name": "var.ecr_account_id"
+            },
+            {
+              "firstLine": 96,
+              "kind": "resource",
+              "lastLine": 99,
+              "name": "var.ecr_region"
+            },
+            {
+              "firstLine": 101,
+              "kind": "resource",
+              "lastLine": 104,
+              "name": "var.ecr_repository"
+            },
+            {
+              "firstLine": 106,
+              "kind": "resource",
+              "lastLine": 115,
+              "name": "var.image_digest"
+            },
+            {
+              "firstLine": 117,
+              "kind": "resource",
+              "lastLine": 121,
+              "name": "var.environment_variables"
+            },
+            {
+              "firstLine": 123,
+              "kind": "resource",
+              "lastLine": 127,
+              "name": "var.secrets"
+            },
+            {
+              "firstLine": 129,
+              "kind": "resource",
+              "lastLine": 133,
+              "name": "var.secret_arns"
+            },
+            {
+              "firstLine": 135,
+              "kind": "resource",
+              "lastLine": 139,
+              "name": "var.kms_key_arns"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::dev",
+      "files": [
+        {
+          "path": "infra/bootstrap/dev/iam.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "aws_iam_role.deploy"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "aws_iam_role_policy.deploy"
+            },
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 51,
+              "name": "data.aws_iam_policy_document.deploy_trust"
+            },
+            {
+              "firstLine": 53,
+              "kind": "resource",
+              "lastLine": 322,
+              "name": "data.aws_iam_policy_document.deploy"
+            },
+            {
+              "firstLine": 324,
+              "kind": "resource",
+              "lastLine": 332,
+              "name": "aws_iam_role.plan"
+            },
+            {
+              "firstLine": 334,
+              "kind": "resource",
+              "lastLine": 338,
+              "name": "aws_iam_role_policy.plan"
+            },
+            {
+              "firstLine": 340,
+              "kind": "resource",
+              "lastLine": 343,
+              "name": "aws_iam_role_policy_attachment.plan"
+            },
+            {
+              "firstLine": 345,
+              "kind": "resource",
+              "lastLine": 376,
+              "name": "data.aws_iam_policy_document.plan_trust"
+            },
+            {
+              "firstLine": 378,
+              "kind": "resource",
+              "lastLine": 401,
+              "name": "data.aws_iam_policy_document.plan"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "aws_s3_bucket.state"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 25,
+              "name": "aws_s3_bucket_versioning.state"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 35,
+              "name": "aws_s3_bucket_server_side_encryption_configuration.state"
+            },
+            {
+              "firstLine": 37,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "aws_s3_bucket_public_access_block.state"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_iam_openid_connect_provider.github"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.github_oidc_provider_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.deploy_role_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.plan_role_arn"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.state_bucket"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            },
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.github_repository"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/backend.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.aws_account_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.aws_region"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.environment"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.product"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::net",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "module.net"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.net_private_subnet_ids"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.net_public_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.net_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "module.net"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.net_private_subnet_ids"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.net_public_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.net_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 11,
+              "name": "data.aws_availability_zones.available"
+            },
+            {
+              "firstLine": 13,
+              "kind": "resource",
+              "lastLine": 16,
+              "name": "locals"
+            },
+            {
+              "firstLine": 18,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "aws_vpc.this"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 31,
+              "name": "aws_default_security_group.this"
+            },
+            {
+              "firstLine": 33,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "aws_internet_gateway.this"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 48,
+              "name": "aws_subnet.public"
+            },
+            {
+              "firstLine": 50,
+              "kind": "resource",
+              "lastLine": 58,
+              "name": "aws_subnet.private"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 64,
+              "name": "aws_route_table.public"
+            },
+            {
+              "firstLine": 66,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "aws_route.public_internet"
+            },
+            {
+              "firstLine": 72,
+              "kind": "resource",
+              "lastLine": 77,
+              "name": "aws_route_table_association.public"
+            },
+            {
+              "firstLine": 79,
+              "kind": "resource",
+              "lastLine": 85,
+              "name": "aws_eip.nat"
+            },
+            {
+              "firstLine": 87,
+              "kind": "resource",
+              "lastLine": 96,
+              "name": "aws_nat_gateway.this"
+            },
+            {
+              "firstLine": 98,
+              "kind": "resource",
+              "lastLine": 104,
+              "name": "aws_route_table.private"
+            },
+            {
+              "firstLine": 109,
+              "kind": "resource",
+              "lastLine": 115,
+              "name": "aws_route.private_nat"
+            },
+            {
+              "firstLine": 117,
+              "kind": "resource",
+              "lastLine": 122,
+              "name": "aws_route_table_association.private"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.nat_gateway_ids"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.private_subnet_ids"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.public_subnet_ids"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "var.cidr_block"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 17,
+              "kind": "resource",
+              "lastLine": 21,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 23,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "var.nat_gateway_count"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 43,
+              "name": "var.zone_count"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::netAws",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "module.net"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.net_private_subnet_ids"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.net_public_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.net_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "module.net"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.net_private_subnet_ids"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.net_public_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.net_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 11,
+              "name": "data.aws_availability_zones.available"
+            },
+            {
+              "firstLine": 13,
+              "kind": "resource",
+              "lastLine": 16,
+              "name": "locals"
+            },
+            {
+              "firstLine": 18,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "aws_vpc.this"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 31,
+              "name": "aws_default_security_group.this"
+            },
+            {
+              "firstLine": 33,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "aws_internet_gateway.this"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 48,
+              "name": "aws_subnet.public"
+            },
+            {
+              "firstLine": 50,
+              "kind": "resource",
+              "lastLine": 58,
+              "name": "aws_subnet.private"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 64,
+              "name": "aws_route_table.public"
+            },
+            {
+              "firstLine": 66,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "aws_route.public_internet"
+            },
+            {
+              "firstLine": 72,
+              "kind": "resource",
+              "lastLine": 77,
+              "name": "aws_route_table_association.public"
+            },
+            {
+              "firstLine": 79,
+              "kind": "resource",
+              "lastLine": 85,
+              "name": "aws_eip.nat"
+            },
+            {
+              "firstLine": 87,
+              "kind": "resource",
+              "lastLine": 96,
+              "name": "aws_nat_gateway.this"
+            },
+            {
+              "firstLine": 98,
+              "kind": "resource",
+              "lastLine": 104,
+              "name": "aws_route_table.private"
+            },
+            {
+              "firstLine": 109,
+              "kind": "resource",
+              "lastLine": 115,
+              "name": "aws_route.private_nat"
+            },
+            {
+              "firstLine": 117,
+              "kind": "resource",
+              "lastLine": 122,
+              "name": "aws_route_table_association.private"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.nat_gateway_ids"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.private_subnet_ids"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.public_subnet_ids"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "var.cidr_block"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 17,
+              "kind": "resource",
+              "lastLine": 21,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 23,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "var.nat_gateway_count"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 43,
+              "name": "var.zone_count"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::prod",
+      "files": [
+        {
+          "path": "infra/bootstrap/prod/iam.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "aws_iam_role.deploy"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "aws_iam_role_policy.deploy"
+            },
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 51,
+              "name": "data.aws_iam_policy_document.deploy_trust"
+            },
+            {
+              "firstLine": 53,
+              "kind": "resource",
+              "lastLine": 322,
+              "name": "data.aws_iam_policy_document.deploy"
+            },
+            {
+              "firstLine": 324,
+              "kind": "resource",
+              "lastLine": 332,
+              "name": "aws_iam_role.plan"
+            },
+            {
+              "firstLine": 334,
+              "kind": "resource",
+              "lastLine": 338,
+              "name": "aws_iam_role_policy.plan"
+            },
+            {
+              "firstLine": 340,
+              "kind": "resource",
+              "lastLine": 343,
+              "name": "aws_iam_role_policy_attachment.plan"
+            },
+            {
+              "firstLine": 345,
+              "kind": "resource",
+              "lastLine": 376,
+              "name": "data.aws_iam_policy_document.plan_trust"
+            },
+            {
+              "firstLine": 378,
+              "kind": "resource",
+              "lastLine": 401,
+              "name": "data.aws_iam_policy_document.plan"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "aws_s3_bucket.state"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 25,
+              "name": "aws_s3_bucket_versioning.state"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 35,
+              "name": "aws_s3_bucket_server_side_encryption_configuration.state"
+            },
+            {
+              "firstLine": 37,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "aws_s3_bucket_public_access_block.state"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_iam_openid_connect_provider.github"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.github_oidc_provider_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.deploy_role_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.plan_role_arn"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.state_bucket"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            },
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.github_repository"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/backend.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.aws_account_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.aws_region"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.environment"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.product"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::secrets",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "module.secrets"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 42,
+              "name": "output.secrets_secret_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "module.secrets"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 42,
+              "name": "output.secrets_secret_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/secret-store/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 6,
+              "name": "locals"
+            },
+            {
+              "firstLine": 8,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "aws_kms_key.this"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 19,
+              "name": "aws_kms_alias.this"
+            },
+            {
+              "firstLine": 23,
+              "kind": "resource",
+              "lastLine": 30,
+              "name": "aws_secretsmanager_secret.this"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/secret-store/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.key_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.secret_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/secret-store/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "var.key_alias"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "var.name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::secretsAws",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "module.secrets"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 42,
+              "name": "output.secrets_secret_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "module.secrets"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 42,
+              "name": "output.secrets_secret_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/secret-store/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 6,
+              "name": "locals"
+            },
+            {
+              "firstLine": 8,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "aws_kms_key.this"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 19,
+              "name": "aws_kms_alias.this"
+            },
+            {
+              "firstLine": 23,
+              "kind": "resource",
+              "lastLine": 30,
+              "name": "aws_secretsmanager_secret.this"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/secret-store/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.key_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.secret_arn"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/secret-store/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "var.key_alias"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "var.name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi",
+      "files": [
+        {
+          "path": "infra/tooling/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "aws_ecr_repository.shop_api"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 48,
+              "name": "aws_ecr_lifecycle_policy.shop_api"
+            },
+            {
+              "firstLine": 50,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_ecr_repository_policy.shop_api"
+            },
+            {
+              "firstLine": 55,
+              "kind": "resource",
+              "lastLine": 82,
+              "name": "data.aws_iam_policy_document.shop_api_pull"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::tooling",
+      "files": [
+        {
+          "path": "infra/bootstrap/tooling/iam.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "aws_iam_role.push"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "aws_iam_role_policy.push"
+            },
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "data.aws_iam_policy_document.push_trust"
+            },
+            {
+              "firstLine": 54,
+              "kind": "resource",
+              "lastLine": 83,
+              "name": "data.aws_iam_policy_document.push"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "aws_s3_bucket.state"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 25,
+              "name": "aws_s3_bucket_versioning.state"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 35,
+              "name": "aws_s3_bucket_server_side_encryption_configuration.state"
+            },
+            {
+              "firstLine": 37,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "aws_s3_bucket_public_access_block.state"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_iam_openid_connect_provider.github"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.github_oidc_provider_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.push_role_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.state_bucket"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            },
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.github_repository"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/backend.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.aws_account_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.aws_region"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.shop_api_repository_url"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}

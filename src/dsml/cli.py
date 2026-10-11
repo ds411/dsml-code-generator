@@ -33,7 +33,7 @@ from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
 from dsml.trace.comments import hand_written_files, read_trace_comments
 from dsml.trace.commit import model_commit
-from dsml.trace.report import csv_report
+from dsml.trace.report import csv_report, html_report
 from dsml.trace.report import json_report as json_trace_report
 from dsml.trace.reports import COVERAGE, ORPHANS, TraceData, coverage_report, orphans_report
 from dsml.validate.engine import Validator, fails
@@ -508,7 +508,7 @@ def trace_folders(configuration: Configuration) -> list[PurePosixPath]:
 # trace: PRD-CORE-001, PRD-CORE-006, PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013,
 # PRD-TRACE-017, PRD-TRACE-018
 def run_trace(args: argparse.Namespace) -> Outcome:
-    """Write the coverage report or the orphans report as JSON or as CSV.
+    """Write the coverage report or the orphans report as HTML, CSV or JSON.
 
     The command reads the model, the trace manifest `.dsml/trace.gen.json`
     and the trace comments in the hand-written files of the output folders
@@ -518,10 +518,6 @@ def run_trace(args: argparse.Namespace) -> Outcome:
     """
     if args.report not in (COVERAGE, ORPHANS):
         raise NotAvailableError()
-    if args.format == "html":
-        raise ToolchainError(
-            "The format html is not available in this version. Use --format json or --format csv."
-        )
     if args.baseline is not None:
         raise ToolchainError("The option --baseline is not available in this version.")
     configuration = read_configuration(args)
@@ -541,8 +537,8 @@ def run_trace(args: argparse.Namespace) -> Outcome:
         model_commit=model_commit(root),
     )
     report = coverage_report(data) if args.report == COVERAGE else orphans_report(data)
-    write = json_trace_report if args.format == "json" else csv_report
-    write_report(write(report), args.output)
+    writers = {"csv": csv_report, "html": html_report, "json": json_trace_report}
+    write_report(writers[args.format](report), args.output)
     return Outcome.SUCCESS
 
 

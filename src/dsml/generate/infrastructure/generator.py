@@ -1,5 +1,5 @@
 # trace: PRD-IAC-001, PRD-IAC-002, PRD-IAC-023, PRD-CORE-026
-"""The infrastructure generator: one root module for each environment.
+"""The infrastructure generator: the root module of each environment and the local modules.
 
 The generator reads only the IR and the configuration (PRD-CORE-026). It
 writes its files in the folder of the key `infrastructure.output`. Without
@@ -17,10 +17,17 @@ For each environment, the folder `envs/<environment>/` gets these files
   OpenTofu as the only tool that accepts it (PRD-IAC-004).
 - `providers.gen.tf`: the AWS provider with `allowed_account_ids` and
   `default_tags` (PRD-IAC-024, PRD-IAC-035).
-- `main.gen.tf`: the values of the environment. The local modules of the
-  environment come in this file.
-- `variables.gen.tf`: the variable `model_commit` (PRD-IAC-036).
-- `outputs.gen.tf`: the values that the pipelines need (PRD-IAC-010).
+- `main.gen.tf`: the values of the environment, and one call of a local
+  module for each logical element (PRD-IAC-023).
+- `variables.gen.tf`: the variable `model_commit` (PRD-IAC-036) and the
+  variables of the module calls, for example the image digest of an
+  application (PRD-IAC-009).
+- `outputs.gen.tf`: the values that the pipelines need, and the outputs of
+  the module calls (PRD-IAC-010).
+
+For each logical kind with one or more elements, the folder
+`modules/<module>/` gets the files `main.gen.tf`, `variables.gen.tf` and
+`outputs.gen.tf`. `dsml.generate.infrastructure.modules` gives the modules.
 
 The module `dsml.generate.infrastructure.accounts` gives the files of the
 folders `tooling/` and `bootstrap/<account>/` (PRD-IAC-022, PRD-IAC-026).
@@ -38,7 +45,7 @@ from dsml.config import Configuration
 from dsml.errors import ToolchainError
 from dsml.generate import names as safe_names
 from dsml.generate.header import FileType
-from dsml.generate.infrastructure import hcl, names
+from dsml.generate.infrastructure import hcl, modules, names
 from dsml.generate.infrastructure.accounts import Account, account_files
 from dsml.generate.templates import TemplateEngine
 from dsml.generate.writer import INFRASTRUCTURE, Kind, OutputFile
@@ -48,6 +55,9 @@ from dsml.versions import load_baseline, pinned_version
 
 ROOT_FILES: Final = ("backend", "main", "outputs", "providers", "variables", "versions")
 """The files of each environment root module, without `.gen.tf`."""
+
+CALL_FILES: Final = frozenset({"main", "outputs"})
+"""The files of a root module that contain the module calls and their outputs."""
 
 TEMPLATE_FOLDER: Final = "infrastructure/envs"
 """The folder of the templates of the environment root modules."""
@@ -144,24 +154,95 @@ class InfrastructureGenerator:
     def generate(
         self, ir: Ir, configuration: Configuration, parts: Collection[str] | None
     ) -> Sequence[OutputFile]:
-        """Give the files of each environment root module."""
+        """Give the files of each environment root module and of each local module."""
         output = configuration.infrastructure
         if output is None or (parts is not None and INFRASTRUCTURE not in parts):
             return []
         files: list[OutputFile] = []
+        module_elements: dict[str, set[str]] = {}
         for root in environment_roots(ir):
-            data = template_data(root, configuration)
-            identity = root.element.identity
-
-            def elements(address: str, identity: str = identity) -> tuple[str, ...]:
-                return (identity,)
-
-            for file in ROOT_FILES:
-                content = self._engine.render_bytes(f"{TEMPLATE_FOLDER}/{file}.gen.tf.j2", data)
-                path = PurePosixPath(output, "envs", root.name, f"{file}.gen.tf").as_posix()
-                symbols = hcl.block_symbols(content.decode("utf-8"), elements)
-                files.append(OutputFile(path, content, Kind.GENERATED, INFRASTRUCTURE, symbols))
+            calls = modules.module_calls(ir, root.element, root.product)
+            files.extend(self._root_files(root, configuration, calls, output))
+            for call in calls:
+                module_elements.setdefault(call.folder, set()).update(call.identities)
+        for module in modules.MODULES:
+            if module.folder in module_elements:
+                identities = tuple(sorted(module_elements[module.folder]))
+                files.extend(self._module_files(module, identities, output))
         files.extend(_account_files(self._engine, ir, configuration, PurePosixPath(output)))
+        return files
+
+    # trace: PRD-IAC-001, PRD-IAC-023, PRD-TRACE-005, PRD-TRACE-007
+    def _root_files(
+        self,
+        root: EnvironmentRoot,
+        configuration: Configuration,
+        calls: Sequence[modules.ModuleCall],
+        output: PurePosixPath,
+    ) -> list[OutputFile]:
+        """Give the files of one environment root module.
+
+        A module call, its outputs and its variables are symbols of the
+        logical element and of its AWS realization. The other blocks are symbols of the
+        environment.
+        """
+        data = template_data(root, configuration)
+        data["calls"] = calls
+        call_elements = tuple(sorted({item for call in calls for item in call.identities}))
+        by_address: dict[str, tuple[str, ...]] = {}
+        for call in calls:
+            by_address[f"module.{call.address}"] = call.identities
+            for item in call.outputs:
+                by_address[f"output.{item.name}"] = call.identities
+            for variable in call.variables:
+                by_address[f"var.{variable.name}"] = call.identities
+        variable_elements = tuple(
+            sorted({item for call in calls if call.variables for item in call.identities})
+        )
+        identity = root.element.identity
+
+        def elements(address: str) -> tuple[str, ...]:
+            return by_address.get(address, (identity,))
+
+        files: list[OutputFile] = []
+        for file in ROOT_FILES:
+            file_elements = [identity]
+            if file in CALL_FILES:
+                file_elements.extend(call_elements)
+            elif file == "variables":
+                file_elements.extend(variable_elements)
+            content = self._engine.render_bytes(
+                f"{TEMPLATE_FOLDER}/{file}.gen.tf.j2",
+                {**data, "elements": sorted(file_elements)},
+            )
+            path = PurePosixPath(output, "envs", root.name, f"{file}.gen.tf").as_posix()
+            symbols = hcl.block_symbols(content.decode("utf-8"), elements)
+            files.append(OutputFile(path, content, Kind.GENERATED, INFRASTRUCTURE, symbols))
+        return files
+
+    # trace: PRD-IAC-001, PRD-IAC-007, PRD-TRACE-005, PRD-TRACE-007
+    def _module_files(
+        self, module: modules.LocalModule, identities: tuple[str, ...], output: PurePosixPath
+    ) -> list[OutputFile]:
+        """Give the files of one local module.
+
+        Each block of the module is a symbol of each element that calls the
+        module, and of its AWS realization.
+        """
+        folder = module.folder
+        data = {
+            **module.template_data(),
+            "file_type": FileType.HCL.value,
+            "elements": list(identities),
+        }
+        files: list[OutputFile] = []
+        for file in modules.MODULE_FILES:
+            content = self._engine.render_bytes(
+                f"{modules.TEMPLATE_FOLDER}/{folder}/{file}.gen.tf.j2", data
+            )
+            path = PurePosixPath(output, "modules", folder, f"{file}.gen.tf").as_posix()
+            symbols = hcl.block_symbols(content.decode("utf-8"), lambda _: identities)
+            files.append(OutputFile(path, content, Kind.GENERATED, INFRASTRUCTURE, symbols))
         return files
 
 

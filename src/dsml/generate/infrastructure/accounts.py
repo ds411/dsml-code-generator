@@ -102,8 +102,7 @@ def tooling_account(ir: Ir, product: Callable[[Element], str]) -> Account | None
     if not found:
         return None
     if len(found) > 1:
-        identities = ", ".join(element.identity for element in found)
-        raise ToolchainError(f"The model must have one tooling account, not: {identities}.")
+        raise ToolchainError(f"The model must have one #ToolingAccount element, not {len(found)}.")
     element = found[0]
     return Account(
         element=element,
@@ -146,6 +145,7 @@ def _base_data(account: Account, configuration: Configuration) -> dict[str, Any]
     encryption = configuration.opentofu is not None and configuration.opentofu.state_encryption
     return {
         "elements": [account.element.identity],
+        "calls": [],
         "account": account.name,
         "account_id": account.account_id,
         "element": names.tag_value(account.element.identity),

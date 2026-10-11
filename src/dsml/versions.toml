@@ -77,6 +77,17 @@ version = "0.13.0"
 line = "0.54"
 version = "0.54.0"
 
+# The token check of the FastAPI target (PRD-APP-130, story #78): PyJWT
+# and the RSA code of cryptography. "version": the newest release of the
+# line on 11 October 2026.
+[pyjwt]
+line = "2.15"
+version = "2.15.1"
+
+[cryptography]
+line = "50.0"
+version = "50.0.2"
+
 # The dev tools of the FastAPI target: the HTTP client of the FastAPI test
 # client, the linter and formatter, and the type checker. The toolchain uses
 # the same versions of ruff and pyright.

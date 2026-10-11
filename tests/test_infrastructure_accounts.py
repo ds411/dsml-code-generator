@@ -15,7 +15,12 @@ from dsml.adapter.convert import make_ir
 from dsml.config import Configuration, OpenTofuOptions
 from dsml.errors import ToolchainError
 from dsml.generate.infrastructure import names, policies
-from dsml.generate.infrastructure.accounts import BOOTSTRAP_FILES, README, TOOLING_FILES
+from dsml.generate.infrastructure.accounts import (
+    BOOTSTRAP_FILES,
+    README,
+    TOOLING_FILES,
+    tooling_account,
+)
 from dsml.generate.infrastructure.generator import InfrastructureGenerator
 from dsml.generate.writer import Kind, OutputFile, check_files
 from dsml.ir.model import Ir
@@ -66,7 +71,9 @@ def _actions(text: str) -> list[str]:
 # trace: PRD-IAC-001, PRD-IAC-002, PRD-IAC-029
 def test_generator_writes_the_tooling_and_the_bootstrap_root_modules(ir: Ir) -> None:
     files = _generate(ir)
-    paths = sorted(path for path in files if not path.startswith("infra/envs/"))
+    paths = sorted(
+        path for path in files if path.startswith(("infra/tooling/", "infra/bootstrap/"))
+    )
     assert paths == sorted(
         [f"infra/tooling/{name}.gen.tf" for name in TOOLING_FILES]
         + [
@@ -291,15 +298,14 @@ def test_ecr_blocks_are_symbols_of_the_application(ir: Ir) -> None:
     assert {symbol.elements for symbol in bootstrap.symbols} == {("OrderService::dev",)}
 
 
-def test_model_with_no_tooling_account_gives_no_tooling_or_bootstrap_file(ir: Ir) -> None:
+def test_model_with_no_tooling_account_gives_no_account(ir: Ir) -> None:
     elements = tuple(element for element in ir.elements if element.kind != "ToolingAccount")
-    files = _generate(dataclasses.replace(ir, elements=elements))
-    assert files
-    assert all(path.startswith("infra/envs/") for path in files)
+    model = dataclasses.replace(ir, elements=elements)
+    assert tooling_account(model, lambda element: "order-service") is None
 
 
 def test_model_with_two_tooling_accounts_stops(ir: Ir) -> None:
     tooling = next(element for element in ir.elements if element.kind == "ToolingAccount")
     second = dataclasses.replace(tooling, identity="OrderService::tooling2", name="tooling2")
-    with pytest.raises(ToolchainError, match="one tooling account"):
+    with pytest.raises(ToolchainError, match="one #ToolingAccount element, not 2"):
         _generate(dataclasses.replace(ir, elements=(*ir.elements, second)))

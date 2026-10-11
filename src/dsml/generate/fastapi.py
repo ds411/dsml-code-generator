@@ -1,4 +1,5 @@
-# trace: PRD-APP-001, PRD-APP-002, PRD-APP-101, PRD-APP-104, PRD-APP-134
+# trace: PRD-APP-001, PRD-APP-002, PRD-APP-008, PRD-APP-101, PRD-APP-104, PRD-APP-130,
+# PRD-APP-134
 """The FastAPI generator (phase 1).
 
 The generator reads only the IR and the configuration (PRD-APP-001,
@@ -11,13 +12,15 @@ application (PRD-APP-002):
 - `app/shared/config_gen.py`, `app/shared/errors_gen.py` and
   `app/shared/logs_gen.py`: the configuration, the problem details and the
   JSON logs.
-- `tests/test_app_gen.py`: the tests of the shared code, so that `pytest`
-  finds tests in a new project (PRD-APP-135).
+- `app/shared/auth/cognito_gen.py`: the Cognito token check and the role
+  check (PRD-APP-008, PRD-APP-130, PRD-APP-131).
+- `tests/test_app_gen.py` and `tests/test_auth_gen.py`: the tests of the
+  shared code, so that `pytest` finds tests in a new project (PRD-APP-135).
 - Each `__init__.py` of a generated folder.
 
 The versions come from the version baseline `versions.toml` (PRD-APP-101).
 The generator gives the symbols of each Python file for the trace manifest.
-Other M6 stories add the slices, the database code and the token check.
+Other M6 stories add the slices and the database code.
 """
 
 from collections.abc import Collection, Sequence
@@ -51,7 +54,7 @@ FIXED_NAMES: Final = (
 PROJECT_VERSION: Final = "0.1.0"
 """The version of the generated project and of its OpenAPI document."""
 
-RUNTIME_PACKAGES: Final = ("fastapi", "pydantic", "uvicorn")
+RUNTIME_PACKAGES: Final = ("cryptography", "fastapi", "pydantic", "pyjwt", "uvicorn")
 """The baseline items of the run-time dependencies (PRD-APP-101)."""
 
 DEV_PACKAGES: Final = ("httpx2", "pyright", "pytest", "ruff")
@@ -64,15 +67,18 @@ _TEMPLATES: Final = {
     "app/__init__.py": "fastapi/init.py.j2",
     "app/main_gen.py": "fastapi/main_gen.py.j2",
     "app/shared/__init__.py": "fastapi/init.py.j2",
+    "app/shared/auth/__init__.py": "fastapi/init.py.j2",
+    "app/shared/auth/cognito_gen.py": "fastapi/cognito_gen.py.j2",
     "app/shared/config_gen.py": "fastapi/config_gen.py.j2",
     "app/shared/errors_gen.py": "fastapi/errors_gen.py.j2",
     "app/shared/logs_gen.py": "fastapi/logs_gen.py.j2",
     "pyproject.toml": "fastapi/pyproject.toml.j2",
     "tests/test_app_gen.py": "fastapi/test_app_gen.py.j2",
+    "tests/test_auth_gen.py": "fastapi/test_auth_gen.py.j2",
 }
 
 
-# trace: PRD-APP-010, PRD-APP-132
+# trace: PRD-APP-007, PRD-APP-010, PRD-APP-132
 @dataclass(frozen=True, slots=True)
 class Variable:
     """One environment variable of the configuration of the application."""
@@ -103,6 +109,21 @@ VARIABLES: Final = (
         "log_level",
         "The lowest level of the logs: DEBUG, INFO, WARNING or ERROR.",
         "INFO",
+    ),
+    Variable(
+        "AWS_REGION",
+        "aws_region",
+        "The AWS Region of the user pool, for example `eu-west-1`.",
+    ),
+    Variable(
+        "COGNITO_USER_POOL_ID",
+        "cognito_user_pool_id",
+        "The ID of the Cognito user pool of the environment.",
+    ),
+    Variable(
+        "COGNITO_APP_CLIENT_ID",
+        "cognito_app_client_id",
+        "The ID of the app client of the application.",
     ),
 )
 """The environment variables of the shared configuration, in the order of the fields."""
@@ -191,8 +212,8 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
     return value
 
 
-# trace: PRD-APP-002, PRD-APP-013, PRD-APP-017, PRD-APP-104, PRD-APP-105, PRD-APP-133,
-# PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
+# trace: PRD-APP-002, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104, PRD-APP-105,
+# PRD-APP-130, PRD-APP-131, PRD-APP-133, PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
 def application_files(
     engine: TemplateEngine,
     application: Element,
