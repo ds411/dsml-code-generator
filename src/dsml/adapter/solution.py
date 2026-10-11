@@ -39,6 +39,7 @@ from dsml.ir.model import (
     StringValue,
     Value,
 )
+from dsml.ir.operations import CRUD_DEFAULTS
 
 # trace: PRD-DSML-020, PRD-DSML-022, PRD-DSML-027, PRD-DSML-028, PRD-DSML-033,
 # PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-042, PRD-DSML-043, PRD-DSML-045
@@ -94,9 +95,6 @@ _DEPENDENCY_LINKS: dict[str, LinkType] = {
     "Uses": "uses",
     "Calls": "calls",
 }
-
-CRUD_DEFAULTS = "crudDefaults"
-"""The IR attribute that gives the default method and path of each CRUD operation."""
 
 LITERALS = "literals"
 """The IR attribute that gives the literals of an enumeration."""
@@ -212,22 +210,42 @@ class _Converter:
                 result.append(Attribute(spec.name, value, declared.get(spec.name)))
         return tuple(result)
 
-    # trace: PRD-DSML-041, PRD-DSML-042
+    # trace: PRD-DSML-041, PRD-DSML-042, PRD-VAL-015
     def _override_attributes(self, source: SourceElement) -> tuple[Attribute, ...]:
-        """Give the attributes that the override changes, with their values."""
+        """Give the attributes that the override changes, with their values.
+
+        An override can also change an attribute that the DSML library does
+        not define, for example an attribute that the model adds to the
+        realization. The IR keeps it, because rule STR-012 must find it.
+        """
         specs = {
             spec.name: spec
             for realization in source.references("subsets")
             if (kind := self._kinds.get(realization.json_id)) is not None
             for spec in self._kind_specs(kind)
         }
+        attributes = _declared_attributes(source)
         result: list[Attribute] = []
         for name, location in sorted(_declared(source).items()):
             spec = specs.get(name)
-            value = None if spec is None else self._value(source.qualified_name, spec)
+            if spec is not None:
+                value = self._value(source.qualified_name, spec)
+            elif name in attributes:
+                value = self._free_value(source.qualified_name, name)
+            else:
+                value = None
             if value is not None:
                 result.append(Attribute(name, value, location))
         return tuple(result)
+
+    def _free_value(self, namespace: str, name: str) -> Value | None:
+        """Give the value of an attribute that the DSML library does not define."""
+        plain = self._model.evaluate_value(_quoted(name), namespace)
+        if plain is None:
+            return None
+        if isinstance(plain, tuple) and len(plain) == 1:
+            plain = plain[0]
+        return _ir_value(plain)
 
     def _kind_specs(self, kind: ElementKind) -> tuple[_AttributeSpec, ...]:
         """Give the attribute usages of the base type of a kind in the library."""
@@ -325,6 +343,21 @@ def _declared(source: SourceElement) -> dict[str, Location | None]:
         if name and name not in result:
             result[name] = member.location
     return result
+
+
+def _declared_attributes(source: SourceElement) -> set[str]:
+    """Give the names of the attribute usages that the body of the element redefines.
+
+    OpenSysML gives a redefinition such as `:>> engine = "pg16";` as a
+    reference usage. Thus the function looks at the redefined feature.
+    """
+    return {
+        name
+        for membership, member in source.members()
+        if membership == "FeatureMembership"
+        and any(item.metaclass == "AttributeUsage" for item in member.references("redefines"))
+        and (name := member.redefined_name())
+    }
 
 
 def _types(source: SourceElement) -> tuple[str, ...]:

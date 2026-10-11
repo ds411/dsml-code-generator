@@ -65,7 +65,7 @@ The location of a link is the first character of its statement. For `verify`, it
 
 ## Environments
 
-An override holds only the attributes that it changes, with their locations. The validator uses this to find a change of an attribute that PRD-DSML-042 does not permit.
+An override holds only the attributes that it changes, with their locations. It also holds a change of an attribute that the model adds to the realization, for example `:>> engine = "postgres-16";`. Rule STR-012 uses this to find a change of an attribute that PRD-DSML-042 does not permit.
 
 The function `realization_attributes(ir, environment)` in `dsml.ir.environments` gives the attributes of each AWS realization in one environment. It starts with the values of the realization and replaces each value that an override in the environment changes. For the example model:
 
