@@ -10,7 +10,7 @@ from collections.abc import Iterable
 
 from dsml.adapter.engine import Diagnostic
 from dsml.ir.model import Finding, Location
-from dsml.rules import SYN_001, SYN_002
+from dsml.validate.rules.syn import SYN_001, SYN_002
 
 
 # trace: PRD-CORE-007, PRD-CORE-021

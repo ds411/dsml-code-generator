@@ -73,7 +73,7 @@ A conflict is not an internal error or a usage error, so the exit code is 1, not
 ## Subcommand `dsml generate`
 
 1. Read the configuration and the model files of the key `model.paths`.
-2. Make the IR. If the IR has an error finding, write the findings to standard error, write no file and stop with exit code 1 (PRD-CORE-003). The validator of M4 adds its findings to this step.
+2. Make the IR and run the validator on it. If there is an error finding, write the error findings to standard error, write no file and stop with exit code 1 (PRD-CORE-003). `docs/notes/validator.md` gives the validator.
 3. Run the generators of the selected parts. `--application <name>`, `--infrastructure` and `--pipelines` select parts. The options can go together. With no option, the run selects all parts (PRD-CORE-005).
 4. Compare the output files with the old manifest and with the files on disk.
 5. With `--check`, write no file. List each file to add, change or delete, and stop with exit code 1 if there is a difference (PRD-CORE-004). A conflict is a change in this list.
