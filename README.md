@@ -95,7 +95,7 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 
 Each subcommand has these common options:
 
-- `--config <file>`: read the configuration from this file. The default is `dsml.toml`.
+- `--config <file>`: read the configuration from this file. The default is `dsml.toml`. `docs/configuration.md` gives all keys of the file.
 - `--output <file>`: write the report to this file, not to standard output.
 - `--verbose`: write debug messages to standard error.
 
@@ -109,14 +109,14 @@ No subcommand reads from a terminal (PRD-CORE-009).
 
 ### Command `dsml ir`
 
-`dsml ir <model-file>...` parses the model files with the DSML library and writes the IR as JSON. For example:
+`dsml ir [<model-file>...]` parses the model files with the DSML library and writes the IR as JSON. For example:
 
 ```sh
 uv run dsml ir docs/model/prd/*.sysml --output prd.ir.json
 ```
 
 - The model files must be in the current folder or below it. The IR gives each file name relative to the current folder.
-- This version reads the model files only from the command line. M3 adds the model files of `dsml.toml`.
+- If the command line gives no model file, the command reads the model files of the key `model.paths` in the configuration file.
 - The exit code is 1 if the IR has an error finding, for example SYN-001. The command writes the IR also in this case.
 
 The golden IR files of the two reference models are in `tests/golden/ir/`. CI compares the IR with these files on each platform (PRD-CORE-027, PRD-CORE-029). After a change of the IR, run `uv run python scripts/write_golden_ir.py` and examine the differences before you commit them.
