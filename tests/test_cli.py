@@ -15,8 +15,6 @@ from dsml.errors import NOT_AVAILABLE, ToolchainError
 
 SUBCOMMANDS = ("init", "validate", "generate", "trace", "ir", "check-output", "version")
 NOT_AVAILABLE_ARGV = [
-    ["trace", "suspect", "--format", "json"],
-    ["trace", "impact", "--format", "csv", "--baseline", "v1.0.0"],
     ["check-output"],
     ["check-output", "--application", "orders", "--infrastructure"],
 ]

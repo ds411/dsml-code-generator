@@ -158,7 +158,7 @@ The golden IR files of the two reference models are in `tests/golden/ir/`. CI co
 
 ### Command `dsml trace`
 
-`dsml trace <report> --format json|csv` reads the model, the trace manifest `.dsml/trace.gen.json` and the trace comments in the hand-written files. Then it writes one report (PRD-TRACE-013). For example:
+`dsml trace <report> --format json|csv [--baseline <git-ref>]` reads the model, the trace manifest `.dsml/trace.gen.json` and the trace comments in the hand-written files. Then it writes one report (PRD-TRACE-013). For example:
 
 ```sh
 uv run dsml trace coverage --format csv --output coverage.csv
@@ -170,7 +170,12 @@ uv run dsml trace coverage --format csv --output coverage.csv
 - Each report gives the model commit, the commit `HEAD` of the local Git repository. If the folder is not in a Git repository, the report says so in place of the commit. A report gives no date or time (PRD-TRACE-018).
 - The JSON format gives the report name, the columns, the rows, the model commit and the baseline commit. The CSV format starts with three comment lines that start with `#`, then one header line. A list cell has its items with `; ` between them.
 - A trace comment that the command cannot read gives a warning on standard error. The exit code is 0 also if a requirement is `missing`.
-- The reports `impact` and `suspect`, the format `html` and `--baseline` are not available yet. They stop the command with exit code 2.
+- The report `impact` has one row for each element that changed after the baseline: the affected needs, requirements, verifications, generated files and HCL addresses. An element is changed if the hash of its IR form, with no source locations, is different from the hash in the baseline (PRD-TRACE-015). A new or removed element is also changed.
+- The report `suspect` has one row for each trace link with an end that changed after the baseline. The row gives the changed ends and the changed elements.
+- A change of an element also changes its owners and the elements that use it. For example, a changed field changes its entity, and the application that exposes the entity.
+- The reports `impact` and `suspect` compare the model in the work tree with a Git baseline (PRD-TRACE-016). `--baseline <git-ref>` gives the baseline. If it does not, the key `trace.baseline` of the configuration file gives it. If neither gives it, the baseline is the newest release tag `v*` before `HEAD` (Q54). If there is no baseline, the command stops with exit code 2. These reports also give the baseline commit.
+- The reports `coverage` and `orphans` use no baseline. With `--baseline`, they stop the command with exit code 2.
+- The format `html` is not available yet. It stops the command with exit code 2.
 
 The golden reports of the example model are in `tests/golden/trace/`. After a change of the reports, run `uv run python scripts/write_golden_reports.py` and examine the differences before you commit them.
 

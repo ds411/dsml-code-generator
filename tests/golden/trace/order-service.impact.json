@@ -1,0 +1,79 @@
+{
+  "baselineCommit": "fb5b749134ea7b2f2735c254c43eb3da13d035d9",
+  "columns": [
+    "element",
+    "change",
+    "needs",
+    "requirements",
+    "verifications",
+    "generatedFiles",
+    "hclAddresses"
+  ],
+  "modelCommit": "f52a76dbc31f7bfda3b8f704135ce0519a213ce9",
+  "report": "impact",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "change": "changed",
+      "element": "OrderService::Order",
+      "generatedFiles": [
+        "app/main_gen.py",
+        "app/models_gen.py",
+        "infra/envs/prod/main.gen.tf"
+      ],
+      "hclAddresses": [
+        "aws_ecs_service.api_service"
+      ],
+      "needs": [
+        "N-001"
+      ],
+      "requirements": [
+        "R-001"
+      ],
+      "verifications": [
+        "V-001"
+      ]
+    },
+    {
+      "change": "changed",
+      "element": "OrderService::Order::note",
+      "generatedFiles": [
+        "app/main_gen.py",
+        "app/models_gen.py",
+        "infra/envs/prod/main.gen.tf"
+      ],
+      "hclAddresses": [
+        "aws_ecs_service.api_service"
+      ],
+      "needs": [
+        "N-001"
+      ],
+      "requirements": [
+        "R-001"
+      ],
+      "verifications": [
+        "V-001"
+      ]
+    },
+    {
+      "change": "changed",
+      "element": "R-001",
+      "generatedFiles": [
+        "app/main_gen.py",
+        "infra/envs/prod/main.gen.tf"
+      ],
+      "hclAddresses": [
+        "aws_ecs_service.api_service"
+      ],
+      "needs": [
+        "N-001"
+      ],
+      "requirements": [
+        "R-001"
+      ],
+      "verifications": [
+        "V-001"
+      ]
+    }
+  ]
+}

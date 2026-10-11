@@ -135,19 +135,37 @@ def checkout(ref: str, configuration: Configuration, cwd: Path) -> Generator[Che
         yield Checkout(commit, root, files)
 
 
+# trace: PRD-TRACE-016, PRD-TRACE-018
+@dataclass(frozen=True, slots=True)
+class Baseline:
+    """The IR of the model at a baseline, and the commit of the baseline."""
+
+    commit: str
+    ir: Ir
+
+
+# trace: PRD-VAL-011, PRD-TRACE-016, PRD-TRACE-018, PRD-CORE-020
+def load_baseline(ref: str, configuration: Configuration, cwd: Path) -> Baseline:
+    """Make the IR of the model at a Git reference, and give the commit of the reference.
+
+    If the model has no file at the baseline, the IR is empty.
+    """
+    with checkout(ref, configuration, cwd) as copy:
+        if not copy.files:
+            return Baseline(copy.commit, Ir())
+        # The adapter imports OpenSysML. Import it only when it is necessary.
+        from dsml.adapter.convert import make_ir
+
+        return Baseline(copy.commit, make_ir(copy.files, copy.root))
+
+
 # trace: PRD-VAL-011, PRD-TRACE-016, PRD-CORE-020
 def read_baseline(ref: str, configuration: Configuration, cwd: Path) -> Ir:
     """Make the IR of the model at a Git reference.
 
     If the model has no file at the baseline, the IR is empty.
     """
-    with checkout(ref, configuration, cwd) as copy:
-        if not copy.files:
-            return Ir()
-        # The adapter imports OpenSysML. Import it only when it is necessary.
-        from dsml.adapter.convert import make_ir
-
-        return make_ir(copy.files, copy.root)
+    return load_baseline(ref, configuration, cwd).ir
 
 
 def _inside(path: Path, top: Path, what: str) -> PurePosixPath:

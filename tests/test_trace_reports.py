@@ -330,13 +330,16 @@ def test_html_format_is_not_available(project: Path, capsys: pytest.CaptureFixtu
     )
 
 
-def test_baseline_option_is_not_available(
+# trace: PRD-TRACE-016
+def test_coverage_and_orphans_reports_use_no_baseline(
     project: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     assert main(["trace", "orphans", "--format", "json", "--baseline", "v1.0.0"]) == 2
     captured = capsys.readouterr()
     assert captured.out == ""
-    assert captured.err == "dsml: error: The option --baseline is not available in this version.\n"
+    assert captured.err == (
+        "dsml: error: The orphans report uses no baseline. Remove the option --baseline.\n"
+    )
 
 
 def test_trace_comment_problem_is_a_warning(

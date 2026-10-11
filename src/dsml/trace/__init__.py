@@ -4,6 +4,8 @@
 The engine reads only the IR (PRD-CORE-026). It does not import OpenSysML or
 the IR adapter.
 
+- `dsml.trace.changes`: the changed elements, the impact report and the
+  suspect report.
 - `dsml.trace.comments`: the trace comments in the hand-written files.
 - `dsml.trace.commit`: the model commit of the reports.
 - `dsml.trace.graph`: the link graph and its queries in the two directions.

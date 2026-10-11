@@ -56,7 +56,7 @@ Story #66 added the baseline module `src/dsml/baseline.py` and the IDN rules in 
 - `--baseline <git-ref>` of `dsml validate` gives the baseline. If there is no `--baseline`, the key `trace.baseline` of `dsml.toml` gives it. If neither gives a baseline, the IDN rules do not run (PRD-VAL-011).
 - The baseline module uses the local `git` command and no network (PRD-TOP-004). It copies the model files of `model.paths` at the baseline commit into a temporary folder. The IR adapter makes the IR of these files. Thus only the adapter imports OpenSysML.
 - A Git reference that does not exist stops the command with exit code 2.
-- `newest_release_tag()` gives the newest release tag `v*` before `HEAD` (Q54). A tag on `HEAD` is not before `HEAD`. The impact and suspect reports of M5 use it as the default baseline (PRD-TRACE-016).
+- `newest_release_tag()` gives the newest release tag `v*` before `HEAD` (Q54). A tag on `HEAD` is not before `HEAD`. The impact and suspect reports use it as the default baseline (PRD-TRACE-016).
 
 A baseline rule uses the decorator `compares`, not `implements`. Its function also gets the IR of the baseline:
 
