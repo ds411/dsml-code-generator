@@ -73,6 +73,7 @@ This uses the trace comment form of PRD-TRACE-009, so the toolchain can later tr
 
 - The GitHub issue tracker holds all open items. Each branch and each pull request is for one story issue.
 - Each milestone issue gives the order of its stories in steps. The stories in one step can go in parallel. Take the next story in that order. When you add a story, put it in a step.
+- After the last step of a milestone, examine its exit criteria. Give the result in a comment on the milestone issue. If all criteria are true, close the milestone. If a criterion is not true, add one or more steps with the stories that make it true.
 - Do each story on a new branch from the newest `main`. Use the name `story/<issue>-<short-name>`, or the branch name that the session gives.
 - Merge work into `main` only through a pull request. Do not merge it: the product owner does a squash merge.
 - Fill in `.github/pull_request_template.md`. Then add a comment with the recommended squash commit message (`.github/squash_commit_comment_template.md`). Edit the comment after each push that changes the scope.

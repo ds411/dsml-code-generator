@@ -34,6 +34,8 @@ Step 2.
 ## Exit criteria
 
 <!-- Give the checks that show that the milestone is complete. -->
+<!-- After the last step, examine each criterion (CONTRIBUTING.md, "Milestone exit"). -->
+<!-- If all criteria are true, close the milestone. If a criterion is not true, add a step with the stories that make it true. -->
 
 - [ ] 
 
