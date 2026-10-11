@@ -47,6 +47,9 @@ select = ["B", "E", "F", "I", "RUF", "SIM", "TID", "UP", "W"]
 # pnpm installs pyright (package.json). Run it with "pnpm typecheck".
 [tool.pyright]
 include = ["scripts", "src", "tests"]
+# The golden FastAPI project has its own dependencies and its own pyright
+# settings. The CI job "FastAPI golden project" checks it.
+exclude = ["**/node_modules", "**/__pycache__", "**/.*", "tests/golden/fastapi"]
 pythonVersion = "3.14"
 typeCheckingMode = "strict"
 venvPath = "."
@@ -54,5 +57,7 @@ venv = ".venv"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = ["-ra", "--strict-config", "--strict-markers"]
+# The tests of the golden FastAPI project need its dependencies. The CI job
+# "FastAPI golden project" runs them.
+addopts = ["-ra", "--strict-config", "--strict-markers", "--ignore=tests/golden"]
 xfail_strict = true

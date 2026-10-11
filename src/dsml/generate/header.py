@@ -25,6 +25,8 @@ class FileType(enum.StrEnum):
 
     DOCKERFILE = "dockerfile"
     HCL = "hcl"
+    IGNORE = "ignore"
+    """An ignore file, for example `.dockerignore`."""
     JSON = "json"
     PYTHON = "python"
     TOML = "toml"
@@ -37,6 +39,7 @@ class FileType(enum.StrEnum):
 _COMMENT: dict[FileType, str | None] = {
     FileType.DOCKERFILE: "#",
     FileType.HCL: "#",
+    FileType.IGNORE: "#",
     FileType.JSON: None,
     FileType.PYTHON: "#",
     FileType.TOML: "#",
@@ -62,6 +65,8 @@ def file_type_of(path: str) -> FileType:
     name = PurePosixPath(path).name
     if name == "Dockerfile" or name.endswith(".Dockerfile"):
         return FileType.DOCKERFILE
+    if name.endswith("ignore") and name.startswith("."):
+        return FileType.IGNORE
     file_type = _SUFFIXES.get(PurePosixPath(name).suffix)
     if file_type is None:
         raise ValueError(f'The file "{path}" does not have a known file type.')

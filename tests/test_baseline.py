@@ -4,6 +4,7 @@ Each test makes a temporary Git repository. The tests use only the local
 `git` command and no network (PRD-TOP-004).
 """
 
+import json
 import os
 import shutil
 import subprocess
@@ -286,8 +287,10 @@ def test_validate_runs_the_idn_rules_only_with_a_baseline(
     repository.model(RULE_MODELS / "IDN-001" / "reject.sysml")
     monkeypatch.chdir(repository.root)
 
-    assert main(["validate", "--format", "json"]) == 0
-    assert "IDN-" not in capsys.readouterr().out
+    # The test model is not complete, thus other rules, for example STR-001, give errors.
+    main(["validate", "--format", "json"])
+    findings = json.loads(capsys.readouterr().out)["findings"]
+    assert not [item for item in findings if item["rule"].startswith("IDN-")]
 
     assert main(["validate", "--baseline", "v1.0.0"]) == 1
     assert "model/model.sysml:11:5: error: IDN-001: " in capsys.readouterr().out
