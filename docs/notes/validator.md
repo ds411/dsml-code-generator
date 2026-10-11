@@ -79,7 +79,7 @@ The IR adapter makes the SYN findings from the OpenSysML diagnostics and writes 
 
 ## Tests of a rule
 
-Each rule has one model that it accepts and one model that it rejects (PRD-VAL-008). Put the models in `tests/models/rules/<rule>/`, for example `accept.sysml` and `reject.sysml`. The fixture `run_rule` parses one model with the DSML library, makes the IR and runs one rule. It turns on the optional rule set of the rule, for example TXT.
+Each rule has one model that it accepts and one model that it rejects (PRD-VAL-008). Put the models in `tests/models/rules/<rule>/` with the names `accept.sysml` and `reject.sysml`. A rule can have more models, for example `reject-version.sysml`. The tests in `tests/test_rule_catalog.py` make sure that each rule of the registry has the two models, and that a test module names the rule. The fixture `run_rule` parses one model with the DSML library, makes the IR and runs one rule. It turns on the optional rule set of the rule, for example TXT.
 
 ```python
 def test_cov_003_accepts_its_accept_model(run_rule: RunRule) -> None:

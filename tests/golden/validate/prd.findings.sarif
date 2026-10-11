@@ -1,0 +1,738 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "columnKind": "unicodeCodePoints",
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "dsml",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Give each environment its own AWS account. The ID of an account has 12 digits."
+              },
+              "id": "AWS-001",
+              "name": "AWS001",
+              "properties": {
+                "category": "AWS"
+              },
+              "shortDescription": {
+                "text": "An account ID does not have 12 digits, two environments use one account, or an environment uses the tooling account."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Use a Region from the key aws.regions, or add the Region to aws.regions."
+              },
+              "id": "AWS-002",
+              "name": "AWS002",
+              "properties": {
+                "category": "AWS"
+              },
+              "shortDescription": {
+                "text": "A Region is not on the list of permitted Regions in the configuration file."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Use a pair of cpu and memory that AWS Fargate accepts."
+              },
+              "id": "AWS-003",
+              "name": "AWS003",
+              "properties": {
+                "category": "AWS"
+              },
+              "shortDescription": {
+                "text": "The cpu and memory of a Fargate service are not a valid pair."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Set multiAz = true for the database in the environment prod."
+              },
+              "id": "AWS-004",
+              "name": "AWS004",
+              "properties": {
+                "category": "AWS"
+              },
+              "shortDescription": {
+                "text": "The prod database has multiAz = false."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Set minCount to 2 or more for the service in the environment prod."
+              },
+              "id": "AWS-005",
+              "name": "AWS005",
+              "properties": {
+                "category": "AWS"
+              },
+              "shortDescription": {
+                "text": "A prod container service has minCount less than 2."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Add a requirement with `frame <need>;`, or remove the need."
+              },
+              "id": "COV-001",
+              "name": "COV001",
+              "properties": {
+                "category": "COV"
+              },
+              "shortDescription": {
+                "text": "No requirement frames a need."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Add `frame <need>;` to the requirement, or derive it from a different requirement."
+              },
+              "id": "COV-002",
+              "name": "COV002",
+              "properties": {
+                "category": "COV"
+              },
+              "shortDescription": {
+                "text": "A requirement frames no need and is not derived from a different requirement."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Add `satisfy <requirement> by <element>;` to the application layer."
+              },
+              "id": "COV-003",
+              "name": "COV003",
+              "properties": {
+                "category": "COV"
+              },
+              "shortDescription": {
+                "text": "A requirement with the status \"approved\" or later has no satisfying element."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Add a verification with `verify <requirement>;` in its objective."
+              },
+              "id": "COV-004",
+              "name": "COV004",
+              "properties": {
+                "category": "COV"
+              },
+              "shortDescription": {
+                "text": "A requirement with the status \"approved\" or later has no verification."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Add a verification with `verify <requirement>;` in its objective, or change the status."
+              },
+              "id": "COV-005",
+              "name": "COV005",
+              "properties": {
+                "category": "COV"
+              },
+              "shortDescription": {
+                "text": "A requirement has the status \"verified\" but no verification."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file."
+              },
+              "id": "COV-006",
+              "name": "COV006",
+              "properties": {
+                "category": "COV"
+              },
+              "shortDescription": {
+                "text": "A verification with the method \"test\" refers to a test file that does not exist."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "Add a need with `stakeholder <name> : <stakeholder>;`, or remove the stakeholder."
+              },
+              "id": "COV-007",
+              "name": "COV007",
+              "properties": {
+                "category": "COV"
+              },
+              "shortDescription": {
+                "text": "A stakeholder has no need."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Change the model so that the constraint is true in the environment, or correct the constraint."
+              },
+              "id": "FCN-001",
+              "name": "FCN001",
+              "properties": {
+                "category": "FCN"
+              },
+              "shortDescription": {
+                "text": "A formal constraint is false for an environment."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Give a value to each feature that the message names, in the AWS realization or in an override of the environment."
+              },
+              "id": "FCN-002",
+              "name": "FCN002",
+              "properties": {
+                "category": "FCN"
+              },
+              "shortDescription": {
+                "text": "The adapter cannot evaluate a formal constraint for an environment, because a feature has no value."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Give the element a new short name. Do not use a short name again for a different kind of element."
+              },
+              "id": "IDN-001",
+              "name": "IDN001",
+              "properties": {
+                "category": "IDN"
+              },
+              "shortDescription": {
+                "text": "A short name that the baseline used for an element of a different kind is used again."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "No change is necessary. The short name keeps the identity of the element."
+              },
+              "id": "IDN-002",
+              "name": "IDN002",
+              "properties": {
+                "category": "IDN"
+              },
+              "shortDescription": {
+                "text": "An element with a short name has a different qualified name from the baseline."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Use the qualified name of the baseline again, or give the element a short name."
+              },
+              "id": "IDN-003",
+              "name": "IDN003",
+              "properties": {
+                "category": "IDN"
+              },
+              "shortDescription": {
+                "text": "An element with no short name has a different qualified name from the baseline, so its trace identity changes."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Put @DsmlVersion { major = 1; minor = 0; } on the root package. Use a major version and a minor version that the toolchain supports."
+              },
+              "id": "STR-001",
+              "name": "STR001",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "The model has no #DsmlVersion, or a DSML version that the toolchain does not support."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Give a value for the attribute. docs/prd/01-dsml-prd.md gives the attributes."
+              },
+              "id": "STR-002",
+              "name": "STR002",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "A need, requirement or verification has no value for a mandatory attribute."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Change the short name, or change the pattern in the keys ids.* of dsml.toml."
+              },
+              "id": "STR-003",
+              "name": "STR003",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "A short name does not agree with the ID pattern of its kind."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Give each element a different short name. Do not use a deleted ID again."
+              },
+              "id": "STR-004",
+              "name": "STR004",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "Two elements have the same short name."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Set the attribute target of the application to Target::fastapi, Target::react or Target::nextjs."
+              },
+              "id": "STR-005",
+              "name": "STR005",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "An application has no target, or a target that the toolchain does not know."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Put the #Key metadata on one field of the entity."
+              },
+              "id": "STR-006",
+              "name": "STR006",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "An entity has no #Key field, or more than one."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Use String, Integer, Boolean, Real, Decimal, Date, DateTime, Uuid or an enumeration definition of the model as the field type."
+              },
+              "id": "STR-007",
+              "name": "STR007",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "A field type is not a supported type."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Set the attributes method and path of the operation, for example :>> method = HttpMethod::post; :>> path = \"/orders/{orderId}/cancel\";."
+              },
+              "id": "STR-008",
+              "name": "STR008",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "A custom operation has no HTTP method or no path."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Change the path or the method of one operation, or expose the operation in a different application."
+              },
+              "id": "STR-009",
+              "name": "STR009",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "Two operations of one application have the same method and path."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Give the roles that can use the element in the attribute allowedRoles, or set public = true."
+              },
+              "id": "STR-010",
+              "name": "STR010",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "An exposed entity, operation or view has no allowedRoles and is not public."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Add the #Environment parts dev, staging and prod. Give each environment the attributes accountId, region and domain."
+              },
+              "id": "STR-011",
+              "name": "STR011",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "The environments dev, staging or prod are missing, or an environment has no account ID, Region or domain."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Change only cpu, memory, instanceClass, desiredCount, minCount, maxCount, multiAz or natGatewayCount in an override. Put a different value in the AWS realization."
+              },
+              "id": "STR-012",
+              "name": "STR012",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "An environment changes an attribute that is not on the list of PRD-DSML-042."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "For a rename, add @Destructive { renamedFrom = \"<old name>\"; } to the entity or the field. For a dropped column, add #Destructive to the entity. For a dropped table, add #Destructive to the application."
+              },
+              "id": "STR-013",
+              "name": "STR013",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "The model drops or renames a table or a column, compared with the schema snapshot, with no #Destructive metadata."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Correct the model, then remove the waiver. If the waiver must stay, give a new expires date."
+              },
+              "id": "STR-014",
+              "name": "STR014",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "A waiver is after its expires date."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Give the waiver a rule ID of the catalog, a reason and an owner, for example @Waiver { rule = \"COV-003\"; reason = \"...\"; owner = \"...\"; }."
+              },
+              "id": "STR-015",
+              "name": "STR015",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "A waiver has no reason or no owner, or names a rule that does not exist."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Move the attribute to the AWS realization of the logical element."
+              },
+              "id": "STR-016",
+              "name": "STR016",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "A logical infrastructure element has an AWS attribute."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Correct the SysML v2 text or the name at the location of the finding."
+              },
+              "id": "SYN-001",
+              "name": "SYN001",
+              "properties": {
+                "category": "SYN"
+              },
+              "shortDescription": {
+                "text": "OpenSysML reports a syntax error or a name that it cannot resolve."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Correct the model at the location of the finding. Then OpenSysML gives no warning."
+              },
+              "id": "SYN-002",
+              "name": "SYN002",
+              "properties": {
+                "category": "SYN"
+              },
+              "shortDescription": {
+                "text": "OpenSysML reports a warning."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Divide the sentence into sentences of 25 words or fewer."
+              },
+              "id": "TXT-001",
+              "name": "TXT001",
+              "properties": {
+                "category": "TXT"
+              },
+              "shortDescription": {
+                "text": "A sentence in the text of a need or requirement has more than 25 words."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Use \"must\" for an obligation. Use \"can\" for a possibility."
+              },
+              "id": "TXT-002",
+              "name": "TXT002",
+              "properties": {
+                "category": "TXT"
+              },
+              "shortDescription": {
+                "text": "A requirement text uses \"shall\", \"should\", \"may\" or \"will\" in place of \"must\"."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "help": {
+                "text": "Divide the text into requirements that each have one \"must\"."
+              },
+              "id": "TXT-003",
+              "name": "TXT003",
+              "properties": {
+                "category": "TXT"
+              },
+              "shortDescription": {
+                "text": "A requirement text has more than one \"must\", so it can contain more than one requirement."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Allocate the application to one logical element with `allocate`."
+              },
+              "id": "XLY-001",
+              "name": "XLY001",
+              "properties": {
+                "category": "XLY"
+              },
+              "shortDescription": {
+                "text": "An application is not allocated to a logical element."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Allocate a `fastapi` or `nextjs` application to a `#ContainerService`. Allocate a `react` application to a `#StaticSite`."
+              },
+              "id": "XLY-002",
+              "name": "XLY002",
+              "properties": {
+                "category": "XLY"
+              },
+              "shortDescription": {
+                "text": "An application is allocated to a logical element of the wrong kind."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Add one part usage with the correct AWS kind and a `#Realizes` dependency from it to the logical element. Remove the other realizations."
+              },
+              "id": "XLY-003",
+              "name": "XLY003",
+              "properties": {
+                "category": "XLY"
+              },
+              "shortDescription": {
+                "text": "A logical element has no AWS realization, or more than one."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Remove the `#Uses` dependency to the database. Let the `react` application call an API application with `#Calls`."
+              },
+              "id": "XLY-004",
+              "name": "XLY004",
+              "properties": {
+                "category": "XLY"
+              },
+              "shortDescription": {
+                "text": "A `react` application uses a database."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Add a `#Calls` dependency from the `react` application to the application that it calls."
+              },
+              "id": "XLY-005",
+              "name": "XLY005",
+              "properties": {
+                "category": "XLY"
+              },
+              "shortDescription": {
+                "text": "A `react` application has no `#Calls` dependency and no imported OpenAPI file."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Add a `#Uses` dependency from the container service to a `#RelationalDatabase`."
+              },
+              "id": "XLY-006",
+              "name": "XLY006",
+              "properties": {
+                "category": "XLY"
+              },
+              "shortDescription": {
+                "text": "An application exposes entities, but its container service uses no database."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
+                "text": "Add a `#Uses` dependency from the service or site to a `#UserDirectory`, or set `public = true` on each exposed element."
+              },
+              "id": "XLY-007",
+              "name": "XLY007",
+              "properties": {
+                "category": "XLY"
+              },
+              "shortDescription": {
+                "text": "An application has protected operations or views, but its service or site uses no user directory."
+              }
+            }
+          ],
+          "version": "0.1.0"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}
