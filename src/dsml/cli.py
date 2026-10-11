@@ -8,13 +8,15 @@ import traceback
 from collections.abc import Callable, Sequence
 from enum import IntEnum
 from importlib import metadata
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import NoReturn
 
 from dsml import starter, versions
 from dsml.config import Configuration, load_configuration
 from dsml.errors import NotAvailableError, ToolchainError, UsageError
 from dsml.generate import generators
+from dsml.generate.manifest import read_manifest
+from dsml.generate.trace import read_trace
 from dsml.generate.writer import (
     INFRASTRUCTURE,
     PIPELINES,
@@ -28,6 +30,11 @@ from dsml.generate.writer import (
 from dsml.ir.model import IR_VERSION, Ir
 from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
+from dsml.trace.comments import hand_written_files, read_trace_comments
+from dsml.trace.commit import model_commit
+from dsml.trace.report import csv_report
+from dsml.trace.report import json_report as json_trace_report
+from dsml.trace.reports import COVERAGE, ORPHANS, TraceData, coverage_report, orphans_report
 from dsml.validate.engine import Validator, fails
 from dsml.validate.report import finding_line, json_report, text_report
 from dsml.validate.sarif import sarif_report
@@ -468,6 +475,60 @@ def run_generate(args: argparse.Namespace) -> Outcome:
     return Outcome.SUCCESS
 
 
+# trace: PRD-TRACE-010
+def trace_folders(configuration: Configuration) -> list[PurePosixPath]:
+    """Give the output folders and the test folders of the configuration, sorted."""
+    folders = {app.output for app in configuration.applications if app.output is not None}
+    folders.update(
+        folder
+        for folder in (configuration.infrastructure, configuration.pipelines)
+        if folder is not None
+    )
+    folders.update(configuration.trace.tests)
+    return sorted(folders, key=lambda folder: folder.as_posix())
+
+
+# trace: PRD-CORE-001, PRD-CORE-006, PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013,
+# PRD-TRACE-017, PRD-TRACE-018
+def run_trace(args: argparse.Namespace) -> Outcome:
+    """Write the coverage report or the orphans report as JSON or as CSV.
+
+    The command reads the model, the trace manifest `.dsml/trace.gen.json`
+    and the trace comments in the hand-written files of the output folders
+    and the test folders. A trace comment that the reader cannot read gives
+    a warning on standard error. The exit code is 0, also if the report has
+    a requirement with the status `missing` or an orphan.
+    """
+    if args.report not in (COVERAGE, ORPHANS):
+        raise NotAvailableError()
+    if args.format == "html":
+        raise ToolchainError(
+            "The format html is not available in this version. Use --format json or --format csv."
+        )
+    if args.baseline is not None:
+        raise ToolchainError("The option --baseline is not available in this version.")
+    configuration = read_configuration(args)
+    ir = read_model(configuration)
+    root = configuration.root
+    generated = [entry.path for entry in read_manifest(root).generated]
+    folders = trace_folders(configuration)
+    found = read_trace_comments(root, folders, generated)
+    for problem in found.problems:
+        where = problem.path if problem.line is None else f"{problem.path}:{problem.line}"
+        sys.stderr.write(f"{PROG}: warning: {where}: {problem.message}\n")
+    data = TraceData(
+        ir=ir,
+        generated=tuple((entry.element, entry.path) for entry in read_trace(root)),
+        comments=found.comments,
+        files=tuple(hand_written_files(root, folders, generated)),
+        model_commit=model_commit(root),
+    )
+    report = coverage_report(data) if args.report == COVERAGE else orphans_report(data)
+    write = json_trace_report if args.format == "json" else csv_report
+    write_report(write(report), args.output)
+    return Outcome.SUCCESS
+
+
 def not_available(args: argparse.Namespace) -> Outcome:
     """Stop a subcommand that has no implementation in this version."""
     raise NotAvailableError()
@@ -478,7 +539,7 @@ HANDLERS: dict[str, Handler] = {
     "generate": run_generate,
     "init": run_init,
     "ir": run_ir,
-    "trace": not_available,
+    "trace": run_trace,
     "validate": run_validate,
     "version": run_version,
 }
