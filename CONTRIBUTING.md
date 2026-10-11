@@ -17,7 +17,7 @@ This document gives the work process for this repository. It applies to people a
 4. Push the branch and open a pull request to `main`.
 5. Add a comment with the recommended squash commit message.
 6. Correct the pull request until the review and CI pass.
-7. The product owner does a squash merge. The story issue closes.
+7. The product owner does a squash merge. The story issue closes. If other stories of the same step go in parallel, follow "Merge order" below.
 8. After the last story of the last step of a milestone merges, examine the exit criteria of the milestone. Follow "Milestone exit" below.
 
 ## Issues
@@ -53,6 +53,18 @@ The exit criteria of a milestone tell when the milestone is complete. Examine th
 3. If all exit criteria are true, mark each criterion as complete in the milestone issue. Then close the milestone issue.
 4. If one or more exit criteria are not true, add one or more stories that make them true. Put these stories in one or more new steps at the end of the milestone issue.
 5. Do the new steps. Then examine the exit criteria again from step 1.
+
+## Merge order
+
+When the stories of one step go in parallel, their pull requests merge one at a time. Each merge then causes only one update from `main` in each pull request.
+
+1. Correct each pull request until its CI passes. Then stop the work on it and report that it is ready. Do not merge `main` into the branch at this time.
+2. Merge the ready pull requests one at a time, in the order of the stories in the milestone issue.
+3. Immediately before the turn of a pull request, merge the newest `main` into its branch. Correct the merge conflicts.
+4. Push the branch. Merge the pull request only after CI passes on that push.
+5. Do steps 3 and 4 for the next pull request in the order.
+
+If CI fails on the update from `main`, correct the branch before the next pull request starts its turn.
 
 ## Branches
 
