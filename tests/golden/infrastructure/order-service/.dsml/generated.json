@@ -9,12 +9,12 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/dev/main.gen.tf",
-      "sha256": "06a549f0962864b7e18ef7aac285d2209a6a573c5fdcec8d3dfbabb68b9e97b1"
+      "sha256": "2afce4acc962660e625b1246411d25f631f2869cced3486d8066fe72e9925ba6"
     },
     {
       "part": "infrastructure",
       "path": "infra/envs/dev/outputs.gen.tf",
-      "sha256": "57d0247b3c558659dc3e1a981eab719f141b4ddd50b5d84bb0257183dbd18b88"
+      "sha256": "349bf330c9b84a9369bec745525bd401bad0b22dc06bc651b89207125477f3d8"
     },
     {
       "part": "infrastructure",
@@ -39,12 +39,12 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/prod/main.gen.tf",
-      "sha256": "e575da3052aa9c83a9e4ecb828d93fff6653cb5b01cc5653c779a508b1ee3a8e"
+      "sha256": "bb82bc511d1f90d6bdb900d922267376c8f70d49c867f4963bb626b1733e65b9"
     },
     {
       "part": "infrastructure",
       "path": "infra/envs/prod/outputs.gen.tf",
-      "sha256": "39d949cc7a19869e54d4af06a9ecfc011bf2d6f1661c96f94b8b4ab889ab46c4"
+      "sha256": "c3b5c68a05537afe29076f0dc3b56ebc06e3245a96dfdcc8419b5a11ea6b370a"
     },
     {
       "part": "infrastructure",
@@ -69,12 +69,12 @@
     {
       "part": "infrastructure",
       "path": "infra/envs/staging/main.gen.tf",
-      "sha256": "f72a879dcb2d61b5b7dbda73f59031e3acb3b1f7b0d0738979982aecdf26382c"
+      "sha256": "603c830ec3e53f9a89d71efad4cb738be79d78c5ac6bde476996e2d1365a57d2"
     },
     {
       "part": "infrastructure",
       "path": "infra/envs/staging/outputs.gen.tf",
-      "sha256": "3e8e49ea5eb387ba0833c3f490825eca099f1ecbaf620113473a7b6f2e2b26f5"
+      "sha256": "91a03ba890feb87fead9aecf50b401fe758aa541d2a5e478648363dfcb438ce9"
     },
     {
       "part": "infrastructure",
@@ -90,6 +90,21 @@
       "part": "infrastructure",
       "path": "infra/envs/staging/versions.gen.tf",
       "sha256": "73866eb00e8296ee46a98c9d0f000eb9bacfcb8a5181ab6c9f9f7f244fd328a1"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/network/main.gen.tf",
+      "sha256": "463f69424af2516af1ec9b0a46a410ca1ae060d9cc317359a04a5385914839e5"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/network/outputs.gen.tf",
+      "sha256": "59b5f3901f355973c50ab7c509533c7377808cecc5a11da502e70cc38cd13eb4"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/network/variables.gen.tf",
+      "sha256": "cbd4f74f0f2cddd52196ae323184211c1e474afa3f7dff8da13e8f78e9330038"
     }
   ],
   "manifestVersion": 1
