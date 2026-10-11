@@ -91,7 +91,7 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | --- | --- |
 | `init` | Writes a starter configuration file and a starter model as create-once files. See "Command `dsml init`". |
 | `validate`, `trace`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
-| `generate` | Writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. There are no generators yet (M5, M6, M7). `docs/notes/file-writer.md` gives the rules. |
+| `generate` | Writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. There are no generators yet (M6). `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
 

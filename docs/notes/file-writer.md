@@ -1,6 +1,6 @@
 # File writer and manifest
 
-Story #36 added the file writer of all generators, the manifest `.dsml/generated.json` and the subcommand `dsml generate`. The real generators are not in this story (M5, M6, M7). Until they exist, the list of generators is empty, and the tests use a test generator.
+Story #36 added the file writer of all generators, the manifest `.dsml/generated.json` and the subcommand `dsml generate`. The real generators are not in this story (M6). Until they exist, the list of generators is empty, and the tests use a test generator.
 
 - File writer: `src/dsml/generate/writer.py`.
 - Manifest: `src/dsml/generate/manifest.py`.
