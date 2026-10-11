@@ -4,6 +4,7 @@ Each SYN rule has one model that it accepts and one model that it rejects
 (PRD-VAL-008). The models are in `tests/models/rules/<rule>/`.
 """
 
+import argparse
 from collections.abc import Callable, Iterator
 from pathlib import Path
 from types import SimpleNamespace
@@ -173,9 +174,9 @@ def test_different_service_version_stops_the_engine(monkeypatch: pytest.MonkeyPa
     assert connection.closed
 
 
-def _run_engine() -> int:
+def _run_engine(args: argparse.Namespace) -> cli.Outcome:
     with Engine():
-        return 0
+        return cli.Outcome.SUCCESS
 
 
 # trace: PRD-CORE-002, PRD-CORE-019
@@ -183,7 +184,7 @@ def test_different_service_version_gives_exit_code_2(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(CONNECT, _connect(_FakeConnection("v0.9.1")))
-    monkeypatch.setattr(cli, "run_version", _run_engine)
+    monkeypatch.setitem(cli.HANDLERS, "version", _run_engine)
     assert cli.main(["version"]) == 2
     captured = capsys.readouterr()
     assert captured.out == ""
@@ -197,7 +198,7 @@ def test_different_client_version_gives_exit_code_2(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(versions, "pinned_version", _pin("0.9.1"))
-    monkeypatch.setattr(cli, "run_version", _run_engine)
+    monkeypatch.setitem(cli.HANDLERS, "version", _run_engine)
     assert cli.main(["version"]) == 2
     assert "must use version 0.9.1" in capsys.readouterr().err
 
