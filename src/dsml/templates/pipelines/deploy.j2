@@ -1,0 +1,172 @@
+{#- The deploy job of one environment (PRD-CICD-009, PRD-CICD-010,
+    PRD-CICD-012, PRD-CICD-015 to PRD-CICD-018, PRD-CICD-021).
+    main.gen.yml and promote.gen.yml import this macro "with context". The
+    order of the steps is: apply, then the migrations, then the rollouts. A
+    failed step stops the job, thus a failed migration stops the job before
+    it changes a service. -#}
+{% macro deploy_job(deploy, checkout_ref=None) %}
+  # Deploy the build to {{ deploy.environment }} with the deploy role (PRD-CICD-010,
+  # PRD-CICD-012, PRD-CICD-016 to PRD-CICD-018, PRD-CICD-021). The group of
+  # each environment is the same in all workflows, and a new run does not
+  # cancel a running deployment (PRD-CICD-009).
+  {{ deploy.job }}:
+    name: {{ ("Deploy " ~ deploy.environment) | yaml_string }}
+    needs:
+{% for need in deploy.needs %}
+      - {{ need }}
+{% endfor %}
+    runs-on: {{ runner }}
+    timeout-minutes: 60
+    environment: {{ deploy.environment | yaml_string }}
+    concurrency:
+      group: {{ deploy.concurrency | yaml_string }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: {{ deploy.folder | yaml_string }}
+    env:
+      MODEL_COMMIT: {{ "${{ " ~ deploy.commit ~ " }}" }}
+{% for digest in deploy.digests %}
+      {{ digest.name }}: {{ "${{ " ~ digest.expression ~ " }}" }}
+{% endfor %}
+    steps:
+      - name: Check out the repository
+        uses: {{ actions.checkout }}
+        with:
+{% if checkout_ref %}
+          ref: {{ "${{ " ~ checkout_ref ~ " }}" }}
+{% endif %}
+          persist-credentials: false
+
+      - name: Set up OpenTofu
+        uses: {{ actions.setup_opentofu }}
+        with:
+          tofu_version: {{ opentofu_version | yaml_string }}
+          tofu_wrapper: false
+
+      - name: Get AWS credentials for the deploy role
+        uses: {{ actions.configure_aws_credentials }}
+        with:
+          role-to-assume: {{ deploy.role_arn | yaml_string }}
+          aws-region: {{ deploy.region | yaml_string }}
+
+      - name: Initialize OpenTofu
+        run: tofu init -input=false
+
+      # OpenTofu does not show sensitive values (PRD-CICD-015).
+      - name: Apply the infrastructure of {{ deploy.environment }}
+        run: >-
+          tofu apply -input=false -auto-approve -no-color
+          -var "model_commit=$MODEL_COMMIT"
+{% for digest in deploy.digests %}
+          -var "{{ digest.variable }}=${{ digest.name }}"
+{% endfor %}
+{% for rollout in deploy.rollouts if rollout.migrates %}
+
+      # Run the migration task of {{ rollout.application.name }} as a one-off ECS task with the
+      # new image, and stop if it fails (PRD-CICD-017).
+      - name: {{ ("Run the migrations of " ~ rollout.application.name) | yaml_string }}
+        env:
+          APPLICATION: {{ rollout.application.name | yaml_string }}
+          LOG_GROUP: {{ rollout.log_group | yaml_string }}
+        run: |
+          cluster="$(tofu output -raw {{ rollout.address }}_cluster_name)"
+          family="$(tofu output -raw {{ rollout.address }}_migration_task_definition)"
+          security_group="$(tofu output -raw {{ rollout.address }}_security_group_id)"
+          subnets="$(tofu output -json {{ rollout.address }}_private_subnet_ids | jq -r 'join(",")')"
+          task_definition="$(aws ecs describe-task-definition --task-definition "$family" --query taskDefinition.taskDefinitionArn --output text)"
+          task="$(aws ecs run-task --cluster "$cluster" --task-definition "$task_definition" \
+            --launch-type FARGATE --started-by dsml-migration \
+            --network-configuration "awsvpcConfiguration={subnets=[$subnets],securityGroups=[$security_group],assignPublicIp=DISABLED}" \
+            --query 'tasks[0].taskArn' --output text)"
+          if [ -z "$task" ] || [ "$task" = "None" ]; then
+            echo "::error::ECS did not start the migration task of $APPLICATION. No service changed."
+            exit 1
+          fi
+          aws ecs wait tasks-stopped --cluster "$cluster" --tasks "$task"
+          exit_code="$(aws ecs describe-tasks --cluster "$cluster" --tasks "$task" \
+            --query "tasks[0].containers[?name=='{{ container_name }}'] | [0].exitCode" --output text)"
+          echo "| {{ rollout.label }} | \`$task_definition\` | $exit_code | \`$LOG_GROUP\` | \`{{ migration_stream_prefix }}/{{ container_name }}/${task##*/}\` |" >> "$RUNNER_TEMP/migrations.md"
+          if [ "$exit_code" != "0" ]; then
+            echo "::error::The migration task of $APPLICATION failed with the exit code $exit_code. No service changed."
+            exit 1
+          fi
+{% endfor %}
+{% for rollout in deploy.rollouts %}
+
+      # Set the service of {{ rollout.application.name }} to its new task definition and wait for a
+      # steady state. If the circuit breaker rolls back, the job fails
+      # (PRD-CICD-018).
+      - name: {{ ("Roll out " ~ rollout.application.name) | yaml_string }}
+        env:
+          APPLICATION: {{ rollout.application.name | yaml_string }}
+          TASK_FAMILY: {{ rollout.task_family | yaml_string }}
+        run: |
+          cluster="$(tofu output -raw {{ rollout.address }}_cluster_name)"
+          service="$(tofu output -raw {{ rollout.address }}_service_name)"
+          task_definition="$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY" --query taskDefinition.taskDefinitionArn --output text)"
+          aws ecs update-service --cluster "$cluster" --service "$service" --task-definition "$task_definition" \
+            --query service.serviceArn --output text
+          while true; do
+            read -r current state <<< "$(aws ecs describe-services --cluster "$cluster" --services "$service" \
+              --query "services[0].deployments[?status=='PRIMARY'] | [0].[taskDefinition, rolloutState]" --output text)"
+            if [ "$current" != "$task_definition" ] || [ "$state" = "FAILED" ]; then
+              echo "::error::The deployment circuit breaker rolled back the service of $APPLICATION."
+              exit 1
+            fi
+            if [ "$state" = "COMPLETED" ]; then
+              break
+            fi
+            sleep 15
+          done
+          aws ecs wait services-stable --cluster "$cluster" --services "$service"
+          echo "| {{ rollout.label }} | \`$task_definition\` |" >> "$RUNNER_TEMP/services.md"
+{% endfor %}
+
+      # The summary gives no secret value (PRD-CICD-015, PRD-CICD-021).
+      - name: Write the deployment in the job summary
+        if: {{ "${{ !cancelled() }}" }}
+        env:
+          JOB_STATUS: {{ "${{ job.status }}" }}
+        run: |
+          {
+            echo "## Deployment to {{ deploy.environment }}"
+            echo
+            echo "- Environment: {{ deploy.environment }}"
+            echo "- Job status: $JOB_STATUS"
+            echo "- Model commit: \`$MODEL_COMMIT\`"
+            echo
+            echo "### Image digests"
+            echo
+            echo "| Application | Image digest |"
+            echo "| --- | --- |"
+{% for digest in deploy.digests %}
+            echo "| {{ digest.label }} | \`${{ digest.name }}\` |"
+{% endfor %}
+            echo
+            echo "### Migrations"
+            echo
+            if [ -f "$RUNNER_TEMP/migrations.md" ]; then
+              echo "The log stream of each migration task gives the applied migrations."
+              echo
+              echo "| Application | Task definition | Exit code | Log group | Log stream |"
+              echo "| --- | --- | --- | --- | --- |"
+              cat "$RUNNER_TEMP/migrations.md"
+            else
+              echo "No migration task ran."
+            fi
+            echo
+            echo "### Services"
+            echo
+            if [ -f "$RUNNER_TEMP/services.md" ]; then
+              echo "| Application | Task definition |"
+              echo "| --- | --- |"
+              cat "$RUNNER_TEMP/services.md"
+            else
+              echo "No service changed."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+{% endmacro %}
