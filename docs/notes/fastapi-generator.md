@@ -1,6 +1,6 @@
 # FastAPI generator: project files and shared code
 
-Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Other M6 stories add the slices, the migrations, the token check and `openapi.gen.json`.
+Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Other M6 stories add the slices, the migrations and `openapi.gen.json`.
 
 - Generator: `src/dsml/generate/fastapi.py`. It is in the list `GENERATORS` of `src/dsml/generate/generators.py`.
 - Database code: `src/dsml/generate/fastapi_database.py`. The tables and the column types come from `src/dsml/database/schema.py` (see `docs/notes/schema-snapshot.md`).
@@ -31,8 +31,10 @@ All files are generated files. The generator writes them again at each run.
 | `app/shared/config_gen.py` | The class `Settings` and the function `load_settings`. | PRD-APP-010, PRD-APP-132 |
 | `app/shared/errors_gen.py` | `ProblemError` and the handlers that give problem details (RFC 9457). | PRD-APP-014 |
 | `app/shared/logs_gen.py` | JSON line logs on standard output, and the middleware of the request ID. | PRD-APP-015 |
+| `app/shared/auth/cognito_gen.py` | The token check `current_user` and the role check `require_roles`. | PRD-APP-007, PRD-APP-008, PRD-APP-104, PRD-APP-130, PRD-APP-131 |
 | `tests/test_app_gen.py` | The tests of the shared code. Thus `pytest` finds tests in a new project. | PRD-APP-135 |
-| `app/__init__.py`, `app/shared/__init__.py` | The header only. | PRD-APP-134 |
+| `tests/test_auth_gen.py` | The tests of the token check and the role check, with a local key pair and a local JWKS. | PRD-APP-008, PRD-APP-130, PRD-APP-131 |
+| `app/__init__.py`, `app/shared/__init__.py`, `app/shared/auth/__init__.py` | The header only. | PRD-APP-134 |
 
 If the application has one or more entities, the generator also writes the database code:
 
@@ -72,6 +74,9 @@ The application reads its configuration one time at start, not at build time (PR
 | --- | --- | --- | --- |
 | `APP_ENVIRONMENT` | Yes | None | The name of the environment, for example `dev`. |
 | `LOG_LEVEL` | No | `INFO` | The lowest level of the logs: `DEBUG`, `INFO`, `WARNING` or `ERROR`. |
+| `AWS_REGION` | Yes | None | The AWS Region of the user pool, for example `eu-west-1`. |
+| `COGNITO_USER_POOL_ID` | Yes | None | The ID of the Cognito user pool of the environment. |
+| `COGNITO_APP_CLIENT_ID` | Yes | None | The ID of the app client of the application. |
 
 If a mandatory variable is missing, the process stops with exit code 1 and this message (PRD-APP-132):
 
@@ -90,7 +95,23 @@ If the application has entities, it also reads these variables:
 | `DATABASE_PASSWORD` | Yes | None | The password. ECS sets it from Secrets Manager (PRD-APP-011). The text of the settings does not show it. |
 | `DATABASE_SSL_MODE` | No | `require` | The TLS mode of the connection, the libpq value `sslmode`. |
 
-The infrastructure generator must set these variables in the task definition. A later story adds the variables of the user pool.
+The infrastructure generator must set these variables in the task definition. The container service module (story #80) sets them from the outputs of the database module.
+
+## Token check and role check
+
+`app/shared/auth/cognito_gen.py` supplies the FastAPI dependencies of the token check (PRD-APP-008, PRD-APP-130, PRD-APP-131, Q42). The slices of the CRUD story use them.
+
+- `require_roles("clerk", "admin")` gives a dependency for an operation. An operation with `public = true` does not use it, and thus needs no token.
+- `current_user` reads the bearer token of the header `Authorization`. If the request has no bearer token, or the token is not valid, the response is HTTP 401 with the header `WWW-Authenticate: Bearer`.
+- The token must have a signature from a key of the JWKS of the user pool, with the algorithm RS256. The claims `iss`, `token_use`, `client_id`, `exp` and `sub` must be in the token.
+- `iss` must be `https://cognito-idp.<AWS_REGION>.amazonaws.com/<COGNITO_USER_POOL_ID>`. `token_use` must be `access`. `client_id` must be `COGNITO_APP_CLIENT_ID`. `exp` must be in the future.
+- If no group in the claim `cognito:groups` is in the permitted roles, the response is HTTP 403. The infrastructure writes one user pool group for each role value, with the name of the value (PRD-IAC-019).
+- The verifier keeps the JWKS in memory. It gets the JWKS from `<iss>/.well-known/jwks.json` at the first token, and again only for a token with an unknown key ID. Between two requests for the JWKS, there are 10 seconds or more. Thus a series of bad tokens does not cause a series of requests to the user pool.
+- If the application cannot get the JWKS, the response is HTTP 503.
+- The log line of a refused token gives the reason, but not the token. The response does not give the reason.
+- The libraries are PyJWT and cryptography, from the version baseline.
+
+A test can put a `TokenVerifier` with a local JWKS in `app.state.token_verifier`. `tests/test_auth_gen.py` shows this.
 
 ## Errors and logs
 
@@ -119,6 +140,8 @@ Story #75 added the exact versions of the FastAPI stack to `src/dsml/versions.to
 | `fastapi` | 0.143.0 | Run-time dependency. |
 | `pydantic` | 2.14.1 | Run-time dependency. |
 | `uvicorn` | 0.54.0 | Run-time dependency, the ASGI server. |
+| `pyjwt` | 2.15.1 | Run-time dependency, the check of the access token (story #78). |
+| `cryptography` | 50.0.2 | Run-time dependency, the RSA code of PyJWT (story #78). |
 | `sqlalchemy` | 2.1.4 | Run-time dependency with the extra `asyncio`, if the application has entities. |
 | `psycopg` | 3.3.6 | Run-time dependency with the extra `binary`, if the application has entities (story #77). |
 | `alembic` | 1.20.0 | For the migration story. |

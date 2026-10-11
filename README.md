@@ -93,7 +93,7 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | `validate` | Runs the validation rules on the model and writes the findings as text or as JSON. See "Command `dsml validate`". |
 | `trace` | Writes the coverage report or the orphans report as JSON or as CSV. See "Command `dsml trace`". |
 | `check-output` | Not available yet. The subcommand stops with exit code 2. |
-| `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. The infrastructure generator writes the root modules of the environments. The other generators come in M6. `docs/notes/file-writer.md` gives the rules. |
+| `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. The infrastructure generator writes the root modules of the environments and the local modules of the databases and the user directories. The other generators come in M6. `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
 
@@ -158,7 +158,7 @@ The golden IR files of the two reference models are in `tests/golden/ir/`. CI co
 
 ### Command `dsml trace`
 
-`dsml trace <report> --format json|csv` reads the model, the trace manifest `.dsml/trace.gen.json` and the trace comments in the hand-written files. Then it writes one report (PRD-TRACE-013). For example:
+`dsml trace <report> --format html|csv|json` reads the model, the trace manifest `.dsml/trace.gen.json` and the trace comments in the hand-written files. Then it writes one report (PRD-TRACE-013). For example:
 
 ```sh
 uv run dsml trace coverage --format csv --output coverage.csv
@@ -170,7 +170,8 @@ uv run dsml trace coverage --format csv --output coverage.csv
 - Each report gives the model commit, the commit `HEAD` of the local Git repository. If the folder is not in a Git repository, the report says so in place of the commit. A report gives no date or time (PRD-TRACE-018).
 - The JSON format gives the report name, the columns, the rows, the model commit and the baseline commit. The CSV format starts with three comment lines that start with `#`, then one header line. A list cell has its items with `; ` between them.
 - A trace comment that the command cannot read gives a warning on standard error. The exit code is 0 also if a requirement is `missing`.
-- The reports `impact` and `suspect`, the format `html` and `--baseline` are not available yet. They stop the command with exit code 2.
+- The HTML format is the default. It gives one HTML file with its styles in the file, and no script and no external resource (PRD-TRACE-017). The file shows the model commit, the baseline commit and the table of the report.
+- The reports `impact` and `suspect` and `--baseline` are not available yet. They stop the command with exit code 2.
 
 The golden reports of the example model are in `tests/golden/trace/`. After a change of the reports, run `uv run python scripts/write_golden_reports.py` and examine the differences before you commit them.
 

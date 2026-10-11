@@ -19,6 +19,9 @@ from app.shared.db.session_gen import DRIVER, database_url
 
 ENVIRON = {
     "APP_ENVIRONMENT": "test",
+    "AWS_REGION": "test",
+    "COGNITO_USER_POOL_ID": "test",
+    "COGNITO_APP_CLIENT_ID": "test",
     "DATABASE_HOST": "test",
     "DATABASE_NAME": "test",
     "DATABASE_USER": "test",

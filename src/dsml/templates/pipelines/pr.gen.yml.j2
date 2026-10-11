@@ -1,0 +1,173 @@
+{#- The pull request workflow (PRD-CICD-001 to PRD-CICD-006, PRD-CICD-010,
+    PRD-CICD-011, PRD-CICD-014, PRD-CICD-015). Each job declares its own
+    permissions. Only the plan job has "id-token: write". -#}
+{% macro setup(with_uv=True) %}
+      - name: Check out the repository
+        uses: {{ actions.checkout }}
+        with:
+          persist-credentials: false
+{% if with_uv %}
+
+      - name: Set up uv
+        uses: {{ actions.setup_uv }}
+        with:
+          version: {{ uv_version | yaml_string }}
+{% endif %}
+{% endmacro %}
+{% macro install() %}
+      # The index URL is in the repository variable {{ index_variable }}.
+      - name: Install the DSML toolchain
+        env:
+          INDEX_URL: {{ "${{ vars." ~ index_variable ~ " }}" }}
+        run: uv tool install --python "$PYTHON_VERSION" --index "$INDEX_URL" "{{ toolchain }}==$DSML_VERSION"
+{% endmacro %}
+{% include "common/header.j2" %}
+
+name: Pull request
+
+on:
+  pull_request:
+
+permissions: {}
+
+concurrency:
+  group: pr-{{ "${{ github.workflow }}" }}-{{ "${{ github.ref }}" }}
+  cancel-in-progress: true
+
+env:
+  DSML_VERSION: {{ toolchain_version | yaml_string }}
+  PYTHON_VERSION: {{ python_line | yaml_string }}
+
+jobs:
+  # Validate the model and upload the findings to GitHub code scanning
+  # (PRD-CICD-002).
+  validate:
+    name: Validate the model
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+{{ setup() }}
+{{ install() }}
+      - name: Validate the model
+        run: {{ toolchain }} validate --format sarif --output dsml.sarif
+
+      - name: Upload the findings to code scanning
+        if: {{ "${{ !cancelled() && hashFiles('dsml.sarif') != '' }}" }}
+        uses: {{ actions.upload_sarif }}
+        with:
+          sarif_file: dsml.sarif
+          category: dsml
+
+  # Fail if a generated file is different from the committed file
+  # (PRD-CICD-003).
+  generate-check:
+    name: Check the generated files
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+{{ setup() }}
+{{ install() }}
+      - name: Check the generated files
+        run: {{ toolchain }} generate --check
+
+  # Run the language tools on the generated code (PRD-CICD-005).
+  check-output:
+    name: Check the generated code
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+{{ setup() }}
+{{ install() }}
+      - name: Check the generated code
+        run: {{ toolchain }} check-output
+{% for app in applications %}
+
+  # Install the dependencies of {{ app.name }} from the committed lockfile, then
+  # run the linter, the type checker and the tests (PRD-CICD-004).
+  {{ app.job }}:
+    name: {{ ("Test " ~ app.name) | yaml_string }}
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: {{ app.folder | yaml_string }}
+    steps:
+{{ setup() }}
+      # A lockfile that does not agree with pyproject.toml makes the job fail.
+      - name: Check the lockfile
+        run: uv lock --check
+
+      - name: Install the dependencies from the lockfile
+        run: uv sync --frozen
+
+      - name: Lint
+        run: uv run --frozen ruff check --output-format=github
+
+      - name: Check the format
+        run: uv run --frozen ruff format --check
+
+      - name: Check the types
+        run: uv run --frozen pyright
+
+      - name: Test
+        run: uv run --frozen pytest
+{% endfor %}
+{% if plan %}
+
+  # Plan the infrastructure of {{ plan.environment }} with the read-only plan role
+  # (PRD-CICD-006, PRD-CICD-010). The job does not apply. The plan role
+  # cannot write the state lock, thus the plan does not lock the state.
+  # OpenTofu does not show sensitive values in the plan text
+  # (PRD-CICD-015).
+  {{ plan.job }}:
+    name: {{ ("Plan " ~ plan.environment) | yaml_string }}
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: {{ plan.folder | yaml_string }}
+    steps:
+{{ setup(with_uv=False) }}
+      - name: Set up OpenTofu
+        uses: {{ actions.setup_opentofu }}
+        with:
+          tofu_version: {{ opentofu_version | yaml_string }}
+          tofu_wrapper: false
+
+      - name: Get AWS credentials for the plan role
+        uses: {{ actions.configure_aws_credentials }}
+        with:
+          role-to-assume: {{ plan.role_arn | yaml_string }}
+          aws-region: {{ plan.region | yaml_string }}
+
+      - name: Initialize OpenTofu
+        run: tofu init -input=false
+
+      - name: Plan {{ plan.environment }}
+        env:
+          MODEL_COMMIT: {{ "${{ github.event.pull_request.head.sha }}" }}
+        run: tofu plan -input=false -lock=false -no-color -var "model_commit=$MODEL_COMMIT" -out=plan.tfplan
+
+      - name: Write the plan in the job summary
+        run: |
+          {
+            echo "## Plan of {{ plan.environment }}"
+            echo
+            echo '```text'
+            tofu show -no-color plan.tfplan
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+{% endif %}

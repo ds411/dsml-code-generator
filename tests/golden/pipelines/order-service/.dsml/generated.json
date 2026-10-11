@@ -1,0 +1,11 @@
+{
+  "createOnce": [],
+  "generated": [
+    {
+      "part": "pipelines",
+      "path": ".github/workflows/pr.gen.yml",
+      "sha256": "cd158e629ec3ee81e35ef9f0746abdf148179e14f1b599c49ef5381fd8ad7dd2"
+    }
+  ],
+  "manifestVersion": 1
+}

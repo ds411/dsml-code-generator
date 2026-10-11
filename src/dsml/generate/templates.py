@@ -36,6 +36,7 @@ from jinja2.sandbox import ImmutableSandboxedEnvironment
 from dsml.generate import names
 from dsml.generate.header import FileType, header
 from dsml.generate.infrastructure import hcl
+from dsml.generate.pipelines import workflow
 
 PACKAGE = "dsml"
 TEMPLATE_FOLDER = "templates"
@@ -104,6 +105,7 @@ _FILTERS: dict[str, Callable[..., Any]] = {
     "python_name": names.python_name,
     "snake_case": names.snake_case,
     "sorted": sort_values,
+    "yaml_string": workflow.yaml_string,
 }
 
 

@@ -1,0 +1,61 @@
+{#- The tooling root module: one ECR repository for each container
+    application (PRD-IAC-022, PRD-IAC-030, PRD-IAC-033). -#}
+{% from "infrastructure/policy.j2" import policy_document %}
+{% include "common/header.j2" %}
+
+locals {
+  aws_account_id = {{ account_id | hcl_string }}
+  aws_region     = {{ region | hcl_string }}
+  environment    = {{ environment | hcl_string }}
+  product        = {{ product | hcl_string }}
+}
+{% for repository in repositories %}
+
+resource "aws_ecr_repository" "{{ repository.address }}" {
+  name                 = {{ repository.name | hcl_string }}
+  image_tag_mutability = "IMMUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  encryption_configuration {
+    encryption_type = "KMS"
+  }
+
+  tags = {
+    "dsml:application" = {{ repository.element | hcl_string }}
+    "dsml:element"     = {{ repository.element | hcl_string }}
+  }
+}
+
+resource "aws_ecr_lifecycle_policy" "{{ repository.address }}" {
+  repository = aws_ecr_repository.{{ repository.address }}.name
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Expire the untagged images after 7 days."
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "sinceImagePushed"
+          countUnit   = "days"
+          countNumber = 7
+        }
+        action = {
+          type = "expire"
+        }
+      },
+    ]
+  })
+}
+{% if repository.policy %}
+
+resource "aws_ecr_repository_policy" "{{ repository.address }}" {
+  repository = aws_ecr_repository.{{ repository.address }}.name
+  policy     = data.aws_iam_policy_document.{{ repository.policy.name }}.json
+}
+
+{{ policy_document(repository.policy) -}}
+{% endif %}
+{% endfor %}

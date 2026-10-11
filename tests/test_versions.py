@@ -15,10 +15,18 @@ def test_package_baseline_pins_opensysml() -> None:
 
 def test_package_baseline_has_the_phase_1_items() -> None:
     assert set(load_baseline()) == {
+        "action-checkout",
+        "action-configure-aws-credentials",
+        "action-setup-opentofu",
+        "action-setup-uv",
+        "action-upload-sarif",
+        "actionlint",
+        "actionlint-sha256",
         "alb-tls-policy",
         "alembic",
         "aws-provider",
         "checkov",
+        "cryptography",
         "fastapi",
         "github-runner",
         "hcl-required-version",
@@ -32,6 +40,7 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "postgresql",
         "psycopg",
         "pydantic",
+        "pyjwt",
         "pyright",
         "pytest",
         "python",
