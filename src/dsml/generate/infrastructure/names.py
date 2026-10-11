@@ -155,3 +155,35 @@ def deploy_role(product: str, environment: str) -> str:
 def push_role(product: str) -> str:
     """Give the name of the push role of the tooling account."""
     return aws_name(product, TOOLING, PUSH_ROLE, "iam_role")
+
+
+EXECUTION_ROLE: Final = "execution"
+"""The end of the element part of the name of a task execution role."""
+
+
+# trace: PRD-IAC-008, PRD-IAC-022
+def ecr_repository(product: str, application: str) -> str:
+    """Give the name of the ECR repository of an application in the tooling account."""
+    return aws_name(product, TOOLING, application, "ecr_repository")
+
+
+# trace: PRD-IAC-015, PRD-IAC-022
+def task_execution_role(product: str, environment: str, service: str) -> str:
+    """Give the name of the task execution role of a container service.
+
+    The tooling ECR repositories permit image pulls by these roles.
+    """
+    element = f"{names.kebab_case(service)}-{EXECUTION_ROLE}"
+    return aws_name(product, environment, element, "iam_role")
+
+
+# trace: PRD-IAC-006, PRD-IAC-022
+def tooling_state_key() -> str:
+    """Give the key of the state file of the tooling root module in its bucket."""
+    return f"{TOOLING}/terraform.tfstate"
+
+
+# trace: PRD-IAC-029
+def bootstrap_state_key() -> str:
+    """Give the key of the state file of a bootstrap root module in its bucket."""
+    return "bootstrap/terraform.tfstate"

@@ -53,6 +53,10 @@ def _generate(ir: Ir, configuration: Configuration | None = None) -> dict[str, O
     return {file.path: file for file in files}
 
 
+def _environment_files(files: dict[str, OutputFile]) -> dict[str, OutputFile]:
+    return {path: file for path, file in files.items() if path.startswith("infra/envs/")}
+
+
 def _text(files: dict[str, OutputFile], environment: str, name: str) -> str:
     return files[f"infra/envs/{environment}/{name}.gen.tf"].content.decode("utf-8")
 
@@ -71,7 +75,7 @@ def test_output_of_the_example_model_agrees_with_the_golden_files(tmp_path: Path
 
 # trace: PRD-IAC-001, PRD-IAC-002
 def test_generator_writes_six_files_for_each_environment(ir: Ir) -> None:
-    files = _generate(ir)
+    files = _environment_files(_generate(ir))
     assert sorted(files) == [
         f"infra/envs/{environment}/{name}.gen.tf"
         for environment in ENVIRONMENTS
@@ -92,7 +96,7 @@ def test_no_output_folder_or_other_part_gives_no_file(ir: Ir) -> None:
     assert generator.generate(ir, Configuration(), None) == []
     configuration = Configuration(infrastructure=INFRA)
     assert generator.generate(ir, configuration, {application_part("orderApi")}) == []
-    assert len(generator.generate(ir, configuration, {INFRASTRUCTURE})) == 18
+    assert len(generator.generate(ir, configuration, {INFRASTRUCTURE})) == 52
 
 
 def test_model_with_no_environment_gives_no_file() -> None:
@@ -172,7 +176,7 @@ def test_no_state_encryption_gives_no_opentofu_comment(
     ir: Ir, options: OpenTofuOptions | None
 ) -> None:
     files = _generate(ir, Configuration(infrastructure=INFRA, opentofu=options))
-    for file in files.values():
+    for file in _environment_files(files).values():
         assert b"OpenTofu" not in file.content
         assert b"encryption" not in file.content
 
@@ -217,7 +221,7 @@ def test_each_top_level_block_is_a_symbol_of_the_environment(ir: Ir) -> None:
         "variables": [("var.model_commit", 4, 13)],
         "versions": [("terraform", 4, 13)],
     }
-    for file in files.values():
+    for file in _environment_files(files).values():
         for symbol in file.symbols:
             assert symbol.kind is SymbolKind.RESOURCE
             assert symbol.elements == (f"OrderService::{file.path.split('/')[2]}",)
