@@ -4,6 +4,10 @@
 {% include "common/header.j2" %}
 **
 !app/
+{% if database %}
+!alembic.ini
+!migrations/
+{% endif %}
 !pyproject.toml
 !uv.lock
 **/__pycache__

@@ -11,6 +11,7 @@ version = "0.1.0"
 description = "The application shopApi."
 requires-python = "==3.14.*"
 dependencies = [
+    "alembic==1.20.0",
     "cryptography==50.0.2",
     "fastapi==0.143.0",
     "psycopg[binary]==3.3.6",

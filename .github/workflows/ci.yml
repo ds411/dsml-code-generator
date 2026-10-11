@@ -115,8 +115,8 @@ jobs:
           tar --extract --gzip --file "$RUNNER_TEMP/$archive" --directory "$RUNNER_TEMP" actionlint
           "$RUNNER_TEMP/actionlint" -color tests/golden/pipelines/*/.github/workflows/*.yml
 
-  # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-113, PRD-APP-114, PRD-APP-132,
-  # PRD-APP-133, PRD-APP-135
+  # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-113, PRD-APP-114, PRD-APP-124,
+  # PRD-APP-128, PRD-APP-132, PRD-APP-133, PRD-APP-135
   #
   # The golden output of the FastAPI generator (story #75) must pass the
   # tools of the generated project. The job copies each golden project to a
@@ -127,8 +127,8 @@ jobs:
   #
   # The golden projects are the example model (order-api) and the test
   # model tests/models/fastapi/shop.sysml (shop-api, story #84). Their HTTP
-  # tests use the PostgreSQL 18 service container (story #84). The image
-  # has a pinned digest.
+  # tests and their migrations (story #85) use the PostgreSQL 18 service
+  # container. The image has a pinned digest.
   fastapi-golden:
     name: FastAPI golden project (linux-x64)
     runs-on: ubuntu-24.04
@@ -216,6 +216,31 @@ jobs:
               echo "pytest skipped tests of $name. The HTTP tests must run."
               exit 1
             fi
+          done
+
+      # app/migrate_gen.py must apply the missing migrations and then stop.
+      # A second run must apply nothing (PRD-APP-128). "alembic check" then
+      # compares the database with the SQLAlchemy models (PRD-APP-124).
+      # Each project uses a new database, not the database of the tests.
+      - name: Apply the migrations to PostgreSQL
+        env:
+          APP_ENVIRONMENT: ci
+          AWS_REGION: eu-west-1
+          COGNITO_USER_POOL_ID: eu-west-1_ci
+          COGNITO_APP_CLIENT_ID: ci
+        run: |
+          set -o pipefail
+          for project in $PROJECTS; do
+            name="$(basename "$project")"
+            cd "$GITHUB_WORKSPACE/../$name"
+            export DATABASE_NAME="${name%-api}_migrations"
+            PGPASSWORD="$DATABASE_PASSWORD" psql --host "$DATABASE_HOST" --username "$DATABASE_USER" \
+              --dbname app --command "CREATE DATABASE \"$DATABASE_NAME\""
+            uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/first-$name.txt"
+            grep --quiet "Applied the migrations" "$RUNNER_TEMP/first-$name.txt"
+            uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/second-$name.txt"
+            grep --quiet "No migration was applied" "$RUNNER_TEMP/second-$name.txt"
+            uv run --frozen alembic check
           done
 
       - name: Build the container image

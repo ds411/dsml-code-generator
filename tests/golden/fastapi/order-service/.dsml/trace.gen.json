@@ -255,6 +255,35 @@
           ]
         },
         {
+          "path": "services/order-api/app/migrate_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "alembic_config"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "missing_revisions"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "migrate"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 77,
+              "name": "main"
+            }
+          ]
+        },
+        {
           "path": "services/order-api/app/shared/auth/cognito_gen.py",
           "symbols": [
             {
@@ -460,6 +489,46 @@
               "kind": "function",
               "lastLine": 101,
               "name": "request_context"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/migrations/env.py",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "run_migrations_offline"
+            },
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "run_migrations"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 53,
+              "name": "run_migrations_online"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/migrations/versions/0001_create_order_gen.py",
+          "symbols": [
+            {
+              "firstLine": 25,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "upgrade"
+            },
+            {
+              "firstLine": 41,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "downgrade"
             }
           ]
         },
@@ -714,6 +783,29 @@
               "kind": "function",
               "lastLine": 107,
               "name": "test_enumeration_columns_permit_only_their_values"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_migrations_gen.py",
+          "symbols": [
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 20,
+              "name": "test_migrations_have_one_head"
+            },
+            {
+              "firstLine": 23,
+              "kind": "function",
+              "lastLine": 28,
+              "name": "test_each_migration_has_the_revision_before_it"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "test_migrations_give_sql_with_no_database"
             }
           ]
         }

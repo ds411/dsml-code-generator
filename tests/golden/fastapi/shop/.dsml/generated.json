@@ -4,12 +4,22 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/.dockerignore",
-      "sha256": "17d14128df073ecd9899abe1746131a9994aa11a28358bf2ac3a396af3c7f269"
+      "sha256": "77b823ef8dc3dcc75308f900fdbd5aafeb980a9b067497d7800d6571adab72f5"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/.dsml/schema-snapshot.json",
+      "sha256": "dd906132346b499fd803a1bc59c87f48992e110f88ea7bd69127b18e18a27e52"
     },
     {
       "part": "application/shopApi",
       "path": "services/shop-api/Dockerfile",
-      "sha256": "041de8adbe9209f3783d03f1fe37e816eb8f571745f7a5805168585eb326724e"
+      "sha256": "9654b085e7ff28671212805a0148bc42d433633cce392e3e373084e372d3b1ff"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/alembic.ini",
+      "sha256": "175e44e422ba1017cbb324ee60667004e3d113387de4f096c43f5432ff850236"
     },
     {
       "part": "application/shopApi",
@@ -303,6 +313,11 @@
     },
     {
       "part": "application/shopApi",
+      "path": "services/shop-api/app/migrate_gen.py",
+      "sha256": "328700abc34334d1b486fa4be1ccaa53863b87fdbd3220c2960796f589ff2120"
+    },
+    {
+      "part": "application/shopApi",
       "path": "services/shop-api/app/shared/__init__.py",
       "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
     },
@@ -373,8 +388,18 @@
     },
     {
       "part": "application/shopApi",
+      "path": "services/shop-api/migrations/env.py",
+      "sha256": "05d7a135edebf81601d8a9980978fb16b0b36641f09e825ec66a2cdf2518c817"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/migrations/versions/0001_create_tables_gen.py",
+      "sha256": "cd9606e9e4e0b17648522441007c0037e727ddade7c5b01652a001152e80bff0"
+    },
+    {
+      "part": "application/shopApi",
       "path": "services/shop-api/pyproject.toml",
-      "sha256": "95a225844751844b7adc5e81a60d70741e01ec48ee2cac61d4ed8bc6e6a09483"
+      "sha256": "f492c73d0c7afb2a08dc5c7cd6075ab75ed8174efadabcef95edc98263610a7e"
     },
     {
       "part": "application/shopApi",
@@ -400,6 +425,11 @@
       "part": "application/shopApi",
       "path": "services/shop-api/tests/test_db_gen.py",
       "sha256": "68335f214ead32997a1c51f5a1f47cc8eb7696183b4d1f52816b1902e1e7ef99"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_migrations_gen.py",
+      "sha256": "18ccd929f7af194ac798291d448e1a028d9466ce19a4eaf52ad91204dbe8ae7d"
     },
     {
       "part": "application/shopApi",

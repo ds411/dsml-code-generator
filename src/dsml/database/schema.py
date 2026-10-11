@@ -29,13 +29,22 @@ The validator and the generators read the schema only from the IR
 (PRD-CORE-026).
 """
 
+import re
 from collections.abc import Iterator, Mapping
 from dataclasses import dataclass, field
 from typing import Final
 
 from dsml.errors import ToolchainError
 from dsml.generate import names
-from dsml.ir.model import Element, EnumValue, IntegerValue, Ir, ListValue, StringValue
+from dsml.ir.model import (
+    BooleanValue,
+    Element,
+    EnumValue,
+    IntegerValue,
+    Ir,
+    ListValue,
+    StringValue,
+)
 
 DESTRUCTIVE: Final = "Destructive"
 """The annotation of a destructive database change (PRD-DSML-034)."""
@@ -129,6 +138,31 @@ class ColumnType:
                 return _POSTGRESQL_TYPES[self.name]
 
 
+# trace: PRD-APP-121, PRD-APP-124
+def column_type_of(postgresql: str, values: tuple[str, ...] = ()) -> ColumnType | None:
+    """Give the column type of a PostgreSQL type, for example `VARCHAR(500)`.
+
+    This is the reverse of `ColumnType.postgresql`. A `VARCHAR(64)` column
+    with values is an enumeration. An unknown type gives `None`.
+    """
+    if values:
+        if postgresql != f"VARCHAR({ENUMERATION_LENGTH})":
+            return None
+        return ColumnType(ENUMERATION, values=values)
+    if postgresql == "TEXT":
+        return ColumnType("String")
+    length = re.fullmatch(r"VARCHAR\(([1-9][0-9]*)\)", postgresql)
+    if length is not None:
+        return ColumnType("String", length=int(length.group(1)))
+    numeric = re.fullmatch(r"NUMERIC\(([1-9][0-9]*), (0|[1-9][0-9]*)\)", postgresql)
+    if numeric is not None:
+        return ColumnType("Decimal", precision=int(numeric.group(1)), scale=int(numeric.group(2)))
+    for name, text in _POSTGRESQL_TYPES.items():
+        if text == postgresql:
+            return ColumnType(name)
+    return None
+
+
 # trace: PRD-APP-120, PRD-APP-121, PRD-APP-122
 @dataclass(frozen=True, slots=True)
 class Column:
@@ -149,6 +183,8 @@ class Column:
     """The old name of the column, from `@Destructive { renamedFrom }`."""
     type: ColumnType | None = field(default=None, compare=False)
     """The type of the column (PRD-APP-121)."""
+    unique: bool = field(default=False, compare=False)
+    """Tell if the field has the rule `unique`. A `UNIQUE` constraint keeps the values unique."""
 
 
 # trace: PRD-APP-120, PRD-APP-122
@@ -291,6 +327,7 @@ class _SchemaReader:
                     element=item.identity,
                     renamed_from=_snake(renamed_from(item)),
                     type=self._type(item),
+                    unique=_flag(item, "unique"),
                 )
             )
         for relation in self._children(entity.identity, "Relation"):
@@ -397,6 +434,19 @@ def _rule(item: Element, name: str) -> int | None:
             if attribute.name == name and isinstance(attribute.value, IntegerValue):
                 return attribute.value.value
     return None
+
+
+# trace: PRD-DSML-025, PRD-APP-113
+def _flag(item: Element, name: str) -> bool:
+    """Tell if a `@FieldRules` attribute of a field has the value `true`."""
+    return any(
+        attribute.name == name
+        and isinstance(attribute.value, BooleanValue)
+        and attribute.value.value
+        for annotation in item.annotations
+        if annotation.name == FIELD_RULES
+        for attribute in annotation.attributes
+    )
 
 
 def _literals(enumeration: Element) -> tuple[str, ...]:

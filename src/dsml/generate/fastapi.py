@@ -20,11 +20,15 @@ application (PRD-APP-002):
 
 If the application has entities, the generator also writes the database
 code (`dsml.generate.fastapi_database`): the SQLAlchemy models, the
-asynchronous session and their tests (PRD-APP-120 to PRD-APP-123).
+asynchronous session and their tests (PRD-APP-120 to PRD-APP-123). It
+also writes the migration files (`dsml.generate.fastapi_migrations`):
+`alembic.ini`, `migrations/env.py`, the migrations, the schema snapshot,
+`app/migrate_gen.py` and the tests of the migrations (PRD-APP-124 to
+PRD-APP-128).
 
 The versions come from the version baseline `versions.toml` (PRD-APP-101).
 The generator gives the symbols of each Python file for the trace manifest.
-Other M6 stories add the slices and the migrations.
+Other M6 stories add the slices.
 """
 
 from collections.abc import Collection, Sequence
@@ -33,8 +37,11 @@ from pathlib import PurePosixPath
 from typing import Final
 
 from dsml.config import Configuration
+from dsml.database.schema import application_schema
+from dsml.database.snapshot import SNAPSHOT_PATH
 from dsml.errors import ToolchainError
 from dsml.generate.fastapi_database import MODELS_FOLDER, Model, import_lines, models
+from dsml.generate.fastapi_migrations import Call, code_lines, migration_files
 from dsml.generate.fastapi_slices import (
     FEATURES_FOLDER,
     LIMIT_DEFAULT,
@@ -66,17 +73,30 @@ FIXED_NAMES: Final = (
 )
 """The fixed-name generated files of the FastAPI target (PRD-APP-134)."""
 
+STATE_FILES: Final = (SNAPSHOT_PATH,)
+"""The generated files of the toolchain state that have a fixed path (PRD-APP-124).
+
+The name of the schema snapshot does not end with `.gen.json`, because
+PRD-APP-124 gives its path. The generator owns the file.
+"""
+
 PROJECT_VERSION: Final = "0.1.0"
 """The version of the generated project and of its OpenAPI document."""
 
 RUNTIME_PACKAGES: Final = ("cryptography", "fastapi", "pydantic", "pyjwt", "uvicorn")
 """The baseline items of the run-time dependencies (PRD-APP-101)."""
 
-DATABASE_PACKAGES: Final = {"psycopg": "binary", "sqlalchemy": "asyncio"}
-"""The baseline items and the extras of the database dependencies (PRD-APP-123, Q51).
+DATABASE_PACKAGES: Final[dict[str, str | None]] = {
+    "alembic": None,
+    "psycopg": "binary",
+    "sqlalchemy": "asyncio",
+}
+"""The baseline items and the extras of the database dependencies (PRD-APP-101,
+PRD-APP-123, Q51).
 
 The extra "binary" of psycopg holds libpq. The extra "asyncio" of
-SQLAlchemy holds greenlet, which the asynchronous mode needs.
+SQLAlchemy holds greenlet, which the asynchronous mode needs. Alembic
+applies the migrations.
 """
 
 DEV_PACKAGES: Final = ("httpx2", "pyright", "pytest", "ruff")
@@ -106,6 +126,10 @@ _DATABASE_TEMPLATES: Final = {
     "app/shared/db/session_gen.py": "fastapi/db/session_gen.py.j2",
     f"{MODELS_FOLDER}/__init__.py": "fastapi/init.py.j2",
     "tests/test_db_gen.py": "fastapi/db/test_db_gen.py.j2",
+    "alembic.ini": "fastapi/migrations/alembic.ini.j2",
+    "app/migrate_gen.py": "fastapi/migrate_gen.py.j2",
+    "migrations/env.py": "fastapi/migrations/env.py.j2",
+    "tests/test_migrations_gen.py": "fastapi/migrations/test_migrations_gen.py.j2",
 }
 
 # The templates of the shared code of the CRUD slices, by the path in the output folder.
@@ -203,7 +227,7 @@ class FastApiGenerator:
     """The generator of the target `fastapi`."""
 
     name = "fastapi"
-    fixed_names: Collection[str] = FIXED_NAMES
+    fixed_names: Collection[str] = (*FIXED_NAMES, *STATE_FILES)
 
     def generate(
         self, ir: Ir, configuration: Configuration, parts: Collection[str] | None
@@ -276,7 +300,8 @@ def dependencies(
     runtime = [f"{name}=={pinned_version(name, baseline)}" for name in RUNTIME_PACKAGES]
     if database:
         runtime.extend(
-            f"{name}[{extra_name}]=={pinned_version(name, baseline)}"
+            f"{name}{'' if extra_name is None else f'[{extra_name}]'}"
+            f"=={pinned_version(name, baseline)}"
             for name, extra_name in DATABASE_PACKAGES.items()
         )
     dev = [f"{name}=={pinned_version(name, baseline)}" for name in DEV_PACKAGES]
@@ -291,8 +316,8 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
 
 
 # trace: PRD-APP-002, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104, PRD-APP-105,
-# PRD-APP-120, PRD-APP-130, PRD-APP-131, PRD-APP-133, PRD-APP-134, PRD-TRACE-005,
-# PRD-TRACE-006
+# PRD-APP-120, PRD-APP-124, PRD-APP-128, PRD-APP-130, PRD-APP-131, PRD-APP-133,
+# PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
 def application_files(
     engine: TemplateEngine,
     ir: Ir,
@@ -301,7 +326,7 @@ def application_files(
     folder: str,
     part: str,
 ) -> list[OutputFile]:
-    """Give the project files, the shared code and the database code of one application."""
+    """Give the project files, the shared code, the database code and the migrations."""
     baseline = load_baseline()
     entity_models = models(ir, application)
     database = bool(entity_models)
@@ -327,6 +352,17 @@ def application_files(
         "models": entity_models,
         "join_tables": [table for model in entity_models for table in model.join_tables],
         "checks": any(model.checks for model in entity_models),
+        "model_modules_import_lines": import_lines(
+            "app.shared.db.models", [model.module for model in entity_models]
+        ),
+        "model_modules": code_lines(
+            Call(
+                "MODEL_MODULES = ",
+                tuple(model.module for model in entity_models),
+                is_tuple=True,
+            ),
+            0,
+        ),
         "slices": crud,
         "router_import_lines": [
             line
@@ -362,6 +398,9 @@ def application_files(
     files.extend(
         test_file(engine, tests, folder, part) for tests in entity_tests(ir, crud, entity_models)
     )
+    if database:
+        schema = application_schema(ir, application.identity)
+        files.extend(migration_files(engine, ir, application, configuration, schema, folder, part))
     return sorted(files, key=lambda file: file.path)
 
 
