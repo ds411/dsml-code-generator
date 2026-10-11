@@ -85,7 +85,7 @@ All keys are optional, except `schema`. The milestone that uses a key tells what
 | `ids.verification` | regular expression | `V-[0-9]{3,}` | The pattern of the ID of a verification. | PRD-DSML-050, PRD-DSML-051 |
 | `rules.optional` | list of texts | No rule set | The optional rule sets to turn on. The only optional rule set is `TXT`. | PRD-CORE-013, PRD-VAL-013 |
 | `rules.severity.<rule>` | text | The default severity of the rule | The severity of the rule `<rule>`, for example `COV-003`: `error`, `warning`, `info` or `off`. | PRD-VAL-004 |
-| `trace.baseline` | text | The newest release tag `v*` before `HEAD` | The default trace baseline, a Git reference, for example the tag `trace-baseline`. | PRD-CORE-013, PRD-VAL-011, PRD-TRACE-016, Q54 |
+| `trace.baseline` | text | The newest release tag `v*` before `HEAD` | The default trace baseline, a Git reference, for example the tag `trace-baseline`. If you set it, `dsml validate` runs the IDN rules with this baseline. If you do not set it, the IDN rules do not run. | PRD-CORE-013, PRD-VAL-011, PRD-TRACE-016, Q54 |
 | `trace.tests` | list of paths | No folder | The folders of the hand-written tests. The toolchain reads the trace comments in these folders. | PRD-TRACE-010 |
 | `aws.regions` | list of texts | No Region | The permitted AWS Regions. If the key is missing or the list is empty, the rule AWS-002 gives no finding. | PRD-CORE-013, AWS-002 |
 | `iac.opentofu.state_encryption` | boolean | `false` | Turn on OpenTofu state encryption. Only OpenTofu accepts the output with this option. | PRD-CORE-013, PRD-IAC-004, Q22 |

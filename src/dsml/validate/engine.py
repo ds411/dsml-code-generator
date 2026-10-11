@@ -1,4 +1,4 @@
-# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-013, PRD-CORE-026
+# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-011, PRD-VAL-013, PRD-CORE-026
 """The rule engine. It runs the enabled rules on the IR.
 
 The engine reads only the IR and the configuration (PRD-CORE-026). It applies
@@ -12,6 +12,8 @@ the keys `rules.severity` and `rules.optional` of the configuration file:
   (PRD-VAL-004).
 - The rules of an optional rule set, for example TXT, run only if the key
   `rules.optional` turns the set on (PRD-VAL-013).
+- A baseline rule, for example an IDN rule, runs only if there is a
+  baseline IR (PRD-VAL-011).
 """
 
 from collections.abc import Mapping
@@ -59,7 +61,7 @@ def severities(configuration: Configuration, rules: Mapping[str, RuleCheck]) -> 
     return result
 
 
-# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007
+# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-011
 class Validator:
     """Run the enabled rules on the IR.
 
@@ -74,12 +76,14 @@ class Validator:
         self.rules = registry() if rules is None else rules
         self.severities = severities(configuration, self.rules)
 
-    def run(self, ir: Ir) -> tuple[Finding, ...]:
+    def run(self, ir: Ir, baseline: Ir | None = None) -> tuple[Finding, ...]:
         """Give the findings of all enabled rules, sorted (PRD-VAL-007).
 
         The findings are sorted by file, line, column and rule ID. A finding
         with no location comes first. If the IR has a SYN-001 finding, only
         the SYN rules run, because the elements of the IR are not complete.
+        The baseline rules run only if `baseline` gives the IR of a baseline
+        (PRD-VAL-011).
         """
         broken = any(finding.rule == SYN_001.id for finding in ir.findings)
         findings: list[Finding] = []
@@ -87,7 +91,7 @@ class Validator:
             check = self.rules[rule_id]
             if broken and check.rule.category != SYN_001.category:
                 continue
-            for hit in check(ir, self.configuration):
+            for hit in check.hits(ir, self.configuration, baseline):
                 findings.append(
                     Finding(
                         rule=rule_id,
