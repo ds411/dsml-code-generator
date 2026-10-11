@@ -1,6 +1,7 @@
 """Tests of the version baseline."""
 
 from importlib import metadata
+from pathlib import Path
 
 import pytest
 
@@ -34,6 +35,7 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "jinja2",
         "opensysml",
         "opentofu",
+        "opentofu-sha256",
         "pilot-kernel",
         "pilot-kernel-release",
         "pilot-kernel-sha256",
@@ -48,6 +50,11 @@ def test_package_baseline_has_the_phase_1_items() -> None:
         "ruff",
         "sqlalchemy",
         "terraform",
+        "terraform-sha256",
+        "tflint",
+        "tflint-ruleset-aws",
+        "tflint-ruleset-aws-sha256",
+        "tflint-sha256",
         "uv",
         "uv-image",
         "uvicorn",
@@ -97,3 +104,9 @@ def test_pinned_version_errors() -> None:
         pinned_version("a", baseline)
     with pytest.raises(BaselineError, match='no item "b"'):
         pinned_version("b", baseline)
+
+
+# trace: PRD-IAC-003
+def test_tflint_config_uses_the_aws_rule_set_of_the_baseline() -> None:
+    config = (Path(__file__).resolve().parent.parent / ".tflint.hcl").read_text(encoding="utf-8")
+    assert f'  version = "{pinned_version("tflint-ruleset-aws")}"\n' in config

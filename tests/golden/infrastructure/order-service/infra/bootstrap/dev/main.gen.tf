@@ -4,8 +4,6 @@
 locals {
   aws_account_id = "222222222222"
   aws_region     = "eu-west-1"
-  environment    = "dev"
-  product        = "order-service"
 }
 
 resource "aws_s3_bucket" "state" {

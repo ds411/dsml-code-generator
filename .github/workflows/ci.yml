@@ -194,3 +194,100 @@ jobs:
           fi
           cat output.txt
           grep --quiet "APP_ENVIRONMENT" output.txt
+
+  # trace: PRD-IAC-003, PRD-IAC-039, PRD-IAC-040, PRD-CORE-035
+  #
+  # The golden HCL of the infrastructure generator must pass the language
+  # tools and the IaC security scan (story #86). The job downloads the tools
+  # of src/dsml/versions.toml and checks their SHA-256 hashes. "tofu init"
+  # and "terraform init" get the AWS provider from the registries. The
+  # generator does not use the network (PRD-TOP-004).
+  infrastructure-golden:
+    name: Infrastructure golden HCL (linux-x64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      TOOLS: ${{ github.workspace }}/../hcl-tools
+      TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/../plugin-cache
+      TF_IN_AUTOMATION: "1"
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.0"
+
+      - name: Install the HCL tools
+        run: |
+          # pin NAME gives the version, or else the value, of one item of the
+          # version baseline.
+          pin() {
+            python3 -c 'import sys, tomllib; item = tomllib.load(open(sys.argv[1], "rb"))[sys.argv[2]]; print(item.get("version") or item["value"])' \
+              src/dsml/versions.toml "$1"
+          }
+          # get URL FILE SHA256 downloads one release archive and checks its hash.
+          get() {
+            curl --fail --silent --show-error --location --output "$RUNNER_TEMP/$2" "$1"
+            echo "$3  $RUNNER_TEMP/$2" | sha256sum --check --strict
+          }
+          mkdir -p "$TOOLS" "$TF_PLUGIN_CACHE_DIR"
+          tofu="$(pin opentofu)"
+          get "https://github.com/opentofu/opentofu/releases/download/v${tofu}/tofu_${tofu}_linux_amd64.zip" \
+            tofu.zip "$(pin opentofu-sha256)"
+          terraform="$(pin terraform)"
+          get "https://releases.hashicorp.com/terraform/${terraform}/terraform_${terraform}_linux_amd64.zip" \
+            terraform.zip "$(pin terraform-sha256)"
+          tflint="$(pin tflint)"
+          get "https://github.com/terraform-linters/tflint/releases/download/v${tflint}/tflint_linux_amd64.zip" \
+            tflint.zip "$(pin tflint-sha256)"
+          ruleset="$(pin tflint-ruleset-aws)"
+          get "https://github.com/terraform-linters/tflint-ruleset-aws/releases/download/v${ruleset}/tflint-ruleset-aws_linux_amd64.zip" \
+            ruleset.zip "$(pin tflint-ruleset-aws-sha256)"
+          unzip -q -o "$RUNNER_TEMP/tofu.zip" tofu -d "$TOOLS"
+          unzip -q -o "$RUNNER_TEMP/terraform.zip" terraform -d "$TOOLS"
+          unzip -q -o "$RUNNER_TEMP/tflint.zip" tflint -d "$TOOLS"
+          plugins="$HOME/.tflint.d/plugins/github.com/terraform-linters/tflint-ruleset-aws/${ruleset}"
+          mkdir -p "$plugins"
+          unzip -q -o "$RUNNER_TEMP/ruleset.zip" tflint-ruleset-aws -d "$plugins"
+          echo "$TOOLS" >> "$GITHUB_PATH"
+          echo "CHECKOV_VERSION=$(pin checkov)" >> "$GITHUB_ENV"
+
+      # The templates must give their output in the format of the pinned
+      # formatter (PRD-CORE-035).
+      - name: Check the format of the golden HCL
+        run: tofu fmt -check -recursive -diff tests/golden/infrastructure
+
+      # Each root module is a folder with a file versions.gen.tf. The step
+      # copies each golden output to a temporary folder, because init writes
+      # the lock file and the folder .terraform.
+      - name: Validate and lint each root module
+        run: |
+          set -o pipefail
+          copy="$RUNNER_TEMP/golden-hcl"
+          cp -r tests/golden/infrastructure "$copy"
+          config="$GITHUB_WORKSPACE/.tflint.hcl"
+          status=0
+          for root in $(find "$copy" -name versions.gen.tf -printf '%h\n' | sort); do
+            echo "::group::${root#"$copy"/}"
+            # The commands use "&&", because "set -e" has no effect on the
+            # left side of "||".
+            (
+              cd "$root" &&
+                tofu init -backend=false -input=false -no-color &&
+                tofu validate -no-color &&
+                rm -rf .terraform .terraform.lock.hcl &&
+                terraform init -backend=false -input=false -no-color &&
+                terraform validate -no-color &&
+                tflint --config "$config" --call-module-type=local --format=compact
+            ) || status=1
+            echo "::endgroup::"
+          done
+          exit "$status"
+
+      # .checkov.yaml gives the settings and the skipped checks.
+      - name: Scan the golden HCL with Checkov
+        run: uv tool run "checkov@${CHECKOV_VERSION}" --config-file .checkov.yaml --directory tests/golden/infrastructure
