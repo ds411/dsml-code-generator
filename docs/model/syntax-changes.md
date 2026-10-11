@@ -40,6 +40,26 @@ Story #15 changed the `doc` text of 15 requirements: PRD-APP-110, PRD-APP-121, P
 
 After this, Q61 (decision record 06) changed the text of 9 of these requirements in the PRDs, the CSV index and the model. A requirement now refers to a table by the name of its PRD section, not with the words "above" or "below".
 
+## Changes for the OMG pilot implementation (story #27)
+
+The CI job "Pilot" sends the example model and the PRD model, each with the library, to the pilot kernel (PRD-DSML-005, Q60). These changes make the pilot kernel accept the models. OpenSysML 0.9.2 accepts the models before and after each change. See "Results with the OMG pilot implementation" in `docs/notes/dsml-library.md`.
+
+| No. | Before | After | Where | Reason |
+| --- | --- | --- | --- | --- |
+| 5 | `RequirementKind::constraint` | `RequirementKind::'constraint'` | Example model (1), PRD model (76), `tests/models/dsml/keywords.sysml` (1), example model in the DSML PRD (1) | `constraint` is a SysML keyword. The pilot kernel does not accept a keyword after `::`. |
+| 6 | `RequirementKind::interface` | `RequirementKind::'interface'` | PRD model (29) | `interface` is a SysML keyword. The reason is the same as for change 5. |
+| 7 | A need with a stakeholder has no subject, for example `#Need concern <'N-001'> trackOrders { ... stakeholder owner : ShopOwner; }`. | `subject;` before the first stakeholder. | Example model (1), PRD model (5), `tests/models/dsml/keywords.sysml` (1), example model in the DSML PRD (1) | A stakeholder is a parameter. The pilot kernel gives "Subject must be first parameter" if a concern has a stakeholder and no subject before it. |
+
+The enumeration literals of the DSML library that are SysML keywords are `RequirementKind::'interface'`, `RequirementKind::'constraint'` and `VerificationMethod::'analysis'`. No model uses `VerificationMethod::'analysis'` at this time. The other literals of the library are not SysML keywords.
+
+### Rule for models
+
+Write an enumeration literal that is a SysML keyword with single quotes, also after `::`. In a need with a stakeholder, declare `subject;` before the first stakeholder.
+
+### Change to the library
+
+Story #27 also changed the base type of `#Exposed`. This is not a change to the sketch syntax. A model writes `#Exposed` as before. The pilot kernel does not accept an action usage with a type that is not an action definition. The base type `BaseTypes::exposures` was typed by the occurrence definition `BaseTypes::Exposed`, thus `#Exposed action cancelOrder : CancelOrder` had such a type. Now `exposures` is an occurrence usage with no definition, and it holds the attributes `crud`, `allowedRoles` and `'public'`.
+
 ## Items for later stories
 
 - A feature chain does not use the type that a keyword gives (`docs/notes/opensysml-0.9.2.md`, limit 1). The chain `prod.orderDbProd.multiAz` of the example model resolves, because `orderDbProd` redefines `multiAz` in its body. A chain to an attribute that the part does not redefine needs an explicit type or subset on the part, for example `:> databases`.

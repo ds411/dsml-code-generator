@@ -44,7 +44,7 @@ package PrdCicd {
     }
     #Requirement requirement <'PRD-CICD-009'> cicd009 {
         doc /* Each deploy job must use a concurrency group for its environment, so only one deployment runs in an environment at a time. A new run must not cancel a running deployment. */
-        :>> title = "Deployment concurrency"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Deployment concurrency"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CICD-010'> cicd010 {

@@ -4,12 +4,12 @@ package PrdCore {
 
     #Requirement requirement <'PRD-CORE-001'> core001 {
         doc /* The command dsml must have the seven subcommands init, validate, generate, trace, ir, check-output and version, with the options in the table of the section "Command line interface". */
-        :>> title = "Subcommands"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Subcommands"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-CORE-002'> core002 {
         doc /* Each subcommand must stop with exit code 0 if it finds no error, 1 if it finds an error finding or a --check difference, and 2 if a usage error or an internal error occurs. */
-        :>> title = "Exit codes"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Exit codes"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-CORE-003'> core003 {
@@ -29,7 +29,7 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-006'> core006 {
         doc /* Each subcommand must write its report to standard output, or to the file that --output gives. */
-        :>> title = "Report output"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Report output"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-CORE-007'> core007 {
@@ -39,12 +39,12 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-008'> core008 {
         doc /* Messages to the user must use ASD-STE100 Issue 9. */
-        :>> title = "STE messages"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "STE messages"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-CORE-009'> core009 {
         doc /* A subcommand must not ask for input from a terminal. */
-        :>> title = "No prompts"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "No prompts"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-010'> core010 {
@@ -59,7 +59,7 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-012'> core012 {
         doc /* The toolchain must read its configuration from dsml.toml in the repository root, or from the file that the option --config gives. */
-        :>> title = "Configuration file"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Configuration file"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-013'> core013 {
@@ -74,7 +74,7 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-015'> core015 {
         doc /* Environment variables, the user name, the host name, the locale, the time zone and the clock must not change the generated output. */
-        :>> title = "No environment input"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "No environment input"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-016'> core016 {
@@ -84,12 +84,12 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-017'> core017 {
         doc /* The toolchain must call OpenSysML through the opensysml Python client. The client must start sysml-grpc as a private child process. */
-        :>> title = "OpenSysML client"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "OpenSysML client"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-CORE-018'> core018 {
         doc /* The toolchain must pin one OpenSysML version for the Python package and the sysml-grpc binary. The version must come from the version baseline. */
-        :>> title = "OpenSysML version pin"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "OpenSysML version pin"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-019'> core019 {
@@ -99,7 +99,7 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-020'> core020 {
         doc /* Only the IR adapter module must import the opensysml package. A lint rule in the toolchain CI must enforce this. */
-        :>> title = "One adapter module"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "One adapter module"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-CORE-021'> core021 {
@@ -109,12 +109,12 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-022'> core022 {
         doc /* The IR must be JSON. The toolchain package must contain the JSON Schema of the IR. */
-        :>> title = "IR format"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "IR format"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-023'> core023 {
         doc /* The IR must have a semantic version in the field irVersion. A change that removes or renames a field must increase the major version. */
-        :>> title = "IR version"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "IR version"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-024'> core024 {
@@ -124,12 +124,12 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-025'> core025 {
         doc /* The IR must not contain an OpenSysML type, an OpenSysML object or an OpenSysML internal ID. */
-        :>> title = "Engine-neutral IR"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Engine-neutral IR"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-026'> core026 {
         doc /* Validators and generators must read only the IR. They get the results of formal constraints from the IR (PRD-CORE-054), not from OpenSysML. */
-        :>> title = "IR only"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "IR only"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-027'> core027 {
@@ -139,7 +139,7 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-028'> core028 {
         doc /* The same model, configuration file and toolchain version must give byte-identical generated files, IR, reports and trace manifests on each supported operating system. */
-        :>> title = "Byte-identical output"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Byte-identical output"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-029'> core029 {
@@ -154,47 +154,47 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-031'> core031 {
         doc /* Generators must write each list in an output file in a defined order: by element identity, then by name. */
-        :>> title = "Sorted lists"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Sorted lists"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-032'> core032 {
         doc /* The output must not depend on the order of the model files on disk or in the configuration file. */
-        :>> title = "File order independence"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "File order independence"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-033'> core033 {
         doc /* The output must not contain a timestamp, a random value, an absolute path, a user name or a host name. */
-        :>> title = "No variable values"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "No variable values"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-034'> core034 {
         doc /* Each output file must use UTF-8 with no byte order mark, LF line ends and one LF at the end of the file. */
-        :>> title = "Text encoding"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Text encoding"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-035'> core035 {
         doc /* Templates must give their output in the format of the pinned formatter for the file type: Prettier for TypeScript, ruff format for Python, tofu fmt for HCL. The generator must not run a formatter. The toolchain CI must run each formatter in check mode on the golden files and find no change. */
-        :>> title = "Formatted templates"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Formatted templates"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-036'> core036 {
         doc /* The generator must not write lockfiles (uv.lock, pnpm-lock.yaml, .terraform.lock.hcl). The generated CI makes them, and Git keeps them. */
-        :>> title = "No lockfiles"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "No lockfiles"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-037'> core037 {
         doc /* A minor or patch release of the toolchain must not change the output for an unchanged model, except to fix a defect that its release notes name. */
-        :>> title = "Stable minor releases"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Stable minor releases"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-038'> core038 {
         doc /* The header of a generated file must give the major version of the toolchain only. */
-        :>> title = "Major version in header"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Major version in header"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-039'> core039 {
         doc /* A generated file must have a name that ends with .gen.<ext> or _gen.py, or be on the fixed-name list of its target. Each generation PRD gives its fixed-name list, for example pyproject.toml, package.json, Dockerfile and the Next.js app/ folder. */
-        :>> title = "Generated file names"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Generated file names"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-040'> core040 {
@@ -209,7 +209,7 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-042'> core042 {
         doc /* The generator must not write, change or delete a file that is not a generated file of the old or new manifest, except a new create-once file. */
-        :>> title = "Hand-written files stay"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Hand-written files stay"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-043'> core043 {
@@ -224,12 +224,12 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-045'> core045 {
         doc /* Generated code must call hand-written code through a typed interface, for example a handler function with typed parameters. A difference between the two must cause a type check error. */
-        :>> title = "Typed extension points"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Typed extension points"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-046'> core046 {
         doc /* The generator must own the dependency lists of each target. A developer must add a dependency in the configuration file, not in a generated file. */
-        :>> title = "Dependency lists"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Dependency lists"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-047'> core047 {
@@ -259,7 +259,7 @@ package PrdCore {
     }
     #Requirement requirement <'PRD-CORE-052'> core052 {
         doc /* Toolchain releases must use semantic versioning. The release notes must name each change to the generated output. */
-        :>> title = "Semantic versioning"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Semantic versioning"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-053'> core053 {

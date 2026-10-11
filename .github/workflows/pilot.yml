@@ -5,25 +5,33 @@
 #
 # Decision record 05 (Q60) selects this check. The job downloads the pinned
 # release of the pilot Jupyter kernel (src/dsml/versions.toml), checks its
-# SHA-256 hash and sends the library to the kernel. The job runs only on
-# Linux x64, and only when the library or the check changes.
+# SHA-256 hash and sends the library to the kernel. Then it sends the
+# example model, the PRD model and the test models of the library, each
+# together with the library (story #27). The job runs only on Linux x64,
+# and only when the library, a model or the check changes.
 name: Pilot
 
 on:
   pull_request:
     paths:
       - ".github/workflows/pilot.yml"
+      - "docs/model/examples/**"
+      - "docs/model/prd/**"
       - "scripts/check_pilot.py"
       - "src/dsml/library/**"
       - "src/dsml/versions.toml"
+      - "tests/models/dsml/**"
       - "tests/models/pilot/**"
   push:
     branches: [main]
     paths:
       - ".github/workflows/pilot.yml"
+      - "docs/model/examples/**"
+      - "docs/model/prd/**"
       - "scripts/check_pilot.py"
       - "src/dsml/library/**"
       - "src/dsml/versions.toml"
+      - "tests/models/dsml/**"
       - "tests/models/pilot/**"
   workflow_dispatch:
 
@@ -64,6 +72,24 @@ jobs:
 
       - name: Check the DSML library with the pilot kernel
         run: uv run python scripts/check_pilot.py src/dsml/library/DSML.sysml
+
+      # Each model imports the DSML library, thus the library and the model
+      # go to the kernel as one cell (--one-model).
+      - name: Check the example model with the pilot kernel
+        run: >-
+          uv run python scripts/check_pilot.py --one-model
+          src/dsml/library/DSML.sysml docs/model/examples/order-service.sysml
+
+      - name: Check the PRD model with the pilot kernel
+        run: >-
+          uv run python scripts/check_pilot.py --one-model
+          src/dsml/library/DSML.sysml docs/model/prd/*.sysml
+
+      - name: Check the test models of the library with the pilot kernel
+        run: |
+          for model in tests/models/dsml/keywords.sysml tests/models/dsml/typed-usage.sysml; do
+            uv run python scripts/check_pilot.py --one-model src/dsml/library/DSML.sysml "$model"
+          done
 
       # This step makes sure that the check fails for a construct that the
       # pilot kernel does not accept.

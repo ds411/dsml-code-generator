@@ -9,7 +9,7 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-002'> dsml002 {
         doc /* The DSML must extend SysML v2 only with metadata definitions, attribute definitions and enumeration definitions. It must not add a concrete syntax. */
-        :>> title = "No new syntax"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "No new syntax"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-DSML-003'> dsml003 {
@@ -19,17 +19,17 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-004'> dsml004 {
         doc /* OpenSysML must parse and resolve the DSML library with no error and no warning. */
-        :>> title = "Library parses"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Library parses"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-DSML-005'> dsml005 {
         doc /* The DSML library must use only SysML v2 constructs that the OMG pilot implementation also accepts. */
-        :>> title = "Pilot compatible"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Pilot compatible"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-DSML-006'> dsml006 {
         doc /* The toolchain package must include the DSML library, so a model needs no download. */
-        :>> title = "Library in package"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Library in package"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-DSML-007'> dsml007 {
@@ -39,7 +39,7 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-008'> dsml008 {
         doc /* A model must import the DSML library with private import DSML::*; or refer to its elements with qualified names. */
-        :>> title = "Library import"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Library import"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-DSML-009'> dsml009 {
@@ -144,12 +144,12 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-029'> dsml029 {
         doc /* Each operation must have an HTTP method and a path. The DSML must give defaults for CRUD operations. A custom operation must state its method and path. */
-        :>> title = "HTTP method and path"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "HTTP method and path"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-DSML-030'> dsml030 {
         doc /* A react application must refer to the application whose API it calls, with a dependency that has the #Calls metadata. The two applications then use one API model. */
-        :>> title = "Calls dependency"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Calls dependency"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-DSML-031'> dsml031 {
@@ -179,7 +179,7 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-036'> dsml036 {
         doc /* A logical element must not contain an AWS term, an AWS attribute or an AWS service name. */
-        :>> title = "No AWS terms in logical layer"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "No AWS terms in logical layer"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame cloudIndependence;
     }
     #Requirement requirement <'PRD-DSML-037'> dsml037 {
@@ -209,7 +209,7 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-042'> dsml042 {
         doc /* An environment can change only these attributes of an AWS realization: cpu, memory, instanceClass, desiredCount, minCount, maxCount, multiAz and natGatewayCount. */
-        :>> title = "Environment attributes"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Environment attributes"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-DSML-043'> dsml043 {
@@ -219,7 +219,7 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-044'> dsml044 {
         doc /* A project must not add a logical kind or an AWS kind. A new kind must come in a new version of the DSML library. */
-        :>> title = "Closed kind list"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Closed kind list"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame cloudIndependence;
     }
     #Requirement requirement <'PRD-DSML-045'> dsml045 {
@@ -259,7 +259,7 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-052'> dsml052 {
         doc /* Each short name must be unique in the model. A deleted ID must not be used again. */
-        :>> title = "Unique IDs"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Unique IDs"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }
     #Requirement requirement <'PRD-DSML-053'> dsml053 {
@@ -284,7 +284,7 @@ package PrdDsml {
     }
     #Requirement requirement <'PRD-DSML-057'> dsml057 {
         doc /* A minor version of the DSML library must not make a valid model invalid. A major version must come with migration notes. */
-        :>> title = "Compatible minor versions"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Compatible minor versions"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
 }

@@ -9,6 +9,12 @@ Run it from the root of the repository. Java 17 or later must be installed:
 
     uv run python scripts/check_pilot.py src/dsml/library/DSML.sysml
 
+With `--one-model`, the script joins the files into one cell. Use it for a
+model that imports the DSML library or that has more than one file:
+
+    uv run python scripts/check_pilot.py --one-model \
+        src/dsml/library/DSML.sysml docs/model/examples/order-service.sysml
+
 Exit codes:
 
 - 0: the result agrees with the expectation. Without `--expect-rejection`,
@@ -28,6 +34,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import tempfile
 import urllib.request
@@ -54,6 +61,8 @@ CELL_TIMEOUT_S = 600
 EXIT_EXPECTED = 0
 EXIT_UNEXPECTED = 1
 EXIT_SETUP = 2
+# The pilot kernel gives the location of a diagnostic in this form.
+LOCATION = re.compile(r"\(\d+\.sysml line : (\d+)")
 
 
 class SetupError(Exception):
@@ -154,6 +163,49 @@ def find_kernel(root: Path) -> tuple[Path, Path]:
     return jars[0], libraries[0]
 
 
+@dataclass(frozen=True, slots=True)
+class Cell:
+    """The text of one cell, and the first line of each file in the cell."""
+
+    label: str
+    code: str
+    starts: tuple[tuple[int, str], ...]
+
+    def locate(self, line: str) -> str:
+        """Change the cell line number in a diagnostic to a file and a line."""
+        match = LOCATION.search(line)
+        if match is None or len(self.starts) < 2:
+            return line
+        number = int(match.group(1))
+        first, name = max(
+            (start for start in self.starts if start[0] <= number), default=self.starts[0]
+        )
+        return f"{name}:{number - first + 1}: {line}"
+
+
+# trace: PRD-DSML-005
+def make_cells(files: Sequence[tuple[str, str]], one_model: bool) -> list[Cell]:
+    """Make one cell for each file, or one cell for all files.
+
+    `files` holds the name and the text of each file. In one cell, each file
+    starts on a new line, so the script can find the file of a diagnostic.
+    """
+    if not one_model:
+        return [Cell(label=name, code=text, starts=((1, name),)) for name, text in files]
+    parts: list[str] = []
+    starts: list[tuple[int, str]] = []
+    line = 1
+    for name, text in files:
+        if not text.endswith("\n"):
+            text += "\n"
+        starts.append((line, name))
+        parts.append(text)
+        line += text.count("\n")
+    names = [name for name, _ in files]
+    label = names[0] if len(names) == 1 else f"{names[0]} and {len(names) - 1} more files"
+    return [Cell(label=label, code="".join(parts), starts=tuple(starts))]
+
+
 def write_kernel_spec(kernels: Path, java: str, jar: Path, library: Path) -> None:
     """Write a kernel spec that starts the pilot kernel with no API base path."""
     spec = {
@@ -229,6 +281,11 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
         help="expect that the kernel rejects each file",
     )
     parser.add_argument(
+        "--one-model",
+        action="store_true",
+        help="send all files to one kernel as one cell, for example a model with its library",
+    )
+    parser.add_argument(
         "--java",
         default=os.environ.get("PILOT_JAVA", "java"),
         help="the Java command (default: $PILOT_JAVA or java)",
@@ -250,18 +307,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         jar, library = unpack(archive, arguments.cache / f"kernel-{release.version}")
         kernels = arguments.cache / "kernels"
         write_kernel_spec(kernels, arguments.java, jar, library)
-        cells = [path.read_text(encoding="utf-8") for path in arguments.files]
-        print(f"Pilot kernel: jupyter-sysml-kernel {release.version}. Files: {len(cells)}.")
-        results = run_cells(kernels, cells)
+        cells = make_cells(
+            [(str(path), path.read_text(encoding="utf-8")) for path in arguments.files],
+            arguments.one_model,
+        )
+        print(
+            f"Pilot kernel: jupyter-sysml-kernel {release.version}. "
+            f"Files: {len(arguments.files)}. Cells: {len(cells)}."
+        )
+        results = run_cells(kernels, [cell.code for cell in cells])
     except (SetupError, OSError, RuntimeError) as error:
         print(f"The check cannot run: {error}", file=sys.stderr)
         return EXIT_SETUP
     unexpected = 0
-    for path, result in zip(arguments.files, results, strict=True):
+    for cell, result in zip(cells, results, strict=True):
+        path = cell.label
         for line in result.warnings:
-            print(f"{path}: {line}")
+            print(f"{path}: {cell.locate(line)}")
         for line in result.errors:
-            print(f"{path}: {line}")
+            print(f"{path}: {cell.locate(line)}")
         if result.accepted == arguments.expect_rejection:
             unexpected += 1
             state = "accepts" if result.accepted else "does not accept"

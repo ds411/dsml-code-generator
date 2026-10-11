@@ -58,8 +58,8 @@ library package DSML {
 
     // trace: PRD-DSML-016
     // "interface" and "constraint" are SysML keywords, so the definition
-    // writes them as unrestricted names. A model can write
-    // RequirementKind::constraint.
+    // writes them as unrestricted names. A model must also write them with
+    // quotes, for example RequirementKind::'constraint' (story #27).
     enum def RequirementKind { functional; performance; security; 'interface'; 'constraint'; }
 
     // trace: PRD-DSML-020
@@ -73,7 +73,7 @@ library package DSML {
 
     // trace: PRD-DSML-046
     // "analysis" is a SysML keyword, so the definition writes it as an
-    // unrestricted name.
+    // unrestricted name. A model must write VerificationMethod::'analysis'.
     enum def VerificationMethod { test; 'analysis'; inspection; demonstration; }
 
     // ------------------------------------------------------------------
@@ -152,15 +152,16 @@ library package DSML {
         // trace: PRD-DSML-024
         abstract attribute keys [*];
 
-        // trace: PRD-DSML-027, PRD-DSML-033
+        // trace: PRD-DSML-005, PRD-DSML-027, PRD-DSML-033
         // An exposed element is an entity usage (a part) or an operation
-        // usage (an action). Thus the base type is an occurrence.
-        occurrence def Exposed {
+        // usage (an action). Thus the base type is an occurrence usage with
+        // no definition. The pilot implementation does not accept an action
+        // usage with a type that is not an action definition.
+        abstract occurrence exposures [*] {
             attribute crud : CrudKind [0..*];
             attribute allowedRoles : Roles [0..*];
             attribute 'public' : Boolean default = false;
         }
-        abstract occurrence exposures : Exposed [*];
 
         // trace: PRD-DSML-028, PRD-DSML-029
         action def Operation {

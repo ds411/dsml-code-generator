@@ -5,7 +5,7 @@ package PrdAppWeb {
     // React target (phase 2)
     #Requirement requirement <'PRD-APP-201'> app201 {
         doc /* The React target must use strict TypeScript, pnpm, Vite, React, TanStack Router, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui and Amplify Auth. The versions must come from the version baseline. */
-        :>> title = "React stack"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "React stack"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-202'> app202 {
@@ -15,7 +15,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-203'> app203 {
         doc /* Generated code must obey the FSD import rules: a module imports only from lower layers, and only through the public API of a slice. */
-        :>> title = "FSD import rules"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "FSD import rules"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-204'> app204 {
@@ -40,7 +40,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-211'> app211 {
         doc /* The Zod schemas of an entity must apply the same field rules as the Pydantic models of PRD-APP-112. */
-        :>> title = "Zod field rules"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Zod field rules"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-APP-212'> app212 {
@@ -55,7 +55,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-221'> app221 {
         doc /* Each view must have one route. A list view must use the path /<entities>, a detail view /<entities>/$id, and a form view /<operation>. */
-        :>> title = "Route paths"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Route paths"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-222'> app222 {
@@ -70,7 +70,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-224'> app224 {
         doc /* Each query key must be an array in the form [<entity>, <operation>, <parameters>]. */
-        :>> title = "Query keys"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Query keys"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-225'> app225 {
@@ -90,12 +90,12 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-228'> app228 {
         doc /* Each table must have column headers, and the user must be able to reach each control with the keyboard. */
-        :>> title = "Accessibility"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Accessibility"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-230'> app230 {
         doc /* Before the first render, the application must read /config.json. The file must give the API base URL, the AWS Region, the user pool ID, the app client ID and the managed login domain. */
-        :>> title = "Runtime config file"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Runtime config file"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-231'> app231 {
@@ -110,24 +110,24 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-233'> app233 {
         doc /* pnpm build must write the static files to dist/. The build must not contain environment values. */
-        :>> title = "Static build"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Static build"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-234'> app234 {
         doc /* The generator must write a Steiger configuration, and dsml check-output must run Steiger with no error. */
-        :>> title = "Steiger check"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Steiger check"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-APP-235'> app235 {
         doc /* The fixed-name generated files of the React target must be: package.json, tsconfig.json, vite.config.ts, index.html, components.json and steiger.config.ts. */
-        :>> title = "React fixed names"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "React fixed names"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
 
     // Next.js target (phase 3)
     #Requirement requirement <'PRD-APP-301'> app301 {
         doc /* The Next.js target must use strict TypeScript, pnpm, Next.js with the App Router, React, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Drizzle ORM and Amplify Auth with its Next.js adapter. The versions must come from the version baseline. */
-        :>> title = "Next.js stack"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Next.js stack"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-302'> app302 {
@@ -147,12 +147,12 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-305'> app305 {
         doc /* A slice must export server-only modules through index.server.ts and other modules through index.ts. Each server-only module must import server-only. */
-        :>> title = "Server public API"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Server public API"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-306'> app306 {
         doc /* The generated code must obey the FSD import rules of PRD-APP-203, and dsml check-output must run Steiger with no error. */
-        :>> title = "Next.js FSD rules"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Next.js FSD rules"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-APP-310'> app310 {
@@ -162,7 +162,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-311'> app311 {
         doc /* The REST contract must be the contract of the FastAPI target (PRD-APP-110 to PRD-APP-115), with the path prefix /api. */
-        :>> title = "Same REST contract"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Same REST contract"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-APP-312'> app312 {
@@ -207,7 +207,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-325'> app325 {
         doc /* The root layout must give the public runtime values (Region, user pool ID, app client ID, login domain) to client components from server-side environment variables. The build must not use NEXT_PUBLIC_ variables. */
-        :>> title = "Public runtime values"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Public runtime values"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-330'> app330 {
@@ -217,7 +217,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-331'> app331 {
         doc /* The generator must write each migration from the difference between .dsml/schema-snapshot.json and the IR, in the file format that the Drizzle migrator reads. The project must not use drizzle-kit generate. */
-        :>> title = "Drizzle migrations"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Drizzle migrations"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-332'> app332 {
@@ -232,7 +232,7 @@ package PrdAppWeb {
     }
     #Requirement requirement <'PRD-APP-334'> app334 {
         doc /* The fixed-name generated files of the Next.js target must be: package.json, tsconfig.json, next.config.ts, the full app/ folder, middleware.ts or proxy.ts, drizzle.config.ts, components.json, steiger.config.ts, Dockerfile and .dockerignore. */
-        :>> title = "Next.js fixed names"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Next.js fixed names"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
 }

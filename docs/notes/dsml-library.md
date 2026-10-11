@@ -45,7 +45,7 @@ The issue of story #13 tells the story to select the form of `#Override` and `@F
 | --- | --- | --- |
 | `#Override` | Semantic metadata. The base type is `BaseTypes::overrides : AwsRealization [*]`. Use it on a part usage in an environment that subsets an AWS realization, for example `#Override part orderDbProd :> orderDbAws { :>> multiAz = true; }`. | This is the form of the example model. All AWS kinds specialize `AwsRealization`, so the base type agrees with each realization. |
 | `@FieldRules` | Plain metadata with the optional attributes `minLength`, `maxLength`, `minValue`, `maxValue`, `pattern`, `unique`, `precision` and `scale` (PRD-DSML-025). Use it as a metadata usage in the body of the field, for example `attribute total : Decimal [1] { @FieldRules { minValue = 0; } }`. | This is the form of the example model. The rules belong to the metadata usage, not to the field value. |
-| `#Exposed` | The base type is an occurrence (`BaseTypes::Exposed`), because an exposed element is a part (an entity) or an action (an operation). It has `crud`, `allowedRoles` and `'public'` (default `false`). | One keyword for both element kinds, as in the example model. |
+| `#Exposed` | The base type is the occurrence usage `BaseTypes::exposures`, with no definition, because an exposed element is a part (an entity) or an action (an operation). It has `crud`, `allowedRoles` and `'public'` (default `false`). Story #27 removed the occurrence definition `BaseTypes::Exposed`: the pilot implementation does not accept an action usage with a type that is not an action definition. | One keyword for both element kinds, as in the example model. |
 | `#Roles` | The base type is the attribute definition `BaseTypes::Roles`. The roles enumeration of the model specializes it. `allowedRoles` has the type `Roles`. | `allowedRoles` gets a type, although the roles enumeration is in the model. |
 | `#Destructive` | Plain metadata with the optional attribute `renamedFrom`. Use `#Destructive` on the entity or field, or `@Destructive { renamedFrom = "old"; }` in its body. | PRD-DSML-034. |
 | `#Waiver` | Plain metadata with `rule`, `reason`, `owner` and the optional `expires` (a `Date`). Use `@Waiver { ... }` in the body of the element. | PRD-DSML-055. |
@@ -58,8 +58,8 @@ Some names of the PRD are SysML keywords. The library writes them as unrestricte
 
 | Name | Where | Form in a model |
 | --- | --- | --- |
-| `interface`, `constraint` | Literals of `RequirementKind` | `RequirementKind::constraint` resolves with no quotes after `::`. |
-| `analysis` | Literal of `VerificationMethod` | `VerificationMethod::analysis` resolves with no quotes after `::`. |
+| `interface`, `constraint` | Literals of `RequirementKind` | `RequirementKind::'constraint'` and `RequirementKind::'interface'`. The quotes are necessary after `::` (story #27). |
+| `analysis` | Literal of `VerificationMethod` | `VerificationMethod::'analysis'`. The quotes are necessary after `::` (story #27). |
 | `public` | Attribute of `#Exposed` (PRD-DSML-033) | `:>> 'public' = true;` needs the quotes. |
 
 ## Results with the example model and the PRD model
@@ -85,12 +85,19 @@ Results:
 1. The kernel accepts `src/dsml/library/DSML.sysml` with no diagnostic. The library did not change.
 2. The kernel rejects the test model `tests/models/pilot/rejected.sysml` (an unresolved type). The CI job makes sure that the check fails for this file.
 
-A result for the stories #14 and #15: the pilot kernel does not accept a SysML keyword after `::`, for example `RequirementKind::constraint`. OpenSysML 0.9.2 accepts it. The pilot kernel accepts the form with quotes, `RequirementKind::'constraint'`. The example model, the PRD model and `tests/models/dsml/keywords.sysml` use the form with no quotes. The library itself declares the literals with quotes, thus it is correct. The pilot check of the models is not in the scope of story #23.
+A result for the stories #14 and #15: the pilot kernel does not accept a SysML keyword after `::`, for example `RequirementKind::constraint`. OpenSysML 0.9.2 accepts it. Both tools accept the form with quotes, `RequirementKind::'constraint'`.
+
+Story #27 changed the models to the form with quotes and added a pilot check of the models to the CI job. The script option `--one-model` sends the library and the model files to the kernel as one cell. The pilot kernel found two more items:
+
+1. **A concern with a stakeholder must declare its subject first.** The pilot kernel gives "Subject must be first parameter" for a concern with a `stakeholder` and no `subject`. A stakeholder is a parameter, thus the subject must come before it. The kernel also gives the error on each requirement that frames the concern. A `subject` in the library definition `Need` does not remove the error. Thus each need with a stakeholder declares `subject;` before its first stakeholder.
+2. **An action usage must be typed only by action definitions.** The base type of `#Exposed` was typed by the occurrence definition `BaseTypes::Exposed`. Thus `#Exposed action cancelOrder : CancelOrder` had a type that is not an action definition. Story #27 removed the definition. Now the base type `exposures` is an occurrence usage that holds the attributes itself.
+
+Now the pilot kernel accepts the example model, the PRD model, `tests/models/dsml/keywords.sysml` and `tests/models/dsml/typed-usage.sysml`, each with the library.
 
 ## Limits of OpenSysML 0.9.2
 
 1. **No semantic metadata on a dependency.** See "Two forms of keyword".
-2. **`istype` does not see the base type of a typed usage.** A usage with a declared type and a keyword, for example `#Exposed action cancelOrder : CancelOrder`, gets the features of the base type: `cancelOrder.'public'` evaluates to `false`. But `cancelOrder istype DSML::BaseTypes::Exposed` gives `false`. A usage with only a keyword, for example `#RelationalDatabase part orderDb`, gives `true`. Thus the IR adapter must find the kind of an element with `@` (the metadata), not with `istype`. A test examines this limit. If a new OpenSysML version removes the limit, the test fails.
+2. **`istype` does not see the base type of a typed usage.** A usage with a declared type and a keyword, for example `#Application part shop : Store`, gets the features of the base type: `shop.target` resolves. But `shop istype DSML::BaseTypes::Application` gives `false` (test model `typed-usage.sysml`). A usage with only a keyword, for example `#RelationalDatabase part orderDb`, gives `true`. Thus the IR adapter must find the kind of an element with `@` (the metadata), not with `istype`. A test examines this limit. If a new OpenSysML version removes the limit, the test fails.
 3. **No type check of attribute values.** OpenSysML accepts `:>> priority = Status::draft;` and `:>> target = "fastapi";` with no diagnostic. The validator must check the types of the attribute values from the IR. An attribute name that the base type does not have gives the error `unresolved reference` (test model `unknown-attribute.sysml`).
 4. **No check of the element kind.** OpenSysML accepts a keyword on the wrong kind of element, for example `#Entity attribute x;`. The validator must check the element kind of each keyword.
 5. **No check of the metadata attributes.** OpenSysML accepts `@Waiver { rule = "COV-003"; }` with no `reason` and no `owner`. The validator must check them.

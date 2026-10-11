@@ -5,7 +5,7 @@ package PrdAppCommonFastApi {
     // Rules for all targets
     #Requirement requirement <'PRD-APP-001'> app001 {
         doc /* Each application generator must read only the IR. */
-        :>> title = "IR only"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "IR only"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-002'> app002 {
@@ -15,22 +15,22 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-003'> app003 {
         doc /* A generator must write code only for the entities, operations, views and roles in the IR, and for the health endpoint of PRD-APP-012. */
-        :>> title = "Only modeled code"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Only modeled code"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }
     #Requirement requirement <'PRD-APP-004'> app004 {
         doc /* A FastAPI or Next.js application must also write an OpenAPI 3.1 document, openapi.gen.json, from the IR. The OpenAPI document that the running service supplies must agree with it. */
-        :>> title = "OpenAPI document"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "OpenAPI document"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-005'> app005 {
         doc /* The client types of a React application and the schemas of the API that it calls must come from the same IR entities and operations. A contract test in the toolchain CI must compare the generated client with the openapi.gen.json of the called application. */
-        :>> title = "One API model"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "One API model"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-APP-006'> app006 {
         doc /* Phase 2: a React application can call an external API that an imported OpenAPI file gives, in place of an application in the model. */
-        :>> title = "External API import"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "External API import"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
     #Requirement requirement <'PRD-APP-007'> app007 {
@@ -50,7 +50,7 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-010'> app010 {
         doc /* Each application must read its environment values at run time, not at build time. One build or one container image must operate in all environments. */
-        :>> title = "Run-time configuration"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Run-time configuration"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-011'> app011 {
@@ -60,7 +60,7 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-012'> app012 {
         doc /* A FastAPI or Next.js application must supply GET /healthz with no authentication. It must return HTTP 200 while the process operates. */
-        :>> title = "Health endpoint"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Health endpoint"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-013'> app013 {
@@ -70,7 +70,7 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-014'> app014 {
         doc /* API errors must use problem details (RFC 9457) with the media type application/problem+json. */
-        :>> title = "Problem details"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Problem details"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-015'> app015 {
@@ -80,7 +80,7 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-016'> app016 {
         doc /* The generated code of each target must pass dsml check-output with no error. */
-        :>> title = "Output checks pass"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Output checks pass"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-APP-017'> app017 {
@@ -92,7 +92,7 @@ package PrdAppCommonFastApi {
     // FastAPI target (phase 1)
     #Requirement requirement <'PRD-APP-101'> app101 {
         doc /* The FastAPI target must use Python, FastAPI, Pydantic v2, SQLAlchemy 2, Alembic and pytest, and uv must manage the project. The versions must come from the version baseline. */
-        :>> title = "FastAPI stack"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "FastAPI stack"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-102'> app102 {
@@ -117,12 +117,12 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-106'> app106 {
         doc /* A generated file in a slice must import only from its own slice and from app/shared/. */
-        :>> title = "Slice imports"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Slice imports"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-110'> app110 {
         doc /* Each operation in the IR must have one endpoint with the HTTP method and the path of the operation. CRUD operations must use the default methods and paths in the table of the section "API operations and schemas" unless the model gives a different method or path. */
-        :>> title = "Endpoints"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Endpoints"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-111'> app111 {
@@ -137,17 +137,17 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-113'> app113 {
         doc /* A request that breaks a field rule must get HTTP 422. A request that breaks a unique rule must get HTTP 409. A request for an entity that does not exist must get HTTP 404. */
-        :>> title = "Error status codes"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Error status codes"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-114'> app114 {
         doc /* A list operation must accept limit (default 50, maximum 200) and offset (default 0). It must return the found entities in items, sorted by key, and their count in total. */
-        :>> title = "List paging"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "List paging"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-115'> app115 {
         doc /* An output schema must give a related entity as its key, not as a nested object. */
-        :>> title = "Related entity keys"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Related entity keys"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-116'> app116 {
@@ -177,7 +177,7 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-123'> app123 {
         doc /* Database access must use the SQLAlchemy mode and the database driver that decision record 03 gives. */
-        :>> title = "Database access mode"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Database access mode"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-124'> app124 {
@@ -187,17 +187,17 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-125'> app125 {
         doc /* A migration file must have the name migrations/versions/<NNNN>_<slug>_gen.py. Its revision ID must come from its content and its number, not from a random value or the clock. */
-        :>> title = "Deterministic migrations"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Deterministic migrations"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-126'> app126 {
         doc /* The generator must keep each migration file that it wrote before, byte for byte. */
-        :>> title = "Migration history"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Migration history"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-127'> app127 {
         doc /* The generator must not write a migration that drops or renames a table or a column, unless the IR has the #Destructive metadata for that change. */
-        :>> title = "Destructive migrations"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Destructive migrations"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-APP-128'> app128 {
@@ -227,7 +227,7 @@ package PrdAppCommonFastApi {
     }
     #Requirement requirement <'PRD-APP-134'> app134 {
         doc /* The fixed-name generated files of the FastAPI target must be: pyproject.toml, Dockerfile, .dockerignore, alembic.ini, migrations/env.py and each __init__.py in a generated folder. */
-        :>> title = "FastAPI fixed names"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "FastAPI fixed names"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-135'> app135 {

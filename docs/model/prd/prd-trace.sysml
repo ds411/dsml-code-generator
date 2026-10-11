@@ -39,12 +39,12 @@ package PrdTrace {
     }
     #Requirement requirement <'PRD-TRACE-008'> trace008 {
         doc /* The trace manifest must be sorted by element identity, then by file path, then by line. */
-        :>> title = "Sorted manifest"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Sorted manifest"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-TRACE-009'> trace009 {
         doc /* A trace comment must be a line comment with the form trace: <ID>[, <ID>]: # trace: R-001 in Python, HCL and YAML, and // trace: R-001 in TypeScript. An ID can be a short name or a qualified name. */
-        :>> title = "Trace comment form"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Trace comment form"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }
     #Requirement requirement <'PRD-TRACE-010'> trace010 {
@@ -84,12 +84,12 @@ package PrdTrace {
     }
     #Requirement requirement <'PRD-TRACE-017'> trace017 {
         doc /* Each report must be available as HTML, CSV and JSON. The HTML report must be one file with no external resources. */
-        :>> title = "Report formats"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Report formats"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }
     #Requirement requirement <'PRD-TRACE-018'> trace018 {
         doc /* Each report must give the model commit and the baseline commit, and no date or time. */
-        :>> title = "Report commits"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Report commits"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
 }
