@@ -90,7 +90,7 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | Subcommand | Status |
 | --- | --- |
 | `init` | Writes a starter configuration file and a starter model as create-once files. See "Command `dsml init`". |
-| `validate` | Runs the validation rules on the model and writes the findings as text or as JSON. See "Command `dsml validate`". |
+| `validate` | Runs the validation rules on the model and writes the findings as text, JSON or SARIF. See "Command `dsml validate`". |
 | `trace` | Writes the coverage report or the orphans report as JSON or as CSV. See "Command `dsml trace`". |
 | `check-output` | Not available yet. The subcommand stops with exit code 2. |
 | `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. The infrastructure generator writes the root modules of the environments and the local modules of the databases and the user directories. The other generators come in M6. `docs/notes/file-writer.md` gives the rules. |
@@ -155,6 +155,16 @@ uv run dsml validate --format json --output findings.json
 - The identity rules (IDN) run only with a baseline: `--baseline <git-ref>`, or the key `trace.baseline` of the configuration file (PRD-VAL-011). The toolchain reads the baseline model from the local Git repository. A Git reference that does not exist stops the command with exit code 2.
 
 The rules are in `src/dsml/validate/rules/`. `docs/notes/validator.md` tells how to add a rule.
+
+Each reference model has a configuration file in its folder: `docs/model/examples/dsml.toml` for the example model and `docs/model/prd/dsml.toml` for the PRD model. To validate the example model, run this command from the root of the repository:
+
+```sh
+uv run dsml validate --config docs/model/examples/dsml.toml
+```
+
+- The example model has no error finding. CI runs this command in the step "Validate the example model".
+- The golden findings of the two reference models are in `tests/golden/validate/`, as text, JSON and SARIF. CI compares the findings with these files. After a change of the findings, run `uv run python scripts/write_golden_findings.py` and examine the differences before you commit them.
+- `tests/test_rule_catalog.py` makes sure that the validator contains each rule of the catalog in `docs/prd/06-validation-prd.md` with its default severity (PRD-VAL-015). It also makes sure that each rule has one model that it accepts and one model that it rejects (PRD-VAL-008).
 
 The golden IR files of the two reference models are in `tests/golden/ir/`. CI compares the IR with these files on Linux x64 (PRD-CORE-027, PRD-CORE-029). After a change of the IR, run `uv run python scripts/write_golden_ir.py` and examine the differences before you commit them.
 

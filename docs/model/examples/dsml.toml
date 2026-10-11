@@ -1,0 +1,9 @@
+# The configuration of the example model. Story #68 uses it for the golden
+# findings in tests/golden/validate/ and for the CI step that validates the
+# example model:
+#
+#     uv run dsml validate --config docs/model/examples/dsml.toml
+schema = 1
+
+[model]
+paths = ["order-service.sysml"]
