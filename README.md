@@ -83,6 +83,29 @@ Only the IR adapter module `src/dsml/adapter/` can import `opensysml` (PRD-CORE-
 
 The file `src/dsml/versions.toml` holds the version baseline of decision record 03 (Q49). To change a pinned version, change this file.
 
+## Command `dsml`
+
+The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists them, and `dsml <subcommand> --help` gives the options of one subcommand.
+
+| Subcommand | Status |
+| --- | --- |
+| `init`, `validate`, `generate`, `trace`, `ir`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
+| `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
+
+Each subcommand has these common options:
+
+- `--config <file>`: read the configuration from this file. The default is `dsml.toml`.
+- `--output <file>`: write the report to this file, not to standard output.
+- `--verbose`: write debug messages to standard error.
+
+The exit codes are (PRD-CORE-002):
+
+- 0: the subcommand found no error.
+- 1: the subcommand found an error finding or a `--check` difference.
+- 2: a usage error or an internal error occurred. The command writes a short message, not a traceback. With `--verbose`, the traceback is a debug message.
+
+No subcommand reads from a terminal (PRD-CORE-009).
+
 ## Use with Claude Code
 
 1. Unzip the bundle into the root of the toolchain repository. `CLAUDE.md` goes to the root, and the documents go to `docs/`.
