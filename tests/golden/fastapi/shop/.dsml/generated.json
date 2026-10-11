@@ -1,0 +1,416 @@
+{
+  "createOnce": [],
+  "generated": [
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/.dockerignore",
+      "sha256": "17d14128df073ecd9899abe1746131a9994aa11a28358bf2ac3a396af3c7f269"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/Dockerfile",
+      "sha256": "041de8adbe9209f3783d03f1fe37e816eb8f571745f7a5805168585eb326724e"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/__init__.py",
+      "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/__init__.py",
+      "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/__init__.py",
+      "sha256": "348e4a8cc63f47062619d882ca53e8e86e2a4dc86a781e4acf9abd5f40a3b436"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/create_customer/__init__.py",
+      "sha256": "348e4a8cc63f47062619d882ca53e8e86e2a4dc86a781e4acf9abd5f40a3b436"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/create_customer/endpoint_gen.py",
+      "sha256": "7b8953362260997130d74717f0660ec0d6e0db89dd80fbfb3738f4cf55a8de52"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/create_customer/handler_gen.py",
+      "sha256": "cf3cc92f0e2aad633ae1aa8d0684590fb90777453ebbf96f2461b795b125e957"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/create_customer/schemas_gen.py",
+      "sha256": "541e37dd40f1ae9d12710c0fe7e371a4ea99649d42de5052751c87ade0580272"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/delete_customer/__init__.py",
+      "sha256": "348e4a8cc63f47062619d882ca53e8e86e2a4dc86a781e4acf9abd5f40a3b436"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/delete_customer/endpoint_gen.py",
+      "sha256": "777797a55af0593ab39400cc4313047e809691808f400320d1c7fd49ea020c5b"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/delete_customer/handler_gen.py",
+      "sha256": "12065dcfeacdd9681cff9d4d68c70b94b39534b02afe8f6be37e9fad4c18d90b"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/delete_customer/schemas_gen.py",
+      "sha256": "0ea8e6f753987b98abfe6c4cbd54512a0bff904639caa3c53dc7589cb798ef32"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/list_customer/__init__.py",
+      "sha256": "348e4a8cc63f47062619d882ca53e8e86e2a4dc86a781e4acf9abd5f40a3b436"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/list_customer/endpoint_gen.py",
+      "sha256": "71b2fae849ed230413b20e8e0d71d6b83135e3392259ca64d02c2c9744e15bbb"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/list_customer/handler_gen.py",
+      "sha256": "979ffd09b212f0769940448360a6a9a9cad3b037cb3afe4799499ae23c762a73"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/list_customer/schemas_gen.py",
+      "sha256": "3674b7b070990a5155d0d200d957e0fbc43a9cd513f689fd40babb3b940337e4"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/read_customer/__init__.py",
+      "sha256": "348e4a8cc63f47062619d882ca53e8e86e2a4dc86a781e4acf9abd5f40a3b436"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/read_customer/endpoint_gen.py",
+      "sha256": "da8608d345b1d7d9aaf4338931086cdd1b26c1385e33aa1bd5fabaed5018c4e6"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/read_customer/handler_gen.py",
+      "sha256": "2642d229d80f783dd94887f994139c1db19eb0fe955cf30ed0b149e70047874d"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/read_customer/schemas_gen.py",
+      "sha256": "09d353a39a40b3483a752ba61e676f4f7dd91a7e5e35f5e37ffc198d7ea33081"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/update_customer/__init__.py",
+      "sha256": "348e4a8cc63f47062619d882ca53e8e86e2a4dc86a781e4acf9abd5f40a3b436"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/update_customer/endpoint_gen.py",
+      "sha256": "a281ca9dcce4c896b9e96bc4c1653a797b5728f42ba99d8fc095d717de1ace1b"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/update_customer/handler_gen.py",
+      "sha256": "4c1544b522e9e7fab6405cb7d3f5c32fcc8dd912a1909d83d6a3b2806ea7467d"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/customer/update_customer/schemas_gen.py",
+      "sha256": "7c441d2a11128681452f9044cb2fabcf49f0d57d9b001b4f24232c179d82c1a3"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/__init__.py",
+      "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/create_product/__init__.py",
+      "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/create_product/endpoint_gen.py",
+      "sha256": "a789e2979358e811e47171ddc3ec087bc4579f453a6649f8638c256344ca95d8"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/create_product/handler_gen.py",
+      "sha256": "db9aee02b508e433be3e0ed32eb659d1d2c2bad5e37460f6396c3107c4ff26f5"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/create_product/schemas_gen.py",
+      "sha256": "25739e6131cf84cd6476e672b56c4efca81246ae014135ae14c3e5a3904a51b6"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/delete_product/__init__.py",
+      "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/delete_product/endpoint_gen.py",
+      "sha256": "733383cf9a7cea633c9da08c49cbe024a4edc2c213a51eb15348152e0fe21ec9"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/delete_product/handler_gen.py",
+      "sha256": "57ca81515de446d93dce512f0e9db19dc7ca7b2434088045e70fb30f5e122dd6"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/delete_product/schemas_gen.py",
+      "sha256": "3addad21a7caa265f7150e06bad53dbabd70d9a79ef06d39ae4a1c1f0e670cda"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/list_product/__init__.py",
+      "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/list_product/endpoint_gen.py",
+      "sha256": "236364a4e3512943ee39ceecc888c6cb02a94d55bd7a42eb04291ca5a732423a"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/list_product/handler_gen.py",
+      "sha256": "f3ee98ab2f36c7481c0a22e181bcd60efe50961c472cb6311621dac37fbe5746"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/list_product/schemas_gen.py",
+      "sha256": "bc7233d0c04de460a06d42d8bc8d18302b9c3ee70638da1a23b6c7deb537ad18"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/read_product/__init__.py",
+      "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/read_product/endpoint_gen.py",
+      "sha256": "abd0a9772507efc5a80bbe02511e695e36c03b786fb6cd161931cf1b5d4067ad"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/read_product/handler_gen.py",
+      "sha256": "f382d5c6a59f02bbf7a532d2d8031c8fe41841e896f421fbe346a5ef9943da79"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/read_product/schemas_gen.py",
+      "sha256": "2f932fd5d0003fc1c6722ffcfac75bab43f1a0d196e3d6f7b9b35b0920b3f930"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/update_product/__init__.py",
+      "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/update_product/endpoint_gen.py",
+      "sha256": "5e7c318716043f4d04caee66d661ad4f03eba4bc6fa9a03a971cd54790723984"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/update_product/handler_gen.py",
+      "sha256": "93a3ccc84024734744af1350154e708bf042d9de4c1cd8bb2f8bc39563f25af3"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/update_product/schemas_gen.py",
+      "sha256": "90ac071b5f31f28975b2dd70e34e3844ffbf1461c618955c424caf06e65a5150"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/__init__.py",
+      "sha256": "2f261514b4c1b555631c6107a10746d488507e14e9af1a394455d5e434b4d871"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/create_supplier/__init__.py",
+      "sha256": "2f261514b4c1b555631c6107a10746d488507e14e9af1a394455d5e434b4d871"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/create_supplier/endpoint_gen.py",
+      "sha256": "8a897a48c5685e2d0d883c8e8b0c643b01f80acdf6b41bb85fe5a13c1c7312dc"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/create_supplier/handler_gen.py",
+      "sha256": "04c74d493a060c0f3ffd616e5ab08704abf81b61f60a8d35a9a61552a634ba15"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/create_supplier/schemas_gen.py",
+      "sha256": "34c4139f8a0a214d72c21cac69b7a3f8d43bf9ea2e01a1fc7d1f4c10194c05e9"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/list_supplier/__init__.py",
+      "sha256": "2f261514b4c1b555631c6107a10746d488507e14e9af1a394455d5e434b4d871"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/list_supplier/endpoint_gen.py",
+      "sha256": "fcaa4012af8aaa7037dec12867d6c4661f72da93ca188bacd47864358b3649d2"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/list_supplier/handler_gen.py",
+      "sha256": "7c49118eb90b99cc5ecfb525a7254aee0eb30c61a8ac1eb56efaa6b4ffb91aaa"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/list_supplier/schemas_gen.py",
+      "sha256": "e1fd8be2d332246737a15b795e2a7808e9a7c2e75863dfab74c19a3026a4f0ab"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/read_supplier/__init__.py",
+      "sha256": "2f261514b4c1b555631c6107a10746d488507e14e9af1a394455d5e434b4d871"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/read_supplier/endpoint_gen.py",
+      "sha256": "0d91e2f1b49b905cbe97c8c3c4f0999e8b2c5ddff33b553a659479fa8db9e8f3"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/read_supplier/handler_gen.py",
+      "sha256": "afa8677c2982043cf00481790a199608713ca24a3d8bbc2d39f263f9086512b5"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/read_supplier/schemas_gen.py",
+      "sha256": "338bdd0170e2d2c2006bcbf448b62687edfa954785c2aafd84cc68cdeb686494"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/main_gen.py",
+      "sha256": "78c6bfc817e82378656633625403e1c0914a32a1af6b4087404e3216283bd538"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/__init__.py",
+      "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/auth/__init__.py",
+      "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/auth/cognito_gen.py",
+      "sha256": "35bf46f55c040ed70445268786c2fd8a02097521be4947772241199ac9e4efd6"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/config_gen.py",
+      "sha256": "228bd21cfc99a4fd1424ded3ef4eae2b12abcec35235efbfbe93bfe7ade990be"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/__init__.py",
+      "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/base_gen.py",
+      "sha256": "5cd2f038573028943ea94241a3ca0c607661f3b33a75e8dc2e4790e8f6ba4b1c"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/commit_gen.py",
+      "sha256": "6cd3f17fd81e1d8da273c134d2e3bbcc9a1211f06a5cc05c977ee987acf72823"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/models/__init__.py",
+      "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/models/customer_gen.py",
+      "sha256": "f0fc67d7964fcc860d8f78a02a3f6a00820472dbeae71ee211d2f27ca92fb01c"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/models/product_gen.py",
+      "sha256": "3fdbccde8a1dd0c1349a8090676616a5f83ad18f9512bacdeb406890d1da0e26"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/models/supplier_gen.py",
+      "sha256": "15c002db259913be1576877fd23e6c1c8e1205c11a3bcb30d3ac2423b44be78d"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/db/session_gen.py",
+      "sha256": "ada91b58429da72beba2fc242ee722e0925bd6fa9e7399e57e8d11beb896a402"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/errors_gen.py",
+      "sha256": "a7c41eab4833bfab34969c8a20d672c625b5038a00f5ee9bb91de55506da56c7"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/shared/logs_gen.py",
+      "sha256": "49c2360de00736b6dd77d4f374c588d738a428669020269c9c630fd561b7e2ac"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/pyproject.toml",
+      "sha256": "95a225844751844b7adc5e81a60d70741e01ec48ee2cac61d4ed8bc6e6a09483"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/http_support_gen.py",
+      "sha256": "f75b19a0e35385983ebe6dbc9f4f024693df294a20b5f6ca1ad79ca03a32d392"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_app_gen.py",
+      "sha256": "8a62aec1decb90e4710cb7dac156ee88ffb6fbec80614a9d65d7e06ef6ab3b82"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_auth_gen.py",
+      "sha256": "d946f32a6d8c3f052cd3c2dddfb948e4079df71e06e255ad61a82e2d72b6dec9"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_customers_http_gen.py",
+      "sha256": "8c23e7df747f69e81ad4b82fc41f6d47c85d8bcd01401b63a273a54886e1f1ba"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_db_gen.py",
+      "sha256": "68335f214ead32997a1c51f5a1f47cc8eb7696183b4d1f52816b1902e1e7ef99"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_products_http_gen.py",
+      "sha256": "3491a905b12242a2ea636e94bb3f44a30d33d89cf4e5905aec5108c62ac618a2"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_suppliers_http_gen.py",
+      "sha256": "68844191d265ef8bdc6dad498282b44d344bdedb96ea6dd8eeefbf3b704cc831"
+    }
+  ],
+  "manifestVersion": 1
+}

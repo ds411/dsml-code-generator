@@ -1,0 +1,2213 @@
+{
+  "elements": [
+    {
+      "element": "Shop::Customer",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/customer/create_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 30,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "create_customer"
+            },
+            {
+              "firstLine": 30,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "POST /customers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/create_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 23,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/create_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "CreateCustomerInput"
+            },
+            {
+              "firstLine": 25,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "CreateCustomerOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/delete_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 33,
+              "name": "delete_customer"
+            },
+            {
+              "firstLine": 26,
+              "kind": "route",
+              "lastLine": 33,
+              "name": "DELETE /customers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/delete_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 29,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/list_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "list_customer"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "GET /customers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/list_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/list_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "ListCustomerOutput"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "ListCustomerPage"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/read_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 31,
+              "name": "read_customer"
+            },
+            {
+              "firstLine": 26,
+              "kind": "route",
+              "lastLine": 31,
+              "name": "GET /customers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/read_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 25,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/read_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "ReadCustomerOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/update_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "update_customer"
+            },
+            {
+              "firstLine": 29,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "PATCH /customers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/update_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/update_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "UpdateCustomerInput"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 42,
+              "name": "UpdateCustomerOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/db/models/customer_gen.py",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "Customer"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_customers_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 93,
+              "kind": "function",
+              "lastLine": 95,
+              "name": "rows"
+            },
+            {
+              "firstLine": 98,
+              "kind": "function",
+              "lastLine": 100,
+              "name": "body"
+            },
+            {
+              "firstLine": 103,
+              "kind": "function",
+              "lastLine": 107,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 110,
+              "kind": "function",
+              "lastLine": 114,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 117,
+              "kind": "function",
+              "lastLine": 122,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 125,
+              "kind": "function",
+              "lastLine": 131,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 134,
+              "kind": "function",
+              "lastLine": 142,
+              "name": "test_create_with_the_email_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 145,
+              "kind": "function",
+              "lastLine": 149,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 152,
+              "kind": "function",
+              "lastLine": 155,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 158,
+              "kind": "function",
+              "lastLine": 164,
+              "name": "test_update_returns_200_with_the_changed_entity"
+            },
+            {
+              "firstLine": 167,
+              "kind": "function",
+              "lastLine": 172,
+              "name": "test_update_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 175,
+              "kind": "function",
+              "lastLine": 181,
+              "name": "test_update_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 184,
+              "kind": "function",
+              "lastLine": 192,
+              "name": "test_update_with_the_email_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 195,
+              "kind": "function",
+              "lastLine": 202,
+              "name": "test_delete_returns_204_and_deletes_the_entity"
+            },
+            {
+              "firstLine": 205,
+              "kind": "function",
+              "lastLine": 213,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 216,
+              "kind": "function",
+              "lastLine": 225,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 228,
+              "kind": "function",
+              "lastLine": 234,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 237,
+              "kind": "function",
+              "lastLine": 244,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::Product",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/product/create_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "create_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 36,
+              "name": "POST /products"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/create_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/create_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 33,
+              "name": "CreateProductInput"
+            },
+            {
+              "firstLine": 36,
+              "kind": "class",
+              "lastLine": 50,
+              "name": "CreateProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/delete_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "delete_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "DELETE /products/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/delete_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/list_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "list_product"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "GET /products"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/list_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/list_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ListProductOutput"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 41,
+              "name": "ListProductPage"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/read_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "read_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 32,
+              "name": "GET /products/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/read_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/read_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ReadProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/update_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "update_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 32,
+              "name": "PATCH /products/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/update_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/update_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 41,
+              "name": "UpdateProductInput"
+            },
+            {
+              "firstLine": 44,
+              "kind": "class",
+              "lastLine": 58,
+              "name": "UpdateProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/db/models/product_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "class",
+              "lastLine": 56,
+              "name": "Product"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_products_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 132,
+              "kind": "function",
+              "lastLine": 134,
+              "name": "rows"
+            },
+            {
+              "firstLine": 137,
+              "kind": "function",
+              "lastLine": 139,
+              "name": "body"
+            },
+            {
+              "firstLine": 142,
+              "kind": "function",
+              "lastLine": 146,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 149,
+              "kind": "function",
+              "lastLine": 153,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 156,
+              "kind": "function",
+              "lastLine": 161,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 164,
+              "kind": "function",
+              "lastLine": 170,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 173,
+              "kind": "function",
+              "lastLine": 181,
+              "name": "test_create_with_the_code_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 184,
+              "kind": "function",
+              "lastLine": 188,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 191,
+              "kind": "function",
+              "lastLine": 194,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 197,
+              "kind": "function",
+              "lastLine": 203,
+              "name": "test_update_returns_200_with_the_changed_entity"
+            },
+            {
+              "firstLine": 206,
+              "kind": "function",
+              "lastLine": 211,
+              "name": "test_update_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 214,
+              "kind": "function",
+              "lastLine": 220,
+              "name": "test_update_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 223,
+              "kind": "function",
+              "lastLine": 231,
+              "name": "test_update_with_the_code_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 234,
+              "kind": "function",
+              "lastLine": 241,
+              "name": "test_delete_returns_204_and_deletes_the_entity"
+            },
+            {
+              "firstLine": 244,
+              "kind": "function",
+              "lastLine": 252,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 255,
+              "kind": "function",
+              "lastLine": 264,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 267,
+              "kind": "function",
+              "lastLine": 273,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 276,
+              "kind": "function",
+              "lastLine": 283,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::Supplier",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/supplier/create_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 25,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "create_supplier"
+            },
+            {
+              "firstLine": 25,
+              "kind": "route",
+              "lastLine": 30,
+              "name": "POST /suppliers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/create_supplier/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 25,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/create_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 19,
+              "name": "CreateSupplierInput"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "CreateSupplierOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/list_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "list_supplier"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "GET /suppliers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/list_supplier/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/list_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "ListSupplierOutput"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ListSupplierPage"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/read_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "read_supplier"
+            },
+            {
+              "firstLine": 22,
+              "kind": "route",
+              "lastLine": 27,
+              "name": "GET /suppliers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/read_supplier/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/read_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "ReadSupplierOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/db/models/supplier_gen.py",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "Supplier"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_suppliers_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "rows"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "body"
+            },
+            {
+              "firstLine": 65,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 79,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 82,
+              "kind": "function",
+              "lastLine": 86,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 89,
+              "kind": "function",
+              "lastLine": 92,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 95,
+              "kind": "function",
+              "lastLine": 103,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 106,
+              "kind": "function",
+              "lastLine": 115,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 118,
+              "kind": "function",
+              "lastLine": 124,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 127,
+              "kind": "function",
+              "lastLine": 134,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi",
+      "files": [
+        {
+          "path": "services/shop-api/app/main_gen.py",
+          "symbols": [
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "Health"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "healthz"
+            },
+            {
+              "firstLine": 43,
+              "kind": "route",
+              "lastLine": 46,
+              "name": "GET /healthz"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 88,
+              "name": "create_app"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/auth/cognito_gen.py",
+          "symbols": [
+            {
+              "firstLine": 60,
+              "kind": "class",
+              "lastLine": 61,
+              "name": "TokenError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "class",
+              "lastLine": 65,
+              "name": "JwksError"
+            },
+            {
+              "firstLine": 68,
+              "kind": "class",
+              "lastLine": 77,
+              "name": "User"
+            },
+            {
+              "firstLine": 80,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "user_pool_issuer"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 95,
+              "name": "jwks_from_url"
+            },
+            {
+              "firstLine": 98,
+              "kind": "class",
+              "lastLine": 185,
+              "name": "TokenVerifier"
+            },
+            {
+              "firstLine": 188,
+              "kind": "function",
+              "lastLine": 199,
+              "name": "token_verifier"
+            },
+            {
+              "firstLine": 202,
+              "kind": "function",
+              "lastLine": 221,
+              "name": "current_user"
+            },
+            {
+              "firstLine": 224,
+              "kind": "function",
+              "lastLine": 239,
+              "name": "require_roles"
+            },
+            {
+              "firstLine": 242,
+              "kind": "function",
+              "lastLine": 250,
+              "name": "_unauthorized"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/config_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "ConfigurationError"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 58,
+              "name": "Settings"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 90,
+              "name": "load_settings"
+            },
+            {
+              "firstLine": 93,
+              "kind": "function",
+              "lastLine": 99,
+              "name": "_mandatory"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/db/base_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "Base"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/db/commit_gen.py",
+          "symbols": [
+            {
+              "firstLine": 25,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "commit"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/db/session_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 37,
+              "name": "database_url"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "create_engine"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "create_session_factory"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "get_session"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/errors_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "ProblemError"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "problem_response"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "register_error_handlers"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 59,
+              "name": "_problem"
+            },
+            {
+              "firstLine": 62,
+              "kind": "function",
+              "lastLine": 66,
+              "name": "_http"
+            },
+            {
+              "firstLine": 69,
+              "kind": "function",
+              "lastLine": 81,
+              "name": "_validation"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/shared/logs_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "class",
+              "lastLine": 52,
+              "name": "JsonFormatter"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 67,
+              "name": "configure_logging"
+            },
+            {
+              "firstLine": 70,
+              "kind": "function",
+              "lastLine": 101,
+              "name": "request_context"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/http_support_gen.py",
+          "symbols": [
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 78,
+              "name": "database_settings"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 92,
+              "name": "engine"
+            },
+            {
+              "firstLine": 95,
+              "kind": "function",
+              "lastLine": 98,
+              "name": "jwks"
+            },
+            {
+              "firstLine": 101,
+              "kind": "function",
+              "lastLine": 115,
+              "name": "headers"
+            },
+            {
+              "firstLine": 118,
+              "kind": "function",
+              "lastLine": 125,
+              "name": "insert"
+            },
+            {
+              "firstLine": 128,
+              "kind": "function",
+              "lastLine": 139,
+              "name": "api"
+            },
+            {
+              "firstLine": 142,
+              "kind": "function",
+              "lastLine": 153,
+              "name": "same"
+            },
+            {
+              "firstLine": 156,
+              "kind": "function",
+              "lastLine": 160,
+              "name": "assert_same"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_app_gen.py",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "test_healthz_returns_200_with_no_token"
+            },
+            {
+              "firstLine": 37,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "test_request_id_of_the_request_is_in_the_response"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "test_unknown_path_returns_problem_details"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 55,
+              "name": "test_missing_mandatory_variable_stops_the_app"
+            },
+            {
+              "firstLine": 58,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "test_log_level_that_is_not_correct_stops_the_app"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_auth_gen.py",
+          "symbols": [
+            {
+              "firstLine": 49,
+              "kind": "class",
+              "lastLine": 68,
+              "name": "Jwks"
+            },
+            {
+              "firstLine": 71,
+              "kind": "function",
+              "lastLine": 72,
+              "name": "new_key"
+            },
+            {
+              "firstLine": 78,
+              "kind": "function",
+              "lastLine": 96,
+              "name": "token"
+            },
+            {
+              "firstLine": 99,
+              "kind": "function",
+              "lastLine": 118,
+              "name": "client"
+            },
+            {
+              "firstLine": 121,
+              "kind": "function",
+              "lastLine": 122,
+              "name": "get"
+            },
+            {
+              "firstLine": 125,
+              "kind": "function",
+              "lastLine": 128,
+              "name": "assert_unauthorized"
+            },
+            {
+              "firstLine": 131,
+              "kind": "function",
+              "lastLine": 134,
+              "name": "test_valid_token_with_a_permitted_role_returns_200"
+            },
+            {
+              "firstLine": 137,
+              "kind": "function",
+              "lastLine": 139,
+              "name": "test_public_operation_needs_no_token"
+            },
+            {
+              "firstLine": 142,
+              "kind": "function",
+              "lastLine": 143,
+              "name": "test_no_token_returns_401"
+            },
+            {
+              "firstLine": 146,
+              "kind": "function",
+              "lastLine": 150,
+              "name": "test_other_scheme_returns_401"
+            },
+            {
+              "firstLine": 153,
+              "kind": "function",
+              "lastLine": 154,
+              "name": "test_text_that_is_not_a_token_returns_401"
+            },
+            {
+              "firstLine": 157,
+              "kind": "function",
+              "lastLine": 158,
+              "name": "test_bad_signature_returns_401"
+            },
+            {
+              "firstLine": 161,
+              "kind": "function",
+              "lastLine": 175,
+              "name": "test_token_with_a_wrong_claim_returns_401"
+            },
+            {
+              "firstLine": 178,
+              "kind": "function",
+              "lastLine": 181,
+              "name": "test_no_permitted_group_returns_403"
+            },
+            {
+              "firstLine": 184,
+              "kind": "function",
+              "lastLine": 186,
+              "name": "test_no_group_returns_403"
+            },
+            {
+              "firstLine": 189,
+              "kind": "function",
+              "lastLine": 203,
+              "name": "test_jwks_is_read_again_only_for_an_unknown_key_id"
+            },
+            {
+              "firstLine": 206,
+              "kind": "function",
+              "lastLine": 211,
+              "name": "test_jwks_is_not_read_again_before_the_minimum_interval"
+            },
+            {
+              "firstLine": 214,
+              "kind": "function",
+              "lastLine": 228,
+              "name": "test_jwks_that_the_application_cannot_get_returns_503"
+            },
+            {
+              "firstLine": 231,
+              "kind": "function",
+              "lastLine": 242,
+              "name": "test_verifier_of_the_configuration_uses_the_user_pool_of_the_environment"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_db_gen.py",
+          "symbols": [
+            {
+              "firstLine": 80,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "test_each_entity_has_a_model_with_its_table"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 96,
+              "name": "test_columns_have_the_postgresql_types_of_the_model"
+            },
+            {
+              "firstLine": 99,
+              "kind": "function",
+              "lastLine": 104,
+              "name": "test_database_url_uses_psycopg_and_the_configuration"
+            },
+            {
+              "firstLine": 107,
+              "kind": "function",
+              "lastLine": 109,
+              "name": "test_password_is_not_in_the_text_of_the_settings"
+            },
+            {
+              "firstLine": 112,
+              "kind": "function",
+              "lastLine": 114,
+              "name": "test_database_port_that_is_not_a_number_stops_the_app"
+            },
+            {
+              "firstLine": 117,
+              "kind": "function",
+              "lastLine": 119,
+              "name": "test_app_has_a_session_factory"
+            },
+            {
+              "firstLine": 122,
+              "kind": "function",
+              "lastLine": 128,
+              "name": "test_enumeration_columns_permit_only_their_values"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi::customers",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/customer/create_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 30,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "create_customer"
+            },
+            {
+              "firstLine": 30,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "POST /customers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/create_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 23,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/create_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "CreateCustomerInput"
+            },
+            {
+              "firstLine": 25,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "CreateCustomerOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/delete_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 33,
+              "name": "delete_customer"
+            },
+            {
+              "firstLine": 26,
+              "kind": "route",
+              "lastLine": 33,
+              "name": "DELETE /customers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/delete_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 29,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/list_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "list_customer"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "GET /customers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/list_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/list_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "ListCustomerOutput"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "ListCustomerPage"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/read_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 31,
+              "name": "read_customer"
+            },
+            {
+              "firstLine": 26,
+              "kind": "route",
+              "lastLine": 31,
+              "name": "GET /customers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/read_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 25,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/read_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "ReadCustomerOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/update_customer/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "update_customer"
+            },
+            {
+              "firstLine": 29,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "PATCH /customers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/update_customer/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/customer/update_customer/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "UpdateCustomerInput"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 42,
+              "name": "UpdateCustomerOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_customers_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 93,
+              "kind": "function",
+              "lastLine": 95,
+              "name": "rows"
+            },
+            {
+              "firstLine": 98,
+              "kind": "function",
+              "lastLine": 100,
+              "name": "body"
+            },
+            {
+              "firstLine": 103,
+              "kind": "function",
+              "lastLine": 107,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 110,
+              "kind": "function",
+              "lastLine": 114,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 117,
+              "kind": "function",
+              "lastLine": 122,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 125,
+              "kind": "function",
+              "lastLine": 131,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 134,
+              "kind": "function",
+              "lastLine": 142,
+              "name": "test_create_with_the_email_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 145,
+              "kind": "function",
+              "lastLine": 149,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 152,
+              "kind": "function",
+              "lastLine": 155,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 158,
+              "kind": "function",
+              "lastLine": 164,
+              "name": "test_update_returns_200_with_the_changed_entity"
+            },
+            {
+              "firstLine": 167,
+              "kind": "function",
+              "lastLine": 172,
+              "name": "test_update_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 175,
+              "kind": "function",
+              "lastLine": 181,
+              "name": "test_update_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 184,
+              "kind": "function",
+              "lastLine": 192,
+              "name": "test_update_with_the_email_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 195,
+              "kind": "function",
+              "lastLine": 202,
+              "name": "test_delete_returns_204_and_deletes_the_entity"
+            },
+            {
+              "firstLine": 205,
+              "kind": "function",
+              "lastLine": 213,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 216,
+              "kind": "function",
+              "lastLine": 225,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 228,
+              "kind": "function",
+              "lastLine": 234,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 237,
+              "kind": "function",
+              "lastLine": 244,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi::products",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/product/create_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "create_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 36,
+              "name": "POST /products"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/create_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/create_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 33,
+              "name": "CreateProductInput"
+            },
+            {
+              "firstLine": 36,
+              "kind": "class",
+              "lastLine": 50,
+              "name": "CreateProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/delete_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "delete_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "DELETE /products/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/delete_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/list_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "list_product"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "GET /products"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/list_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/list_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ListProductOutput"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 41,
+              "name": "ListProductPage"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/read_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "read_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 32,
+              "name": "GET /products/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/read_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/read_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ReadProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/update_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "update_product"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 32,
+              "name": "PATCH /products/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/update_product/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/update_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 41,
+              "name": "UpdateProductInput"
+            },
+            {
+              "firstLine": 44,
+              "kind": "class",
+              "lastLine": 58,
+              "name": "UpdateProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_products_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 132,
+              "kind": "function",
+              "lastLine": 134,
+              "name": "rows"
+            },
+            {
+              "firstLine": 137,
+              "kind": "function",
+              "lastLine": 139,
+              "name": "body"
+            },
+            {
+              "firstLine": 142,
+              "kind": "function",
+              "lastLine": 146,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 149,
+              "kind": "function",
+              "lastLine": 153,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 156,
+              "kind": "function",
+              "lastLine": 161,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 164,
+              "kind": "function",
+              "lastLine": 170,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 173,
+              "kind": "function",
+              "lastLine": 181,
+              "name": "test_create_with_the_code_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 184,
+              "kind": "function",
+              "lastLine": 188,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 191,
+              "kind": "function",
+              "lastLine": 194,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 197,
+              "kind": "function",
+              "lastLine": 203,
+              "name": "test_update_returns_200_with_the_changed_entity"
+            },
+            {
+              "firstLine": 206,
+              "kind": "function",
+              "lastLine": 211,
+              "name": "test_update_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 214,
+              "kind": "function",
+              "lastLine": 220,
+              "name": "test_update_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 223,
+              "kind": "function",
+              "lastLine": 231,
+              "name": "test_update_with_the_code_of_a_different_entity_returns_409"
+            },
+            {
+              "firstLine": 234,
+              "kind": "function",
+              "lastLine": 241,
+              "name": "test_delete_returns_204_and_deletes_the_entity"
+            },
+            {
+              "firstLine": 244,
+              "kind": "function",
+              "lastLine": 252,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 255,
+              "kind": "function",
+              "lastLine": 264,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 267,
+              "kind": "function",
+              "lastLine": 273,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 276,
+              "kind": "function",
+              "lastLine": 283,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi::suppliers",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/supplier/create_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 25,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "create_supplier"
+            },
+            {
+              "firstLine": 25,
+              "kind": "route",
+              "lastLine": 30,
+              "name": "POST /suppliers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/create_supplier/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 25,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/create_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 19,
+              "name": "CreateSupplierInput"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "CreateSupplierOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/list_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "list_supplier"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "GET /suppliers"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/list_supplier/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/list_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "ListSupplierOutput"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ListSupplierPage"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/read_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "read_supplier"
+            },
+            {
+              "firstLine": 22,
+              "kind": "route",
+              "lastLine": 27,
+              "name": "GET /suppliers/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/read_supplier/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/read_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "ReadSupplierOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_suppliers_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "rows"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "body"
+            },
+            {
+              "firstLine": 65,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 79,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 82,
+              "kind": "function",
+              "lastLine": 86,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 89,
+              "kind": "function",
+              "lastLine": 92,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 95,
+              "kind": "function",
+              "lastLine": 103,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 106,
+              "kind": "function",
+              "lastLine": 115,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 118,
+              "kind": "function",
+              "lastLine": 124,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 127,
+              "kind": "function",
+              "lastLine": 134,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}

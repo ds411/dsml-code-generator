@@ -25,6 +25,7 @@ from typing import Final
 from dsml.database.schema import (
     ENUMERATION,
     ENUMERATION_LENGTH,
+    FIELD_RULES,
     Column,
     ColumnType,
     SchemaError,
@@ -32,7 +33,7 @@ from dsml.database.schema import (
     application_schema,
 )
 from dsml.generate.names import pascal_case, snake_case
-from dsml.ir.model import Element, Ir
+from dsml.ir.model import BooleanValue, Element, Ir
 
 MODELS_FOLDER: Final = "app/shared/db/models"
 """The folder of the model files, relative to the output folder of the application."""
@@ -122,6 +123,8 @@ class ModelColumn:
     """The column that the column refers to, for example `customer.id`."""
     values: tuple[str, ...] = ()
     """The values of an enumeration column. A `CHECK` constraint permits only these values."""
+    unique: bool = False
+    """Tell if the field has the rule `unique`. A `UNIQUE` constraint keeps the values unique."""
 
     @property
     def values_constant(self) -> str:
@@ -139,6 +142,8 @@ class ModelColumn:
             arguments.append(f'ForeignKey("{self.foreign_key}")')
         if self.primary_key:
             arguments.append("primary_key=True")
+        if self.unique:
+            arguments.append("unique=True")
         python = f"{self.type.python} | None" if self.nullable else self.type.python
         return python_call(f"{self.attribute}: Mapped[{python}] = mapped_column", arguments, 1)
 
@@ -269,7 +274,7 @@ def models(ir: Ir, application: Element) -> list[Model]:
         relation = elements.get(table.element or "")
         if relation is not None and relation.kind == "Relation" and relation.owner is not None:
             join_tables.setdefault(relation.owner, []).append(
-                JoinTable(table.name, relation.identity, _columns(table))
+                JoinTable(table.name, relation.identity, _columns(table, elements))
             )
     result: list[Model] = []
     for table in schema.tables:
@@ -282,18 +287,36 @@ def models(ir: Ir, application: Element) -> list[Model]:
                 entity_name=entity.name,
                 class_name=pascal_case(entity.name),
                 table=table.name,
-                columns=_columns(table),
+                columns=_columns(table, elements),
                 join_tables=tuple(join_tables.get(entity.identity, ())),
             )
         )
     return result
 
 
-def _columns(table: Table) -> tuple[ModelColumn, ...]:
-    return tuple(_column(table, column) for column in table.columns)
+def _columns(table: Table, elements: Mapping[str, Element]) -> tuple[ModelColumn, ...]:
+    return tuple(
+        _column(table, column, _is_unique(elements.get(column.element or "")))
+        for column in table.columns
+    )
 
 
-def _column(table: Table, column: Column) -> ModelColumn:
+# trace: PRD-DSML-025, PRD-APP-113
+def _is_unique(field: Element | None) -> bool:
+    """Tell if a field has the rule `unique = true` in its `@FieldRules`."""
+    if field is None or field.kind != "Field":
+        return False
+    return any(
+        attribute.name == "unique"
+        and isinstance(attribute.value, BooleanValue)
+        and attribute.value.value
+        for annotation in field.annotations
+        if annotation.name == FIELD_RULES
+        for attribute in annotation.attributes
+    )
+
+
+def _column(table: Table, column: Column, unique: bool = False) -> ModelColumn:
     if column.type is None:
         raise SchemaError(
             f'The column "{column.name}" of the table "{table.name}" has a type that is '
@@ -311,6 +334,7 @@ def _column(table: Table, column: Column) -> ModelColumn:
         primary_key=column.primary_key,
         foreign_key=foreign_key,
         values=column.type.values if column.type.name == ENUMERATION else (),
+        unique=unique,
     )
 
 

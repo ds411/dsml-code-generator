@@ -4,6 +4,135 @@
       "element": "OrderService::Order",
       "files": [
         {
+          "path": "services/order-api/app/features/order/create_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "create_order"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "POST /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CreateOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CreateOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "list_order"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "GET /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ListOrderOutput"
+            },
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ListOrderPage"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "read_order"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 32,
+              "name": "GET /orders/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ReadOrderOutput"
+            }
+          ]
+        },
+        {
           "path": "services/order-api/app/shared/db/models/order_gen.py",
           "symbols": [
             {
@@ -11,6 +140,83 @@
               "kind": "class",
               "lastLine": 38,
               "name": "Order"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_orders_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 68,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "rows"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 75,
+              "name": "body"
+            },
+            {
+              "firstLine": 78,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 89,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 92,
+              "kind": "function",
+              "lastLine": 97,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 106,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 109,
+              "kind": "function",
+              "lastLine": 113,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 116,
+              "kind": "function",
+              "lastLine": 119,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 122,
+              "kind": "function",
+              "lastLine": 130,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 133,
+              "kind": "function",
+              "lastLine": 142,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 145,
+              "kind": "function",
+              "lastLine": 151,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 154,
+              "kind": "function",
+              "lastLine": 161,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
             }
           ]
         }
@@ -23,27 +229,27 @@
           "path": "services/order-api/app/main_gen.py",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 27,
               "kind": "class",
-              "lastLine": 27,
+              "lastLine": 30,
               "name": "Health"
             },
             {
-              "firstLine": 30,
+              "firstLine": 33,
               "kind": "function",
-              "lastLine": 33,
+              "lastLine": 36,
               "name": "healthz"
             },
             {
-              "firstLine": 30,
+              "firstLine": 33,
               "kind": "route",
-              "lastLine": 33,
+              "lastLine": 36,
               "name": "GET /healthz"
             },
             {
-              "firstLine": 36,
+              "firstLine": 39,
               "kind": "function",
-              "lastLine": 62,
+              "lastLine": 68,
               "name": "create_app"
             }
           ]
@@ -154,6 +360,17 @@
           ]
         },
         {
+          "path": "services/order-api/app/shared/db/commit_gen.py",
+          "symbols": [
+            {
+              "firstLine": 25,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "commit"
+            }
+          ]
+        },
+        {
           "path": "services/order-api/app/shared/db/session_gen.py",
           "symbols": [
             {
@@ -243,6 +460,59 @@
               "kind": "function",
               "lastLine": 101,
               "name": "request_context"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/http_support_gen.py",
+          "symbols": [
+            {
+              "firstLine": 71,
+              "kind": "function",
+              "lastLine": 76,
+              "name": "database_settings"
+            },
+            {
+              "firstLine": 83,
+              "kind": "function",
+              "lastLine": 90,
+              "name": "engine"
+            },
+            {
+              "firstLine": 93,
+              "kind": "function",
+              "lastLine": 96,
+              "name": "jwks"
+            },
+            {
+              "firstLine": 99,
+              "kind": "function",
+              "lastLine": 113,
+              "name": "headers"
+            },
+            {
+              "firstLine": 116,
+              "kind": "function",
+              "lastLine": 123,
+              "name": "insert"
+            },
+            {
+              "firstLine": 126,
+              "kind": "function",
+              "lastLine": 137,
+              "name": "api"
+            },
+            {
+              "firstLine": 140,
+              "kind": "function",
+              "lastLine": 151,
+              "name": "same"
+            },
+            {
+              "firstLine": 154,
+              "kind": "function",
+              "lastLine": 158,
+              "name": "assert_same"
             }
           ]
         },
@@ -444,6 +714,217 @@
               "kind": "function",
               "lastLine": 107,
               "name": "test_enumeration_columns_permit_only_their_values"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderApi::orders",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/create_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "create_order"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 34,
+              "name": "POST /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CreateOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CreateOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "list_order"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 39,
+              "name": "GET /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ListOrderOutput"
+            },
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ListOrderPage"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "read_order"
+            },
+            {
+              "firstLine": 27,
+              "kind": "route",
+              "lastLine": 32,
+              "name": "GET /orders/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ReadOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_orders_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 68,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "rows"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 75,
+              "name": "body"
+            },
+            {
+              "firstLine": 78,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 89,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 92,
+              "kind": "function",
+              "lastLine": 97,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 106,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 109,
+              "kind": "function",
+              "lastLine": 113,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 116,
+              "kind": "function",
+              "lastLine": 119,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 122,
+              "kind": "function",
+              "lastLine": 130,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 133,
+              "kind": "function",
+              "lastLine": 142,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 145,
+              "kind": "function",
+              "lastLine": 151,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 154,
+              "kind": "function",
+              "lastLine": 161,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
             }
           ]
         }
