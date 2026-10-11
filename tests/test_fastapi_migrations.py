@@ -410,3 +410,34 @@ def test_code_lines_give_the_form_of_ruff_format() -> None:
     assert code_lines(Call("NAMES = ", ("a",), True), 0) == ["NAMES = (a,)"]
     assert python_string('"a"::TEXT') == "'\"a\"::TEXT'"
     assert python_string("a") == '"a"'
+
+
+# trace: PRD-APP-113, PRD-APP-124
+def test_unique_rule_gives_a_unique_constraint(rule_engine: Engine, tmp_path: Path) -> None:
+    text = FIRST.replace("maxLength = 80;", "maxLength = 80; unique = true;")
+    _generate(rule_engine, text, tmp_path)
+    created = _migrations(tmp_path)["0001_create_tables_gen.py"].decode()
+    assert 'sa.UniqueConstraint("name", name=op.f("uq_customer_name")),' in created
+    snapshot = read_snapshot(tmp_path / "app")
+    assert snapshot is not None
+    customer = snapshot.table("customer")
+    assert customer is not None
+    assert [column.unique for column in customer.columns] == [False, False, True]
+    _generate(rule_engine, FIRST, tmp_path)
+    changed = _migrations(tmp_path)["0002_change_customer_gen.py"].decode()
+    assert 'op.drop_constraint(op.f("uq_customer_name"), "customer", type_="unique")' in changed
+
+
+# trace: PRD-APP-113, PRD-APP-124
+def test_new_unique_rule_adds_a_unique_constraint() -> None:
+    old = Schema((_table("a", Column("id", primary_key=True, type=UUID), Column("x", type=UUID)),))
+    new = Schema(
+        (
+            _table(
+                "a", Column("id", primary_key=True, type=UUID), Column("x", type=UUID, unique=True)
+            ),
+        )
+    )
+    assert upgrade_statements(compare(old, new)) == [
+        '    op.create_unique_constraint(op.f("uq_a_x"), "a", ["x"])',
+    ]

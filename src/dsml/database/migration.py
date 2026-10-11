@@ -28,10 +28,10 @@ from dsml.database.schema import Column, ColumnType, ForeignKey, Schema, Table
 MAX_NAME_LENGTH: Final = 63
 """The maximum length of a PostgreSQL identifier."""
 
-ConstraintKind = Literal["pk", "fk", "ck"]
-"""The kind of a constraint: primary key, foreign key or check."""
+ConstraintKind = Literal["pk", "uq", "fk", "ck"]
+"""The kind of a constraint: primary key, unique, foreign key or check."""
 
-_ORDER: Final[dict[ConstraintKind, int]] = {"pk": 0, "fk": 1, "ck": 2}
+_ORDER: Final[dict[ConstraintKind, int]] = {"pk": 0, "uq": 1, "fk": 2, "ck": 3}
 
 
 # trace: PRD-APP-120
@@ -68,6 +68,8 @@ class Constraint:
         match self.kind:
             case "pk":
                 name = f"pk_{self.table}"
+            case "uq":
+                name = f"uq_{self.table}_{self.columns[0]}"
             case "fk":
                 assert self.references is not None
                 name = f"fk_{self.table}_{self.columns[0]}_{self.references.table}"
@@ -78,11 +80,15 @@ class Constraint:
 
 # trace: PRD-APP-120, PRD-APP-121, PRD-APP-122
 def constraints(table: Table) -> list[Constraint]:
-    """Give the constraints of a table: the primary key, then the foreign keys and checks."""
+    """Give the constraints of a table: the primary key, the unique constraints, the foreign
+    keys and the checks."""
     found: list[Constraint] = []
     keys = tuple(sorted(column.name for column in table.columns if column.primary_key))
     if keys:
         found.append(Constraint("pk", table.name, keys))
+    for column in table.columns:
+        if column.unique and not column.primary_key:
+            found.append(Constraint("uq", table.name, (column.name,)))
     for column in table.columns:
         if column.references is not None:
             found.append(Constraint("fk", table.name, (column.name,), column.references))
@@ -443,7 +449,10 @@ def _same(old: Constraint, new: Constraint) -> bool:
 
 
 def _sorted_constraints(items: Sequence[Constraint], reverse: bool = False) -> list[Constraint]:
-    """Sort constraints: primary keys, foreign keys, checks. `reverse` puts the keys last."""
+    """Sort constraints: primary keys, unique constraints, foreign keys, checks.
+
+    `reverse` gives the reverse order of the kinds.
+    """
     return sorted(
         items,
         key=lambda item: (

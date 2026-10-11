@@ -9,7 +9,7 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/.dsml/schema-snapshot.json",
-      "sha256": "2ab21ef31c746d03e6583ba5af106f1ec70befd94b7939c228fab485f3eca778"
+      "sha256": "b9d89a2ce6a00742d5a051b2ce13a864eab6c7960445b2dc7c94195a59595685"
     },
     {
       "part": "application/orderApi",

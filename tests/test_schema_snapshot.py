@@ -220,6 +220,7 @@ BAD_SNAPSHOTS: list[tuple[object, str]] = [
                             "primaryKey": False,
                             "references": None,
                             "type": "TEXT",
+                            "unique": False,
                             "values": [],
                         }
                     ],
@@ -241,6 +242,7 @@ BAD_SNAPSHOTS: list[tuple[object, str]] = [
                             "primaryKey": False,
                             "references": None,
                             "type": "TEXT",
+                            "unique": False,
                             "values": [],
                         },
                         {
@@ -249,6 +251,7 @@ BAD_SNAPSHOTS: list[tuple[object, str]] = [
                             "primaryKey": False,
                             "references": None,
                             "type": "TEXT",
+                            "unique": False,
                             "values": [],
                         },
                     ],
@@ -267,6 +270,7 @@ def _one_column(column_type: object, values: object) -> dict[str, object]:
         "primaryKey": False,
         "references": None,
         "type": column_type,
+        "unique": False,
         "values": values,
     }
     return {"snapshotVersion": 2, "tables": [{"name": "a", "columns": [column]}]}

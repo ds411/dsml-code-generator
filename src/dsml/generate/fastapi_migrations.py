@@ -394,6 +394,8 @@ def _inline(constraint: Constraint) -> Call:
                 "sa.PrimaryKeyConstraint",
                 (*(python_string(item) for item in constraint.columns), name),
             )
+        case "uq":
+            return Call("sa.UniqueConstraint", (python_string(constraint.columns[0]), name))
         case "fk":
             assert constraint.references is not None
             target = f"{constraint.references.table}.{constraint.references.column}"
@@ -412,6 +414,8 @@ def _create(constraint: Constraint) -> Call:
     match constraint.kind:
         case "pk":
             return Call("op.create_primary_key", (name, table, _strings(constraint.columns)))
+        case "uq":
+            return Call("op.create_unique_constraint", (name, table, _strings(constraint.columns)))
         case "fk":
             assert constraint.references is not None
             return Call(
@@ -428,7 +432,7 @@ def _create(constraint: Constraint) -> Call:
             return Call("op.create_check_constraint", (name, table, _values(constraint)))
 
 
-_DROP_TYPES: Final = {"pk": "primary", "fk": "foreignkey", "ck": "check"}
+_DROP_TYPES: Final = {"pk": "primary", "uq": "unique", "fk": "foreignkey", "ck": "check"}
 
 
 def _create_table(table: Table, pending: set[str]) -> Call:

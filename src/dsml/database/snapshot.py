@@ -10,8 +10,8 @@ schema of the application when the generator wrote the newest migration
 - The values of an enumeration column are sorted.
 - The text is UTF-8 with LF line ends and one LF at the end.
 
-Each column has its PostgreSQL type and the values of its `CHECK`
-constraint, so that the generator can find a changed type.
+Each column has its PostgreSQL type, its `unique` flag and the values of
+its `CHECK` constraint, so that the generator can find a changed column.
 
 `docs/notes/schema-snapshot.md` gives the format.
 """
@@ -58,6 +58,7 @@ def snapshot_bytes(schema: Schema) -> bytes:
                     "primaryKey": column.primary_key,
                     "references": references,
                     "type": postgresql,
+                    "unique": column.unique,
                     "values": values,
                 }
             )
@@ -135,15 +136,16 @@ def _table(data: object) -> Table:
 def _column(data: object, table: str) -> Column:
     column = _object(
         data,
-        {"name", "nullable", "primaryKey", "references", "type", "values"},
+        {"name", "nullable", "primaryKey", "references", "type", "unique", "values"},
         f'Each column of the table "{table}"',
     )
     name = _name(column["name"], "column")
     nullable = column["nullable"]
     primary_key = column["primaryKey"]
-    if not isinstance(nullable, bool) or not isinstance(primary_key, bool):
+    unique = column["unique"]
+    if not all(isinstance(value, bool) for value in (nullable, primary_key, unique)):
         raise SnapshotError(
-            f'The keys "nullable" and "primaryKey" of the column "{table}.{name}" '
+            f'The keys "nullable", "primaryKey" and "unique" of the column "{table}.{name}" '
             "must be true or false."
         )
     references: ForeignKey | None = None
@@ -165,7 +167,14 @@ def _column(data: object, table: str) -> Column:
             )
     elif values:
         raise SnapshotError(f'The column "{table}.{name}" has values, but no type.')
-    return Column(name, nullable, primary_key, references, type=column_type)
+    return Column(
+        name,
+        nullable is True,
+        primary_key is True,
+        references,
+        type=column_type,
+        unique=unique is True,
+    )
 
 
 def _object(data: object, keys: set[str], what: str) -> dict[str, object]:

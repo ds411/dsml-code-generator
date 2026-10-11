@@ -74,6 +74,7 @@ The snapshot is in the output folder of the application: `<output>/.dsml/schema-
             "table": "customer"
           },
           "type": "UUID",
+          "unique": false,
           "values": []
         }
       ],
@@ -85,13 +86,14 @@ The snapshot is in the output folder of the application: `<output>/.dsml/schema-
 
 | Key | Value |
 | --- | --- |
-| `snapshotVersion` | The version of the format. This version is 2. Version 1 had no `type` and no `values`. |
+| `snapshotVersion` | The version of the format. This version is 2. Version 1 had no `type`, no `unique` and no `values`. |
 | `tables[].name` | The table name. |
 | `tables[].columns[].name` | The column name. |
 | `tables[].columns[].nullable` | `true` if the column accepts no value. |
 | `tables[].columns[].primaryKey` | `true` if the column is a part of the primary key. |
 | `tables[].columns[].references` | The table and the column of a foreign key, or `null`. |
 | `tables[].columns[].type` | The PostgreSQL type of the column, for example `VARCHAR(500)`, or `null` for a type that is not supported. |
+| `tables[].columns[].unique` | `true` if the field has the rule `unique`. The column then has a `UNIQUE` constraint. |
 | `tables[].columns[].values` | The values of the `CHECK` constraint of an enumeration column, sorted. An empty list for other columns. |
 
 The reader accepts only version 2. A snapshot of version 1 gives a `SnapshotError`. No project has a snapshot of version 1, because no generator wrote version 1.
@@ -138,7 +140,7 @@ A migration does the changes in this order:
 4. Add the new columns, then change the types and the nullable flags.
 5. Add the new and the changed constraints.
 
-The constraint names come from `NAMING_CONVENTION` in `app/shared/db/base_gen.py`. A name of more than 63 characters gets the short form that SQLAlchemy gives. A renamed table or column also renames the constraints that have its name.
+A field with the rule `unique` gets a `UNIQUE` constraint `uq_<table>_<column>`. The constraint names come from `NAMING_CONVENTION` in `app/shared/db/base_gen.py`. A name of more than 63 characters gets the short form that SQLAlchemy gives. A renamed table or column also renames the constraints that have its name.
 
 A drop needs the `#Destructive` metadata of STR-013. The generator also stops with an error if the metadata is missing (PRD-APP-127).
 
