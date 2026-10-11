@@ -1,0 +1,141 @@
+{#- The tests of the SQLAlchemy models and the database session
+    (PRD-APP-120 to PRD-APP-123, PRD-APP-135). -#}
+{% include "common/header.j2" %}
+"""Tests of the generated SQLAlchemy models and database session of {{ application }}.
+
+The tests need no database. They compare the PostgreSQL DDL of the tables
+with the type map of the model. The generator writes this file again at
+each run. Put your tests in other files of this folder.
+"""
+
+import pytest
+{% if join_tables %}
+from sqlalchemy import Table
+{% endif %}
+from sqlalchemy.dialects import postgresql
+{% if checks %}
+from sqlalchemy.schema import CreateTable
+{% endif %}
+
+from app.main_gen import create_app
+from app.shared.config_gen import ConfigurationError, load_settings
+from app.shared.db.base_gen import Base
+{% for model in models %}
+{% for line in model.test_import_lines %}
+{{ line }}
+{% endfor %}
+{% endfor %}
+from app.shared.db.session_gen import DRIVER, database_url
+
+ENVIRON = {
+{% for variable in variables if variable.mandatory %}
+    "{{ variable.name }}": "test",
+{% endfor %}
+}
+"""A value for each mandatory environment variable."""
+
+MODELS: dict[str, type[Base]] = {
+{% for model in models %}
+    "{{ model.table }}": {{ model.class_name }},
+{% endfor %}
+}
+"""The model of each entity, by the table name."""
+
+{% if join_tables %}
+JOIN_TABLES: dict[str, Table] = {
+{% for table in join_tables %}
+    "{{ table.name }}": {{ table.variable }},
+{% endfor %}
+}
+"""The join tables, by the table name."""
+
+{% endif %}
+COLUMNS: dict[str, dict[str, tuple[str, bool, str | None]]] = {
+{% for table in tables %}
+    "{{ table.name }}": {
+{% for item in table.columns %}
+{% for line in item.expected_lines %}
+{{ line }}
+{% endfor %}
+{% endfor %}
+    },
+{% endfor %}
+}
+"""The PostgreSQL type, the nullable flag and the foreign key of each column."""
+{% if checks %}
+
+CHECKS: dict[str, dict[str, tuple[str, ...]]] = {
+{% for model in models if model.checks %}
+    "{{ model.table }}": {
+{% for item in model.checks %}
+        "{{ item.name }}": (
+{% for value in item.values %}
+            "{{ value }}",
+{% endfor %}
+        ),
+{% endfor %}
+    },
+{% endfor %}
+}
+"""The permitted values of each enumeration column, by the table name."""
+{% endif %}
+
+
+@pytest.mark.parametrize("name", sorted(MODELS))
+def test_each_entity_has_a_model_with_its_table(name: str) -> None:
+    assert MODELS[name].__tablename__ == name
+
+
+{% if join_tables %}
+@pytest.mark.parametrize("name", sorted(JOIN_TABLES))
+def test_each_join_table_is_in_the_metadata(name: str) -> None:
+    assert Base.metadata.tables[name] is JOIN_TABLES[name]
+
+
+{% endif %}
+@pytest.mark.parametrize("name", sorted(COLUMNS))
+def test_columns_have_the_postgresql_types_of_the_model(name: str) -> None:
+    dialect = postgresql.dialect()
+    columns = {
+        column.name: (
+            column.type.compile(dialect=dialect),
+            bool(column.nullable),
+            next((key.target_fullname for key in column.foreign_keys), None),
+        )
+        for column in Base.metadata.tables[name].columns
+    }
+    assert columns == COLUMNS[name]
+
+
+def test_database_url_uses_psycopg_and_the_configuration() -> None:
+    url = database_url(load_settings({**ENVIRON, "DATABASE_PASSWORD": "p@ss/word"}))
+    assert url.drivername == DRIVER == "postgresql+psycopg"
+    assert (url.host, url.port, url.database, url.username) == ("test", 5432, "test", "test")
+    assert url.password == "p@ss/word"
+    assert url.query == {"sslmode": "require"}
+
+
+def test_password_is_not_in_the_text_of_the_settings() -> None:
+    settings = load_settings({**ENVIRON, "DATABASE_PASSWORD": "secret-value"})
+    assert "secret-value" not in repr(settings)
+
+
+def test_database_port_that_is_not_a_number_stops_the_app() -> None:
+    with pytest.raises(ConfigurationError, match="DATABASE_PORT"):
+        load_settings({**ENVIRON, "DATABASE_PORT": "five"})
+
+
+def test_app_has_a_session_factory() -> None:
+    app = create_app(load_settings(ENVIRON))
+    assert app.state.session_factory is not None
+{% if checks %}
+
+
+@pytest.mark.parametrize("name", sorted(CHECKS))
+def test_enumeration_columns_permit_only_their_values(name: str) -> None:
+    dialect = postgresql.dialect()
+    text = str(CreateTable(Base.metadata.tables[name]).compile(dialect=dialect))
+    for column, values in CHECKS[name].items():
+        permitted = ", ".join(f"'{value}'" for value in values)
+        assert f"CHECK ({column} IN ({permitted}))" in text
+{% endif %}

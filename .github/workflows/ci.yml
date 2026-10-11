@@ -153,7 +153,9 @@ jobs:
         run: |
           test "$(docker run --rm --entrypoint id order-api:test -u)" != "0"
           docker run --detach --name order-api --publish 8000:8000 \
-            --env APP_ENVIRONMENT=ci order-api:test
+            --env APP_ENVIRONMENT=ci --env DATABASE_HOST=db.invalid \
+            --env DATABASE_NAME=orders --env DATABASE_USER=app \
+            --env DATABASE_PASSWORD=ci order-api:test
           for attempt in $(seq 1 30); do
             if curl --silent --fail http://127.0.0.1:8000/healthz; then
               echo

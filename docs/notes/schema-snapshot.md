@@ -1,6 +1,6 @@
 # Database schema and schema snapshot
 
-Story #61 added the database schema of an application, the schema snapshot `.dsml/schema-snapshot.json` and the rule STR-013. The M6 migration story adds the PostgreSQL column types and the Alembic migrations, and updates the snapshot.
+Story #61 added the database schema of an application, the schema snapshot `.dsml/schema-snapshot.json` and the rule STR-013. Story #77 added the column types (PRD-APP-121). The M6 migration story adds the Alembic migrations, and adds the column types to the snapshot.
 
 - Schema from the IR: `src/dsml/database/schema.py`.
 - Snapshot reader and writer: `src/dsml/database/snapshot.py`.
@@ -25,6 +25,25 @@ The entities of an application are:
 | `[*]` relation | A join table `<table>_<relation>` with a foreign key column for each key field of the two entities (PRD-APP-122). |
 
 If the related entity of a `[*]` relation has a `[0..1]` or `[1]` relation back to the entity, the two relations are one one-to-many relation. Then the foreign key holds the link, and there is no join table.
+
+## Column types
+
+Each column has a `ColumnType`. A foreign key column has the type of the key field that it refers to. The snapshot does not keep the type at this time, and a comparison of two columns ignores it.
+
+| DSML field type | PostgreSQL type |
+| --- | --- |
+| `String` with `maxLength` | `VARCHAR(<maxLength>)` |
+| `String` with no `maxLength` | `TEXT` |
+| `Integer` | `BIGINT` |
+| `Real` | `DOUBLE PRECISION` |
+| `Decimal` | `NUMERIC(<precision>, <scale>)`, default `NUMERIC(18, 4)` |
+| `Boolean` | `BOOLEAN` |
+| `Date` | `DATE` |
+| `DateTime` | `TIMESTAMPTZ` |
+| `Uuid` | `UUID` |
+| Enumeration | `VARCHAR(64)`. The literals are the values of the `CHECK` constraint. |
+
+The `@FieldRules` attributes `maxLength`, `precision` and `scale` give the parameters. A field type that is not supported (STR-007) gives the type `None`.
 
 For the example model, the application `orderApi` has one table `order` with the columns `id`, `note`, `status` and `total`.
 

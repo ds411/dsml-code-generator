@@ -1,0 +1,65 @@
+{#- The SQLAlchemy model of one entity (PRD-APP-120, PRD-APP-121, PRD-APP-122).
+    Data: "model" (a dsml.generate.fastapi_database.Model). -#}
+{% include "common/header.j2" %}
+"""The SQLAlchemy model of the entity {{ model.entity_name }}.
+
+The generator writes this file again at each run.
+"""
+{% if model.python_imports %}
+
+{% for line in model.python_imports %}
+{{ line }}
+{% endfor %}
+{% endif %}
+
+{% for line in model.sqlalchemy_import_lines %}
+{{ line }}
+{% endfor %}
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.shared.db.base_gen import Base
+{% for item in model.checks %}
+
+{{ item.values_constant }} = (
+{% for value in item.values %}
+    "{{ value }}",
+{% endfor %}
+)
+"""The values of the column `{{ item.name }}`."""
+{% endfor %}
+
+
+class {{ model.class_name }}(Base):
+    """The table `{{ model.table }}`."""
+
+    __tablename__ = "{{ model.table }}"
+{% if model.checks %}
+    __table_args__ = (
+{% for item in model.checks %}
+        CheckConstraint(
+            column("{{ item.name }}").in_({{ item.values_constant }}),
+            name="{{ item.name }}_values",
+        ),
+{% endfor %}
+    )
+{% endif %}
+
+{% for item in model.columns %}
+{% for line in item.mapped_lines %}
+{{ line }}
+{% endfor %}
+{% endfor %}
+{% for table in model.join_tables %}
+
+
+{{ table.variable }} = Table(
+    "{{ table.name }}",
+    Base.metadata,
+{% for item in table.columns %}
+{% for line in item.table_lines %}
+{{ line }}
+{% endfor %}
+{% endfor %}
+)
+"""The join table of the relation {{ table.element }}."""
+{% endfor %}

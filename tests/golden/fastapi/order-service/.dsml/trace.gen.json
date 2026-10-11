@@ -1,33 +1,49 @@
 {
   "elements": [
     {
+      "element": "OrderService::Order",
+      "files": [
+        {
+          "path": "services/order-api/app/shared/db/models/order_gen.py",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "Order"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "OrderService::orderApi",
       "files": [
         {
           "path": "services/order-api/app/main_gen.py",
           "symbols": [
             {
-              "firstLine": 20,
+              "firstLine": 24,
               "kind": "class",
-              "lastLine": 23,
+              "lastLine": 27,
               "name": "Health"
             },
             {
-              "firstLine": 26,
+              "firstLine": 30,
               "kind": "function",
-              "lastLine": 29,
+              "lastLine": 33,
               "name": "healthz"
             },
             {
-              "firstLine": 26,
+              "firstLine": 30,
               "kind": "route",
-              "lastLine": 29,
+              "lastLine": 33,
               "name": "GET /healthz"
             },
             {
-              "firstLine": 32,
+              "firstLine": 36,
               "kind": "function",
-              "lastLine": 50,
+              "lastLine": 62,
               "name": "create_app"
             }
           ]
@@ -44,20 +60,60 @@
             {
               "firstLine": 23,
               "kind": "class",
-              "lastLine": 31,
-              "name": "Settings"
-            },
-            {
-              "firstLine": 34,
-              "kind": "function",
               "lastLine": 49,
-              "name": "load_settings"
+              "name": "Settings"
             },
             {
               "firstLine": 52,
               "kind": "function",
-              "lastLine": 58,
+              "lastLine": 78,
+              "name": "load_settings"
+            },
+            {
+              "firstLine": 81,
+              "kind": "function",
+              "lastLine": 87,
               "name": "_mandatory"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/db/base_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "Base"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/db/session_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 37,
+              "name": "database_url"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "create_engine"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "create_session_factory"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "get_session"
             }
           ]
         },
@@ -129,34 +185,81 @@
           "path": "services/order-api/tests/test_app_gen.py",
           "symbols": [
             {
-              "firstLine": 22,
+              "firstLine": 26,
               "kind": "function",
-              "lastLine": 27,
+              "lastLine": 31,
               "name": "test_healthz_returns_200_with_no_token"
             },
             {
-              "firstLine": 30,
+              "firstLine": 34,
               "kind": "function",
-              "lastLine": 33,
+              "lastLine": 37,
               "name": "test_request_id_of_the_request_is_in_the_response"
             },
             {
-              "firstLine": 36,
+              "firstLine": 40,
               "kind": "function",
-              "lastLine": 41,
+              "lastLine": 45,
               "name": "test_unknown_path_returns_problem_details"
             },
             {
-              "firstLine": 44,
+              "firstLine": 48,
               "kind": "function",
-              "lastLine": 48,
+              "lastLine": 52,
               "name": "test_missing_mandatory_variable_stops_the_app"
             },
             {
-              "firstLine": 51,
+              "firstLine": 55,
               "kind": "function",
-              "lastLine": 53,
+              "lastLine": 57,
               "name": "test_log_level_that_is_not_correct_stops_the_app"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_db_gen.py",
+          "symbols": [
+            {
+              "firstLine": 56,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "test_each_entity_has_a_model_with_its_table"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 72,
+              "name": "test_columns_have_the_postgresql_types_of_the_model"
+            },
+            {
+              "firstLine": 75,
+              "kind": "function",
+              "lastLine": 80,
+              "name": "test_database_url_uses_psycopg_and_the_configuration"
+            },
+            {
+              "firstLine": 83,
+              "kind": "function",
+              "lastLine": 85,
+              "name": "test_password_is_not_in_the_text_of_the_settings"
+            },
+            {
+              "firstLine": 88,
+              "kind": "function",
+              "lastLine": 90,
+              "name": "test_database_port_that_is_not_a_number_stops_the_app"
+            },
+            {
+              "firstLine": 93,
+              "kind": "function",
+              "lastLine": 95,
+              "name": "test_app_has_a_session_factory"
+            },
+            {
+              "firstLine": 98,
+              "kind": "function",
+              "lastLine": 104,
+              "name": "test_enumeration_columns_permit_only_their_values"
             }
           ]
         }

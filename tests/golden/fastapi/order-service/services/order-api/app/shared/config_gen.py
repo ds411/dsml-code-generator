@@ -10,7 +10,7 @@ names the variable.
 
 import os
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 LOG_LEVELS = ("DEBUG", "INFO", "WARNING", "ERROR")
 """The permitted values of the variable LOG_LEVEL."""
@@ -30,6 +30,24 @@ class Settings:
     log_level: str
     """The lowest level of the logs: DEBUG, INFO, WARNING or ERROR. Variable: `LOG_LEVEL`."""
 
+    database_host: str
+    """The host name of the PostgreSQL database. Variable: `DATABASE_HOST`."""
+
+    database_port: str
+    """The port of the PostgreSQL database. Variable: `DATABASE_PORT`."""
+
+    database_name: str
+    """The name of the PostgreSQL database. Variable: `DATABASE_NAME`."""
+
+    database_user: str
+    """The user name for the PostgreSQL database. Variable: `DATABASE_USER`."""
+
+    database_password: str = field(repr=False)
+    """The password of the user. ECS sets it from Secrets Manager. Variable: `DATABASE_PASSWORD`."""
+
+    database_ssl_mode: str
+    """The TLS mode of the connection (the libpq value `sslmode`). Variable: `DATABASE_SSL_MODE`."""
+
 
 def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
     """Read the configuration from the environment variables.
@@ -40,11 +58,22 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
     settings = Settings(
         environment=_mandatory(values, "APP_ENVIRONMENT"),
         log_level=values.get("LOG_LEVEL") or "INFO",
+        database_host=_mandatory(values, "DATABASE_HOST"),
+        database_port=values.get("DATABASE_PORT") or "5432",
+        database_name=_mandatory(values, "DATABASE_NAME"),
+        database_user=_mandatory(values, "DATABASE_USER"),
+        database_password=_mandatory(values, "DATABASE_PASSWORD"),
+        database_ssl_mode=values.get("DATABASE_SSL_MODE") or "require",
     )
     if settings.log_level not in LOG_LEVELS:
         raise ConfigurationError(
             f'The environment variable LOG_LEVEL has the value "{settings.log_level}". '
             f"Use one of these values: {', '.join(LOG_LEVELS)}."
+        )
+    if not settings.database_port.isdecimal():
+        raise ConfigurationError(
+            f'The environment variable DATABASE_PORT has the value "{settings.database_port}". '
+            "Use a port number, for example 5432."
         )
     return settings
 

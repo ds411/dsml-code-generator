@@ -15,6 +15,10 @@ from app.shared.errors_gen import PROBLEM_MEDIA_TYPE
 
 ENVIRON = {
     "APP_ENVIRONMENT": "test",
+    "DATABASE_HOST": "test",
+    "DATABASE_NAME": "test",
+    "DATABASE_USER": "test",
+    "DATABASE_PASSWORD": "test",
 }
 """A value for each mandatory environment variable."""
 

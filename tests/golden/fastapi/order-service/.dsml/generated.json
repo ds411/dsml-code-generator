@@ -19,7 +19,7 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/app/main_gen.py",
-      "sha256": "b9e88bb89bef974b5a9cea8a3ecc704bff2441037336b4c07d11f8c3aee7e12e"
+      "sha256": "860c0dad9ae0ca59f9ef7430b78312e940043d4f548ebed957348cc03ebb119e"
     },
     {
       "part": "application/orderApi",
@@ -29,7 +29,32 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/app/shared/config_gen.py",
-      "sha256": "c71635dc179d45fa83ae1a3e878594a818f602c23f228a359657955fdfe2e291"
+      "sha256": "ba27cbe05ea59845f007d1dd29acbdcbf2ad6698209ebefab9e781811b92b33c"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/__init__.py",
+      "sha256": "43b1de7bda1efb419145ca90afc19ad26b454bb11166a198c4a0c3b0271c4396"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/base_gen.py",
+      "sha256": "71d278b0f7f4bdcf655c87d30722bde30ae84ffb730cbd15aefed3bc727d7bcc"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/models/__init__.py",
+      "sha256": "43b1de7bda1efb419145ca90afc19ad26b454bb11166a198c4a0c3b0271c4396"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/models/order_gen.py",
+      "sha256": "39628e794b4f785ef0b2dabb8eee8cd41ea6aafe57cfa2dff7ba12758fb7a820"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/session_gen.py",
+      "sha256": "c95633a926b30c0185537b2ddb88867a7ae2a28c290f77bd60b9a13113c5e1d2"
     },
     {
       "part": "application/orderApi",
@@ -44,12 +69,17 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/pyproject.toml",
-      "sha256": "6879244297fa83dff853d8b5b1a4629a3aa081893eb7100c1ad63eade34d70a2"
+      "sha256": "d3f24d4fae493a4ec0381d4bfbb82f7e6a11d1f9ba5e51841dd305fd73d67a57"
     },
     {
       "part": "application/orderApi",
       "path": "services/order-api/tests/test_app_gen.py",
-      "sha256": "a16398ca14aebc14ee0b4cb0e359c26417de217bc178a2c42c3879d45b50fefd"
+      "sha256": "3f0eeec9683f32d4981cacee2407ea31b6bd593099a72b9bca4cd6e8afcd8952"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_db_gen.py",
+      "sha256": "3c7488c95ecd32c6b46f83d0efdbdeded6c032a7b1637f212ae9a7993a01b3fa"
     }
   ],
   "manifestVersion": 1
