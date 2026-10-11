@@ -15,7 +15,7 @@ from jsonschema.protocols import Validator
 
 from dsml.adapter.convert import build_ir
 from dsml.adapter.engine import Engine
-from dsml.adapter.solution import CRUD_DEFAULTS, LITERALS
+from dsml.adapter.solution import LITERALS
 from dsml.ir.environments import environments, realization_attributes
 from dsml.ir.model import (
     Annotation,
@@ -32,6 +32,7 @@ from dsml.ir.model import (
     StringValue,
     Value,
 )
+from dsml.ir.operations import CRUD_DEFAULTS
 from dsml.ir.schema import load_schema
 from dsml.ir.writer import to_data, write_ir
 from dsml.library import library_document

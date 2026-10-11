@@ -1,7 +1,6 @@
 """Tests of the SARIF 2.1.0 output of `dsml validate` (story #58)."""
 
 import json
-import shutil
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -142,7 +141,12 @@ def test_sarif_of_a_finding_with_no_rule_metadata() -> None:
 def _write_project(root: Path) -> None:
     """Write a configuration file and a model with a SYN-002 finding in `root`."""
     (root / "model").mkdir(parents=True)
-    shutil.copyfile(SYN_002_REJECT, root / "model" / SYN_002_REJECT.name)
+    # Add @DsmlVersion on line 4, thus STR-001 gives no error.
+    text = SYN_002_REJECT.read_text(encoding="utf-8").replace(
+        "package SynReject {",
+        "package SynReject { private import DSML::*; @DsmlVersion { major = 1; minor = 0; }",
+    )
+    (root / "model" / SYN_002_REJECT.name).write_text(text, encoding="utf-8")
     (root / "dsml.toml").write_text('schema = 1\n\n[model]\npaths = ["model"]\n', encoding="utf-8")
 
 

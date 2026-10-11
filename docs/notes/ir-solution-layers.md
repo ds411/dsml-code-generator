@@ -35,7 +35,7 @@ The field `types` gives the identities of the definitions that type the element 
 
 ## Attributes
 
-The adapter reads the DSML attributes of each kind from the base types of the DSML library, for example `BaseTypes::AwsEcsService`. An attribute with no value is not in the IR. An attribute with the multiplicity `[*]` or `[0..*]` is always a `list` value, also if it has one item.
+The adapter reads the DSML attributes of each kind from the base types of the DSML library, for example `BaseTypes::AwsEcsService`. An attribute with no value is not in the IR. A logical kind has no DSML attributes. For a logical element, the IR holds each attribute with a value that the model declares on it, thus rule STR-016 can find an AWS attribute (story #59). An attribute with the multiplicity `[*]` or `[0..*]` is always a `list` value, also if it has one item.
 
 The adapter adds these attributes, which are not DSML attributes:
 
@@ -65,7 +65,7 @@ The location of a link is the first character of its statement. For `verify`, it
 
 ## Environments
 
-An override holds only the attributes that it changes, with their locations. The validator uses this to find a change of an attribute that PRD-DSML-042 does not permit.
+An override holds only the attributes that it changes, with their locations. It also holds a change of an attribute that the model adds to the realization, for example `:>> engine = "postgres-16";`. Rule STR-012 uses this to find a change of an attribute that PRD-DSML-042 does not permit.
 
 The function `realization_attributes(ir, environment)` in `dsml.ir.environments` gives the attributes of each AWS realization in one environment. It starts with the values of the realization and replaces each value that an override in the environment changes. For the example model:
 

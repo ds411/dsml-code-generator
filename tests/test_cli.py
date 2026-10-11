@@ -207,7 +207,11 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     if command == "init":
         argv = [command]
     if command in ("generate", "trace", "validate"):
-        (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
+        (tmp_path / "model.sysml").write_text(
+            "package Model {\n    private import DSML::*;\n"
+            "    @DsmlVersion { major = 1; minor = 0; }\n}\n",
+            encoding="utf-8",
+        )
         (tmp_path / "dsml.toml").write_text(
             'schema = 1\n\n[model]\npaths = ["model.sysml"]\n', encoding="utf-8"
         )
