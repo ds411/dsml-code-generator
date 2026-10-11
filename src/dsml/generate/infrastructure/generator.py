@@ -19,7 +19,9 @@ For each environment, the folder `envs/<environment>/` gets these files
   `default_tags` (PRD-IAC-024, PRD-IAC-035).
 - `main.gen.tf`: the values of the environment, and one call of a local
   module for each logical element (PRD-IAC-023).
-- `variables.gen.tf`: the variable `model_commit` (PRD-IAC-036).
+- `variables.gen.tf`: the variable `model_commit` (PRD-IAC-036) and the
+  variables of the module calls, for example the image digest of an
+  application (PRD-IAC-009).
 - `outputs.gen.tf`: the values that the pipelines need, and the outputs of
   the module calls (PRD-IAC-010).
 
@@ -175,8 +177,8 @@ class InfrastructureGenerator:
     ) -> list[OutputFile]:
         """Give the files of one environment root module.
 
-        A module call and its outputs are symbols of the logical element and
-        of its AWS realization. The other blocks are symbols of the
+        A module call, its outputs and its variables are symbols of the
+        logical element and of its AWS realization. The other blocks are symbols of the
         environment.
         """
         data = template_data(root, configuration)
@@ -187,6 +189,11 @@ class InfrastructureGenerator:
             by_address[f"module.{call.address}"] = call.identities
             for item in call.outputs:
                 by_address[f"output.{item.name}"] = call.identities
+            for variable in call.variables:
+                by_address[f"var.{variable.name}"] = call.identities
+        variable_elements = tuple(
+            sorted({item for call in calls if call.variables for item in call.identities})
+        )
         identity = root.element.identity
 
         def elements(address: str) -> tuple[str, ...]:
@@ -197,6 +204,8 @@ class InfrastructureGenerator:
             file_elements = [identity]
             if file in CALL_FILES:
                 file_elements.extend(call_elements)
+            elif file == "variables":
+                file_elements.extend(variable_elements)
             content = self._engine.render_bytes(
                 f"{TEMPLATE_FOLDER}/{file}.gen.tf.j2",
                 {**data, "elements": sorted(file_elements)},

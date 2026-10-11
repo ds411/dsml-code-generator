@@ -99,7 +99,7 @@ def test_generator_writes_the_files_of_the_two_modules(ir: Ir) -> None:
 
 def test_modules_are_in_the_order_of_their_calls() -> None:
     folders = [module.folder for module in modules.MODULES]
-    assert folders[-2:] == list(FOLDERS)
+    assert folders[2:4] == list(FOLDERS)
 
 
 # trace: PRD-TRACE-006, PRD-TRACE-007

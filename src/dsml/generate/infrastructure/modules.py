@@ -63,6 +63,20 @@ class RootOutput:
     value: str
 
 
+# trace: PRD-IAC-009
+@dataclass(frozen=True, slots=True)
+class RootVariable:
+    """A variable of an environment root module that a module call uses.
+
+    The pipeline gives its value. The value must agree with `pattern`.
+    """
+
+    name: str
+    description: str
+    pattern: str
+    error_message: str
+
+
 # trace: PRD-IAC-008, PRD-IAC-023, PRD-IAC-035
 @dataclass(frozen=True, slots=True)
 class ModuleCall:
@@ -74,6 +88,7 @@ class ModuleCall:
     arguments: tuple[tuple[str, str], ...]
     """The name and the HCL expression of each argument, sorted by name."""
     outputs: tuple[RootOutput, ...]
+    variables: tuple[RootVariable, ...] = ()
 
     @property
     def address(self) -> str:
@@ -133,17 +148,25 @@ type Arguments = Callable[[Element, Mapping[str, Attribute], CallContext], dict[
 """Give the arguments of a call from the element, the attributes of its
 realization in the environment, and the values of the root module."""
 
-type TemplateData = Callable[[], Mapping[str, str]]
+type TemplateData = Callable[[], Mapping[str, object]]
 """Give the template data of the files of a module, in addition to the header data."""
 
 
-def no_template_data() -> Mapping[str, str]:
+def no_template_data() -> Mapping[str, object]:
     """Give no template data."""
     return {}
 
 
 type Outputs = Callable[[str], tuple[RootOutput, ...]]
 """Give the root module outputs of a call from the address of the call."""
+
+type Variables = Callable[[Element, CallContext], tuple[RootVariable, ...]]
+"""Give the root module variables of a call from the element and the values of the root module."""
+
+
+def no_variables(element: Element, context: CallContext) -> tuple[RootVariable, ...]:
+    """Give no root module variable."""
+    return ()
 
 
 # trace: PRD-IAC-001
@@ -160,6 +183,7 @@ class LocalModule:
     arguments: Arguments
     outputs: Outputs
     template_data: TemplateData = no_template_data
+    variables: Variables = no_variables
 
 
 def _integer(attributes: Mapping[str, Attribute], name: str, default: int) -> int:
@@ -474,6 +498,298 @@ def _user_directory_outputs(address: str) -> tuple[RootOutput, ...]:
     )
 
 
+# The container service (PRD-IAC-009, PRD-IAC-012 to PRD-IAC-016). If the
+# realization does not give a value, the call uses these values: cpu 256,
+# memory 512 (the smallest Fargate size), desiredCount 1, minCount the value
+# of desiredCount, and maxCount two times minCount (1 or more).
+
+DEFAULT_CPU: Final = 256
+DEFAULT_MEMORY: Final = 512
+DEFAULT_DESIRED_COUNT: Final = 1
+
+CPU_TARGET: Final = 70
+"""The target value of the average CPU use of a service, in percent (PRD-IAC-013)."""
+
+LOG_RETENTION_DAYS: Final = 30
+"""The retention of the log group of a service in days (PRD-IAC-016)."""
+
+HEALTH_CHECK_PATH: Final = "/healthz"
+"""The health check path of the target group (PRD-IAC-014, PRD-APP-012)."""
+
+CONTAINER_NAME: Final = "app"
+"""The name of the container in the two task definitions of a service."""
+
+TARGETS: Final[Mapping[str, tuple[int, tuple[str, ...]]]] = {
+    "fastapi": (8000, ("python", "-m", "app.migrate_gen")),
+}
+"""The container port and the migration command of each target (PRD-APP-128, PRD-APP-133)."""
+
+DATABASE_SSL_MODE: Final = "require"
+"""The PostgreSQL SSL mode of the application. RDS for PostgreSQL requires SSL."""
+
+SERVICE_OUTPUTS: Final = (
+    ("api_url", "The API URL"),
+    ("cluster_name", "The name of the ECS cluster"),
+    ("migration_task_definition", "The family of the migration task definition"),
+    ("private_subnet_ids", "The IDs of the subnets of the tasks"),
+    ("security_group_id", "The ID of the security group of the tasks"),
+    ("service_name", "The name of the ECS service"),
+)
+"""The root module outputs of each container service, without the prefix `<address>_`."""
+
+IMAGE_DIGEST_PATTERN: Final = "^sha256:[0-9a-f]{64}$"
+"""The pattern of an image digest."""
+
+
+def _one(items: Sequence[Element], element: Element, what: str) -> Element:
+    """Give the one item of a list, or an error that names the element."""
+    if len(items) != 1:
+        raise ToolchainError(
+            f'The container service "{element.identity}" must have one {what}, not {len(items)}.'
+        )
+    return items[0]
+
+
+# trace: PRD-IAC-009, PRD-IAC-012
+def service_application(ir: Ir, element: Element) -> Element:
+    """Give the one application that is allocated to a container service."""
+    applications = [
+        item for item in _sources(ir, "allocate", element.identity) if item.kind == "Application"
+    ]
+    return _one(applications, element, "allocated application")
+
+
+def _target(application: Element) -> str:
+    """Give the target of an application, for example `fastapi`."""
+    for attribute in application.attributes:
+        if attribute.name == "target" and isinstance(attribute.value, EnumValue):
+            return attribute.value.literal
+    raise ToolchainError(f'The application "{application.identity}" has no target.')
+
+
+def _tooling_account(ir: Ir) -> tuple[str, str]:
+    """Give the account ID and the Region of the one tooling account of the model."""
+    found = [item for item in ir.elements if item.kind == "ToolingAccount"]
+    if len(found) != 1:
+        raise ToolchainError(f"The model must have one #ToolingAccount element, not {len(found)}.")
+    values = {
+        attribute.name: attribute.value.value
+        for attribute in found[0].attributes
+        if isinstance(attribute.value, StringValue)
+    }
+    if "accountId" not in values or "region" not in values:
+        raise ToolchainError(
+            f'The tooling account "{found[0].identity}" must have an accountId and a region.'
+        )
+    return values["accountId"], values["region"]
+
+
+def _used(ir: Ir, element: Element, kind: str) -> list[Element]:
+    """Give the elements of a kind that a container service uses (`#Uses`), sorted."""
+    by_identity = {item.identity: item for item in ir.elements}
+    targets = sorted(
+        {
+            link.target
+            for link in ir.links
+            if link.type == "uses" and link.source == element.identity
+        }
+    )
+    return [by_identity[item] for item in targets if by_identity[item].kind == kind]
+
+
+# trace: PRD-IAC-012, PRD-IAC-013, PRD-DSML-042
+def service_counts(element: Element, attributes: Mapping[str, Attribute]) -> tuple[int, int, int]:
+    """Give the desired count, the minimum count and the maximum count of a service."""
+    desired = _integer(attributes, "desiredCount", DEFAULT_DESIRED_COUNT)
+    minimum = _integer(attributes, "minCount", desired)
+    maximum = _integer(attributes, "maxCount", max(2 * minimum, 1))
+    if not minimum <= desired <= maximum:
+        raise ToolchainError(
+            f'The container service "{element.identity}" must have '
+            "minCount <= desiredCount <= maxCount."
+        )
+    return desired, minimum, maximum
+
+
+# trace: PRD-IAC-015
+def _service_environment(
+    ir: Ir, element: Element, application: Element
+) -> tuple[list[tuple[str, str]], list[tuple[str, str]], list[str], list[str]]:
+    """Give the environment variables, the secrets, the secret ARNs and the KMS key ARNs.
+
+    The values come from the elements that the service uses (`#Uses`): one
+    database, one user directory and each secret store. The secrets give
+    the `valueFrom` of each secret environment variable.
+    """
+    variables: list[tuple[str, str]] = [("AWS_REGION", "local.aws_region")]
+    secrets: list[tuple[str, str]] = []
+    secret_arns: list[str] = []
+    key_arns: list[str] = []
+    databases = _used(ir, element, "RelationalDatabase")
+    if databases:
+        database = f"module.{names.hcl_address(_one(databases, element, 'database').name)}"
+        secret = f"{database}.master_user_secret_arn"
+        variables += [
+            ("DATABASE_HOST", f"{database}.address"),
+            ("DATABASE_NAME", f"{database}.database_name"),
+            ("DATABASE_PORT", f"tostring({database}.port)"),
+            ("DATABASE_SSL_MODE", hcl.string(DATABASE_SSL_MODE)),
+        ]
+        secrets += [
+            ("DATABASE_PASSWORD", f'"${{{secret}}}:password::"'),
+            ("DATABASE_USER", f'"${{{secret}}}:username::"'),
+        ]
+        secret_arns.append(secret)
+        key_arns.append(f"{database}.kms_key_arn")
+    directories = _used(ir, element, "UserDirectory")
+    if directories:
+        directory = f"module.{names.hcl_address(_one(directories, element, 'user directory').name)}"
+        client = hcl.string(names.hcl_address(application.name))
+        variables += [
+            ("COGNITO_APP_CLIENT_ID", f"{directory}.app_client_ids[{client}]"),
+            ("COGNITO_USER_POOL_ID", f"{directory}.user_pool_id"),
+        ]
+    for store in _used(ir, element, "SecretStore"):
+        call = f"module.{names.hcl_address(store.name)}"
+        secrets.append((names.hcl_address(store.name).upper(), f"{call}.secret_arn"))
+        secret_arns.append(f"{call}.secret_arn")
+        key_arns.append(f"{call}.key_arn")
+    return sorted(variables), sorted(secrets), sorted(secret_arns), sorted(key_arns)
+
+
+def _hcl_list(values: Sequence[str]) -> str:
+    return f"[{', '.join(values)}]"
+
+
+# trace: PRD-IAC-008, PRD-IAC-009, PRD-IAC-012, PRD-IAC-013, PRD-IAC-014, PRD-IAC-015,
+# PRD-IAC-016, PRD-IAC-035, PRD-IAC-037
+def _container_service_arguments(
+    element: Element, attributes: Mapping[str, Attribute], context: CallContext
+) -> dict[str, str]:
+    """Give the arguments of a container service call.
+
+    The API domain is `<application>.<environment domain>`. The public
+    Route 53 hosted zone of the environment domain must exist (PRD-IAC-014).
+    """
+    product, environment = context.product, context.environment_name
+    network = _the_network(context.ir)
+    application = service_application(context.ir, element)
+    target = _target(application)
+    if target not in TARGETS:
+        raise ToolchainError(
+            f'The container service "{element.identity}" cannot run the target "{target}".'
+        )
+    port, command = TARGETS[target]
+    desired, minimum, maximum = service_counts(element, attributes)
+    domain = _environment_domain(context.environment)
+    account, region = _tooling_account(context.ir)
+    kebab = safe_names.kebab_case(element.name)
+
+    def aws(suffix: str, resource_type: str) -> str:
+        part = kebab if not suffix else f"{kebab}-{suffix}"
+        return hcl.string(names.aws_name(product, environment, part, resource_type))
+
+    aws_names = [
+        ("alb", aws("", "alb")),
+        ("alb_security_group", aws("alb", "security_group")),
+        ("cluster", aws("", "ecs_cluster")),
+        (
+            "execution_role",
+            hcl.string(names.task_execution_role(product, environment, element.name)),
+        ),
+        ("log_group", aws("", "cloudwatch_log_group")),
+        ("migration_family", aws("migrate", "ecs_task_definition")),
+        ("service", aws("", "ecs_service")),
+        ("service_security_group", aws("service", "security_group")),
+        ("target_group", aws("", "target_group")),
+        ("task_family", aws("", "ecs_task_definition")),
+        ("task_role", hcl.string(names.task_role(product, environment, element.name))),
+    ]
+    variables, secrets, secret_arns, key_arns = _service_environment(
+        context.ir, element, application
+    )
+    return {
+        "application": hcl.string(names.tag_value(application.identity)),
+        "container_port": str(port),
+        "cpu": str(_integer(attributes, "cpu", DEFAULT_CPU)),
+        "desired_count": str(desired),
+        "domain_name": hcl.string(f"{safe_names.kebab_case(application.name)}.{domain}"),
+        "ecr_account_id": hcl.string(account),
+        "ecr_region": hcl.string(region),
+        "ecr_repository": hcl.string(names.ecr_repository(product, application.name)),
+        "element": hcl.string(names.tag_value(element.identity)),
+        "environment_variables": hcl_map(variables),
+        "image_digest": f"var.{image_variable(application)}",
+        "kms_key_arns": _hcl_list(key_arns),
+        "max_count": str(maximum),
+        "memory": str(_integer(attributes, "memory", DEFAULT_MEMORY)),
+        "migration_command": _hcl_list([hcl.string(part) for part in command]),
+        "min_count": str(minimum),
+        "names": hcl_map(aws_names),
+        "private_subnet_ids": f"{network}.private_subnet_ids",
+        "public_subnet_ids": f"{network}.public_subnet_ids",
+        "secret_arns": _hcl_list(secret_arns),
+        "secrets": hcl_map(secrets),
+        "vpc_id": f"{network}.vpc_id",
+        "zone_name": hcl.string(domain),
+    }
+
+
+# trace: PRD-IAC-010
+def _container_service_outputs(address: str) -> tuple[RootOutput, ...]:
+    return tuple(
+        RootOutput(
+            f"{address}_{name}",
+            f"{description} of module.{address}.",
+            f"module.{address}.{name}",
+        )
+        for name, description in SERVICE_OUTPUTS
+    )
+
+
+# trace: PRD-IAC-014, PRD-IAC-016, PRD-IAC-034
+def _container_service_template_data() -> Mapping[str, object]:
+    """Give the fixed values of the module and the TLS policy of the version baseline."""
+    pin = load_baseline().get("alb-tls-policy")
+    if pin is None or pin.value is None:
+        raise ToolchainError('The version baseline has no value for "alb-tls-policy".')
+    return {
+        "container_name": CONTAINER_NAME,
+        "cpu_target": CPU_TARGET,
+        "health_check_path": HEALTH_CHECK_PATH,
+        "log_retention_days": LOG_RETENTION_DAYS,
+        "tls_policy": pin.value,
+    }
+
+
+# trace: PRD-IAC-009
+def image_variable(application: Element) -> str:
+    """Give the name of the root module variable of the image digest of an application."""
+    return f"{names.hcl_address(application.name)}_image_digest"
+
+
+# trace: PRD-IAC-009
+def _container_service_variables(
+    element: Element, context: CallContext
+) -> tuple[RootVariable, ...]:
+    application = service_application(context.ir, element)
+    name = image_variable(application)
+    return (
+        RootVariable(
+            name=name,
+            description=(
+                f"The digest of the image of the application {application.identity}. "
+                "The pipeline gives it (PRD-IAC-009)."
+            ),
+            pattern=IMAGE_DIGEST_PATTERN,
+            error_message=(
+                f"The variable {name} must be an image digest: "
+                "sha256: and 64 lowercase hexadecimal characters."
+            ),
+        ),
+    )
+
+
 MODULES: Final = (
     LocalModule("Network", "AwsVpc", "network", _network_arguments, _network_outputs),
     LocalModule(
@@ -493,6 +809,15 @@ MODULES: Final = (
         "user-directory",
         _user_directory_arguments,
         _user_directory_outputs,
+    ),
+    LocalModule(
+        "ContainerService",
+        "AwsEcsService",
+        "container-service",
+        _container_service_arguments,
+        _container_service_outputs,
+        _container_service_template_data,
+        _container_service_variables,
     ),
 )
 """The local modules of this toolchain version, in the order of their calls."""
@@ -549,6 +874,7 @@ def module_calls(ir: Ir, environment: Element, product: str) -> tuple[ModuleCall
                     realization=aws,
                     arguments=tuple(sorted(arguments.items())),
                     outputs=module.outputs(address),
+                    variables=module.variables(element, context),
                 )
             )
     _check_addresses(calls)
