@@ -1,0 +1,12 @@
+{#- The Alembic configuration of the FastAPI target (PRD-APP-128, PRD-APP-134). -#}
+{% include "common/header.j2" %}
+#
+# The generator writes the migrations in migrations/versions/. Do not use
+# "alembic revision": run "dsml generate" after a change to the model.
+# "python -m app.migrate_gen" applies the migrations that the database does
+# not have.
+
+[alembic]
+script_location = %(here)s/migrations
+prepend_sys_path = .
+path_separator = os

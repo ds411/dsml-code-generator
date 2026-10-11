@@ -12,7 +12,16 @@ import pytest
 
 from dsml.adapter.convert import build_ir
 from dsml.adapter.engine import Engine
-from dsml.database.schema import Column, ForeignKey, Schema, SchemaError, Table, application_schema
+from dsml.database.schema import (
+    Column,
+    ColumnType,
+    ForeignKey,
+    Schema,
+    SchemaError,
+    Table,
+    application_schema,
+    column_type_of,
+)
 from dsml.database.snapshot import (
     SNAPSHOT_PATH,
     SnapshotError,
@@ -183,29 +192,36 @@ def test_no_snapshot_gives_none(tmp_path: Path) -> None:
 
 BAD_SNAPSHOTS: list[tuple[object, str]] = [
     ([], "The top level must be a JSON object"),
-    ({"snapshotVersion": 2, "tables": []}, "The snapshot version 2 is unknown"),
+    ({"snapshotVersion": 1, "tables": []}, "The snapshot version 1 is unknown"),
     ({"snapshotVersion": True, "tables": []}, "The snapshot version True is unknown"),
-    ({"snapshotVersion": 1, "tables": {}}, 'The key "tables" must be a list'),
-    ({"snapshotVersion": 1, "tables": [{"name": "a"}]}, 'Each item of "tables" must be'),
+    ({"snapshotVersion": 2, "tables": {}}, 'The key "tables" must be a list'),
+    ({"snapshotVersion": 2, "tables": [{"name": "a"}]}, 'Each item of "tables" must be'),
     (
-        {"snapshotVersion": 1, "tables": [{"name": "", "columns": []}]},
+        {"snapshotVersion": 2, "tables": [{"name": "", "columns": []}]},
         "Each table name must be a text",
     ),
     (
         {
-            "snapshotVersion": 1,
+            "snapshotVersion": 2,
             "tables": [{"name": "a", "columns": []}, {"name": "a", "columns": []}],
         },
         'More than one table has the name "a"',
     ),
     (
         {
-            "snapshotVersion": 1,
+            "snapshotVersion": 2,
             "tables": [
                 {
                     "name": "a",
                     "columns": [
-                        {"name": "x", "nullable": 1, "primaryKey": False, "references": None}
+                        {
+                            "name": "x",
+                            "nullable": 1,
+                            "primaryKey": False,
+                            "references": None,
+                            "type": "TEXT",
+                            "values": [],
+                        }
                     ],
                 }
             ],
@@ -214,7 +230,7 @@ BAD_SNAPSHOTS: list[tuple[object, str]] = [
     ),
     (
         {
-            "snapshotVersion": 1,
+            "snapshotVersion": 2,
             "tables": [
                 {
                     "name": "a",
@@ -224,12 +240,16 @@ BAD_SNAPSHOTS: list[tuple[object, str]] = [
                             "nullable": False,
                             "primaryKey": False,
                             "references": None,
+                            "type": "TEXT",
+                            "values": [],
                         },
                         {
                             "name": "x",
                             "nullable": False,
                             "primaryKey": False,
                             "references": None,
+                            "type": "TEXT",
+                            "values": [],
                         },
                     ],
                 }
@@ -238,6 +258,48 @@ BAD_SNAPSHOTS: list[tuple[object, str]] = [
         'More than one column of the table "a" has the name "x"',
     ),
 ]
+
+
+def _one_column(column_type: object, values: object) -> dict[str, object]:
+    column = {
+        "name": "x",
+        "nullable": False,
+        "primaryKey": False,
+        "references": None,
+        "type": column_type,
+        "values": values,
+    }
+    return {"snapshotVersion": 2, "tables": [{"name": "a", "columns": [column]}]}
+
+
+BAD_SNAPSHOTS.extend(
+    [
+        (_one_column("BLOB", []), "The toolchain does not know this type"),
+        (_one_column("TEXT", ["a"]), "The toolchain does not know this type"),
+        (_one_column(None, ["a"]), "has values, but no type"),
+        (_one_column("TEXT", "a"), 'The key "values" of "a.x" must be a list'),
+    ]
+)
+
+
+# trace: PRD-APP-121, PRD-APP-124
+@pytest.mark.parametrize(
+    "column_type",
+    [
+        ColumnType("String"),
+        ColumnType("String", length=80),
+        ColumnType("Decimal", precision=10, scale=2),
+        ColumnType("Enumeration", values=("open", "closed")),
+        *(ColumnType(name) for name in ("Boolean", "Date", "DateTime", "Integer", "Real", "Uuid")),
+    ],
+)
+def test_column_types_go_into_the_snapshot_and_back(column_type: ColumnType) -> None:
+    assert column_type_of(column_type.postgresql, column_type.values) == column_type
+    schema = Schema((Table("a", (Column("x", type=column_type),)),))
+    column = parse_snapshot(json.loads(snapshot_bytes(schema))).tables[0].columns[0]
+    assert column.type is not None
+    assert column.type.postgresql == column_type.postgresql
+    assert sorted(column.type.values) == sorted(column_type.values)
 
 
 @pytest.mark.parametrize(("data", "message"), BAD_SNAPSHOTS)

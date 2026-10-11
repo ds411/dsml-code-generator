@@ -108,7 +108,8 @@ jobs:
           tar --extract --gzip --file "$RUNNER_TEMP/$archive" --directory "$RUNNER_TEMP" actionlint
           "$RUNNER_TEMP/actionlint" -color tests/golden/pipelines/*/.github/workflows/*.yml
 
-  # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-132, PRD-APP-133, PRD-APP-135
+  # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-124, PRD-APP-128, PRD-APP-132,
+  # PRD-APP-133, PRD-APP-135
   #
   # The golden output of the FastAPI generator (story #75) must pass the
   # tools of the generated project. The job copies the golden project to a
@@ -116,12 +117,29 @@ jobs:
   # not write lockfiles (PRD-CORE-036). This job needs the network to
   # install the dependencies of the generated project. The generator does
   # not use the network (PRD-TOP-004).
+  #
+  # The migrations of the golden project go into PostgreSQL 18 in a service
+  # container (story #85).
   fastapi-golden:
     name: FastAPI golden project (linux-x64)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       PROJECT: ${{ github.workspace }}/../order-api
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: orders
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready --username app --dbname orders"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
     steps:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -157,6 +175,28 @@ jobs:
       - name: Test
         working-directory: ${{ env.PROJECT }}
         run: uv run --frozen pytest
+
+      # app/migrate_gen.py must apply the missing migrations and then stop.
+      # A second run must apply nothing (PRD-APP-128). "alembic check" then
+      # compares the database with the SQLAlchemy models (PRD-APP-124).
+      - name: Apply the migrations to PostgreSQL
+        working-directory: ${{ env.PROJECT }}
+        env:
+          APP_ENVIRONMENT: ci
+          AWS_REGION: eu-west-1
+          COGNITO_USER_POOL_ID: eu-west-1_ci
+          COGNITO_APP_CLIENT_ID: ci
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_NAME: orders
+          DATABASE_USER: app
+          DATABASE_PASSWORD: ci
+          DATABASE_SSL_MODE: disable
+        run: |
+          uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/first.txt"
+          grep --quiet "Applied the migrations" "$RUNNER_TEMP/first.txt"
+          uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/second.txt"
+          grep --quiet "No migration was applied" "$RUNNER_TEMP/second.txt"
+          uv run --frozen alembic check
 
       - name: Build the container image
         working-directory: ${{ env.PROJECT }}

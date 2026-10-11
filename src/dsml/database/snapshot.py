@@ -7,7 +7,11 @@ schema of the application when the generator wrote the newest migration
 
 - The object keys are in sorted order.
 - The tables and the columns of each table are sorted by name.
+- The values of an enumeration column are sorted.
 - The text is UTF-8 with LF line ends and one LF at the end.
+
+Each column has its PostgreSQL type and the values of its `CHECK`
+constraint, so that the generator can find a changed type.
 
 `docs/notes/schema-snapshot.md` gives the format.
 """
@@ -16,15 +20,15 @@ import json
 from pathlib import Path
 from typing import Final, cast
 
-from dsml.database.schema import Column, ForeignKey, Schema, Table
+from dsml.database.schema import Column, ForeignKey, Schema, Table, column_type_of
 from dsml.errors import ToolchainError
 from dsml.ir.writer import JsonValue, canonical_json
 
 SNAPSHOT_PATH: Final = ".dsml/schema-snapshot.json"
 """The path of the snapshot, relative to the output folder of the application."""
 
-SNAPSHOT_VERSION: Final = 1
-"""The version of the snapshot format."""
+SNAPSHOT_VERSION: Final = 2
+"""The version of the snapshot format. Version 2 adds the column types."""
 
 
 # trace: PRD-APP-124
@@ -42,12 +46,19 @@ def snapshot_bytes(schema: Schema) -> bytes:
             references: JsonValue = None
             if column.references is not None:
                 references = {"column": column.references.column, "table": column.references.table}
+            postgresql: JsonValue = None
+            values: list[JsonValue] = []
+            if column.type is not None:
+                postgresql = column.type.postgresql
+                values = [*sorted(set(column.type.values))]
             columns.append(
                 {
                     "name": column.name,
                     "nullable": column.nullable,
                     "primaryKey": column.primary_key,
                     "references": references,
+                    "type": postgresql,
+                    "values": values,
                 }
             )
         tables.append({"columns": columns, "name": table.name})
@@ -124,7 +135,7 @@ def _table(data: object) -> Table:
 def _column(data: object, table: str) -> Column:
     column = _object(
         data,
-        {"name", "nullable", "primaryKey", "references"},
+        {"name", "nullable", "primaryKey", "references", "type", "values"},
         f'Each column of the table "{table}"',
     )
     name = _name(column["name"], "column")
@@ -141,7 +152,20 @@ def _column(data: object, table: str) -> Column:
             column["references"], {"column", "table"}, f'"references" of "{table}.{name}"'
         )
         references = ForeignKey(_name(target["table"], "table"), _name(target["column"], "column"))
-    return Column(name, nullable, primary_key, references)
+    values = tuple(
+        _name(item, "value") for item in _list(column["values"], f'"values" of "{table}.{name}"')
+    )
+    column_type = None
+    if column["type"] is not None:
+        column_type = column_type_of(_name(column["type"], "type"), values)
+        if column_type is None:
+            raise SnapshotError(
+                f'The column "{table}.{name}" has the type {column["type"]!r} with the values '
+                f"{list(values)!r}. The toolchain does not know this type."
+            )
+    elif values:
+        raise SnapshotError(f'The column "{table}.{name}" has values, but no type.')
+    return Column(name, nullable, primary_key, references, type=column_type)
 
 
 def _object(data: object, keys: set[str], what: str) -> dict[str, object]:

@@ -1,0 +1,46 @@
+{
+  "snapshotVersion": 2,
+  "tables": [
+    {
+      "columns": [
+        {
+          "name": "id",
+          "nullable": false,
+          "primaryKey": true,
+          "references": null,
+          "type": "UUID",
+          "values": []
+        },
+        {
+          "name": "note",
+          "nullable": true,
+          "primaryKey": false,
+          "references": null,
+          "type": "VARCHAR(500)",
+          "values": []
+        },
+        {
+          "name": "status",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "VARCHAR(64)",
+          "values": [
+            "cancelled",
+            "open",
+            "shipped"
+          ]
+        },
+        {
+          "name": "total",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "NUMERIC(18, 4)",
+          "values": []
+        }
+      ],
+      "name": "order"
+    }
+  ]
+}

@@ -13,6 +13,9 @@ WORKDIR /srv
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 COPY app ./app
+# The one-off migration task runs "python -m app.migrate_gen" (Q53).
+COPY alembic.ini ./
+COPY migrations ./migrations
 
 FROM python:3.14.8-slim-trixie@sha256:a2b82f3c48559aa0a8446d9af49826b6e2b2016f4cd2afabfe6013ec53729170 AS runtime
 RUN useradd --system --uid 10001 --no-create-home --shell /usr/sbin/nologin app

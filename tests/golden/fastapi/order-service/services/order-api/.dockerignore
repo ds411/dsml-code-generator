@@ -2,6 +2,8 @@
 # Elements: OrderService::orderApi
 **
 !app/
+!alembic.ini
+!migrations/
 !pyproject.toml
 !uv.lock
 **/__pycache__

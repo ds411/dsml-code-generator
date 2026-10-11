@@ -1,0 +1,81 @@
+{#- The migration command of the FastAPI target (PRD-APP-128, Q53). -#}
+{% include "common/header.j2" %}
+"""Apply the database migrations that the database of {{ application }} does not have.
+
+The deployment runs this module as a one-off task with the new image,
+before the services change (Q53):
+
+    python -m app.migrate_gen
+
+The module applies the missing migrations in their order and then stops. If
+the database has all migrations, the module applies nothing. A failed
+migration stops the module with an error, and the database keeps its old
+schema.
+"""
+
+import logging
+from pathlib import Path
+
+from alembic import command
+from alembic.config import Config
+from alembic.runtime.migration import MigrationContext
+from alembic.script import ScriptDirectory
+from sqlalchemy import Connection, create_engine
+from sqlalchemy.pool import NullPool
+
+from app.shared.config_gen import ConfigurationError, Settings, load_settings
+from app.shared.db.session_gen import database_url
+from app.shared.logs_gen import configure_logging
+
+PROJECT = Path(__file__).resolve().parent.parent
+"""The folder of the project. It holds `alembic.ini` and the folder `migrations`."""
+
+logger = logging.getLogger(__name__)
+
+
+def alembic_config() -> Config:
+    """Make the Alembic configuration of the project."""
+    config = Config(str(PROJECT / "alembic.ini"))
+    config.set_main_option("script_location", str(PROJECT / "migrations"))
+    return config
+
+
+def missing_revisions(connection: Connection, config: Config) -> list[str]:
+    """Give the revisions that the database does not have, the oldest first."""
+    script = ScriptDirectory.from_config(config)
+    current = MigrationContext.configure(connection).get_current_heads()
+    lower = current[0] if current else "base"
+    return [item.revision for item in reversed(list(script.iterate_revisions("heads", lower)))]
+
+
+def migrate(settings: Settings) -> list[str]:
+    """Apply the missing migrations in one transaction. Give their revisions."""
+    config = alembic_config()
+    engine = create_engine(database_url(settings), poolclass=NullPool)
+    try:
+        with engine.begin() as connection:
+            missing = missing_revisions(connection, config)
+            if missing:
+                config.attributes["connection"] = connection
+                command.upgrade(config, "heads")
+    finally:
+        engine.dispose()
+    return missing
+
+
+def main() -> None:
+    """Read the configuration, apply the missing migrations and stop."""
+    try:
+        settings = load_settings()
+    except ConfigurationError as error:
+        raise SystemExit(f"The migration cannot start. {error}") from None
+    configure_logging(settings.log_level)
+    applied = migrate(settings)
+    if applied:
+        logger.info("Applied the migrations %s.", ", ".join(applied))
+    else:
+        logger.info("The database has all migrations. No migration was applied.")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,5 @@
 {
-  "snapshotVersion": 1,
+  "snapshotVersion": 2,
   "tables": [
     {
       "columns": [
@@ -7,19 +7,25 @@
           "name": "email",
           "nullable": true,
           "primaryKey": false,
-          "references": null
+          "references": null,
+          "type": "TEXT",
+          "values": []
         },
         {
           "name": "id",
           "nullable": false,
           "primaryKey": true,
-          "references": null
+          "references": null,
+          "type": "UUID",
+          "values": []
         },
         {
           "name": "name",
           "nullable": false,
           "primaryKey": false,
-          "references": null
+          "references": null,
+          "type": "TEXT",
+          "values": []
         }
       ],
       "name": "customer"
@@ -30,13 +36,17 @@
           "name": "id",
           "nullable": false,
           "primaryKey": true,
-          "references": null
+          "references": null,
+          "type": "UUID",
+          "values": []
         },
         {
           "name": "title",
           "nullable": true,
           "primaryKey": false,
-          "references": null
+          "references": null,
+          "type": "TEXT",
+          "values": []
         }
       ],
       "name": "item"
@@ -47,7 +57,9 @@
           "name": "id",
           "nullable": false,
           "primaryKey": true,
-          "references": null
+          "references": null,
+          "type": "UUID",
+          "values": []
         }
       ],
       "name": "legacy"

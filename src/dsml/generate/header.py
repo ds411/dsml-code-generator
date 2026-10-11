@@ -27,6 +27,8 @@ class FileType(enum.StrEnum):
     HCL = "hcl"
     IGNORE = "ignore"
     """An ignore file, for example `.dockerignore`."""
+    INI = "ini"
+    """An INI file, for example `alembic.ini`."""
     JSON = "json"
     PYTHON = "python"
     TOML = "toml"
@@ -40,6 +42,7 @@ _COMMENT: dict[FileType, str | None] = {
     FileType.DOCKERFILE: "#",
     FileType.HCL: "#",
     FileType.IGNORE: "#",
+    FileType.INI: "#",
     FileType.JSON: None,
     FileType.PYTHON: "#",
     FileType.TOML: "#",
@@ -49,6 +52,7 @@ _COMMENT: dict[FileType, str | None] = {
 
 _SUFFIXES: dict[str, FileType] = {
     ".hcl": FileType.HCL,
+    ".ini": FileType.INI,
     ".json": FileType.JSON,
     ".py": FileType.PYTHON,
     ".tf": FileType.HCL,
