@@ -1,0 +1,20 @@
+{#- The variables of the secret store module (PRD-IAC-020). -#}
+{% include "common/header.j2" %}
+
+variable "element" {
+  description = "The identity of the model element. It is the value of the tag dsml:element."
+  type        = string
+  nullable    = false
+}
+
+variable "key_alias" {
+  description = "The alias of the KMS key of the secret: alias/<product>-<environment>-<element>."
+  type        = string
+  nullable    = false
+}
+
+variable "name" {
+  description = "The AWS name of the secret: <product>-<environment>-<element>."
+  type        = string
+  nullable    = false
+}

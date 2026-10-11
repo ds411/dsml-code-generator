@@ -1,11 +1,11 @@
 # trace: PRD-CORE-030, PRD-TRACE-013, PRD-TRACE-017
 """Write the golden trace reports of the example model again.
 
-Story #72 added the golden reports in tests/golden/trace/. The test
-tests/test_trace_reports.py compares the output of `dsml trace` with these
-files. Run this script from the root of the repository after a change that
-changes the reports, for example a new generator that writes trace manifest
-entries:
+Story #72 added the golden reports in tests/golden/trace/, and story #74
+added the HTML reports. The test tests/test_trace_reports.py compares the
+output of `dsml trace` with these files. Run this script from the root of
+the repository after a change that changes the reports, for example a new
+generator that writes trace manifest entries:
 
     uv run python scripts/write_golden_reports.py
 
@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "tests" / "golden" / "trace"
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 REPORTS = ("coverage", "orphans")
-FORMATS = ("csv", "json")
+FORMATS = ("csv", "html", "json")
 
 CONFIGURATION = """\
 schema = 1
