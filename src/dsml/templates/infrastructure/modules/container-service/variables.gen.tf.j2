@@ -19,12 +19,12 @@ variable "names" {
   })
 }
 
-variable "element_tag" {
+variable "element" {
   description = "The value of the tag dsml:element: the identity of the container service element."
   type        = string
 }
 
-variable "application_tag" {
+variable "application" {
   description = "The value of the tag dsml:application: the identity of the application of the service."
   type        = string
 }
@@ -122,9 +122,15 @@ variable "environment_variables" {
 }
 
 variable "secrets" {
-  description = "The ARNs of the Secrets Manager secrets of the container, by environment variable name."
+  description = "The secret environment variables of the container: the valueFrom of each, by name."
   type        = map(string)
   default     = {}
+}
+
+variable "secret_arns" {
+  description = "The ARNs of the Secrets Manager secrets of the container."
+  type        = list(string)
+  default     = []
 }
 
 variable "kms_key_arns" {

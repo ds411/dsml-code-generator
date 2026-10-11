@@ -1,5 +1,5 @@
-{#- The values of an environment root module. The local modules of the
-    environment come in this file (PRD-IAC-023). -#}
+{#- The values of an environment root module, and the calls of the local
+    modules (PRD-IAC-023). Data: "calls", a list of ModuleCall. -#}
 {% include "common/header.j2" %}
 
 locals {
@@ -8,39 +8,13 @@ locals {
   environment    = {{ environment | hcl_string }}
   product        = {{ product | hcl_string }}
 }
-{% for service in container_services %}
+{% for call in calls %}
 
-# The container service {{ service.element_tag }} (PRD-IAC-012 to PRD-IAC-016).
-module "{{ service.address }}" {
-  source = "../../modules/container-service"
+module "{{ call.address }}" {
+  source = "../../modules/{{ call.folder }}"
 
-  names = {
-{% for key, value in service.names | dictsort %}
-    {{ "%-22s" | format(key) }} = {{ value | hcl_string }}
+{% for line in call.lines %}
+  {{ line }}
 {% endfor %}
-  }
-
-  element_tag     = {{ service.element_tag | hcl_string }}
-  application_tag = {{ service.application_tag | hcl_string }}
-
-  vpc_id             = module.{{ service.network }}.vpc_id
-  public_subnet_ids  = module.{{ service.network }}.public_subnet_ids
-  private_subnet_ids = module.{{ service.network }}.private_subnet_ids
-
-  domain_name = {{ service.domain_name | hcl_string }}
-  zone_name   = {{ service.zone_name | hcl_string }}
-
-  cpu               = {{ service.cpu }}
-  memory            = {{ service.memory }}
-  desired_count     = {{ service.desired_count }}
-  min_count         = {{ service.min_count }}
-  max_count         = {{ service.max_count }}
-  container_port    = {{ service.container_port }}
-  migration_command = [{% for part in service.migration_command %}{{ part | hcl_string }}{% if not loop.last %}, {% endif %}{% endfor %}]
-
-  ecr_account_id = {{ service.ecr_account_id | hcl_string }}
-  ecr_region     = {{ service.ecr_region | hcl_string }}
-  ecr_repository = {{ service.ecr_repository | hcl_string }}
-  image_digest   = var.{{ service.image_variable }}
 }
 {% endfor %}

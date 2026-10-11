@@ -25,8 +25,8 @@ locals {
   ]
 
   tags = {
-    "dsml:application" = var.application_tag
-    "dsml:element"     = var.element_tag
+    "dsml:application" = var.application
+    "dsml:element"     = var.element
   }
 }
 
@@ -100,7 +100,7 @@ data "aws_iam_policy_document" "execution" {
   }
 
   dynamic "statement" {
-    for_each = length(var.secrets) > 0 ? [sort(distinct(values(var.secrets)))] : []
+    for_each = length(var.secret_arns) > 0 ? [sort(distinct(var.secret_arns))] : []
 
     content {
       sid       = "Secrets"

@@ -1,4 +1,5 @@
-{#- The outputs of an environment root module (PRD-IAC-010). -#}
+{#- The outputs of an environment root module (PRD-IAC-010), and the outputs
+    of the module calls. Data: "calls", a list of ModuleCall. -#}
 {% include "common/header.j2" %}
 
 output "aws_account_id" {
@@ -20,35 +21,12 @@ output "product" {
   description = "The name of the product."
   value       = local.product
 }
-{% for service in container_services %}
+{% for call in calls %}
+{% for output in call.outputs %}
 
-output "{{ service.address }}_cluster_name" {
-  description = "The name of the ECS cluster of the container service {{ service.element_tag }}."
-  value       = module.{{ service.address }}.cluster_name
+output "{{ output.name }}" {
+  description = {{ output.description | hcl_string }}
+  value       = {{ output.value }}
 }
-
-output "{{ service.address }}_service_name" {
-  description = "The name of the ECS service of the container service {{ service.element_tag }}."
-  value       = module.{{ service.address }}.service_name
-}
-
-output "{{ service.address }}_api_url" {
-  description = "The API URL of the container service {{ service.element_tag }}."
-  value       = module.{{ service.address }}.api_url
-}
-
-output "{{ service.address }}_migration_task_definition" {
-  description = "The migration task definition of the container service {{ service.element_tag }}."
-  value       = module.{{ service.address }}.migration_task_definition
-}
-
-output "{{ service.address }}_security_group_id" {
-  description = "The security group of the tasks of the container service {{ service.element_tag }}."
-  value       = module.{{ service.address }}.security_group_id
-}
-
-output "{{ service.address }}_private_subnet_ids" {
-  description = "The subnets of the tasks of the container service {{ service.element_tag }}."
-  value       = module.{{ service.address }}.private_subnet_ids
-}
+{% endfor %}
 {% endfor %}

@@ -1,4 +1,6 @@
-{#- The variables of an environment root module (PRD-IAC-036). -#}
+{#- The variables of an environment root module (PRD-IAC-036), and the
+    variables of the module calls (PRD-IAC-009). Data: "calls", a list of
+    ModuleCall. -#}
 {% include "common/header.j2" %}
 
 variable "model_commit" {
@@ -11,16 +13,18 @@ variable "model_commit" {
     error_message = "The variable model_commit must be a full Git commit hash with 40 or 64 lowercase hexadecimal characters."
   }
 }
-{% for service in container_services %}
+{% for call in calls %}
+{% for variable in call.variables %}
 
-variable "{{ service.image_variable }}" {
-  description = "The digest of the image of the application {{ service.application_tag }}. The pipeline gives it (PRD-IAC-009)."
+variable "{{ variable.name }}" {
+  description = {{ variable.description | hcl_string }}
   type        = string
   nullable    = false
 
   validation {
-    condition     = can(regex("^sha256:[0-9a-f]{64}$", var.{{ service.image_variable }}))
-    error_message = "The variable {{ service.image_variable }} must be an image digest: sha256: and 64 lowercase hexadecimal characters."
+    condition     = can(regex({{ variable.pattern | hcl_string }}, var.{{ variable.name }}))
+    error_message = {{ variable.error_message | hcl_string }}
   }
 }
+{% endfor %}
 {% endfor %}
