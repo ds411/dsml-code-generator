@@ -6,7 +6,7 @@ subprocess with a changed environment:
 
     python tests/dsml_test_command.py generate --config dsml.toml
 
-The real generators come in later milestones (M5, M6, M7). Until then, the
+The real generators come in a later milestone (M6). Until then, the
 script adds the test generator `IrGenerator`. The test generator reads only
 the IR, like a real generator (PRD-CORE-026). Its output files contain the
 IR, the output of a template and the header, so that a change in the IR or

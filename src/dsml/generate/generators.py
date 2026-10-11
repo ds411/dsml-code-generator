@@ -3,7 +3,7 @@
 
 Each generator reads only the IR and the configuration (PRD-CORE-026). It
 gives its output files to the file writer and writes no file itself. The
-real generators come in later milestones (M5, M6, M7). Until then, the list
+real generators come in a later milestone (M6). Until then, the list
 `GENERATORS` is empty, and the tests use a test generator.
 """
 

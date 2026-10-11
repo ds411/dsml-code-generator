@@ -1,6 +1,6 @@
 # Header writer and template engine
 
-Story #37 added the header writer and the template engine of the generators. Each generator uses these parts. The templates of each target are not in this story (M5, M6, M7).
+Story #37 added the header writer and the template engine of the generators. Each generator uses these parts. The templates of each target are not in this story (M6).
 
 - Header writer: `src/dsml/generate/header.py`.
 - Safe names: `src/dsml/generate/names.py`.
