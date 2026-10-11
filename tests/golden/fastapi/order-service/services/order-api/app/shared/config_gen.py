@@ -30,6 +30,15 @@ class Settings:
     log_level: str
     """The lowest level of the logs: DEBUG, INFO, WARNING or ERROR. Variable: `LOG_LEVEL`."""
 
+    aws_region: str
+    """The AWS Region of the user pool, for example `eu-west-1`. Variable: `AWS_REGION`."""
+
+    cognito_user_pool_id: str
+    """The ID of the Cognito user pool of the environment. Variable: `COGNITO_USER_POOL_ID`."""
+
+    cognito_app_client_id: str
+    """The ID of the app client of the application. Variable: `COGNITO_APP_CLIENT_ID`."""
+
 
 def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
     """Read the configuration from the environment variables.
@@ -40,6 +49,9 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
     settings = Settings(
         environment=_mandatory(values, "APP_ENVIRONMENT"),
         log_level=values.get("LOG_LEVEL") or "INFO",
+        aws_region=_mandatory(values, "AWS_REGION"),
+        cognito_user_pool_id=_mandatory(values, "COGNITO_USER_POOL_ID"),
+        cognito_app_client_id=_mandatory(values, "COGNITO_APP_CLIENT_ID"),
     )
     if settings.log_level not in LOG_LEVELS:
         raise ConfigurationError(

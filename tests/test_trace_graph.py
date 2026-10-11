@@ -237,7 +237,8 @@ def test_element_hashes_give_each_element_in_sorted_order(example: Ir) -> None:
 
 # trace: PRD-CORE-020, PRD-CORE-026
 def test_trace_package_reads_only_the_ir() -> None:
-    allowed = ("dsml.ir", "dsml.trace")
+    # The HTML writer uses the template engine. The engine does not read the model.
+    allowed = ("dsml.ir", "dsml.trace", "dsml.generate.templates")
     for path in sorted(TRACE_PACKAGE.glob("*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):

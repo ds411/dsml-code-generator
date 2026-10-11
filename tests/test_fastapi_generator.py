@@ -98,11 +98,14 @@ def test_project_has_the_files_of_the_target() -> None:
         "app/__init__.py",
         "app/main_gen.py",
         "app/shared/__init__.py",
+        "app/shared/auth/__init__.py",
+        "app/shared/auth/cognito_gen.py",
         "app/shared/config_gen.py",
         "app/shared/errors_gen.py",
         "app/shared/logs_gen.py",
         "pyproject.toml",
         "tests/test_app_gen.py",
+        "tests/test_auth_gen.py",
     ]
 
 
@@ -141,6 +144,8 @@ def test_trace_manifest_gives_the_symbols_of_the_generated_files() -> None:
     assert {
         (f"{PROJECT}/app/main_gen.py", "route", "GET /healthz"),
         (f"{PROJECT}/app/main_gen.py", "function", "create_app"),
+        (f"{PROJECT}/app/shared/auth/cognito_gen.py", "class", "TokenVerifier"),
+        (f"{PROJECT}/app/shared/auth/cognito_gen.py", "function", "require_roles"),
         (f"{PROJECT}/app/shared/config_gen.py", "function", "load_settings"),
         (f"{PROJECT}/app/shared/errors_gen.py", "class", "ProblemError"),
         (f"{PROJECT}/app/shared/logs_gen.py", "function", "request_context"),
@@ -156,8 +161,10 @@ def test_pyproject_pins_the_versions_of_the_baseline() -> None:
     data = tomllib.loads((GOLDEN / PROJECT / "pyproject.toml").read_text())
     assert data["project"]["requires-python"] == "==3.14.*"
     assert data["project"]["dependencies"] == [
+        f"cryptography=={pinned_version('cryptography')}",
         f"fastapi=={pinned_version('fastapi')}",
         f"pydantic=={pinned_version('pydantic')}",
+        f"pyjwt=={pinned_version('pyjwt')}",
         f"uvicorn=={pinned_version('uvicorn')}",
     ]
     assert data["dependency-groups"]["dev"] == [
@@ -175,8 +182,10 @@ def test_extra_dependencies_of_the_configuration_are_in_the_sorted_list(
     data = tomllib.loads(pyproject.content.decode())
     assert data["project"]["dependencies"] == [
         "boto3==1.40.0",
+        f"cryptography=={pinned_version('cryptography')}",
         f"fastapi=={pinned_version('fastapi')}",
         f"pydantic=={pinned_version('pydantic')}",
+        f"pyjwt=={pinned_version('pyjwt')}",
         "structlog==25.4.0",
         f"uvicorn=={pinned_version('uvicorn')}",
     ]
@@ -207,7 +216,12 @@ def test_configuration_reads_each_variable_from_the_environment() -> None:
     text = (GOLDEN / PROJECT / "app" / "shared" / "config_gen.py").read_text()
     for variable in VARIABLES:
         assert f'"{variable.name}"' in text
-    assert [variable.name for variable in VARIABLES if variable.mandatory] == ["APP_ENVIRONMENT"]
+    assert [variable.name for variable in VARIABLES if variable.mandatory] == [
+        "APP_ENVIRONMENT",
+        "AWS_REGION",
+        "COGNITO_USER_POOL_ID",
+        "COGNITO_APP_CLIENT_ID",
+    ]
 
 
 def test_application_with_no_output_folder_is_an_error(example_ir: Ir) -> None:
