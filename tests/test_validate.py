@@ -299,7 +299,17 @@ def test_rule_helper_runs_one_rule(run_rule: RunRule) -> None:
 def test_validate_writes_the_findings_of_the_example_model(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    _write_project(tmp_path, EXAMPLE_MODEL)
+    # The requirement R-002 of the example model has no satisfying element and
+    # no verification. Thus the test turns off COV-003 and COV-004, and it
+    # adds the test file of V-001 for COV-006.
+    _write_project(
+        tmp_path,
+        EXAMPLE_MODEL,
+        '\n[rules.severity]\n"COV-003" = "off"\n"COV-004" = "off"\n',
+    )
+    test_file = tmp_path / "app" / "features" / "order" / "read_order" / "test_endpoint.py"
+    test_file.parent.mkdir(parents=True)
+    test_file.write_text("", encoding="utf-8")
     monkeypatch.chdir(tmp_path)
     assert main(["validate"]) == 0
     assert capsys.readouterr().out == "Findings: 0 errors, 0 warnings, 0 info.\n"
