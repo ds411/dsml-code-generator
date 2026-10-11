@@ -15,9 +15,11 @@ Decision Q50 gives the limit: `dsml validate` and `dsml generate` on a model wit
 | Platform | Runner | `dsml ir`, 1,000 elements |
 | --- | --- | --- |
 | Linux x64 (cloud container, 4 vCPUs) | not a GitHub runner | 5,703 ms |
-| Linux x64 | `ubuntu-24.04` | CI_LINUX_X64 |
-| Linux arm64 | `ubuntu-24.04-arm` | CI_LINUX_ARM64 |
-| macOS arm64 | `macos-15` | CI_DARWIN_ARM64 |
+| Linux x64 | `ubuntu-24.04` | 3,597 ms |
+| Linux arm64 | `ubuntu-24.04-arm` | 3,826 ms |
+| macOS arm64 | `macos-15` | 2,266 ms |
+
+The values for the GitHub runners come from the CI run of pull request #49. The `ubuntu-24.04` runner is the reference runner of Q50. On this runner, `dsml ir` uses 3.6 s of the 10 s.
 
 ## Parts of the time
 
@@ -39,4 +41,4 @@ Decision Q50 also tells that the toolchain must accept models with up to 10,000 
 
 ## Risk
 
-The IR uses approximately half of the 10 seconds. Validation and generation must use less than the remaining time. The adapter calls `Model.to_api_json()` only one time for each model. If validation and generation use more time, ask the OpenSysML project for a faster API JSON form, or for a form with only the elements of the model files.
+On the reference runner, the IR uses approximately 36 % of the 10 seconds. In the cloud container, it uses approximately 57 %. Validation and generation must use less than the remaining time. The adapter calls `Model.to_api_json()` only one time for each model. If validation and generation use more time, ask the OpenSysML project for a faster API JSON form, or for a form with only the elements of the model files.
