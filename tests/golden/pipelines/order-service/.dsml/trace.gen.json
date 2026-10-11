@@ -1,0 +1,65 @@
+{
+  "elements": [
+    {
+      "element": "OrderService",
+      "files": [
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "job",
+              "lastLine": 55,
+              "name": "validate"
+            },
+            {
+              "firstLine": 59,
+              "kind": "job",
+              "lastLine": 83,
+              "name": "generate-check"
+            },
+            {
+              "firstLine": 86,
+              "kind": "job",
+              "lastLine": 110,
+              "name": "check-output"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::dev",
+      "files": [
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 158,
+              "kind": "job",
+              "lastLine": 202,
+              "name": "plan-dev"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderApi",
+      "files": [
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 114,
+              "kind": "job",
+              "lastLine": 151,
+              "name": "test-order-api"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}

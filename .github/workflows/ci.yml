@@ -93,6 +93,21 @@ jobs:
       - name: Test
         run: uv run pytest
 
+      # The golden workflows of the pipeline generator must have no
+      # actionlint error (story #83). The step downloads the actionlint
+      # release of src/dsml/versions.toml and checks its SHA-256 hash.
+      # actionlint also runs shellcheck on the "run" scripts.
+      - name: Lint the golden workflows
+        run: |
+          version="$(uv run python -c 'from dsml.versions import pinned_version as v; print(v("actionlint"))')"
+          sha256="$(uv run python -c 'from dsml.versions import load_baseline as b; print(b()["actionlint-sha256"].value)')"
+          archive="actionlint_${version}_linux_amd64.tar.gz"
+          curl --fail --silent --show-error --location --output "$RUNNER_TEMP/$archive" \
+            "https://github.com/rhysd/actionlint/releases/download/v${version}/${archive}"
+          echo "${sha256}  $RUNNER_TEMP/$archive" | sha256sum --check --strict
+          tar --extract --gzip --file "$RUNNER_TEMP/$archive" --directory "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -color tests/golden/pipelines/*/.github/workflows/*.yml
+
   # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-132, PRD-APP-133, PRD-APP-135
   #
   # The golden output of the FastAPI generator (story #75) must pass the
