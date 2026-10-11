@@ -28,6 +28,9 @@ ROOT = Path(__file__).resolve().parent.parent
 COMMAND = ROOT / "tests" / "dsml_test_command.py"
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 PRD_MODEL = ROOT / "docs" / "model" / "prd"
+# The requirement IDs of the example model and of the PRD model, for example
+# "R-001" and "PRD-CORE-012" (PRD-DSML-051).
+PRD_IDS = "'(R|PRD-[A-Z]+)-[0-9]{3,}'"
 
 FAKE_USER = "dsml-test-user-7f3a"
 FAKE_HOST = "dsml-test-host-9c2e"
@@ -128,7 +131,9 @@ def make_project(
             os.utime(path, (OLD_FILE_TIME, OLD_FILE_TIME))
     entries = ", ".join(f'"{path}"' for path in paths)
     (folder / "dsml.toml").write_text(
-        f"schema = 1\n\n[model]\npaths = [{entries}]\n", encoding="utf-8", newline="\n"
+        f"schema = 1\n\n[model]\npaths = [{entries}]\n\n[ids]\nrequirement = {PRD_IDS}\n",
+        encoding="utf-8",
+        newline="\n",
     )
     return folder
 

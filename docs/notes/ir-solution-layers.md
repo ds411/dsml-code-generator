@@ -35,7 +35,7 @@ The field `types` gives the identities of the definitions that type the element 
 
 ## Attributes
 
-The adapter reads the DSML attributes of each kind from the base types of the DSML library, for example `BaseTypes::AwsEcsService`. An attribute with no value is not in the IR. An attribute with the multiplicity `[*]` or `[0..*]` is always a `list` value, also if it has one item.
+The adapter reads the DSML attributes of each kind from the base types of the DSML library, for example `BaseTypes::AwsEcsService`. An attribute with no value is not in the IR. A logical kind has no DSML attributes. For a logical element, the IR holds each attribute with a value that the model declares on it, thus rule STR-016 can find an AWS attribute (story #59). An attribute with the multiplicity `[*]` or `[0..*]` is always a `list` value, also if it has one item.
 
 The adapter adds these attributes, which are not DSML attributes:
 

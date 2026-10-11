@@ -3,6 +3,7 @@
 These files write the product needs and each PRD requirement in the DSML, as one `.sysml` file for each PRD (two for the application generation PRD), plus one file for the needs. It is the first test of the DSML on a real set of requirements.
 
 - The short name of each requirement is its PRD ID, for example `<'PRD-CORE-012'>`.
+- Thus a project of this model must set the key `ids.requirement` in `dsml.toml`, for example to `'(R|PRD-[A-Z]+)-[0-9]{3,}'`. Then rule STR-003 accepts the IDs (PRD-DSML-051).
 - Each requirement frames the product need that it serves most directly.
 - All requirements have the priority `must` and the status `draft`, because no part is implemented yet.
 - The text in each `doc` comment is the requirement text in `docs/index/requirements.csv`, without code formatting. If the two are different, the PRD text is correct.

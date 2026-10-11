@@ -20,6 +20,7 @@ from dataclasses import dataclass
 
 from dsml.adapter.engine import EngineError, EnumLiteral, ParsedModel, PlainValue
 from dsml.adapter.needs import annotations
+from dsml.adapter.needs import attributes as declared_attributes
 from dsml.adapter.source import LIBRARY_PACKAGE, SourceElement, SourceGraph, keyword_of
 from dsml.ir.model import (
     Attribute,
@@ -78,6 +79,14 @@ _BASE_TYPES: dict[ElementKind, str] = {
     "ToolingAccount": "DSML::BaseTypes::ToolingAccount",
     "Verification": "DSML::BaseTypes::Verification",
 }
+
+# trace: PRD-DSML-035, PRD-DSML-036
+# The logical kinds have no DSML attributes. The IR holds each attribute that
+# the model declares on a logical element, thus rule STR-016 can find an AWS
+# attribute on it.
+_LOGICAL_KINDS: frozenset[ElementKind] = frozenset(
+    {"Network", "ContainerService", "RelationalDatabase", "UserDirectory", "SecretStore"}
+)
 
 # The metadata on a dependency and the link type that it gives.
 _DEPENDENCY_LINKS: dict[str, LinkType] = {
@@ -142,6 +151,8 @@ class _Converter:
                 attributes = self._override_attributes(source)
             case "Roles" | "Enumeration":
                 attributes = (_literals(source),)
+            case _ if kind in _LOGICAL_KINDS:
+                attributes = tuple(declared_attributes(source))
             case _:
                 attributes = self._attributes(source, kind)
         if kind == "Exposed":

@@ -314,8 +314,20 @@ def test_validate_writes_the_findings_of_the_example_model(
 def test_fail_on_warning_gives_exit_code_1(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    _write_project(tmp_path, SYN_002_REJECT)
-    monkeypatch.chdir(tmp_path)
+    # The model of SYN-002 with @DsmlVersion, thus STR-001 gives no error.
+    model = tmp_path / "reject.sysml"
+    text = SYN_002_REJECT.read_text(encoding="utf-8")
+    model.write_text(
+        text.replace(
+            "package SynReject {",
+            "package SynReject { private import DSML::*; @DsmlVersion { major = 1; minor = 0; }",
+        ),
+        encoding="utf-8",
+    )
+    project = tmp_path / "project"
+    project.mkdir()
+    _write_project(project, model)
+    monkeypatch.chdir(project)
     assert main(["validate"]) == 0
     out = capsys.readouterr().out
     assert "model/reject.sysml:6:" in out
