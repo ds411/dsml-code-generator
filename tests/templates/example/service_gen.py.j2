@@ -1,0 +1,12 @@
+{% include "common/header.j2" %}
+"""The operations of the {{ service }} service."""
+
+{% for operation in operations | sorted("name") %}
+
+def {{ operation.name | python_name }}() -> str:
+    return "{{ operation.name | kebab_case }}"
+
+{% endfor %}
+
+class {{ service | pascal_case }}:
+    """The names of the entities: {{ entities | sorted(unique=true) | join(", ") }}."""

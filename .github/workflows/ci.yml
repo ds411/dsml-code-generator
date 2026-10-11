@@ -1,7 +1,7 @@
 # CI of the DSML toolchain. This is a hand-written workflow, not a
 # generated pipeline.
 #
-# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-027, PRD-CORE-029, PRD-CORE-049
+# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-027, PRD-CORE-029, PRD-CORE-035, PRD-CORE-049
 #
 # The matrix has the operating systems of decision record 03 (Q50):
 # Linux x64, Linux arm64 and macOS arm64. Each third-party action has a
@@ -66,6 +66,13 @@ jobs:
 
       - name: Check the format
         run: uv run ruff format --check
+
+      # The templates must give their output in the format of the pinned
+      # formatter (PRD-CORE-035). This step runs the formatter in check mode
+      # on the golden files: "ruff format" for Python. The formatters of the
+      # other file types come with their generators.
+      - name: Check the format of the golden files
+        run: uv run ruff format --check --no-cache tests/golden
 
       - name: Check the types
         run: pnpm typecheck
