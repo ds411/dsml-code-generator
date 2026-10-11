@@ -68,6 +68,18 @@ def _generate(ir: Ir, configuration: Configuration | None = None) -> dict[str, O
     return {file.path: file for file in files}
 
 
+def _root_and_module_files(files: dict[str, OutputFile]) -> dict[str, OutputFile]:
+    return {
+        path: file
+        for path, file in files.items()
+        if path.startswith(("infra/envs/", "infra/modules/"))
+    }
+
+
+def _environment_files(files: dict[str, OutputFile]) -> dict[str, OutputFile]:
+    return {path: file for path, file in files.items() if path.startswith("infra/envs/")}
+
+
 def _text(files: dict[str, OutputFile], environment: str, name: str) -> str:
     return files[f"infra/envs/{environment}/{name}.gen.tf"].content.decode("utf-8")
 
@@ -86,7 +98,7 @@ def test_output_of_the_example_model_agrees_with_the_golden_files(tmp_path: Path
 
 # trace: PRD-IAC-001, PRD-IAC-002
 def test_generator_writes_the_root_modules_and_the_local_modules(ir: Ir) -> None:
-    files = _generate(ir)
+    files = _root_and_module_files(_generate(ir))
     assert sorted(files) == [
         *(
             f"infra/envs/{environment}/{name}.gen.tf"
@@ -114,7 +126,7 @@ def test_no_output_folder_or_other_part_gives_no_file(ir: Ir) -> None:
     assert generator.generate(ir, Configuration(), None) == []
     configuration = Configuration(infrastructure=INFRA)
     assert generator.generate(ir, configuration, {application_part("orderApi")}) == []
-    assert len(generator.generate(ir, configuration, {INFRASTRUCTURE})) == 30
+    assert len(generator.generate(ir, configuration, {INFRASTRUCTURE})) == 64
 
 
 def test_model_with_no_environment_gives_no_file() -> None:
@@ -205,7 +217,7 @@ def test_no_state_encryption_gives_no_opentofu_comment(
     ir: Ir, options: OpenTofuOptions | None
 ) -> None:
     files = _generate(ir, Configuration(infrastructure=INFRA, opentofu=options))
-    for file in files.values():
+    for file in _environment_files(files).values():
         assert b"OpenTofu" not in file.content
         assert b"encryption" not in file.content
 
@@ -284,7 +296,7 @@ def test_each_top_level_block_is_a_symbol_of_the_environment(ir: Ir) -> None:
         "order_db": "relational-database",
         "users": "user-directory",
     }
-    for file in files.values():
+    for file in _root_and_module_files(files).values():
         for symbol in file.symbols:
             assert symbol.kind is SymbolKind.RESOURCE
             calls = [

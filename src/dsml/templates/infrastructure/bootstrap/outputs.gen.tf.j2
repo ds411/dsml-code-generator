@@ -1,0 +1,19 @@
+{#- The outputs of a bootstrap root module (PRD-IAC-026). -#}
+{% include "common/header.j2" %}
+
+output "github_oidc_provider_arn" {
+  description = "The ARN of the GitHub OIDC identity provider."
+  value       = aws_iam_openid_connect_provider.github.arn
+}
+{% for role in roles %}
+
+output "{{ role.address }}_role_arn" {
+  description = {{ ("The ARN of the role " ~ role.name ~ ".") | hcl_string }}
+  value       = aws_iam_role.{{ role.address }}.arn
+}
+{% endfor %}
+
+output "state_bucket" {
+  description = "The name of the state bucket of the account."
+  value       = aws_s3_bucket.state.id
+}

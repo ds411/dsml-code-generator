@@ -192,3 +192,15 @@ def task_execution_role(product: str, environment: str, element: str) -> str:
 def task_role(product: str, environment: str, element: str) -> str:
     """Give the name of the task role of a container service."""
     return aws_name(product, environment, f"{names.kebab_case(element)}-task", "iam_role")
+
+
+# trace: PRD-IAC-006, PRD-IAC-022
+def tooling_state_key() -> str:
+    """Give the key of the state file of the tooling root module in its bucket."""
+    return f"{TOOLING}/terraform.tfstate"
+
+
+# trace: PRD-IAC-029
+def bootstrap_state_key() -> str:
+    """Give the key of the state file of a bootstrap root module in its bucket."""
+    return "bootstrap/terraform.tfstate"

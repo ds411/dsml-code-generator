@@ -29,6 +29,9 @@ For each logical kind with one or more elements, the folder
 `modules/<module>/` gets the files `main.gen.tf`, `variables.gen.tf` and
 `outputs.gen.tf`. `dsml.generate.infrastructure.modules` gives the modules.
 
+The module `dsml.generate.infrastructure.accounts` gives the files of the
+folders `tooling/` and `bootstrap/<account>/` (PRD-IAC-022, PRD-IAC-026).
+
 All environments use the same templates. Only the attributes of the
 environment make two root modules different (PRD-IAC-023).
 """
@@ -43,6 +46,7 @@ from dsml.errors import ToolchainError
 from dsml.generate import names as safe_names
 from dsml.generate.header import FileType
 from dsml.generate.infrastructure import hcl, modules, names
+from dsml.generate.infrastructure.accounts import Account, account_files
 from dsml.generate.templates import TemplateEngine
 from dsml.generate.writer import INFRASTRUCTURE, Kind, OutputFile
 from dsml.ir.environments import environments
@@ -165,6 +169,7 @@ class InfrastructureGenerator:
             if module.folder in module_elements:
                 identities = tuple(sorted(module_elements[module.folder]))
                 files.extend(self._module_files(module, identities, output))
+        files.extend(_account_files(self._engine, ir, configuration, PurePosixPath(output)))
         return files
 
     # trace: PRD-IAC-001, PRD-IAC-023, PRD-TRACE-005, PRD-TRACE-007
@@ -239,3 +244,17 @@ class InfrastructureGenerator:
             symbols = hcl.block_symbols(content.decode("utf-8"), lambda _: identities)
             files.append(OutputFile(path, content, Kind.GENERATED, INFRASTRUCTURE, symbols))
         return files
+
+
+# trace: PRD-IAC-001, PRD-IAC-022, PRD-IAC-026
+def _account_files(
+    engine: TemplateEngine, ir: Ir, configuration: Configuration, output: PurePosixPath
+) -> list[OutputFile]:
+    """Give the files of the tooling root module and of the bootstrap root modules."""
+    accounts = [
+        Account(root.element, root.name, root.product, root.account_id, root.region)
+        for root in environment_roots(ir)
+    ]
+    return account_files(
+        engine, ir, configuration, output, lambda element: product_name(ir, element), accounts
+    )

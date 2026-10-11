@@ -1,0 +1,72 @@
+{#- The bootstrap root module of an AWS account: the state bucket and the
+    GitHub OIDC identity provider (PRD-IAC-026, PRD-IAC-030, PRD-IAC-031).
+    The module has no backend. It starts with local state (PRD-IAC-029). -#}
+{% include "common/header.j2" %}
+
+locals {
+  aws_account_id = {{ account_id | hcl_string }}
+  aws_region     = {{ region | hcl_string }}
+  environment    = {{ environment | hcl_string }}
+  product        = {{ product | hcl_string }}
+}
+
+resource "aws_s3_bucket" "state" {
+  bucket = {{ state_bucket | hcl_string }}
+
+  tags = {
+    "dsml:element" = {{ element | hcl_string }}
+  }
+}
+
+resource "aws_s3_bucket_versioning" "state" {
+  bucket = aws_s3_bucket.state.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "state" {
+  bucket = aws_s3_bucket.state.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "state" {
+  bucket = aws_s3_bucket.state.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+{% if state_encryption %}
+
+# The key of the OpenTofu state encryption (iac.opentofu.state_encryption = true).
+resource "aws_kms_key" "state" {
+  description         = "The key of the OpenTofu state encryption."
+  enable_key_rotation = true
+
+  tags = {
+    "dsml:element" = {{ element | hcl_string }}
+  }
+}
+
+resource "aws_kms_alias" "state" {
+  name          = {{ state_kms_alias | hcl_string }}
+  target_key_id = aws_kms_key.state.key_id
+}
+{% endif %}
+
+resource "aws_iam_openid_connect_provider" "github" {
+  url            = {{ oidc_url | hcl_string }}
+  client_id_list = [{{ oidc_audience | hcl_string }}]
+
+  tags = {
+    "dsml:element" = {{ element | hcl_string }}
+  }
+}

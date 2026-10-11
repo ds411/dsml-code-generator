@@ -1130,6 +1130,174 @@
       "element": "OrderService::dev",
       "files": [
         {
+          "path": "infra/bootstrap/dev/iam.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "aws_iam_role.deploy"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "aws_iam_role_policy.deploy"
+            },
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 51,
+              "name": "data.aws_iam_policy_document.deploy_trust"
+            },
+            {
+              "firstLine": 53,
+              "kind": "resource",
+              "lastLine": 322,
+              "name": "data.aws_iam_policy_document.deploy"
+            },
+            {
+              "firstLine": 324,
+              "kind": "resource",
+              "lastLine": 332,
+              "name": "aws_iam_role.plan"
+            },
+            {
+              "firstLine": 334,
+              "kind": "resource",
+              "lastLine": 338,
+              "name": "aws_iam_role_policy.plan"
+            },
+            {
+              "firstLine": 340,
+              "kind": "resource",
+              "lastLine": 343,
+              "name": "aws_iam_role_policy_attachment.plan"
+            },
+            {
+              "firstLine": 345,
+              "kind": "resource",
+              "lastLine": 376,
+              "name": "data.aws_iam_policy_document.plan_trust"
+            },
+            {
+              "firstLine": 378,
+              "kind": "resource",
+              "lastLine": 401,
+              "name": "data.aws_iam_policy_document.plan"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "aws_s3_bucket.state"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 25,
+              "name": "aws_s3_bucket_versioning.state"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 35,
+              "name": "aws_s3_bucket_server_side_encryption_configuration.state"
+            },
+            {
+              "firstLine": 37,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "aws_s3_bucket_public_access_block.state"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_iam_openid_connect_provider.github"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.github_oidc_provider_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.deploy_role_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.plan_role_arn"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.state_bucket"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            },
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.github_repository"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/dev/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
           "path": "infra/envs/dev/backend.gen.tf",
           "symbols": [
             {
@@ -1748,6 +1916,40 @@
       ]
     },
     {
+      "element": "OrderService::orderApi",
+      "files": [
+        {
+          "path": "infra/tooling/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "aws_ecr_repository.order_api"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 48,
+              "name": "aws_ecr_lifecycle_policy.order_api"
+            },
+            {
+              "firstLine": 50,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_ecr_repository_policy.order_api"
+            },
+            {
+              "firstLine": 55,
+              "kind": "resource",
+              "lastLine": 84,
+              "name": "data.aws_iam_policy_document.order_api_pull"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "OrderService::orderDb",
       "files": [
         {
@@ -2145,6 +2347,174 @@
       "element": "OrderService::prod",
       "files": [
         {
+          "path": "infra/bootstrap/prod/iam.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "aws_iam_role.deploy"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "aws_iam_role_policy.deploy"
+            },
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 51,
+              "name": "data.aws_iam_policy_document.deploy_trust"
+            },
+            {
+              "firstLine": 53,
+              "kind": "resource",
+              "lastLine": 322,
+              "name": "data.aws_iam_policy_document.deploy"
+            },
+            {
+              "firstLine": 324,
+              "kind": "resource",
+              "lastLine": 332,
+              "name": "aws_iam_role.plan"
+            },
+            {
+              "firstLine": 334,
+              "kind": "resource",
+              "lastLine": 338,
+              "name": "aws_iam_role_policy.plan"
+            },
+            {
+              "firstLine": 340,
+              "kind": "resource",
+              "lastLine": 343,
+              "name": "aws_iam_role_policy_attachment.plan"
+            },
+            {
+              "firstLine": 345,
+              "kind": "resource",
+              "lastLine": 376,
+              "name": "data.aws_iam_policy_document.plan_trust"
+            },
+            {
+              "firstLine": 378,
+              "kind": "resource",
+              "lastLine": 401,
+              "name": "data.aws_iam_policy_document.plan"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "aws_s3_bucket.state"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 25,
+              "name": "aws_s3_bucket_versioning.state"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 35,
+              "name": "aws_s3_bucket_server_side_encryption_configuration.state"
+            },
+            {
+              "firstLine": 37,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "aws_s3_bucket_public_access_block.state"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_iam_openid_connect_provider.github"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.github_oidc_provider_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.deploy_role_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.plan_role_arn"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.state_bucket"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            },
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.github_repository"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/prod/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
           "path": "infra/envs/prod/backend.gen.tf",
           "symbols": [
             {
@@ -2234,6 +2604,174 @@
       "element": "OrderService::staging",
       "files": [
         {
+          "path": "infra/bootstrap/staging/iam.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "aws_iam_role.deploy"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "aws_iam_role_policy.deploy"
+            },
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 51,
+              "name": "data.aws_iam_policy_document.deploy_trust"
+            },
+            {
+              "firstLine": 53,
+              "kind": "resource",
+              "lastLine": 322,
+              "name": "data.aws_iam_policy_document.deploy"
+            },
+            {
+              "firstLine": 324,
+              "kind": "resource",
+              "lastLine": 332,
+              "name": "aws_iam_role.plan"
+            },
+            {
+              "firstLine": 334,
+              "kind": "resource",
+              "lastLine": 338,
+              "name": "aws_iam_role_policy.plan"
+            },
+            {
+              "firstLine": 340,
+              "kind": "resource",
+              "lastLine": 343,
+              "name": "aws_iam_role_policy_attachment.plan"
+            },
+            {
+              "firstLine": 345,
+              "kind": "resource",
+              "lastLine": 376,
+              "name": "data.aws_iam_policy_document.plan_trust"
+            },
+            {
+              "firstLine": 378,
+              "kind": "resource",
+              "lastLine": 401,
+              "name": "data.aws_iam_policy_document.plan"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "aws_s3_bucket.state"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 25,
+              "name": "aws_s3_bucket_versioning.state"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 35,
+              "name": "aws_s3_bucket_server_side_encryption_configuration.state"
+            },
+            {
+              "firstLine": 37,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "aws_s3_bucket_public_access_block.state"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_iam_openid_connect_provider.github"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/staging/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.github_oidc_provider_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.deploy_role_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.plan_role_arn"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.state_bucket"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/staging/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/staging/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            },
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.github_repository"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/staging/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
           "path": "infra/envs/staging/backend.gen.tf",
           "symbols": [
             {
@@ -2308,6 +2846,221 @@
         },
         {
           "path": "infra/envs/staging/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::tooling",
+      "files": [
+        {
+          "path": "infra/bootstrap/tooling/iam.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "aws_iam_role.push"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "aws_iam_role_policy.push"
+            },
+            {
+              "firstLine": 20,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "data.aws_iam_policy_document.push_trust"
+            },
+            {
+              "firstLine": 54,
+              "kind": "resource",
+              "lastLine": 83,
+              "name": "data.aws_iam_policy_document.push"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "aws_s3_bucket.state"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 25,
+              "name": "aws_s3_bucket_versioning.state"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 35,
+              "name": "aws_s3_bucket_server_side_encryption_configuration.state"
+            },
+            {
+              "firstLine": 37,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "aws_s3_bucket_public_access_block.state"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 53,
+              "name": "aws_iam_openid_connect_provider.github"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.github_oidc_provider_arn"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.push_role_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.state_bucket"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            },
+            {
+              "firstLine": 15,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "var.github_repository"
+            }
+          ]
+        },
+        {
+          "path": "infra/bootstrap/tooling/versions.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/backend.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "terraform"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "locals"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.aws_account_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.aws_region"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.order_api_repository_url"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/providers.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "provider.aws"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 13,
+              "name": "var.model_commit"
+            }
+          ]
+        },
+        {
+          "path": "infra/tooling/versions.gen.tf",
           "symbols": [
             {
               "firstLine": 4,

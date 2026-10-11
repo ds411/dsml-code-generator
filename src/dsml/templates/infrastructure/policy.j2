@@ -1,0 +1,41 @@
+{#- The macro of an IAM policy document (PRD-IAC-033).
+    "policy" is a value of dsml.generate.infrastructure.policies.Policy.
+    Each value in a statement is HCL text. -#}
+{% macro list(name, values, indent) %}
+{{ indent }}{{ name }} = [
+{% for value in values %}
+{{ indent }}  {{ value }},
+{% endfor %}
+{{ indent }}]{% endmacro %}
+{% macro policy_document(policy) %}
+data "aws_iam_policy_document" "{{ policy.name }}" {
+{% for statement in policy.statements %}
+{% if not loop.first %}
+
+{% endif %}
+  statement {
+    sid    = {{ statement.sid | hcl_string }}
+    effect = {{ statement.effect | hcl_string }}
+{{ list("actions", statement.actions | map("hcl_string"), "    ") }}
+{% if statement.resources %}
+{{ list("resources", statement.resources, "    ") }}
+{% endif %}
+{% for principal in statement.principals %}
+
+    principals {
+      type = {{ principal.type | hcl_string }}
+{{ list("identifiers", principal.identifiers, "      ") }}
+    }
+{% endfor %}
+{% for condition in statement.conditions %}
+
+    condition {
+      test     = {{ condition.test | hcl_string }}
+      variable = {{ condition.variable | hcl_string }}
+{{ list("values", condition.values, "      ") }}
+    }
+{% endfor %}
+  }
+{% endfor %}
+}
+{% endmacro %}
