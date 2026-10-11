@@ -90,8 +90,9 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | Subcommand | Status |
 | --- | --- |
 | `init` | Writes a starter configuration file and a starter model as create-once files. See "Command `dsml init`". |
-| `validate`, `trace`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
-| `generate` | Writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. There are no generators yet (M6). `docs/notes/file-writer.md` gives the rules. |
+| `validate` | Runs the validation rules on the model and writes the findings as text or as JSON. See "Command `dsml validate`". |
+| `trace`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
+| `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. There are no generators yet (M6). `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
 
@@ -133,6 +134,23 @@ uv run dsml ir docs/model/prd/*.sysml --output prd.ir.json
 - The model files must be in the current folder or below it. The IR gives each file name relative to the current folder.
 - If the command line gives no model file, the command reads the model files of the key `model.paths` in the configuration file.
 - The exit code is 1 if the IR has an error finding, for example SYN-001. The command writes the IR also in this case.
+
+### Command `dsml validate`
+
+`dsml validate [--format text|json] [--fail-on error|warning]` reads the model files of the key `model.paths`, runs all enabled rules on the IR and writes the findings. For example:
+
+```sh
+uv run dsml validate --format json --output findings.json
+```
+
+- The findings are sorted by file, line, column and rule ID (PRD-VAL-007).
+- The text format gives one line for each finding, then one line with the fix hint of the rule. The last line gives the number of findings of each severity. This is the default format.
+- The JSON format gives the list `findings` and the object `summary`.
+- The exit code is 1 if there is a finding with the severity `error`. With `--fail-on warning`, the exit code is also 1 if there is a warning (PRD-VAL-005).
+- The keys `rules.severity` and `rules.optional` of the configuration file change the severities and turn on the optional rule sets. `docs/configuration.md` gives the rules.
+- The SARIF format and `--baseline` are not available yet. They stop the command with exit code 2.
+
+The rules are in `src/dsml/validate/rules/`. `docs/notes/validator.md` tells how to add a rule.
 
 The golden IR files of the two reference models are in `tests/golden/ir/`. CI compares the IR with these files on each platform (PRD-CORE-027, PRD-CORE-029). After a change of the IR, run `uv run python scripts/write_golden_ir.py` and examine the differences before you commit them.
 

@@ -24,9 +24,11 @@ from dsml.generate.writer import (
     make_plan,
     write_create_once,
 )
-from dsml.ir.model import IR_VERSION, Finding, Ir
+from dsml.ir.model import IR_VERSION, Ir
 from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
+from dsml.validate.engine import Validator, fails
+from dsml.validate.report import finding_line, json_report, text_report
 
 PROG = "dsml"
 DEFAULT_CONFIG = Path("dsml.toml")
@@ -123,6 +125,13 @@ def build_parser() -> ArgumentParser:
         choices=("text", "json", "sarif"),
         default="text",
         help="the format of the findings (default: text)",
+    )
+    validate.add_argument(
+        "--fail-on",
+        choices=("error", "warning"),
+        default="error",
+        help="stop with exit code 1 if a finding has this severity or a higher one "
+        "(default: error)",
     )
     validate.add_argument(
         "--baseline",
@@ -370,29 +379,9 @@ def selected_parts(args: argparse.Namespace, ir: Ir) -> frozenset[str] | None:
     return frozenset(parts) if parts else None
 
 
-# trace: PRD-CORE-007
-def finding_line(finding: Finding) -> str:
-    """Give one line for a finding: the location, the rule and the message."""
-    location = finding.location
-    where = "" if location is None else f"{location.file}:{location.line}:{location.column}: "
-    return f"{where}{finding.severity}: {finding.rule}: {finding.message}"
-
-
-# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-003, PRD-CORE-004, PRD-CORE-005, PRD-CORE-043
-def run_generate(args: argparse.Namespace) -> Outcome:
-    """Validate the model, then write the generated files through the file writer.
-
-    - An error finding stops the command before it writes a file. The exit
-      code is 1 (PRD-CORE-003).
-    - With `--check`, the command writes no file. It lists each file that a
-      normal run adds, changes or deletes. The exit code is 1 if there is a
-      difference (PRD-CORE-004).
-    - If a generated file is different from its hash in the manifest, the
-      command writes no file. It lists the changed files and the exit code is
-      1. With `--overwrite`, the command replaces them (PRD-CORE-043).
-    - Each file to add, change or delete is one line of the report.
-    """
-    configuration = read_configuration(args)
+# trace: PRD-CORE-001, PRD-CORE-020
+def read_model(configuration: Configuration) -> Ir:
+    """Make the IR of the model files of the key `model.paths`."""
     files = model_files(configuration)
     if not files:
         raise ToolchainError(
@@ -403,8 +392,49 @@ def run_generate(args: argparse.Namespace) -> Outcome:
     from dsml.adapter.convert import make_ir
 
     LOG.debug("Model files: %s.", ", ".join(str(file) for file in files))
-    ir = make_ir(files, Path.cwd())
-    errors = [finding for finding in ir.findings if finding.severity == "error"]
+    return make_ir(files, Path.cwd())
+
+
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-VAL-003, PRD-VAL-005, PRD-VAL-006
+def run_validate(args: argparse.Namespace) -> Outcome:
+    """Run all enabled rules on the IR and write the findings.
+
+    The report is text or JSON (`--format`). The exit code is 1 if a finding
+    has the severity `error`, or the severity `warning` with
+    `--fail-on warning` (PRD-VAL-005).
+    """
+    if args.format == "sarif":
+        raise ToolchainError("The format sarif is not available in this version.")
+    if args.baseline is not None:
+        raise ToolchainError("The option --baseline is not available in this version.")
+    configuration = read_configuration(args)
+    validator = Validator(configuration)
+    findings = validator.run(read_model(configuration))
+    write = json_report if args.format == "json" else text_report
+    write_report(write(findings, validator.rules), args.output)
+    return Outcome.ERROR_FINDING if fails(findings, args.fail_on) else Outcome.SUCCESS
+
+
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-003, PRD-CORE-004, PRD-CORE-005, PRD-CORE-043,
+# PRD-VAL-003
+def run_generate(args: argparse.Namespace) -> Outcome:
+    """Validate the model, then write the generated files through the file writer.
+
+    - The validator runs all enabled rules on the IR. An error finding stops
+      the command before it writes a file. The exit code is 1 (PRD-CORE-003,
+      PRD-VAL-003).
+    - With `--check`, the command writes no file. It lists each file that a
+      normal run adds, changes or deletes. The exit code is 1 if there is a
+      difference (PRD-CORE-004).
+    - If a generated file is different from its hash in the manifest, the
+      command writes no file. It lists the changed files and the exit code is
+      1. With `--overwrite`, the command replaces them (PRD-CORE-043).
+    - Each file to add, change or delete is one line of the report.
+    """
+    configuration = read_configuration(args)
+    validator = Validator(configuration)
+    ir = read_model(configuration)
+    errors = [finding for finding in validator.run(ir) if finding.severity == "error"]
     if errors:
         for finding in errors:
             sys.stderr.write(f"{PROG}: {finding_line(finding)}\n")
@@ -442,7 +472,7 @@ HANDLERS: dict[str, Handler] = {
     "init": run_init,
     "ir": run_ir,
     "trace": not_available,
-    "validate": not_available,
+    "validate": run_validate,
     "version": run_version,
 }
 """The function that runs each subcommand. Each function gives an `Outcome`."""
