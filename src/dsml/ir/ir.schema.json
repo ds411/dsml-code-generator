@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dsml:ir:1.0.0",
+  "title": "DSML IR 1.0.0",
+  "description": "The intermediate representation (IR) of a DSML model. Validators and generators read only the IR. docs/notes/ir.md gives the structure and the version rules.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["constraintResults", "elements", "files", "findings", "irVersion", "links"],
+  "properties": {
+    "irVersion": {
+      "description": "The semantic version of the IR (PRD-CORE-023).",
+      "const": "1.0.0"
+    },
+    "files": {
+      "description": "The model files, relative to the repository root, in sorted order.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/RelativePath" }
+    },
+    "elements": {
+      "description": "The elements of the five layers, sorted by identity, then by name.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/Element" }
+    },
+    "links": {
+      "description": "The trace links, sorted by source, type and target (PRD-TRACE-003).",
+      "type": "array",
+      "items": { "$ref": "#/$defs/Link" }
+    },
+    "constraintResults": {
+      "description": "The results of the formal constraints, sorted by requirement, index and environment (PRD-CORE-054).",
+      "type": "array",
+      "items": { "$ref": "#/$defs/ConstraintResult" }
+    },
+    "findings": {
+      "description": "The findings of the adapter, sorted by file, line, column and rule.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/Finding" }
+    }
+  },
+  "$defs": {
+    "RelativePath": {
+      "description": "A relative POSIX path with no '..' segment. It must not start with '/' or with a drive letter, and it must not contain a backslash (PRD-CORE-033).",
+      "type": "string",
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!(?:.*/)?\\.\\.(?:/|$)).+$"
+    },
+    "Identity": {
+      "description": "The identity of an element: its short name, or its qualified name if it has no short name (PRD-DSML-053).",
+      "type": "string",
+      "minLength": 1
+    },
+    "Location": {
+      "description": "A location in a model file. Lines and columns start at 1.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["column", "file", "line"],
+      "properties": {
+        "file": { "$ref": "#/$defs/RelativePath" },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "Multiplicity": {
+      "description": "A multiplicity. The upper bound is null for '*'.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lower", "upper"],
+      "properties": {
+        "lower": { "type": "integer", "minimum": 0 },
+        "upper": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "Value": {
+      "description": "The value of an attribute. The key 'type' gives the form of the value.",
+      "oneOf": [
+        { "$ref": "#/$defs/StringValue" },
+        { "$ref": "#/$defs/IntegerValue" },
+        { "$ref": "#/$defs/RealValue" },
+        { "$ref": "#/$defs/BooleanValue" },
+        { "$ref": "#/$defs/EnumValue" },
+        { "$ref": "#/$defs/ReferenceValue" },
+        { "$ref": "#/$defs/ListValue" }
+      ]
+    },
+    "StringValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "string" },
+        "value": { "type": "string" }
+      }
+    },
+    "IntegerValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "integer" },
+        "value": { "type": "integer" }
+      }
+    },
+    "RealValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "real" },
+        "value": { "type": "number" }
+      }
+    },
+    "BooleanValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "boolean" },
+        "value": { "type": "boolean" }
+      }
+    },
+    "EnumValue": {
+      "description": "A literal of an enumeration. 'enumeration' is the qualified name of the enumeration definition.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enumeration", "literal", "type"],
+      "properties": {
+        "type": { "const": "enum" },
+        "enumeration": { "type": "string", "minLength": 1 },
+        "literal": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ReferenceValue": {
+      "description": "A reference to an element.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "type"],
+      "properties": {
+        "type": { "const": "reference" },
+        "target": { "$ref": "#/$defs/Identity" }
+      }
+    },
+    "ListValue": {
+      "description": "A list of values in the order of the model.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["items", "type"],
+      "properties": {
+        "type": { "const": "list" },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/Value" } }
+      }
+    },
+    "Attribute": {
+      "description": "The value of one DSML attribute.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["location", "name", "value"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "value": { "$ref": "#/$defs/Value" },
+        "location": { "oneOf": [{ "$ref": "#/$defs/Location" }, { "type": "null" }] }
+      }
+    },
+    "Annotation": {
+      "description": "A metadata usage on an element. 'name' is the name of the metadata definition.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attributes", "location", "name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "attributes": { "type": "array", "items": { "$ref": "#/$defs/Attribute" } },
+        "location": { "oneOf": [{ "$ref": "#/$defs/Location" }, { "type": "null" }] }
+      }
+    },
+    "Element": {
+      "description": "One element of the five layers (PRD-CORE-024).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "annotations",
+        "attributes",
+        "direction",
+        "doc",
+        "identity",
+        "kind",
+        "location",
+        "multiplicity",
+        "name",
+        "owner",
+        "qualifiedName",
+        "shortName",
+        "types"
+      ],
+      "properties": {
+        "identity": { "$ref": "#/$defs/Identity" },
+        "kind": {
+          "enum": [
+            "Application",
+            "AwsCognito",
+            "AwsEcsService",
+            "AwsRdsPostgres",
+            "AwsSecrets",
+            "AwsVpc",
+            "ContainerService",
+            "Entity",
+            "Enumeration",
+            "Environment",
+            "Exposed",
+            "Field",
+            "Need",
+            "Network",
+            "Operation",
+            "Override",
+            "Package",
+            "Parameter",
+            "Relation",
+            "RelationalDatabase",
+            "Requirement",
+            "Roles",
+            "SecretStore",
+            "Stakeholder",
+            "ToolingAccount",
+            "UserDirectory",
+            "Verification"
+          ]
+        },
+        "name": { "type": "string" },
+        "qualifiedName": { "type": "string", "minLength": 1 },
+        "shortName": { "type": ["string", "null"], "minLength": 1 },
+        "owner": { "oneOf": [{ "$ref": "#/$defs/Identity" }, { "type": "null" }] },
+        "doc": { "type": ["string", "null"] },
+        "multiplicity": { "oneOf": [{ "$ref": "#/$defs/Multiplicity" }, { "type": "null" }] },
+        "direction": { "enum": ["in", "out", "inout", null] },
+        "types": { "type": "array", "items": { "$ref": "#/$defs/Identity" } },
+        "attributes": { "type": "array", "items": { "$ref": "#/$defs/Attribute" } },
+        "annotations": { "type": "array", "items": { "$ref": "#/$defs/Annotation" } },
+        "location": { "$ref": "#/$defs/Location" }
+      }
+    },
+    "Link": {
+      "description": "A trace link from the source element to the target element (PRD-TRACE-003).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["location", "source", "target", "type"],
+      "properties": {
+        "type": {
+          "enum": [
+            "allocate",
+            "calls",
+            "derivation",
+            "frame",
+            "realizes",
+            "refinement",
+            "satisfy",
+            "stakeholder",
+            "uses",
+            "verify"
+          ]
+        },
+        "source": { "$ref": "#/$defs/Identity" },
+        "target": { "$ref": "#/$defs/Identity" },
+        "location": { "$ref": "#/$defs/Location" }
+      }
+    },
+    "ConstraintResult": {
+      "description": "The result of one formal constraint of a requirement in one environment (PRD-CORE-054). For an 'unknown' result, 'missingFeatures' gives the features that have no value.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["environment", "index", "location", "missingFeatures", "requirement", "value"],
+      "properties": {
+        "requirement": { "$ref": "#/$defs/Identity" },
+        "index": { "type": "integer", "minimum": 1 },
+        "environment": { "$ref": "#/$defs/Identity" },
+        "value": { "enum": ["true", "false", "unknown"] },
+        "missingFeatures": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "location": { "$ref": "#/$defs/Location" }
+      }
+    },
+    "Finding": {
+      "description": "A finding of the adapter, for example a SYN finding (PRD-CORE-021).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["element", "location", "message", "rule", "severity"],
+      "properties": {
+        "rule": { "type": "string", "pattern": "^[A-Z]+-[0-9]{3,}$" },
+        "severity": { "enum": ["error", "warning", "info"] },
+        "message": { "type": "string", "minLength": 1 },
+        "location": { "oneOf": [{ "$ref": "#/$defs/Location" }, { "type": "null" }] },
+        "element": { "oneOf": [{ "$ref": "#/$defs/Identity" }, { "type": "null" }] }
+      }
+    }
+  }
+}
