@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import os
 import sys
 import traceback
 from collections.abc import Callable, Sequence
@@ -30,6 +31,7 @@ from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
 from dsml.validate.engine import Validator, fails
 from dsml.validate.report import finding_line, json_report, text_report
+from dsml.validate.sarif import sarif_report
 
 PROG = "dsml"
 DEFAULT_CONFIG = Path("dsml.toml")
@@ -416,19 +418,24 @@ def read_baseline_model(args: argparse.Namespace, configuration: Configuration) 
 def run_validate(args: argparse.Namespace) -> Outcome:
     """Run all enabled rules on the IR and write the findings.
 
-    The report is text or JSON (`--format`). The exit code is 1 if a finding
-    has the severity `error`, or the severity `warning` with
+    The report is text, JSON or SARIF 2.1.0 (`--format`). In SARIF, each URI
+    is relative to the folder of the configuration file. The exit code is 1
+    if a finding has the severity `error`, or the severity `warning` with
     `--fail-on warning` (PRD-VAL-005). The IDN rules run only if there is a
     baseline (PRD-VAL-011).
     """
-    if args.format == "sarif":
-        raise ToolchainError("The format sarif is not available in this version.")
     configuration = read_configuration(args)
     validator = Validator(configuration)
     baseline = read_baseline_model(args, configuration)
     findings = validator.run(read_model(configuration), baseline)
-    write = json_report if args.format == "json" else text_report
-    write_report(write(findings, validator.rules), args.output)
+    if args.format == "sarif":
+        base = Path(os.path.relpath(configuration.root.resolve(), Path.cwd().resolve()))
+        report = sarif_report(findings, validator.rules, toolchain_version(), base.as_posix())
+    elif args.format == "json":
+        report = json_report(findings, validator.rules)
+    else:
+        report = text_report(findings, validator.rules)
+    write_report(report, args.output)
     return Outcome.ERROR_FINDING if fails(findings, args.fail_on) else Outcome.SUCCESS
 
 

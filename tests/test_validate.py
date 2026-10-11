@@ -363,16 +363,3 @@ def test_generate_writes_no_file_when_there_is_an_error_finding(
     assert "error: SYN-002: " in captured.err
     assert captured.err.endswith("No file was written.\n")
     assert not (tmp_path / ".dsml").exists()
-
-
-@pytest.mark.parametrize(
-    ("argv", "message"),
-    [
-        (["--format", "sarif"], "The format sarif is not available in this version."),
-    ],
-)
-def test_options_of_later_stories_are_not_available(
-    argv: list[str], message: str, capsys: pytest.CaptureFixture[str]
-) -> None:
-    assert main(["validate", *argv]) == 2
-    assert capsys.readouterr().err == f"dsml: error: {message}\n"
