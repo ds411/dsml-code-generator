@@ -35,18 +35,27 @@ from dsml.config import Configuration
 from dsml.errors import ToolchainError
 from dsml.generate import names as safe_names
 from dsml.generate.header import FileType
-from dsml.generate.infrastructure import hcl, names
+from dsml.generate.infrastructure import database, hcl, names, user_directory
 from dsml.generate.templates import TemplateEngine
 from dsml.generate.writer import INFRASTRUCTURE, Kind, OutputFile
 from dsml.ir.environments import environments
 from dsml.ir.model import Element, Ir, StringValue
-from dsml.versions import load_baseline, pinned_version
+from dsml.versions import Pin, load_baseline, pinned_version
 
 ROOT_FILES: Final = ("backend", "main", "outputs", "providers", "variables", "versions")
 """The files of each environment root module, without `.gen.tf`."""
 
 TEMPLATE_FOLDER: Final = "infrastructure/envs"
 """The folder of the templates of the environment root modules."""
+
+MODULE_FILES: Final = ("main", "outputs", "variables")
+"""The files of each local module, without `.gen.tf`."""
+
+MODULE_TEMPLATE_FOLDER: Final = "infrastructure/modules"
+"""The folder of the templates of the local modules."""
+
+USER_DIRECTORY_OUTPUTS: Final = ("app_client_ids", "login_domain", "user_pool_id")
+"""The outputs of each user directory in an environment root module (PRD-IAC-010)."""
 
 
 # trace: PRD-IAC-024, PRD-DSML-041
@@ -126,6 +135,63 @@ def template_data(root: EnvironmentRoot, configuration: Configuration) -> dict[s
     }
 
 
+# trace: PRD-IAC-017, PRD-IAC-019, PRD-IAC-023
+def module_calls(ir: Ir, root: EnvironmentRoot) -> dict[str, Any]:
+    """Give the template data of the local module calls of one environment root module."""
+    return {
+        "databases": database.database_calls(ir, root.product, root.element),
+        "user_directories": user_directory.user_directory_calls(ir, root.product, root.element),
+    }
+
+
+# trace: PRD-TRACE-007
+def call_elements(calls: dict[str, Any]) -> dict[str, tuple[str, ...]]:
+    """Give the identities of the model elements of each HCL address of the module calls.
+
+    The address `module.<name>` and the outputs `output.<name>_*` of a call
+    trace to the elements of the call.
+    """
+    result: dict[str, tuple[str, ...]] = {}
+    for call in (*calls["databases"], *calls["user_directories"]):
+        result[f"module.{call.address}"] = call.elements
+    for call in calls["user_directories"]:
+        for output in USER_DIRECTORY_OUTPUTS:
+            result[f"output.{call.address}_{output}"] = call.elements
+    return result
+
+
+# trace: PRD-TRACE-005
+def file_elements(file: str, identity: str, by_address: dict[str, tuple[str, ...]]) -> list[str]:
+    """Give the identities of the header of one file of an environment root module.
+
+    Each file has the environment. The file `main` also has the elements of
+    the module calls, and the file `outputs` the elements of its outputs.
+    """
+    prefix = {"main": "module.", "outputs": "output."}.get(file)
+    found = {identity}
+    if prefix is not None:
+        for address, identities in by_address.items():
+            if address.startswith(prefix):
+                found.update(identities)
+    return sorted(found)
+
+
+def local_modules(ir: Ir) -> tuple[tuple[str, tuple[str, ...]], ...]:
+    """Give the folder name and the element identities of each local module, by folder name."""
+    return (
+        (database.MODULE, database.module_elements(ir)),
+        (user_directory.MODULE, user_directory.module_elements(ir)),
+    )
+
+
+def baseline_line(baseline: dict[str, Pin], name: str) -> str:
+    """Give the release line of one item of the version baseline."""
+    pin = baseline.get(name)
+    if pin is None or pin.line is None:
+        raise ToolchainError(f'The version baseline has no release line for "{name}".')
+    return pin.line
+
+
 # trace: PRD-IAC-001, PRD-IAC-002, PRD-CORE-005, PRD-CORE-026
 class InfrastructureGenerator:
     """The generator of the OpenTofu and Terraform code."""
@@ -140,21 +206,66 @@ class InfrastructureGenerator:
     def generate(
         self, ir: Ir, configuration: Configuration, parts: Collection[str] | None
     ) -> Sequence[OutputFile]:
-        """Give the files of each environment root module."""
+        """Give the files of each environment root module and of each local module."""
         output = configuration.infrastructure
         if output is None or (parts is not None and INFRASTRUCTURE not in parts):
             return []
+        roots = environment_roots(ir)
+        if not roots:
+            return []
         files: list[OutputFile] = []
-        for root in environment_roots(ir):
+        for root in roots:
             data = template_data(root, configuration)
+            calls = module_calls(ir, root)
+            data.update(calls)
+            by_address = call_elements(calls)
             identity = root.element.identity
 
-            def elements(address: str, identity: str = identity) -> tuple[str, ...]:
-                return (identity,)
+            def elements(
+                address: str,
+                identity: str = identity,
+                by_address: dict[str, tuple[str, ...]] = by_address,
+            ) -> tuple[str, ...]:
+                return tuple(sorted({identity, *by_address.get(address, ())}))
 
             for file in ROOT_FILES:
-                content = self._engine.render_bytes(f"{TEMPLATE_FOLDER}/{file}.gen.tf.j2", data)
+                header = {"elements": file_elements(file, identity, by_address)}
+                content = self._engine.render_bytes(
+                    f"{TEMPLATE_FOLDER}/{file}.gen.tf.j2", data | header
+                )
                 path = PurePosixPath(output, "envs", root.name, f"{file}.gen.tf").as_posix()
+                symbols = hcl.block_symbols(content.decode("utf-8"), elements)
+                files.append(OutputFile(path, content, Kind.GENERATED, INFRASTRUCTURE, symbols))
+        files.extend(self._module_files(ir, PurePosixPath(output)))
+        return files
+
+    # trace: PRD-IAC-001, PRD-IAC-007, PRD-TRACE-005, PRD-TRACE-006, PRD-TRACE-007
+    def _module_files(self, ir: Ir, output: PurePosixPath) -> list[OutputFile]:
+        """Give the files of each local module that the model needs.
+
+        All environments call the same local modules (PRD-IAC-023). Thus the
+        files of a module are the same for each environment. Each top-level
+        block of a module file traces to all elements of the module.
+        """
+        files: list[OutputFile] = []
+        baseline = load_baseline()
+        for module, identities in local_modules(ir):
+            if not identities:
+                continue
+            data = {
+                "file_type": FileType.HCL.value,
+                "elements": list(identities),
+                "engine_version": baseline_line(baseline, "postgresql"),
+            }
+
+            def elements(address: str, identities: tuple[str, ...] = identities) -> tuple[str, ...]:
+                return identities
+
+            for file in MODULE_FILES:
+                content = self._engine.render_bytes(
+                    f"{MODULE_TEMPLATE_FOLDER}/{module}/{file}.gen.tf.j2", data
+                )
+                path = (output / "modules" / module / f"{file}.gen.tf").as_posix()
                 symbols = hcl.block_symbols(content.decode("utf-8"), elements)
                 files.append(OutputFile(path, content, Kind.GENERATED, INFRASTRUCTURE, symbols))
         return files

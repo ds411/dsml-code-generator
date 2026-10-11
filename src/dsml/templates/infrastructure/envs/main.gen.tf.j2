@@ -8,3 +8,5 @@ locals {
   environment    = {{ environment | hcl_string }}
   product        = {{ product | hcl_string }}
 }
+{% include "infrastructure/envs/relational-database.j2" %}
+{% include "infrastructure/envs/user-directory.j2" %}

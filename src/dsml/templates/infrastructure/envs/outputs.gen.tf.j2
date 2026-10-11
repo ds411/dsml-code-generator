@@ -20,3 +20,20 @@ output "product" {
   description = "The name of the product."
   value       = local.product
 }
+{% for directory in user_directories %}
+
+output "{{ directory.address }}_user_pool_id" {
+  description = "The ID of the Cognito user pool of {{ directory.address }}."
+  value       = module.{{ directory.address }}.user_pool_id
+}
+
+output "{{ directory.address }}_app_client_ids" {
+  description = "The ID of the Cognito app client of each application of {{ directory.address }}, by HCL name."
+  value       = module.{{ directory.address }}.app_client_ids
+}
+
+output "{{ directory.address }}_login_domain" {
+  description = "The managed login domain of {{ directory.address }}."
+  value       = module.{{ directory.address }}.login_domain
+}
+{% endfor %}

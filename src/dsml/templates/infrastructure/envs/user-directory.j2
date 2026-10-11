@@ -1,0 +1,28 @@
+{#- The calls of the local module user-directory (PRD-IAC-019).
+    Data: "user_directories" (UserDirectoryCall values). -#}
+{% for directory in user_directories %}
+
+module "{{ directory.address }}" {
+  source = "../../modules/user-directory"
+
+  name          = {{ directory.name | hcl_string }}
+  element       = {{ directory.element | hcl_string }}
+  domain_prefix = {{ directory.domain_prefix | hcl_string }}
+  groups        = [{{ directory.groups | map("hcl_string") | join(", ") }}]
+{% if directory.clients %}
+
+  clients = {
+{% for client in directory.clients %}
+    {{ client.key }} = {
+      name          = {{ client.name | hcl_string }}
+      callback_urls = [{{ client.callback_url | hcl_string }}]
+      logout_urls   = [{{ client.logout_url | hcl_string }}]
+    }
+{% endfor %}
+  }
+{% else %}
+
+  clients = {}
+{% endif %}
+}
+{% endfor %}

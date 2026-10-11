@@ -22,6 +22,18 @@
               "kind": "resource",
               "lastLine": 9,
               "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
             }
           ]
         },
@@ -51,6 +63,24 @@
               "kind": "resource",
               "lastLine": 22,
               "name": "output.product"
+            },
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
             }
           ]
         },
@@ -90,6 +120,495 @@
       ]
     },
     {
+      "element": "OrderService::orderApi",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderDb",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/relational-database/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "locals"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "aws_kms_key.database"
+            },
+            {
+              "firstLine": 17,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "aws_kms_alias.database"
+            },
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "aws_db_subnet_group.database"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 34,
+              "name": "aws_security_group.database"
+            },
+            {
+              "firstLine": 36,
+              "kind": "resource",
+              "lastLine": 46,
+              "name": "aws_vpc_security_group_ingress_rule.database"
+            },
+            {
+              "firstLine": 48,
+              "kind": "resource",
+              "lastLine": 74,
+              "name": "aws_db_instance.database"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/relational-database/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.address"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.port"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.database_name"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.master_user_secret_arn"
+            },
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.kms_key_arn"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.security_group_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/relational-database/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "var.instance_class"
+            },
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "var.multi_az"
+            },
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "var.deletion_protection"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 38,
+              "name": "var.database_name"
+            },
+            {
+              "firstLine": 40,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "var.master_username"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 50,
+              "name": "var.vpc_id"
+            },
+            {
+              "firstLine": 52,
+              "kind": "resource",
+              "lastLine": 56,
+              "name": "var.subnet_ids"
+            },
+            {
+              "firstLine": 58,
+              "kind": "resource",
+              "lastLine": 62,
+              "name": "var.source_security_group_ids"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderDbAws",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/relational-database/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "locals"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "aws_kms_key.database"
+            },
+            {
+              "firstLine": 17,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "aws_kms_alias.database"
+            },
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "aws_db_subnet_group.database"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 34,
+              "name": "aws_security_group.database"
+            },
+            {
+              "firstLine": 36,
+              "kind": "resource",
+              "lastLine": 46,
+              "name": "aws_vpc_security_group_ingress_rule.database"
+            },
+            {
+              "firstLine": 48,
+              "kind": "resource",
+              "lastLine": 74,
+              "name": "aws_db_instance.database"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/relational-database/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.address"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.port"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.database_name"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.master_user_secret_arn"
+            },
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.kms_key_arn"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.security_group_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/relational-database/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "var.instance_class"
+            },
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "var.multi_az"
+            },
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "var.deletion_protection"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 38,
+              "name": "var.database_name"
+            },
+            {
+              "firstLine": 40,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "var.master_username"
+            },
+            {
+              "firstLine": 46,
+              "kind": "resource",
+              "lastLine": 50,
+              "name": "var.vpc_id"
+            },
+            {
+              "firstLine": 52,
+              "kind": "resource",
+              "lastLine": 56,
+              "name": "var.subnet_ids"
+            },
+            {
+              "firstLine": 58,
+              "kind": "resource",
+              "lastLine": 62,
+              "name": "var.source_security_group_ids"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "OrderService::prod",
       "files": [
         {
@@ -111,6 +630,18 @@
               "kind": "resource",
               "lastLine": 9,
               "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
             }
           ]
         },
@@ -140,6 +671,24 @@
               "kind": "resource",
               "lastLine": 22,
               "name": "output.product"
+            },
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
             }
           ]
         },
@@ -179,6 +728,22 @@
       ]
     },
     {
+      "element": "OrderService::prod::orderDbProd",
+      "files": [
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "OrderService::staging",
       "files": [
         {
@@ -200,6 +765,18 @@
               "kind": "resource",
               "lastLine": 9,
               "name": "locals"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "module.order_db"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
             }
           ]
         },
@@ -229,6 +806,24 @@
               "kind": "resource",
               "lastLine": 22,
               "name": "output.product"
+            },
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
             }
           ]
         },
@@ -262,6 +857,430 @@
               "kind": "resource",
               "lastLine": 13,
               "name": "terraform"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::users",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/user-directory/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "locals"
+            },
+            {
+              "firstLine": 12,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "aws_cognito_user_pool.users"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 43,
+              "name": "aws_cognito_user_pool_domain.users"
+            },
+            {
+              "firstLine": 45,
+              "kind": "resource",
+              "lastLine": 51,
+              "name": "aws_cognito_user_group.role"
+            },
+            {
+              "firstLine": 53,
+              "kind": "resource",
+              "lastLine": 68,
+              "name": "aws_cognito_user_pool_client.application"
+            },
+            {
+              "firstLine": 70,
+              "kind": "resource",
+              "lastLine": 76,
+              "name": "aws_cognito_managed_login_branding.application"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/user-directory/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.user_pool_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.user_pool_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.app_client_ids"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/user-directory/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "var.domain_prefix"
+            },
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "var.groups"
+            },
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 36,
+              "name": "var.clients"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::usersAws",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 44,
+              "name": "module.users"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.users_user_pool_id"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.users_app_client_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.users_login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/user-directory/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "locals"
+            },
+            {
+              "firstLine": 12,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "aws_cognito_user_pool.users"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 43,
+              "name": "aws_cognito_user_pool_domain.users"
+            },
+            {
+              "firstLine": 45,
+              "kind": "resource",
+              "lastLine": 51,
+              "name": "aws_cognito_user_group.role"
+            },
+            {
+              "firstLine": 53,
+              "kind": "resource",
+              "lastLine": 68,
+              "name": "aws_cognito_user_pool_client.application"
+            },
+            {
+              "firstLine": 70,
+              "kind": "resource",
+              "lastLine": 76,
+              "name": "aws_cognito_managed_login_branding.application"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/user-directory/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.user_pool_id"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.user_pool_arn"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.app_client_ids"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.login_domain"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/user-directory/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 8,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 10,
+              "kind": "resource",
+              "lastLine": 14,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 16,
+              "kind": "resource",
+              "lastLine": 20,
+              "name": "var.domain_prefix"
+            },
+            {
+              "firstLine": 22,
+              "kind": "resource",
+              "lastLine": 26,
+              "name": "var.groups"
+            },
+            {
+              "firstLine": 28,
+              "kind": "resource",
+              "lastLine": 36,
+              "name": "var.clients"
             }
           ]
         }

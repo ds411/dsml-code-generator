@@ -1,0 +1,29 @@
+{#- The calls of the local module relational-database (PRD-IAC-017,
+    PRD-IAC-018). Data: "databases" (DatabaseCall values). -#}
+{% for database in databases %}
+
+module "{{ database.address }}" {
+  source = "../../modules/relational-database"
+
+  name                = {{ database.name | hcl_string }}
+  element             = {{ database.element | hcl_string }}
+  instance_class      = {{ database.instance_class | hcl_string }}
+  multi_az            = {{ database.multi_az | lower }}
+  deletion_protection = {{ database.deletion_protection | lower }}
+  database_name       = {{ database.database_name | hcl_string }}
+  master_username     = {{ database.master_username | hcl_string }}
+  vpc_id              = {{ database.network }}.vpc_id
+  subnet_ids          = {{ database.network }}.private_subnet_ids
+{% if database.services %}
+
+  source_security_group_ids = {
+{% for key, service in database.services %}
+    {{ key }} = {{ service }}.security_group_id
+{% endfor %}
+  }
+{% else %}
+
+  source_security_group_ids = {}
+{% endif %}
+}
+{% endfor %}
