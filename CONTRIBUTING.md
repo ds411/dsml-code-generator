@@ -11,7 +11,7 @@ This document gives the work process for this repository. It applies to people a
 
 ## Work cycle
 
-1. Take an open story issue.
+1. Take the next open story issue in the order of its milestone. Look at the steps in the milestone issue.
 2. Make a new branch from the newest `main`.
 3. Do the work. Commit with the commit template.
 4. Push the branch and open a pull request to `main`.
@@ -36,9 +36,12 @@ Use these rules for issues:
 2. Give the PRD requirement IDs and the decision IDs that the issue is about.
 3. Make each story small enough for one pull request. If a story is too large, divide it into two or more stories before you start the work.
 4. Add each story as a sub-issue of its milestone.
-5. Put the label `deferred` on an item that waits for a resource, for example an AWS account. Give the reason in the issue.
-6. A pull request closes its story with the line `Closes #<issue>`. Close a milestone when all its stories are closed.
-7. When the product owner answers a decision issue, record the answer. If the answer changes a PRD, follow "Changes to a PRD requirement" below. Then close the issue.
+5. Give the order of all the stories in the milestone issue. Put the stories into numbered steps in the section "Stories". Do the steps in their order.
+6. In the milestone issue, write which stories can go in parallel. Put them in the same step, and give the stories that each step needs.
+7. When you add a story to a milestone, put it in a step. Then make sure that the order is still correct.
+8. Put the label `deferred` on an item that waits for a resource, for example an AWS account. Give the reason in the issue.
+9. A pull request closes its story with the line `Closes #<issue>`. Close a milestone when all its stories are closed.
+10. When the product owner answers a decision issue, record the answer. If the answer changes a PRD, follow "Changes to a PRD requirement" below. Then close the issue.
 
 ## Branches
 

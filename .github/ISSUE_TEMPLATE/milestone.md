@@ -18,6 +18,16 @@ labels: milestone
 ## Stories
 
 <!-- Add each story as a sub-issue. Before a story has an issue, you can list it here. -->
+<!-- Give the order of all stories in numbered steps. Do the steps in their order. -->
+<!-- Put the stories that can go in parallel in the same step. Give the stories that each step needs. -->
+
+Each story is a sub-issue of this milestone. Do the steps in their order. The stories in one step can go in parallel.
+
+Step 1. 
+
+- [ ] 
+
+Step 2. 
 
 - [ ] 
 
@@ -31,6 +41,7 @@ labels: milestone
 
 - Starts after: 
 - Blocks: 
+- In parallel: <!-- Give the stories of other milestones that can go in parallel with this milestone. Write "None" if there are none. -->
 
 ## Deferred items
 
