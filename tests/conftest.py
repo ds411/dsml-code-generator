@@ -42,9 +42,14 @@ class RunRule(Protocol):
     ) -> tuple[Finding, ...]: ...
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def rule_engine() -> Iterator[Engine]:
-    """One OpenSysML service for all rule tests."""
+    """One OpenSysML service for the rule tests of one test module.
+
+    The service stops at the end of the module. On macOS, gRPC writes
+    messages to stderr in each child process of a parent with a running
+    service. Those messages make the tests of the command line fail.
+    """
     with Engine() as engine:
         yield engine
 
