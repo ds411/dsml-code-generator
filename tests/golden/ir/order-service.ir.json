@@ -1,0 +1,1570 @@
+{
+  "constraintResults": [
+    {
+      "environment": "OrderService::dev",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 35
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    },
+    {
+      "environment": "OrderService::prod",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 35
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    },
+    {
+      "environment": "OrderService::staging",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 35
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    }
+  ],
+  "elements": [
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 12
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 13
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 11
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Track orders"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The shop owner must see the status of each order.",
+      "identity": "N-001",
+      "kind": "Need",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "trackOrders",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::trackOrders",
+      "shortName": "N-001",
+      "types": []
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 20,
+                "file": "docs/model/examples/order-service.sysml",
+                "line": 4
+              },
+              "name": "major",
+              "value": {
+                "type": "integer",
+                "value": 1
+              }
+            },
+            {
+              "location": {
+                "column": 31,
+                "file": "docs/model/examples/order-service.sysml",
+                "line": 4
+              },
+              "name": "minor",
+              "value": {
+                "type": "integer",
+                "value": 0
+              }
+            }
+          ],
+          "location": {
+            "column": 5,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 4
+          },
+          "name": "DsmlVersion"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService",
+      "kind": "Package",
+      "location": {
+        "column": 1,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 1
+      },
+      "multiplicity": null,
+      "name": "OrderService",
+      "owner": null,
+      "qualifiedName": "OrderService",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderService::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderService::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::AppRoles",
+      "kind": "Roles",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 39
+      },
+      "multiplicity": null,
+      "name": "AppRoles",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::AppRoles",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 52
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "post",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 53
+          },
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders/{orderId}/cancel"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::CancelOrder",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 49
+      },
+      "multiplicity": null,
+      "name": "CancelOrder",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::CancelOrder",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "out",
+      "doc": null,
+      "identity": "OrderService::CancelOrder::order",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 51
+      },
+      "multiplicity": null,
+      "name": "order",
+      "owner": "OrderService::CancelOrder",
+      "qualifiedName": "OrderService::CancelOrder::order",
+      "shortName": null,
+      "types": [
+        "OrderService::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "in",
+      "doc": null,
+      "identity": "OrderService::CancelOrder::orderId",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 50
+      },
+      "multiplicity": null,
+      "name": "orderId",
+      "owner": "OrderService::CancelOrder",
+      "qualifiedName": "OrderService::CancelOrder::orderId",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::Order",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 42
+      },
+      "multiplicity": null,
+      "name": "Order",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::Order",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [],
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 43
+          },
+          "name": "Key"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::Order::id",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 43
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OrderService::Order",
+      "qualifiedName": "OrderService::Order::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 56,
+                "file": "docs/model/examples/order-service.sysml",
+                "line": 46
+              },
+              "name": "maxLength",
+              "value": {
+                "type": "integer",
+                "value": 500
+              }
+            }
+          ],
+          "location": {
+            "column": 42,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 46
+          },
+          "name": "FieldRules"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::Order::note",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 46
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OrderService::Order",
+      "qualifiedName": "OrderService::Order::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::Order::status",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 44
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OrderService::Order",
+      "qualifiedName": "OrderService::Order::status",
+      "shortName": null,
+      "types": [
+        "OrderService::OrderStatus"
+      ]
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 55,
+                "file": "docs/model/examples/order-service.sysml",
+                "line": 45
+              },
+              "name": "minValue",
+              "value": {
+                "type": "integer",
+                "value": 0
+              }
+            }
+          ],
+          "location": {
+            "column": 41,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 45
+          },
+          "name": "FieldRules"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::Order::total",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 45
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OrderService::Order",
+      "qualifiedName": "OrderService::Order::total",
+      "shortName": null,
+      "types": [
+        "DSML::Decimal"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderService::OrderStatus",
+                "literal": "open",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderService::OrderStatus",
+                "literal": "shipped",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderService::OrderStatus",
+                "literal": "cancelled",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::OrderStatus",
+      "kind": "Enumeration",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 40
+      },
+      "multiplicity": null,
+      "name": "OrderStatus",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::OrderStatus",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::ShopOwner",
+      "kind": "Stakeholder",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 7
+      },
+      "multiplicity": null,
+      "name": "ShopOwner",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::ShopOwner",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::apiService",
+      "kind": "ContainerService",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 70
+      },
+      "multiplicity": null,
+      "name": "apiService",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::apiService",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 41,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 79
+          },
+          "name": "cpu",
+          "value": {
+            "type": "integer",
+            "value": 512
+          }
+        },
+        {
+          "location": {
+            "column": 91,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 79
+          },
+          "name": "desiredCount",
+          "value": {
+            "type": "integer",
+            "value": 1
+          }
+        },
+        {
+          "location": {
+            "column": 64,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 79
+          },
+          "name": "memory",
+          "value": {
+            "type": "integer",
+            "value": 1024
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::apiServiceAws",
+      "kind": "AwsEcsService",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 79
+      },
+      "multiplicity": null,
+      "name": "apiServiceAws",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::apiServiceAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 29,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 88
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "222222222222"
+          }
+        },
+        {
+          "location": {
+            "column": 87,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 88
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "orders.dev.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 61,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 88
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::dev",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 88
+      },
+      "multiplicity": null,
+      "name": "dev",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::dev",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::network",
+      "kind": "Network",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 69
+      },
+      "multiplicity": null,
+      "name": "network",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::network",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::networkAws",
+      "kind": "AwsVpc",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 78
+      },
+      "multiplicity": null,
+      "name": "networkAws",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::networkAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 57
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "fastapi",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::orderApi",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 56
+      },
+      "multiplicity": null,
+      "name": "orderApi",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::orderApi",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 63
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderService::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::orderApi::cancelOrder",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 62
+      },
+      "multiplicity": null,
+      "name": "cancelOrder",
+      "owner": "OrderService::orderApi",
+      "qualifiedName": "OrderService::orderApi::cancelOrder",
+      "shortName": null,
+      "types": [
+        "OrderService::CancelOrder"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 60
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderService::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderService::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 59
+          },
+          "name": "crud",
+          "value": {
+            "items": [
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "create",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "read",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "list",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "crudDefaults",
+          "value": {
+            "items": [
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "create",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "post",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "read",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}/{id}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "list",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}"
+                  }
+                ],
+                "type": "list"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::orderApi::orders",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 58
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": null
+      },
+      "name": "orders",
+      "owner": "OrderService::orderApi",
+      "qualifiedName": "OrderService::orderApi::orders",
+      "shortName": null,
+      "types": [
+        "OrderService::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::orderDb",
+      "kind": "RelationalDatabase",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 71
+      },
+      "multiplicity": null,
+      "name": "orderDb",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::orderDb",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 39,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 80
+          },
+          "name": "instanceClass",
+          "value": {
+            "type": "string",
+            "value": "db.t4g.micro"
+          }
+        },
+        {
+          "location": {
+            "column": 83,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 80
+          },
+          "name": "multiAz",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::orderDbAws",
+      "kind": "AwsRdsPostgres",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 80
+      },
+      "multiplicity": null,
+      "name": "orderDbAws",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::orderDbAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 91
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "444444444444"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 93
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "orders.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 92
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::prod",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 90
+      },
+      "multiplicity": null,
+      "name": "prod",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::prod",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 58,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 94
+          },
+          "name": "desiredCount",
+          "value": {
+            "type": "integer",
+            "value": 3
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::prod::apiServiceProd",
+      "kind": "Override",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 94
+      },
+      "multiplicity": null,
+      "name": "apiServiceProd",
+      "owner": "OrderService::prod",
+      "qualifiedName": "OrderService::prod::apiServiceProd",
+      "shortName": null,
+      "types": [
+        "OrderService::apiServiceAws"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 52,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 95
+          },
+          "name": "multiAz",
+          "value": {
+            "type": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::prod::orderDbProd",
+      "kind": "Override",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 95
+      },
+      "multiplicity": null,
+      "name": "orderDbProd",
+      "owner": "OrderService::prod",
+      "qualifiedName": "OrderService::prod::orderDbProd",
+      "shortName": null,
+      "types": [
+        "OrderService::orderDbAws"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 33,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 89
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "333333333333"
+          }
+        },
+        {
+          "location": {
+            "column": 91,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 89
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "orders.staging.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 65,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 89
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::staging",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 89
+      },
+      "multiplicity": null,
+      "name": "staging",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::staging",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 36,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 87
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "111111111111"
+          }
+        },
+        {
+          "location": {
+            "column": 68,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 87
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::tooling",
+      "kind": "ToolingAccount",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 87
+      },
+      "multiplicity": null,
+      "name": "tooling",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::tooling",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::users",
+      "kind": "UserDirectory",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 72
+      },
+      "multiplicity": null,
+      "name": "users",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::users",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderService::usersAws",
+      "kind": "AwsCognito",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 81
+      },
+      "multiplicity": null,
+      "name": "usersAws",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::usersAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 22
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 23
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 24
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 21
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Get order status"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The API must return the status of an order.",
+      "identity": "R-001",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 19
+      },
+      "multiplicity": null,
+      "name": "getOrderStatus",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::getOrderStatus",
+      "shortName": "R-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 31
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 32
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 33
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 30
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order data in two zones"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "In prod, the order database must continue to operate after the loss of one availability zone.",
+      "identity": "R-002",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 28
+      },
+      "multiplicity": null,
+      "name": "orderDataSafe",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::orderDataSafe",
+      "shortName": "R-002",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 101
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "test",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 102
+          },
+          "name": "testFiles",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "app/features/order/read_order/test_endpoint.py"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 100
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order status API test"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "V-001",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 99
+      },
+      "multiplicity": null,
+      "name": "orderStatusTest",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::orderStatusTest",
+      "shortName": "V-001",
+      "types": []
+    }
+  ],
+  "files": [
+    "docs/model/examples/order-service.sysml"
+  ],
+  "findings": [],
+  "irVersion": "1.0.0",
+  "links": [
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 15
+      },
+      "source": "N-001",
+      "target": "OrderService::ShopOwner",
+      "type": "stakeholder"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 73
+      },
+      "source": "OrderService::apiService",
+      "target": "OrderService::orderDb",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 74
+      },
+      "source": "OrderService::apiService",
+      "target": "OrderService::users",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 83
+      },
+      "source": "OrderService::apiServiceAws",
+      "target": "OrderService::apiService",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 82
+      },
+      "source": "OrderService::networkAws",
+      "target": "OrderService::network",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 75
+      },
+      "source": "OrderService::orderApi",
+      "target": "OrderService::apiService",
+      "type": "allocate"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 66
+      },
+      "source": "OrderService::orderApi",
+      "target": "R-001",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 84
+      },
+      "source": "OrderService::orderDbAws",
+      "target": "OrderService::orderDb",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 85
+      },
+      "source": "OrderService::usersAws",
+      "target": "OrderService::users",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 25
+      },
+      "source": "R-001",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 34
+      },
+      "source": "R-002",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 103
+      },
+      "source": "V-001",
+      "target": "R-001",
+      "type": "verify"
+    }
+  ]
+}

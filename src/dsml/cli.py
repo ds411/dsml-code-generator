@@ -13,6 +13,7 @@ from typing import NoReturn
 from dsml import versions
 from dsml.errors import NotAvailableError, ToolchainError, UsageError
 from dsml.ir.model import IR_VERSION
+from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
 
 PROG = "dsml"
@@ -153,7 +154,14 @@ def build_parser() -> ArgumentParser:
         help="the baseline for the impact and suspect reports",
     )
 
-    add("ir", "write the IR as JSON")
+    ir = add("ir", "write the IR as JSON")
+    ir.add_argument(
+        "model",
+        nargs="*",
+        type=Path,
+        metavar="<model-file>",
+        help="a SysML v2 file of the model, in the current folder or below it",
+    )
 
     check_output = add("check-output", "run the language tools on the generated code")
     check_output.add_argument(
@@ -209,6 +217,31 @@ def run_version(args: argparse.Namespace) -> Outcome:
     return Outcome.SUCCESS
 
 
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-CORE-028
+def run_ir(args: argparse.Namespace) -> Outcome:
+    """Write the IR of the model files as canonical JSON.
+
+    The IR gives each file name relative to the current folder. The exit code
+    is 1 if the IR has an error finding, for example SYN-001. The command
+    writes the IR also in this case.
+    """
+    files: list[Path] = args.model
+    if not files:
+        raise ToolchainError(
+            "Give one or more model files. "
+            "This version does not read the model files from the configuration file."
+        )
+    # The adapter imports OpenSysML. Only this subcommand needs it.
+    from dsml.adapter.convert import make_ir
+
+    LOG.debug("Model files: %s.", ", ".join(str(file) for file in files))
+    ir = make_ir(files, Path.cwd())
+    write_report(write_ir(ir).decode(), args.output)
+    if any(finding.severity == "error" for finding in ir.findings):
+        return Outcome.ERROR_FINDING
+    return Outcome.SUCCESS
+
+
 def not_available(args: argparse.Namespace) -> Outcome:
     """Stop a subcommand that has no implementation in this version."""
     raise NotAvailableError()
@@ -218,7 +251,7 @@ HANDLERS: dict[str, Handler] = {
     "check-output": not_available,
     "generate": not_available,
     "init": not_available,
-    "ir": not_available,
+    "ir": run_ir,
     "trace": not_available,
     "validate": not_available,
     "version": run_version,

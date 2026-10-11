@@ -7,7 +7,7 @@ Story #28 added the IR models, the JSON Schema of the IR and the canonical JSON 
 - Writer: `src/dsml/ir/writer.py`.
 - Tests: `tests/test_ir.py`.
 
-The conversion of a model into the IR and the command `dsml ir` are not in this story. The next M2 stories add them.
+The conversion of a model into the IR and the command `dsml ir` are not in this story. Stories #30, #31 and #32 add the conversion. Story #33 adds `dsml ir` and the golden IR files (`tests/golden/ir/`). `docs/notes/ir-performance.md` gives the time to make the IR.
 
 ## Summary
 

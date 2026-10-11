@@ -1,7 +1,7 @@
 # CI of the DSML toolchain. This is a hand-written workflow, not a
 # generated pipeline.
 #
-# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-029, PRD-CORE-049
+# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-027, PRD-CORE-029, PRD-CORE-049
 #
 # The matrix has the operating systems of decision record 03 (Q50):
 # Linux x64, Linux arm64 and macOS arm64. Each third-party action has a
@@ -76,5 +76,12 @@ jobs:
       - name: Start OpenSysML and measure the times
         run: uv run python scripts/measure_opensysml.py
 
+      # The script writes the time of dsml ir for a model with 1,000
+      # elements for docs/notes/ir-performance.md (story #33, Q50).
+      - name: Measure the IR time for 1,000 elements
+        run: uv run python scripts/measure_ir.py
+
+      # The golden IR tests in tests/test_ir_command.py compare the IR of the
+      # reference models with tests/golden/ir/ (PRD-CORE-027, PRD-CORE-029).
       - name: Test
         run: uv run pytest

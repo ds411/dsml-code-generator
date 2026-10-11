@@ -24,7 +24,6 @@ NOT_AVAILABLE_ARGV = [
     ["generate", "--infrastructure", "--pipelines"],
     ["trace", "coverage"],
     ["trace", "impact", "--format", "csv", "--baseline", "v1.0.0"],
-    ["ir"],
     ["check-output"],
     ["check-output", "--application", "orders", "--infrastructure"],
 ]
@@ -208,6 +207,9 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     test fails.
     """
     argv = [command, "coverage"] if command == "trace" else [command]
+    if command == "ir":
+        (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
+        argv = [command, "model.sysml"]
     with subprocess.Popen(
         [sys.executable, "-m", "dsml", *argv],
         stdin=subprocess.PIPE,
@@ -225,5 +227,8 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
         err = process.stderr.read().decode("utf-8")
     if command == "version":
         assert (returncode, out, err) == (0, VERSION_TEXT, "")
+    elif command == "ir":
+        assert (returncode, err) == (0, "")
+        assert '"files": [\n    "model.sysml"\n  ]' in out
     else:
         assert (returncode, out, err) == (2, "", f"dsml: error: {NOT_AVAILABLE}\n")
