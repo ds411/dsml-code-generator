@@ -1,8 +1,8 @@
 """Tests of the subcommand `dsml ir` and of the golden IR files (story #33).
 
-CI runs these tests on Linux x64, Linux arm64 and macOS arm64. Thus the
-comparison with the golden IR files makes sure that the IR is byte-identical
-on the three platforms (PRD-CORE-027, PRD-CORE-028, PRD-CORE-029).
+CI runs these tests on Linux x64 (Q62). The comparison with the golden IR
+files makes sure that the IR does not change (PRD-CORE-027, PRD-CORE-028,
+PRD-CORE-029).
 
 Most tests start a private `sysml-grpc` child process. If the binary is not
 in the cache, the `opensysml` client downloads it one time.
