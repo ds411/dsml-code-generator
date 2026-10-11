@@ -38,8 +38,11 @@ on:
 permissions:
   contents: read
 
+# A newer push to a pull request cancels the older run of that pull
+# request. Each push to main and each manual run gets its own group, so a
+# newer push does not cancel or replace it.
 concurrency:
-  group: pilot-${{ github.workflow }}-${{ github.ref }}
+  group: pilot-${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
