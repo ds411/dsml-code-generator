@@ -21,7 +21,7 @@ labels: milestone
 <!-- Give the order of all stories in numbered steps. Do the steps in their order. -->
 <!-- Put the stories that can go in parallel in the same step. Give the stories that each step needs. -->
 
-Each story is a sub-issue of this milestone. Do the steps in their order. The stories in one step can go in parallel.
+Each story is a sub-issue of this milestone. Do the steps in their order. The stories in one step can go in parallel. Their pull requests merge one at a time, in the order of this list (`CONTRIBUTING.md`, "Merge order").
 
 Step 1. 
 
