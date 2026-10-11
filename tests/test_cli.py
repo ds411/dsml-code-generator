@@ -15,7 +15,7 @@ from dsml.errors import NOT_AVAILABLE, ToolchainError
 
 SUBCOMMANDS = ("init", "validate", "generate", "trace", "ir", "check-output", "version")
 NOT_AVAILABLE_ARGV = [
-    ["trace", "coverage"],
+    ["trace", "suspect", "--format", "json"],
     ["trace", "impact", "--format", "csv", "--baseline", "v1.0.0"],
     ["check-output"],
     ["check-output", "--application", "orders", "--infrastructure"],
@@ -200,13 +200,13 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     A subcommand that reads standard input waits until the timeout, and the
     test fails.
     """
-    argv = [command, "coverage"] if command == "trace" else [command]
+    argv = [command, "coverage", "--format", "csv"] if command == "trace" else [command]
     if command == "ir":
         (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
         argv = [command, "model.sysml"]
     if command == "init":
         argv = [command]
-    if command in ("generate", "validate"):
+    if command in ("generate", "trace", "validate"):
         (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
         (tmp_path / "dsml.toml").write_text(
             'schema = 1\n\n[model]\npaths = ["model.sysml"]\n', encoding="utf-8"
@@ -234,6 +234,11 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     elif command == "generate":
         manifests = "add .dsml/generated.json\nadd .dsml/trace.gen.json\n"
         assert (returncode, out, err) == (0, manifests, "")
+    elif command == "trace":
+        assert (returncode, err) == (0, "")
+        assert out.endswith(
+            "requirement,needs,satisfiedBy,generatedFiles,traceComments,verifications,status\n"
+        )
     elif command == "validate":
         assert (returncode, out, err) == (0, "Findings: 0 errors, 0 warnings, 0 info.\n", "")
     elif command == "init":

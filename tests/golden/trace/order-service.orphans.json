@@ -1,0 +1,63 @@
+{
+  "baselineCommit": null,
+  "columns": [
+    "category",
+    "item",
+    "location"
+  ],
+  "modelCommit": "none: the folder is not in a Git repository",
+  "report": "orphans",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::CancelOrder",
+      "location": "model/order-service.sysml:49"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::Order",
+      "location": "model/order-service.sysml:42"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::network",
+      "location": "model/order-service.sysml:69"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::networkAws",
+      "location": "model/order-service.sysml:78"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::orderDb",
+      "location": "model/order-service.sysml:71"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::orderDbAws",
+      "location": "model/order-service.sysml:80"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::users",
+      "location": "model/order-service.sysml:72"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderService::usersAws",
+      "location": "model/order-service.sysml:81"
+    },
+    {
+      "category": "test-file-without-verification",
+      "item": "tests/test_smoke.py",
+      "location": "tests/test_smoke.py"
+    },
+    {
+      "category": "unknown-trace-id",
+      "item": "R-404",
+      "location": "app/features/order/cancel_order/handler.py:1"
+    }
+  ]
+}
