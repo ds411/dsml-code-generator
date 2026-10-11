@@ -89,3 +89,13 @@ def test_cov_003_accepts_its_accept_model(run_rule: RunRule) -> None:
 The rule tests of one test module share one OpenSysML service, the module fixture `rule_engine`. The service stops at the end of the module. On macOS, a running service makes gRPC write messages to stderr in each child process, and those messages make the tests of the command line fail.
 
 An IDN rule also has the model `baseline.sysml`. The tests in `tests/test_baseline.py` commit it in a temporary Git repository. Then they compare `accept.sysml` and `reject.sysml` with it.
+
+## STR rules for the version, the attributes and the IDs
+
+Story #59 added the module `str_core.py` with the rules STR-001, STR-002, STR-003, STR-004 and STR-016. The tests are in `tests/test_str_core_rules.py`.
+
+- STR-001: a root package must have `@DsmlVersion`. The toolchain supports the major version of its DSML library and each minor version up to the minor version of its library (PRD-DSML-056, PRD-DSML-057).
+- STR-002: a need must have an ID, `title`, a `doc` comment, `priority` and `status`. A requirement must also have `kind`. A verification must have an ID, `title` and `method`. An empty text is not a value.
+- STR-003: the patterns come from the keys `ids.need`, `ids.requirement` and `ids.verification` of `dsml.toml`. The full short name must match the pattern.
+- STR-004: the rule gives one finding for each element of a group of elements with the same short name.
+- STR-016: an AWS attribute is an attribute of an AWS realization (PRD-DSML-042), `accountId`, `region`, or an attribute with a name that starts with "aws". The IR adapter writes each attribute with a value that the model declares on a logical element into the IR.
