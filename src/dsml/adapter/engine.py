@@ -7,7 +7,7 @@ gives the results as plain data classes.
 
 import json
 import warnings
-from collections.abc import Collection, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from types import TracebackType
@@ -147,16 +147,24 @@ class ModelElement:
 
 
 class ParsedModel:
-    """A model that OpenSysML parsed from one or more source files."""
+    """A model that OpenSysML parsed from one or more source files.
 
-    def __init__(self, model: Any) -> None:
+    `sources` maps the name of each source file to its text.
+    """
+
+    def __init__(self, model: Any, sources: Mapping[str, str] | None = None) -> None:
         self._model = model
+        self._sources: dict[str, str] = dict(sources or {})
         self.diagnostics: tuple[Diagnostic, ...] = tuple(
             sorted(
                 (_diagnostic(item) for item in model.diagnostics),
                 key=lambda d: (d.file, d.line, d.column, d.code, d.message),
             )
         )
+
+    def source_text(self, file: str) -> str | None:
+        """Give the text of a source file of the parse, or None."""
+        return self._sources.get(file)
 
     @property
     def ok(self) -> bool:
@@ -246,6 +254,37 @@ class ParsedModel:
                 f"Cannot evaluate the requirement {qualified_name}: {error}"
             ) from None
         return _constraint_result(verdict)
+
+    # trace: PRD-CORE-054
+    def evaluate_formula(self, expression: str, namespace: str) -> ConstraintResult:
+        """Evaluate a Boolean expression in `namespace` and give its result.
+
+        An expression that refers to a feature with no value gives "unknown".
+        Then `detail` gives the reason of OpenSysML, which names one feature.
+        """
+        try:
+            value: Any = self._model.eval(expression, context_symbol_id=namespace)
+        except opensysml.OpenSysMLError as error:
+            raise EngineError(f"Cannot evaluate {expression!r}: {error}") from None
+        if isinstance(value, opensysml.Undetermined):
+            return ConstraintResult(value="unknown", detail=str(value.reason))
+        if not isinstance(value, bool):
+            raise EngineError(f"The expression {expression!r} does not give a Boolean value.")
+        return ConstraintResult(value="true" if value else "false")
+
+    # trace: PRD-CORE-054
+    def has_value(self, expression: str, namespace: str) -> bool | None:
+        """Tell if an expression has a value in `namespace`.
+
+        The result is False if the value is not determined, for example for a
+        feature with no value. The result is None if OpenSysML cannot evaluate
+        the expression, for example for a name that is not a feature.
+        """
+        try:
+            value: Any = self._model.eval(expression, context_symbol_id=namespace)
+        except opensysml.OpenSysMLError:
+            return None
+        return not isinstance(value, opensysml.Undetermined)
 
     # trace: PRD-CORE-024, PRD-CORE-025
     def evaluate_value(self, expression: str, namespace: str) -> PlainValue | None:
@@ -339,7 +378,7 @@ class Engine:
             model: Any = self._connection.parse_sources(list(documents))
         except opensysml.OpenSysMLError as error:
             raise EngineError(f"OpenSysML cannot parse the model: {error}") from None
-        return ParsedModel(model)
+        return ParsedModel(model, dict(documents))
 
 
 def _allow_large_messages() -> None:

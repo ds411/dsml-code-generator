@@ -1,20 +1,21 @@
-# trace: PRD-CORE-021, PRD-CORE-022, PRD-CORE-024, PRD-CORE-025, PRD-TRACE-003
+# trace: PRD-CORE-021, PRD-CORE-022, PRD-CORE-024, PRD-CORE-025, PRD-CORE-054, PRD-TRACE-003
 """Convert a parsed model into the IR.
 
 Each layer module gives the elements and the links of its layers. This
-module puts them into one `Ir` with the SYN findings of the parse.
+module puts them into one `Ir` with the results of the formal constraints
+and the SYN findings of the parse.
 """
 
 from collections.abc import Sequence
 
-from dsml.adapter import needs, solution
+from dsml.adapter import constraints, needs, solution
 from dsml.adapter.engine import ParsedModel
 from dsml.adapter.findings import syn_findings
 from dsml.adapter.source import SourceGraph
 from dsml.ir.model import Element, Ir, Link
 
 
-# trace: PRD-CORE-021, PRD-CORE-024, PRD-TRACE-003
+# trace: PRD-CORE-021, PRD-CORE-024, PRD-CORE-054, PRD-TRACE-003
 def build_ir(model: ParsedModel, files: Sequence[str]) -> Ir:
     """Convert the model into the IR.
 
@@ -36,5 +37,6 @@ def build_ir(model: ParsedModel, files: Sequence[str]) -> Ir:
         files=tuple(sorted(files)),
         elements=tuple(elements),
         links=tuple(links),
+        constraint_results=constraints.evaluate_constraints(graph, model, elements),
         findings=findings,
     )
