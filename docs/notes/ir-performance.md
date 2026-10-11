@@ -2,7 +2,7 @@
 
 Story #33 measured the time of `dsml ir` for a generated model with 1,000 elements. This document gives the results.
 
-- Script: `scripts/measure_ir.py`. The CI step "Measure the IR time for 1,000 elements" runs it on each platform.
+- Script: `scripts/measure_ir.py`. The CI step "Measure the IR time for 1,000 elements" runs it on Linux x64 (Q62). The other rows come from older CI runs.
 - The script writes a model with 166 units and 3 stakeholders. Each unit has a need, a requirement, an entity with two fields and a verification. The IR has exactly 1,000 elements and 498 links. The model has 4,325 lines.
 - The time is for the full command: the start of Python, the start of `sysml-grpc`, the parse, the conversion and the JSON writer. The value is the median of 5 runs, after one run that starts the cache.
 

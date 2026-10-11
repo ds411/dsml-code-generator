@@ -10307,7 +10307,7 @@
       "attributes": [
         {
           "location": {
-            "column": 50,
+            "column": 45,
             "file": "docs/model/prd/prd-core.sysml",
             "line": 147
           },
@@ -10320,7 +10320,7 @@
         },
         {
           "location": {
-            "column": 90,
+            "column": 85,
             "file": "docs/model/prd/prd-core.sysml",
             "line": 147
           },
@@ -10333,7 +10333,7 @@
         },
         {
           "location": {
-            "column": 121,
+            "column": 116,
             "file": "docs/model/prd/prd-core.sysml",
             "line": 147
           },
@@ -10353,12 +10353,12 @@
           "name": "title",
           "value": {
             "type": "string",
-            "value": "Cross-platform comparison"
+            "value": "CI output comparison"
           }
         }
       ],
       "direction": null,
-      "doc": "The toolchain CI must run each reference model on Linux x64, Linux arm64 and macOS arm64, and compare the outputs byte by byte.",
+      "doc": "The toolchain CI must run each reference model on Linux x64, and compare the outputs byte by byte with the golden files.",
       "identity": "PRD-CORE-029",
       "kind": "Requirement",
       "location": {

@@ -71,7 +71,7 @@ Phase 1 delivers a full path from model to a running FastAPI service in AWS. Pha
 
 | Phase | Contents | Exit criteria |
 | --- | --- | --- |
-| 1 | DSML library with all five layers. OpenSysML integration, IR, CLI and GitHub Action. Validation and traceability. FastAPI generator. Infrastructure generator for the network, container service, database, user directory and secrets. GitHub Actions generator. | The reference model "order service" (one FastAPI application, PostgreSQL, Cognito) deploys to the dev account through the generated pipeline. The determinism check passes on Linux and macOS. The coverage matrix shows each reference requirement as satisfied and verified. |
+| 1 | DSML library with all five layers. OpenSysML integration, IR, CLI and GitHub Action. Validation and traceability. FastAPI generator. Infrastructure generator for the network, container service, database, user directory and secrets. GitHub Actions generator. | The reference model "order service" (one FastAPI application, PostgreSQL, Cognito) deploys to the dev account through the generated pipeline. The determinism check passes in CI on Linux x64. The coverage matrix shows each reference requirement as satisfied and verified. |
 | 2 | React generator with FSD. Infrastructure for the static site (S3, CloudFront, ACM, Route 53). Import of an external OpenAPI file. | The reference model with a React application and a FastAPI application deploys to dev. The generated React code passes `tsc` and the FSD linter. |
 | 3 | Next.js generator with FSD. | The reference model with a Next.js application deploys to dev. |
 
@@ -97,6 +97,7 @@ The PRD set has this top-level PRD and seven PRDs. Four decision records hold th
 | [DSML decision record 04: formal constraints and the AWS test schedule](../decisions/dr-04-formal-constraints-and-aws-test-schedule.md) | Q57 to Q58 | Formal constraint results in the IR, schedule of the AWS deployment tests | Closed |
 | [DSML decision record 05: DSML library keywords and the pilot check](../decisions/dr-05-dsml-library-keywords-and-pilot-check.md) | Q59 to Q60 | Keywords that specialize `SemanticMetadata`, check of the library with the OMG pilot implementation | Closed |
 | [DSML decision record 06: self-contained requirement text](../decisions/dr-06-self-contained-requirement-text.md) | Q61 | References from a requirement to a table, a tree or a catalog of its PRD | Closed |
+| [DSML decision record 07: CI platforms](../decisions/dr-07-ci-platforms.md) | Q62 | Operating systems of the toolchain CI | Closed |
 
 The [DSML appendix](../model/README.md) holds all PRD requirements as a DSML model (Q48).
 

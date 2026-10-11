@@ -77,7 +77,7 @@ The model, the configuration file and the toolchain version are the full input. 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
 | PRD-CORE-028 | The same model, configuration file and toolchain version must give byte-identical generated files, IR, reports and trace manifests on each supported operating system. | Test | Q16, N-002 |
-| PRD-CORE-029 | The toolchain CI must run each reference model on Linux x64, Linux arm64 and macOS arm64, and compare the outputs byte by byte. | Test | Q16, Q50 |
+| PRD-CORE-029 | The toolchain CI must run each reference model on Linux x64, and compare the outputs byte by byte with the golden files. | Test | Q16, Q50, Q62 |
 | PRD-CORE-030 | The toolchain CI must compare the output of each reference model with stored golden files. | Test | Q16 |
 | PRD-CORE-031 | Generators must write each list in an output file in a defined order: by element identity, then by name. | Test | Q16 |
 | PRD-CORE-032 | The output must not depend on the order of the model files on disk or in the configuration file. | Test | Q16 |
