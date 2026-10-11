@@ -4,30 +4,30 @@
 
 output "address" {
   description = "The DNS name of the database."
-  value       = aws_db_instance.database.address
+  value       = aws_db_instance.this.address
 }
 
 output "port" {
   description = "The port of the database."
-  value       = aws_db_instance.database.port
+  value       = aws_db_instance.this.port
 }
 
 output "database_name" {
   description = "The name of the PostgreSQL database."
-  value       = aws_db_instance.database.db_name
+  value       = aws_db_instance.this.db_name
 }
 
 output "master_user_secret_arn" {
   description = "The ARN of the Secrets Manager secret that RDS keeps for the master password."
-  value       = aws_db_instance.database.master_user_secret[0].secret_arn
+  value       = aws_db_instance.this.master_user_secret[0].secret_arn
 }
 
 output "kms_key_arn" {
   description = "The ARN of the KMS key of the database and of its master password."
-  value       = aws_kms_key.database.arn
+  value       = aws_kms_key.this.arn
 }
 
 output "security_group_id" {
   description = "The ID of the security group of the database."
-  value       = aws_security_group.database.id
+  value       = aws_security_group.this.id
 }

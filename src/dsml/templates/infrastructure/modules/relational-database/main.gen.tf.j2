@@ -3,47 +3,49 @@
 {% include "common/header.j2" %}
 
 locals {
-  tags = {
-    "dsml:element" = var.element
-  }
+  tags = { "dsml:element" = var.element }
 }
 
-resource "aws_kms_key" "database" {
+resource "aws_kms_key" "this" {
   description             = "The key of the storage and of the master password of ${var.name}."
   enable_key_rotation     = true
   deletion_window_in_days = 30
-  tags                    = local.tags
+
+  tags = merge(local.tags, { Name = var.name })
 }
 
-resource "aws_kms_alias" "database" {
+resource "aws_kms_alias" "this" {
   name          = "alias/${var.name}"
-  target_key_id = aws_kms_key.database.key_id
+  target_key_id = aws_kms_key.this.key_id
 }
 
-resource "aws_db_subnet_group" "database" {
+resource "aws_db_subnet_group" "this" {
   name        = var.name
   description = "The private subnets of ${var.name}."
   subnet_ids  = var.subnet_ids
-  tags        = local.tags
+
+  tags = merge(local.tags, { Name = var.name })
 }
 
-resource "aws_security_group" "database" {
+resource "aws_security_group" "this" {
   name        = var.name
   description = "The database ${var.name}. Only the container services that use it can connect."
   vpc_id      = var.vpc_id
-  tags        = local.tags
+
+  tags = merge(local.tags, { Name = var.name })
 }
 
-resource "aws_vpc_security_group_ingress_rule" "database" {
+resource "aws_vpc_security_group_ingress_rule" "service" {
   for_each = var.source_security_group_ids
 
-  security_group_id            = aws_security_group.database.id
+  security_group_id            = aws_security_group.this.id
   description                  = "PostgreSQL from the container service ${each.key}."
   referenced_security_group_id = each.value
   ip_protocol                  = "tcp"
   from_port                    = 5432
   to_port                      = 5432
-  tags                         = local.tags
+
+  tags = merge(local.tags, { Name = var.name })
 }
 
 resource "aws_vpc_security_group_egress_rule" "service" {
@@ -51,14 +53,15 @@ resource "aws_vpc_security_group_egress_rule" "service" {
 
   security_group_id            = each.value
   description                  = "PostgreSQL from the container service ${each.key} to ${var.name}."
-  referenced_security_group_id = aws_security_group.database.id
+  referenced_security_group_id = aws_security_group.this.id
   ip_protocol                  = "tcp"
   from_port                    = 5432
   to_port                      = 5432
-  tags                         = local.tags
+
+  tags = merge(local.tags, { Name = var.name })
 }
 
-resource "aws_db_instance" "database" {
+resource "aws_db_instance" "this" {
   identifier                    = var.name
   engine                        = "postgres"
   engine_version                = {{ engine_version | hcl_string }}
@@ -69,19 +72,20 @@ resource "aws_db_instance" "database" {
   max_allocated_storage         = 100
   storage_type                  = "gp3"
   storage_encrypted             = true
-  kms_key_id                    = aws_kms_key.database.arn
+  kms_key_id                    = aws_kms_key.this.arn
   db_name                       = var.database_name
   username                      = var.master_username
   manage_master_user_password   = true
-  master_user_secret_kms_key_id = aws_kms_key.database.key_id
+  master_user_secret_kms_key_id = aws_kms_key.this.key_id
   port                          = 5432
-  db_subnet_group_name          = aws_db_subnet_group.database.name
-  vpc_security_group_ids        = [aws_security_group.database.id]
+  db_subnet_group_name          = aws_db_subnet_group.this.name
+  vpc_security_group_ids        = [aws_security_group.this.id]
   publicly_accessible           = false
   backup_retention_period       = 7
   copy_tags_to_snapshot         = true
   deletion_protection           = var.deletion_protection
   skip_final_snapshot           = !var.deletion_protection
   final_snapshot_identifier     = var.deletion_protection ? "${var.name}-final" : null
-  tags                          = local.tags
+
+  tags = merge(local.tags, { Name = var.name })
 }

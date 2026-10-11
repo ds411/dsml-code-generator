@@ -22,18 +22,6 @@
               "kind": "resource",
               "lastLine": 9,
               "name": "locals"
-            },
-            {
-              "firstLine": 11,
-              "kind": "resource",
-              "lastLine": 27,
-              "name": "module.order_db"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 44,
-              "name": "module.users"
             }
           ]
         },
@@ -63,24 +51,6 @@
               "kind": "resource",
               "lastLine": 22,
               "name": "output.product"
-            },
-            {
-              "firstLine": 24,
-              "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
-              "name": "output.users_app_client_ids"
-            },
-            {
-              "firstLine": 34,
-              "kind": "resource",
-              "lastLine": 37,
-              "name": "output.users_login_domain"
             }
           ]
         },
@@ -120,16 +90,16 @@
       ]
     },
     {
-      "element": "OrderService::orderApi",
+      "element": "OrderService::network",
       "files": [
         {
           "path": "infra/envs/dev/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 11,
               "kind": "resource",
-              "lastLine": 44,
-              "name": "module.users"
+              "lastLine": 18,
+              "name": "module.network"
             }
           ]
         },
@@ -140,19 +110,19 @@
               "firstLine": 24,
               "kind": "resource",
               "lastLine": 27,
-              "name": "output.users_user_pool_id"
+              "name": "output.network_private_subnet_ids"
             },
             {
               "firstLine": 29,
               "kind": "resource",
               "lastLine": 32,
-              "name": "output.users_app_client_ids"
+              "name": "output.network_public_subnet_ids"
             },
             {
               "firstLine": 34,
               "kind": "resource",
               "lastLine": 37,
-              "name": "output.users_login_domain"
+              "name": "output.network_vpc_id"
             }
           ]
         },
@@ -160,10 +130,10 @@
           "path": "infra/envs/prod/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 11,
               "kind": "resource",
-              "lastLine": 44,
-              "name": "module.users"
+              "lastLine": 18,
+              "name": "module.network"
             }
           ]
         },
@@ -174,19 +144,19 @@
               "firstLine": 24,
               "kind": "resource",
               "lastLine": 27,
-              "name": "output.users_user_pool_id"
+              "name": "output.network_private_subnet_ids"
             },
             {
               "firstLine": 29,
               "kind": "resource",
               "lastLine": 32,
-              "name": "output.users_app_client_ids"
+              "name": "output.network_public_subnet_ids"
             },
             {
               "firstLine": 34,
               "kind": "resource",
               "lastLine": 37,
-              "name": "output.users_login_domain"
+              "name": "output.network_vpc_id"
             }
           ]
         },
@@ -194,10 +164,10 @@
           "path": "infra/envs/staging/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 11,
               "kind": "resource",
-              "lastLine": 44,
-              "name": "module.users"
+              "lastLine": 18,
+              "name": "module.network"
             }
           ]
         },
@@ -208,19 +178,444 @@
               "firstLine": 24,
               "kind": "resource",
               "lastLine": 27,
-              "name": "output.users_user_pool_id"
+              "name": "output.network_private_subnet_ids"
             },
             {
               "firstLine": 29,
               "kind": "resource",
               "lastLine": 32,
-              "name": "output.users_app_client_ids"
+              "name": "output.network_public_subnet_ids"
             },
             {
               "firstLine": 34,
               "kind": "resource",
               "lastLine": 37,
-              "name": "output.users_login_domain"
+              "name": "output.network_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 11,
+              "name": "data.aws_availability_zones.available"
+            },
+            {
+              "firstLine": 13,
+              "kind": "resource",
+              "lastLine": 16,
+              "name": "locals"
+            },
+            {
+              "firstLine": 18,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "aws_vpc.this"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 31,
+              "name": "aws_default_security_group.this"
+            },
+            {
+              "firstLine": 33,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "aws_internet_gateway.this"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 48,
+              "name": "aws_subnet.public"
+            },
+            {
+              "firstLine": 50,
+              "kind": "resource",
+              "lastLine": 58,
+              "name": "aws_subnet.private"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 64,
+              "name": "aws_route_table.public"
+            },
+            {
+              "firstLine": 66,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "aws_route.public_internet"
+            },
+            {
+              "firstLine": 72,
+              "kind": "resource",
+              "lastLine": 77,
+              "name": "aws_route_table_association.public"
+            },
+            {
+              "firstLine": 79,
+              "kind": "resource",
+              "lastLine": 85,
+              "name": "aws_eip.nat"
+            },
+            {
+              "firstLine": 87,
+              "kind": "resource",
+              "lastLine": 96,
+              "name": "aws_nat_gateway.this"
+            },
+            {
+              "firstLine": 98,
+              "kind": "resource",
+              "lastLine": 104,
+              "name": "aws_route_table.private"
+            },
+            {
+              "firstLine": 109,
+              "kind": "resource",
+              "lastLine": 115,
+              "name": "aws_route.private_nat"
+            },
+            {
+              "firstLine": 117,
+              "kind": "resource",
+              "lastLine": 122,
+              "name": "aws_route_table_association.private"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.nat_gateway_ids"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.private_subnet_ids"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.public_subnet_ids"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "var.cidr_block"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 17,
+              "kind": "resource",
+              "lastLine": 21,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 23,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "var.nat_gateway_count"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 43,
+              "name": "var.zone_count"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::networkAws",
+      "files": [
+        {
+          "path": "infra/envs/dev/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "module.network"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/dev/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.network_private_subnet_ids"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.network_public_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.network_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "module.network"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/prod/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.network_private_subnet_ids"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.network_public_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.network_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 18,
+              "name": "module.network"
+            }
+          ]
+        },
+        {
+          "path": "infra/envs/staging/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "resource",
+              "lastLine": 27,
+              "name": "output.network_private_subnet_ids"
+            },
+            {
+              "firstLine": 29,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "output.network_public_subnet_ids"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "output.network_vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/main.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 11,
+              "name": "data.aws_availability_zones.available"
+            },
+            {
+              "firstLine": 13,
+              "kind": "resource",
+              "lastLine": 16,
+              "name": "locals"
+            },
+            {
+              "firstLine": 18,
+              "kind": "resource",
+              "lastLine": 24,
+              "name": "aws_vpc.this"
+            },
+            {
+              "firstLine": 27,
+              "kind": "resource",
+              "lastLine": 31,
+              "name": "aws_default_security_group.this"
+            },
+            {
+              "firstLine": 33,
+              "kind": "resource",
+              "lastLine": 37,
+              "name": "aws_internet_gateway.this"
+            },
+            {
+              "firstLine": 39,
+              "kind": "resource",
+              "lastLine": 48,
+              "name": "aws_subnet.public"
+            },
+            {
+              "firstLine": 50,
+              "kind": "resource",
+              "lastLine": 58,
+              "name": "aws_subnet.private"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 64,
+              "name": "aws_route_table.public"
+            },
+            {
+              "firstLine": 66,
+              "kind": "resource",
+              "lastLine": 70,
+              "name": "aws_route.public_internet"
+            },
+            {
+              "firstLine": 72,
+              "kind": "resource",
+              "lastLine": 77,
+              "name": "aws_route_table_association.public"
+            },
+            {
+              "firstLine": 79,
+              "kind": "resource",
+              "lastLine": 85,
+              "name": "aws_eip.nat"
+            },
+            {
+              "firstLine": 87,
+              "kind": "resource",
+              "lastLine": 96,
+              "name": "aws_nat_gateway.this"
+            },
+            {
+              "firstLine": 98,
+              "kind": "resource",
+              "lastLine": 104,
+              "name": "aws_route_table.private"
+            },
+            {
+              "firstLine": 109,
+              "kind": "resource",
+              "lastLine": 115,
+              "name": "aws_route.private_nat"
+            },
+            {
+              "firstLine": 117,
+              "kind": "resource",
+              "lastLine": 122,
+              "name": "aws_route_table_association.private"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/outputs.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 7,
+              "name": "output.nat_gateway_ids"
+            },
+            {
+              "firstLine": 9,
+              "kind": "resource",
+              "lastLine": 12,
+              "name": "output.private_subnet_ids"
+            },
+            {
+              "firstLine": 14,
+              "kind": "resource",
+              "lastLine": 17,
+              "name": "output.public_subnet_ids"
+            },
+            {
+              "firstLine": 19,
+              "kind": "resource",
+              "lastLine": 22,
+              "name": "output.vpc_id"
+            }
+          ]
+        },
+        {
+          "path": "infra/modules/network/variables.gen.tf",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "resource",
+              "lastLine": 9,
+              "name": "var.cidr_block"
+            },
+            {
+              "firstLine": 11,
+              "kind": "resource",
+              "lastLine": 15,
+              "name": "var.element"
+            },
+            {
+              "firstLine": 17,
+              "kind": "resource",
+              "lastLine": 21,
+              "name": "var.name"
+            },
+            {
+              "firstLine": 23,
+              "kind": "resource",
+              "lastLine": 32,
+              "name": "var.nat_gateway_count"
+            },
+            {
+              "firstLine": 34,
+              "kind": "resource",
+              "lastLine": 43,
+              "name": "var.zone_count"
             }
           ]
         }
@@ -233,9 +628,9 @@
           "path": "infra/envs/dev/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 11,
+              "firstLine": 20,
               "kind": "resource",
-              "lastLine": 27,
+              "lastLine": 35,
               "name": "module.order_db"
             }
           ]
@@ -244,9 +639,9 @@
           "path": "infra/envs/prod/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 11,
+              "firstLine": 20,
               "kind": "resource",
-              "lastLine": 27,
+              "lastLine": 35,
               "name": "module.order_db"
             }
           ]
@@ -255,9 +650,9 @@
           "path": "infra/envs/staging/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 11,
+              "firstLine": 20,
               "kind": "resource",
-              "lastLine": 27,
+              "lastLine": 35,
               "name": "module.order_db"
             }
           ]
@@ -268,50 +663,50 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 8,
+              "lastLine": 6,
               "name": "locals"
             },
             {
-              "firstLine": 10,
+              "firstLine": 8,
               "kind": "resource",
-              "lastLine": 15,
-              "name": "aws_kms_key.database"
+              "lastLine": 14,
+              "name": "aws_kms_key.this"
             },
             {
-              "firstLine": 17,
+              "firstLine": 16,
               "kind": "resource",
-              "lastLine": 20,
-              "name": "aws_kms_alias.database"
+              "lastLine": 19,
+              "name": "aws_kms_alias.this"
             },
             {
-              "firstLine": 22,
+              "firstLine": 21,
               "kind": "resource",
               "lastLine": 27,
-              "name": "aws_db_subnet_group.database"
+              "name": "aws_db_subnet_group.this"
             },
             {
               "firstLine": 29,
               "kind": "resource",
-              "lastLine": 34,
-              "name": "aws_security_group.database"
+              "lastLine": 35,
+              "name": "aws_security_group.this"
             },
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 46,
-              "name": "aws_vpc_security_group_ingress_rule.database"
+              "lastLine": 48,
+              "name": "aws_vpc_security_group_ingress_rule.service"
             },
             {
-              "firstLine": 48,
+              "firstLine": 50,
               "kind": "resource",
-              "lastLine": 58,
+              "lastLine": 61,
               "name": "aws_vpc_security_group_egress_rule.service"
             },
             {
-              "firstLine": 60,
+              "firstLine": 63,
               "kind": "resource",
-              "lastLine": 86,
-              "name": "aws_db_instance.database"
+              "lastLine": 90,
+              "name": "aws_db_instance.this"
             }
           ]
         },
@@ -430,9 +825,9 @@
           "path": "infra/envs/dev/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 11,
+              "firstLine": 20,
               "kind": "resource",
-              "lastLine": 27,
+              "lastLine": 35,
               "name": "module.order_db"
             }
           ]
@@ -441,9 +836,9 @@
           "path": "infra/envs/prod/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 11,
+              "firstLine": 20,
               "kind": "resource",
-              "lastLine": 27,
+              "lastLine": 35,
               "name": "module.order_db"
             }
           ]
@@ -452,9 +847,9 @@
           "path": "infra/envs/staging/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 11,
+              "firstLine": 20,
               "kind": "resource",
-              "lastLine": 27,
+              "lastLine": 35,
               "name": "module.order_db"
             }
           ]
@@ -465,50 +860,50 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 8,
+              "lastLine": 6,
               "name": "locals"
             },
             {
-              "firstLine": 10,
+              "firstLine": 8,
               "kind": "resource",
-              "lastLine": 15,
-              "name": "aws_kms_key.database"
+              "lastLine": 14,
+              "name": "aws_kms_key.this"
             },
             {
-              "firstLine": 17,
+              "firstLine": 16,
               "kind": "resource",
-              "lastLine": 20,
-              "name": "aws_kms_alias.database"
+              "lastLine": 19,
+              "name": "aws_kms_alias.this"
             },
             {
-              "firstLine": 22,
+              "firstLine": 21,
               "kind": "resource",
               "lastLine": 27,
-              "name": "aws_db_subnet_group.database"
+              "name": "aws_db_subnet_group.this"
             },
             {
               "firstLine": 29,
               "kind": "resource",
-              "lastLine": 34,
-              "name": "aws_security_group.database"
+              "lastLine": 35,
+              "name": "aws_security_group.this"
             },
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 46,
-              "name": "aws_vpc_security_group_ingress_rule.database"
+              "lastLine": 48,
+              "name": "aws_vpc_security_group_ingress_rule.service"
             },
             {
-              "firstLine": 48,
+              "firstLine": 50,
               "kind": "resource",
-              "lastLine": 58,
+              "lastLine": 61,
               "name": "aws_vpc_security_group_egress_rule.service"
             },
             {
-              "firstLine": 60,
+              "firstLine": 63,
               "kind": "resource",
-              "lastLine": 86,
-              "name": "aws_db_instance.database"
+              "lastLine": 90,
+              "name": "aws_db_instance.this"
             }
           ]
         },
@@ -642,18 +1037,6 @@
               "kind": "resource",
               "lastLine": 9,
               "name": "locals"
-            },
-            {
-              "firstLine": 11,
-              "kind": "resource",
-              "lastLine": 27,
-              "name": "module.order_db"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 44,
-              "name": "module.users"
             }
           ]
         },
@@ -683,24 +1066,6 @@
               "kind": "resource",
               "lastLine": 22,
               "name": "output.product"
-            },
-            {
-              "firstLine": 24,
-              "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
-              "name": "output.users_app_client_ids"
-            },
-            {
-              "firstLine": 34,
-              "kind": "resource",
-              "lastLine": 37,
-              "name": "output.users_login_domain"
             }
           ]
         },
@@ -740,22 +1105,6 @@
       ]
     },
     {
-      "element": "OrderService::prod::orderDbProd",
-      "files": [
-        {
-          "path": "infra/envs/prod/main.gen.tf",
-          "symbols": [
-            {
-              "firstLine": 11,
-              "kind": "resource",
-              "lastLine": 27,
-              "name": "module.order_db"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "element": "OrderService::staging",
       "files": [
         {
@@ -777,18 +1126,6 @@
               "kind": "resource",
               "lastLine": 9,
               "name": "locals"
-            },
-            {
-              "firstLine": 11,
-              "kind": "resource",
-              "lastLine": 27,
-              "name": "module.order_db"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 44,
-              "name": "module.users"
             }
           ]
         },
@@ -818,24 +1155,6 @@
               "kind": "resource",
               "lastLine": 22,
               "name": "output.product"
-            },
-            {
-              "firstLine": 24,
-              "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
-              "name": "output.users_app_client_ids"
-            },
-            {
-              "firstLine": 34,
-              "kind": "resource",
-              "lastLine": 37,
-              "name": "output.users_login_domain"
             }
           ]
         },
@@ -881,9 +1200,9 @@
           "path": "infra/envs/dev/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 51,
               "name": "module.users"
             }
           ]
@@ -892,22 +1211,22 @@
           "path": "infra/envs/dev/outputs.gen.tf",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 39,
               "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
+              "lastLine": 42,
               "name": "output.users_app_client_ids"
             },
             {
-              "firstLine": 34,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 37,
+              "lastLine": 47,
               "name": "output.users_login_domain"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.users_user_pool_id"
             }
           ]
         },
@@ -915,9 +1234,9 @@
           "path": "infra/envs/prod/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 51,
               "name": "module.users"
             }
           ]
@@ -926,22 +1245,22 @@
           "path": "infra/envs/prod/outputs.gen.tf",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 39,
               "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
+              "lastLine": 42,
               "name": "output.users_app_client_ids"
             },
             {
-              "firstLine": 34,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 37,
+              "lastLine": 47,
               "name": "output.users_login_domain"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.users_user_pool_id"
             }
           ]
         },
@@ -949,9 +1268,9 @@
           "path": "infra/envs/staging/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 51,
               "name": "module.users"
             }
           ]
@@ -960,22 +1279,22 @@
           "path": "infra/envs/staging/outputs.gen.tf",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 39,
               "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
+              "lastLine": 42,
               "name": "output.users_app_client_ids"
             },
             {
-              "firstLine": 34,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 37,
+              "lastLine": 47,
               "name": "output.users_login_domain"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.users_user_pool_id"
             }
           ]
         },
@@ -985,37 +1304,37 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 8,
+              "lastLine": 6,
               "name": "locals"
             },
             {
-              "firstLine": 12,
+              "firstLine": 10,
               "kind": "resource",
-              "lastLine": 37,
-              "name": "aws_cognito_user_pool.users"
+              "lastLine": 36,
+              "name": "aws_cognito_user_pool.this"
             },
             {
-              "firstLine": 39,
+              "firstLine": 38,
               "kind": "resource",
-              "lastLine": 43,
-              "name": "aws_cognito_user_pool_domain.users"
+              "lastLine": 42,
+              "name": "aws_cognito_user_pool_domain.this"
             },
             {
-              "firstLine": 45,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 51,
+              "lastLine": 50,
               "name": "aws_cognito_user_group.role"
             },
             {
-              "firstLine": 53,
+              "firstLine": 52,
               "kind": "resource",
-              "lastLine": 68,
+              "lastLine": 67,
               "name": "aws_cognito_user_pool_client.application"
             },
             {
-              "firstLine": 70,
+              "firstLine": 69,
               "kind": "resource",
-              "lastLine": 76,
+              "lastLine": 75,
               "name": "aws_cognito_managed_login_branding.application"
             }
           ]
@@ -1093,9 +1412,9 @@
           "path": "infra/envs/dev/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 51,
               "name": "module.users"
             }
           ]
@@ -1104,22 +1423,22 @@
           "path": "infra/envs/dev/outputs.gen.tf",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 39,
               "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
+              "lastLine": 42,
               "name": "output.users_app_client_ids"
             },
             {
-              "firstLine": 34,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 37,
+              "lastLine": 47,
               "name": "output.users_login_domain"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.users_user_pool_id"
             }
           ]
         },
@@ -1127,9 +1446,9 @@
           "path": "infra/envs/prod/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 51,
               "name": "module.users"
             }
           ]
@@ -1138,22 +1457,22 @@
           "path": "infra/envs/prod/outputs.gen.tf",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 39,
               "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
+              "lastLine": 42,
               "name": "output.users_app_client_ids"
             },
             {
-              "firstLine": 34,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 37,
+              "lastLine": 47,
               "name": "output.users_login_domain"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.users_user_pool_id"
             }
           ]
         },
@@ -1161,9 +1480,9 @@
           "path": "infra/envs/staging/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 37,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 51,
               "name": "module.users"
             }
           ]
@@ -1172,22 +1491,22 @@
           "path": "infra/envs/staging/outputs.gen.tf",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 39,
               "kind": "resource",
-              "lastLine": 27,
-              "name": "output.users_user_pool_id"
-            },
-            {
-              "firstLine": 29,
-              "kind": "resource",
-              "lastLine": 32,
+              "lastLine": 42,
               "name": "output.users_app_client_ids"
             },
             {
-              "firstLine": 34,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 37,
+              "lastLine": 47,
               "name": "output.users_login_domain"
+            },
+            {
+              "firstLine": 49,
+              "kind": "resource",
+              "lastLine": 52,
+              "name": "output.users_user_pool_id"
             }
           ]
         },
@@ -1197,37 +1516,37 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 8,
+              "lastLine": 6,
               "name": "locals"
             },
             {
-              "firstLine": 12,
+              "firstLine": 10,
               "kind": "resource",
-              "lastLine": 37,
-              "name": "aws_cognito_user_pool.users"
+              "lastLine": 36,
+              "name": "aws_cognito_user_pool.this"
             },
             {
-              "firstLine": 39,
+              "firstLine": 38,
               "kind": "resource",
-              "lastLine": 43,
-              "name": "aws_cognito_user_pool_domain.users"
+              "lastLine": 42,
+              "name": "aws_cognito_user_pool_domain.this"
             },
             {
-              "firstLine": 45,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 51,
+              "lastLine": 50,
               "name": "aws_cognito_user_group.role"
             },
             {
-              "firstLine": 53,
+              "firstLine": 52,
               "kind": "resource",
-              "lastLine": 68,
+              "lastLine": 67,
               "name": "aws_cognito_user_pool_client.application"
             },
             {
-              "firstLine": 70,
+              "firstLine": 69,
               "kind": "resource",
-              "lastLine": 76,
+              "lastLine": 75,
               "name": "aws_cognito_managed_login_branding.application"
             }
           ]

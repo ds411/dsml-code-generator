@@ -3,12 +3,12 @@
 
 output "user_pool_id" {
   description = "The ID of the user pool."
-  value       = aws_cognito_user_pool.users.id
+  value       = aws_cognito_user_pool.this.id
 }
 
 output "user_pool_arn" {
   description = "The ARN of the user pool."
-  value       = aws_cognito_user_pool.users.arn
+  value       = aws_cognito_user_pool.this.arn
 }
 
 output "app_client_ids" {
@@ -18,5 +18,5 @@ output "app_client_ids" {
 
 output "login_domain" {
   description = "The managed login domain of the user pool."
-  value       = "${aws_cognito_user_pool_domain.users.domain}.auth.${data.aws_region.current.region}.amazoncognito.com"
+  value       = "${aws_cognito_user_pool_domain.this.domain}.auth.${data.aws_region.current.region}.amazoncognito.com"
 }

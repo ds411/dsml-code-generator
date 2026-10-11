@@ -28,8 +28,18 @@
     },
     {
       "part": "application/orderApi",
+      "path": "services/order-api/app/shared/auth/__init__.py",
+      "sha256": "43b1de7bda1efb419145ca90afc19ad26b454bb11166a198c4a0c3b0271c4396"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/auth/cognito_gen.py",
+      "sha256": "32ada9fc3b4b653f3f4561a9a0ee60b2de25829c7f3dff5c0c01b6c80292c909"
+    },
+    {
+      "part": "application/orderApi",
       "path": "services/order-api/app/shared/config_gen.py",
-      "sha256": "c71635dc179d45fa83ae1a3e878594a818f602c23f228a359657955fdfe2e291"
+      "sha256": "b7aeef9c4317c9d4336e3f6fd56c1027bc06d627c04144d9c0d4dc8ef986ca35"
     },
     {
       "part": "application/orderApi",
@@ -44,12 +54,17 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/pyproject.toml",
-      "sha256": "6879244297fa83dff853d8b5b1a4629a3aa081893eb7100c1ad63eade34d70a2"
+      "sha256": "b3a1cca5ee5a232236dfe90fdee705cd320dba71ed2cb9395299c2ab34dfc8bc"
     },
     {
       "part": "application/orderApi",
       "path": "services/order-api/tests/test_app_gen.py",
-      "sha256": "a16398ca14aebc14ee0b4cb0e359c26417de217bc178a2c42c3879d45b50fefd"
+      "sha256": "e488d8260726be7d76f9f94d749ca5910849da4312c985cf7109b5897df6cd43"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_auth_gen.py",
+      "sha256": "556dc63047e9eb73be1a977242028f007f57d2ad83ec005ee58e8cdb2aaf9c55"
     }
   ],
   "manifestVersion": 1

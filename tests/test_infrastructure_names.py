@@ -156,3 +156,11 @@ def test_hcl_block_with_no_end_gives_an_error() -> None:
         hcl.block_symbols(
             'resource "aws_vpc" "x" {\n  cidr_block = "10.0.0.0/16"\n', lambda _: ("A",)
         )
+
+
+# trace: PRD-IAC-008, PRD-IAC-020
+def test_kms_alias_of_an_element() -> None:
+    assert names.kms_alias("shop", "dev", "paymentKeys") == "alias/shop-dev-payment-keys"
+    alias = names.kms_alias("shop", "dev", "k" * 300)
+    assert alias.startswith("alias/shop-dev-k")
+    assert len(alias) == names.NAME_LIMITS["kms_alias"]

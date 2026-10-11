@@ -43,8 +43,14 @@ NAME_LIMITS: Final = {
     "secret": 512,
     "security_group": 255,
     "target_group": 32,
+    "vpc": 224,
 }
-"""The maximum number of characters of the name of each AWS resource type."""
+"""The maximum number of characters of the name of each AWS resource type.
+
+The name of a VPC is its tag `Name`. The network module adds a suffix of 32
+characters or fewer to the names of the subnets and the gateways of the VPC.
+Thus the limit of a VPC name is less than the limit of a tag value.
+"""
 
 TOOLING: Final = "tooling"
 """The name of the tooling account in AWS names."""
@@ -137,6 +143,14 @@ def state_kms_alias(product: str, environment: str) -> str:
     """Give the KMS alias of the OpenTofu state encryption key of an account."""
     prefix = "alias/"
     full = "-".join(names.kebab_case(part) for part in (product, environment, STATE))
+    return prefix + shorten(full, name_limit("kms_alias") - len(prefix))
+
+
+# trace: PRD-IAC-008, PRD-IAC-020
+def kms_alias(product: str, environment: str, element: str) -> str:
+    """Give the KMS alias `alias/<product>-<environment>-<element>` of the key of an element."""
+    prefix = "alias/"
+    full = "-".join(names.kebab_case(part) for part in (product, environment, element))
     return prefix + shorten(full, name_limit("kms_alias") - len(prefix))
 
 
