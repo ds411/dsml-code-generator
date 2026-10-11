@@ -46,7 +46,7 @@ One call for each `#RelationalDatabase` element (PRD-IAC-017, PRD-IAC-018, PRD-I
 - A DB subnet group in the private subnets, and `publicly_accessible = false`.
 - A KMS key with key rotation for the storage and for the master password. RDS keeps the master password in Secrets Manager (`manage_master_user_password = true`).
 - Backups for 7 days. Deletion protection and a final snapshot only in prod.
-- A security group with one ingress rule on port 5432 for each container service that has a `#Uses` link to the database. The rule refers to the security group of the service. There is no CIDR rule.
+- A security group with one ingress rule on port 5432 for each container service that has a `#Uses` link to the database. The rule refers to the security group of the service. The module also adds an egress rule on port 5432 from the security group of each service to the database. There is no CIDR rule.
 
 ### user-directory
 

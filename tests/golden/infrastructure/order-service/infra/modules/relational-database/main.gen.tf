@@ -45,6 +45,18 @@ resource "aws_vpc_security_group_ingress_rule" "database" {
   tags                         = local.tags
 }
 
+resource "aws_vpc_security_group_egress_rule" "service" {
+  for_each = var.source_security_group_ids
+
+  security_group_id            = each.value
+  description                  = "PostgreSQL from the container service ${each.key} to ${var.name}."
+  referenced_security_group_id = aws_security_group.database.id
+  ip_protocol                  = "tcp"
+  from_port                    = 5432
+  to_port                      = 5432
+  tags                         = local.tags
+}
+
 resource "aws_db_instance" "database" {
   identifier                    = var.name
   engine                        = "postgres"

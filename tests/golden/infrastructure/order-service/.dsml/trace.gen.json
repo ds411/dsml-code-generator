@@ -304,7 +304,13 @@
             {
               "firstLine": 48,
               "kind": "resource",
-              "lastLine": 74,
+              "lastLine": 58,
+              "name": "aws_vpc_security_group_egress_rule.service"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 86,
               "name": "aws_db_instance.database"
             }
           ]
@@ -495,7 +501,13 @@
             {
               "firstLine": 48,
               "kind": "resource",
-              "lastLine": 74,
+              "lastLine": 58,
+              "name": "aws_vpc_security_group_egress_rule.service"
+            },
+            {
+              "firstLine": 60,
+              "kind": "resource",
+              "lastLine": 86,
               "name": "aws_db_instance.database"
             }
           ]

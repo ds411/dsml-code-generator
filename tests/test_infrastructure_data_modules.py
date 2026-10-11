@@ -94,6 +94,7 @@ def test_module_blocks_are_symbols_with_the_hcl_addresses(ir: Ir) -> None:
         "aws_db_subnet_group.database",
         "aws_security_group.database",
         "aws_vpc_security_group_ingress_rule.database",
+        "aws_vpc_security_group_egress_rule.service",
         "aws_db_instance.database",
     ]
     for symbol in main.symbols:
@@ -167,6 +168,10 @@ def test_database_security_group_permits_port_5432_only_from_the_services(ir: Ir
     assert "  from_port                    = 5432\n" in rule
     assert "  to_port                      = 5432\n" in rule
     assert "cidr" not in main
+    egress = _resource_block(main, "aws_vpc_security_group_egress_rule.service")
+    assert "  security_group_id            = each.value\n" in egress
+    assert "  referenced_security_group_id = aws_security_group.database.id\n" in egress
+    assert "  from_port                    = 5432\n" in egress
     assert main.count("aws_vpc_security_group_ingress_rule") == 1
     for environment in ENVIRONMENTS:
         call = _module_block(_text(files, f"envs/{environment}/main.gen.tf"), "order_db")
