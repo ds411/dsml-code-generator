@@ -32,6 +32,17 @@
       "element": "OrderService::dev",
       "files": [
         {
+          "path": ".github/workflows/main.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 70,
+              "kind": "job",
+              "lastLine": 214,
+              "name": "deploy-dev"
+            }
+          ]
+        },
+        {
           "path": ".github/workflows/pr.gen.yml",
           "symbols": [
             {
@@ -48,6 +59,17 @@
       "element": "OrderService::orderApi",
       "files": [
         {
+          "path": ".github/workflows/main.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "job",
+              "lastLine": 64,
+              "name": "build-order-api"
+            }
+          ]
+        },
+        {
           "path": ".github/workflows/pr.gen.yml",
           "symbols": [
             {
@@ -55,6 +77,49 @@
               "kind": "job",
               "lastLine": 151,
               "name": "test-order-api"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "job",
+              "lastLine": 63,
+              "name": "find-build"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::prod",
+      "files": [
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 221,
+              "kind": "job",
+              "lastLine": 367,
+              "name": "deploy-prod"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::staging",
+      "files": [
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 69,
+              "kind": "job",
+              "lastLine": 214,
+              "name": "deploy-staging"
             }
           ]
         }

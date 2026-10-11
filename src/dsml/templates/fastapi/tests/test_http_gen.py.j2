@@ -1,0 +1,251 @@
+{#- The HTTP tests of the CRUD slices of one exposed entity (PRD-APP-008,
+    PRD-APP-110 to PRD-APP-115). Data: "tests" (a dsml.generate.fastapi_slices.EntityTests). -#}
+{% set operations = tests.operations %}
+{% include "common/header.j2" %}
+"""HTTP tests of the CRUD operations of {{ tests.collection }} (the entity {{ tests.entity_name }}).
+
+The tests use a PostgreSQL database. See `tests/http_support_gen.py`. The
+generator writes this file again at each run. Put your tests in other
+files of this folder.
+"""
+{% if tests.problem %}
+
+import pytest
+
+pytest.skip({{ tests.problem | tojson }}, allow_module_level=True)
+{% else %}
+
+import pytest
+
+{% for line in tests.support_import_lines %}
+{{ line }}
+{% endfor %}
+
+pytestmark = pytest.mark.skipif(SETTINGS is None, reason=SKIP_REASON)
+
+TABLE = {{ tests.model.table | tojson }}
+KEY = {{ tests.key.name | tojson }}
+ROLE = {{ tests.role | tojson }}
+"""A role that the operations permit."""
+
+{% for line in tests.path_lines %}
+{{ line }}
+{% endfor %}
+
+{% for line in tests.parent_lines %}
+{{ line }}
+{% endfor %}
+"""The rows that the rows of the tests refer to, in the order of insertion."""
+
+{% for line in tests.row_lines %}
+{{ line }}
+{% endfor %}
+"""Three rows with different values, sorted by key."""
+
+UNKNOWN_KEY = {{ tests.unknown_key | tojson }}
+"""A key that no row has."""
+{% if "update" in operations %}
+
+{% for line in tests.change_lines %}
+{{ line }}
+{% endfor %}
+"""The request body of the update test."""
+{% endif %}
+{% if "create" in operations %}
+
+{% for line in tests.create_invalid_lines %}
+{{ line }}
+{% endfor %}
+"""Request bodies that break a field rule: the field and its value."""
+{% endif %}
+{% if "update" in operations %}
+
+{% for line in tests.update_invalid_lines %}
+{{ line }}
+{% endfor %}
+"""Request bodies that break a field rule or give null for a field that must have a value."""
+{% endif %}
+{% if not tests.public %}
+
+{% for line in tests.protected_lines %}
+{{ line }}
+{% endfor %}
+"""The method and the path of each operation."""
+{% endif %}
+
+
+def rows(*indexes: int) -> list[tuple[str, dict[str, object]]]:
+    """Give the parent rows and the rows with the indexes, for `api`."""
+    return [*PARENTS, *((TABLE, ROWS[index]) for index in indexes)]
+
+
+def body(row: dict[str, object]) -> dict[str, object]:
+    """Give the request body of a row: the row with no key."""
+    return {name: value for name, value in row.items() if name != KEY}
+{% if not tests.public %}
+
+
+@pytest.mark.parametrize(("method", "path"), PROTECTED)
+def test_operation_without_a_token_returns_401(method: str, path: str) -> None:
+    with api() as client:
+        response = client.request(method, path.format(key=UNKNOWN_KEY))
+    assert response.status_code == 401
+
+
+@pytest.mark.parametrize(("method", "path"), PROTECTED)
+def test_operation_without_a_permitted_role_returns_403(method: str, path: str) -> None:
+    with api() as client:
+        response = client.request(method, path.format(key=UNKNOWN_KEY), headers=headers(NO_ROLE))
+    assert response.status_code == 403
+{% endif %}
+{% if "create" in operations %}
+
+
+def test_create_returns_201_with_the_new_entity() -> None:
+    with api(rows()) as client:
+{% for line in tests.request_lines("create", "CREATE_PATH", json="body(ROWS[0])") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 201
+    assert response.json()[KEY] is not None
+    assert_same(response.json(), body(ROWS[0]))
+
+
+@pytest.mark.parametrize(("name", "value"), CREATE_INVALID)
+def test_create_with_a_value_that_breaks_a_rule_returns_422(name: str, value: object) -> None:
+    with api(rows()) as client:
+{% for line in tests.request_lines("create", "CREATE_PATH", json="{**body(ROWS[0]), name: value}") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 422
+{% for name in tests.unique_fields %}
+
+
+def test_create_with_the_{{ name }}_of_a_different_entity_returns_409() -> None:
+    with api(rows(0)) as client:
+{% for line in tests.request_lines("create", "CREATE_PATH", json="{**body(ROWS[1]), " ~ (name | tojson) ~ ": ROWS[0][" ~ (name | tojson) ~ "]}") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 409
+{% endfor %}
+{% endif %}
+{% if "read" in operations %}
+
+
+def test_read_returns_200_with_the_entity() -> None:
+    with api(rows(0)) as client:
+{% for line in tests.request_lines("read", "READ_PATH.format(key=ROWS[0][KEY])") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 200
+    assert_same(response.json(), ROWS[0])
+
+
+def test_read_of_an_unknown_key_returns_404() -> None:
+    with api(rows(0)) as client:
+{% for line in tests.request_lines("read", "READ_PATH.format(key=UNKNOWN_KEY)") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 404
+{% endif %}
+{% if "update" in operations %}
+
+
+def test_update_returns_200_with_the_changed_entity() -> None:
+    with api(rows(0)) as client:
+{% for line in tests.request_lines("update", "UPDATE_PATH.format(key=ROWS[0][KEY])", json="CHANGE") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 200
+    assert_same(response.json(), {**ROWS[0], **CHANGE})
+
+
+def test_update_of_an_unknown_key_returns_404() -> None:
+    with api(rows(0)) as client:
+{% for line in tests.request_lines("update", "UPDATE_PATH.format(key=UNKNOWN_KEY)", json="CHANGE") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize(("name", "value"), UPDATE_INVALID)
+def test_update_with_a_value_that_breaks_a_rule_returns_422(name: str, value: object) -> None:
+    with api(rows(0)) as client:
+{% for line in tests.request_lines("update", "UPDATE_PATH.format(key=ROWS[0][KEY])", json="{name: value}") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 422
+{% for name in tests.unique_fields %}
+
+
+def test_update_with_the_{{ name }}_of_a_different_entity_returns_409() -> None:
+    with api(rows(0, 1)) as client:
+{% for line in tests.request_lines("update", "UPDATE_PATH.format(key=ROWS[1][KEY])", json="{" ~ (name | tojson) ~ ": ROWS[0][" ~ (name | tojson) ~ "]}") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 409
+{% endfor %}
+{% endif %}
+{% if "delete" in operations %}
+
+
+def test_delete_returns_204_and_deletes_the_entity() -> None:
+    with api(rows(0)) as client:
+        path = DELETE_PATH.format(key=ROWS[0][KEY])
+{% for line in tests.request_lines("delete", "path") %}
+{{ line }}
+{% endfor %}
+{% for line in tests.request_lines("delete", "path", target="again") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 204
+    assert response.content == b""
+    assert again.status_code == 404
+{% endif %}
+{% if "list" in operations %}
+
+
+def test_list_returns_the_entities_sorted_by_key_and_the_total() -> None:
+    with api(rows(2, 0, 1)) as client:
+{% for line in tests.request_lines("list", "LIST_PATH") %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 200
+    page = response.json()
+    assert page["total"] == len(ROWS)
+    assert len(page["items"]) == len(ROWS)
+    for item, row in zip(page["items"], ROWS, strict=True):
+        assert_same(item, row)
+
+
+def test_list_gives_the_page_of_limit_and_offset() -> None:
+    with api(rows(2, 0, 1)) as client:
+{% for line in tests.request_lines("list", "LIST_PATH", params='{"limit": 1, "offset": 1}') %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 200
+    page = response.json()
+    assert page["total"] == len(ROWS)
+    assert len(page["items"]) == 1
+    assert_same(page["items"][0], ROWS[1])
+
+
+@pytest.mark.parametrize(("limit", "offset"), [(0, 0), (201, 0), (50, -1)])
+def test_list_with_a_limit_or_an_offset_out_of_range_returns_422(limit: int, offset: int) -> None:
+    with api() as client:
+{% for line in tests.request_lines("list", "LIST_PATH", params='{"limit": limit, "offset": offset}') %}
+{{ line }}
+{% endfor %}
+    assert response.status_code == 422
+
+
+def test_list_limit_has_the_default_50_and_the_maximum_200() -> None:
+    with api() as client:
+        document = client.get("/openapi.json").json()
+    operation = document["paths"][LIST_PATH][{{ operations.list.method | tojson }}]
+    schemas = {item["name"]: item["schema"] for item in operation["parameters"]}
+    assert schemas["limit"]["default"] == 50
+    assert schemas["limit"]["maximum"] == 200
+    assert schemas["offset"]["default"] == 0
+{% endif %}
+{% endif %}

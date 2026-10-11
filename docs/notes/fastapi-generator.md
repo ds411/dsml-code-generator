@@ -1,12 +1,13 @@
 # FastAPI generator: project files and shared code
 
-Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Other M6 stories add the slices, the migrations and `openapi.gen.json`.
+Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Story #84 added the CRUD slices (see `docs/notes/fastapi-slices.md`). Story #85 added the schema snapshot and the Alembic migrations. Other M6 stories add the custom operations and `openapi.gen.json`.
 
 - Generator: `src/dsml/generate/fastapi.py`. It is in the list `GENERATORS` of `src/dsml/generate/generators.py`.
 - Database code: `src/dsml/generate/fastapi_database.py`. The tables and the column types come from `src/dsml/database/schema.py` (see `docs/notes/schema-snapshot.md`).
+- Migrations: `src/dsml/generate/fastapi_migrations.py`. The section "Migrations" of `docs/notes/schema-snapshot.md` gives the rules.
 - Templates: `src/dsml/templates/fastapi/`.
 - Symbols of Python files: `src/dsml/generate/python_symbols.py`.
-- Tests: `tests/test_fastapi_generator.py` and `tests/test_fastapi_database.py`.
+- Tests: `tests/test_fastapi_generator.py`, `tests/test_fastapi_database.py` and `tests/test_fastapi_migrations.py`.
 - Golden files: `tests/golden/fastapi/order-service/`. Write them again with `uv run python scripts/write_golden_fastapi.py`.
 - CI: the job "FastAPI golden project" in `.github/workflows/ci.yml`.
 
@@ -64,7 +65,9 @@ The database code uses SQLAlchemy 2 in the asynchronous mode with the psycopg 3 
 
 The engine connects to the database only when a request uses a session. Thus `GET /healthz` operates with no database. The function `create_app` makes the engine, and the application closes the engine when it stops.
 
-The fixed-name list of the target is `pyproject.toml`, `Dockerfile`, `.dockerignore`, `alembic.ini`, `migrations/env.py` and `__init__.py` (PRD-APP-134).
+The fixed-name list of the target is `pyproject.toml`, `Dockerfile`, `.dockerignore`, `alembic.ini`, `migrations/env.py` and `__init__.py` (PRD-APP-134). The generator also accepts the path `.dsml/schema-snapshot.json` of PRD-APP-124 (`STATE_FILES`).
+
+If the application has entities, the image also holds `alembic.ini` and the folder `migrations`. The one-off migration task runs `python -m app.migrate_gen` in the same image (Q53).
 
 ## Environment variables
 
@@ -144,7 +147,7 @@ Story #75 added the exact versions of the FastAPI stack to `src/dsml/versions.to
 | `cryptography` | 50.0.2 | Run-time dependency, the RSA code of PyJWT (story #78). |
 | `sqlalchemy` | 2.1.4 | Run-time dependency with the extra `asyncio`, if the application has entities. |
 | `psycopg` | 3.3.6 | Run-time dependency with the extra `binary`, if the application has entities (story #77). |
-| `alembic` | 1.20.0 | For the migration story. |
+| `alembic` | 1.20.0 | Run-time dependency, if the application has entities (story #85). |
 | `pytest` | 9.1.1 | Dev dependency. |
 | `httpx2` | 2.13.1 | Dev dependency, the HTTP client of the test client of Starlette 1.x. |
 | `ruff` | 0.17.0 | Dev dependency. |

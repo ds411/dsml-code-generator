@@ -14,6 +14,7 @@ from pathlib import Path
 import pytest
 
 from dsml.config import Configuration, parse_configuration
+from dsml.database.snapshot import SNAPSHOT_PATH
 from dsml.errors import ToolchainError
 from dsml.generate import generators
 from dsml.generate.fastapi import DATABASE_VARIABLES, FIXED_NAMES, VARIABLES, FastApiGenerator
@@ -31,7 +32,9 @@ GOLDEN = ROOT / "tests" / "golden" / "fastapi" / "order-service"
 PROJECT = "services/order-api"
 APP = "OrderService::orderApi"
 ORDER = "OrderService::Order"
+ORDERS = "OrderService::orderApi::orders"
 MODEL = "app/shared/db/models/order_gen.py"
+MIGRATION = "migrations/versions/0001_create_order_gen.py"
 CACHES = frozenset({".pytest_cache", ".ruff_cache", ".venv", "__pycache__"})
 """The folders that the tools make in the golden project. The tests ignore them."""
 CONFIGURATION = '[applications.orderApi]\noutput = "services/order-api"\n'
@@ -96,24 +99,40 @@ def test_fastapi_generator_is_in_the_list_of_generators() -> None:
 def test_project_has_the_files_of_the_target() -> None:
     assert sorted(path for path in files_in(GOLDEN / PROJECT)) == [
         ".dockerignore",
+        SNAPSHOT_PATH,
         "Dockerfile",
+        "alembic.ini",
         "app/__init__.py",
+        "app/features/__init__.py",
+        "app/features/order/__init__.py",
+        *(
+            f"app/features/order/{operation}_order/{name}"
+            for operation in ("create", "list", "read")
+            for name in ("__init__.py", "endpoint_gen.py", "handler_gen.py", "schemas_gen.py")
+        ),
         "app/main_gen.py",
+        "app/migrate_gen.py",
         "app/shared/__init__.py",
         "app/shared/auth/__init__.py",
         "app/shared/auth/cognito_gen.py",
         "app/shared/config_gen.py",
         "app/shared/db/__init__.py",
         "app/shared/db/base_gen.py",
+        "app/shared/db/commit_gen.py",
         "app/shared/db/models/__init__.py",
         MODEL,
         "app/shared/db/session_gen.py",
         "app/shared/errors_gen.py",
         "app/shared/logs_gen.py",
+        "migrations/env.py",
+        MIGRATION,
         "pyproject.toml",
+        "tests/http_support_gen.py",
         "tests/test_app_gen.py",
         "tests/test_auth_gen.py",
         "tests/test_db_gen.py",
+        "tests/test_migrations_gen.py",
+        "tests/test_orders_http_gen.py",
     ]
 
 
@@ -136,20 +155,33 @@ def test_fixed_names_and_no_lockfile(example_ir: Ir) -> None:
 def test_each_source_file_has_the_trace_header() -> None:
     for path, content in files_in(GOLDEN / PROJECT).items():
         file_type = file_type_of(path)
-        elements = [ORDER] if path == MODEL else [APP]
+        if path == MODEL:
+            elements = [ORDER]
+        elif path.startswith("app/features/order/") or path == "tests/test_orders_http_gen.py":
+            elements = [ORDER, ORDERS]
+        else:
+            elements = [APP]
         assert content.decode().startswith(header(file_type, elements)), path
 
 
 # trace: PRD-TRACE-006
 def test_trace_manifest_gives_the_symbols_of_the_generated_files() -> None:
     data = json.loads((GOLDEN / ".dsml" / "trace.gen.json").read_bytes())
-    assert [element["element"] for element in data["elements"]] == [ORDER, APP]
-    order, item = data["elements"]
-    assert [
+    assert [element["element"] for element in data["elements"]] == [ORDER, APP, ORDERS]
+    order, item, orders = data["elements"]
+    slice_files = {
+        f"{PROJECT}/{path}"
+        for path in files_in(GOLDEN / PROJECT)
+        if (path.startswith("app/features/") and path.endswith("_gen.py"))
+        or path == "tests/test_orders_http_gen.py"
+    }
+    assert {file["path"] for file in orders["files"]} == slice_files
+    assert {file["path"] for file in order["files"]} == slice_files | {f"{PROJECT}/{MODEL}"}
+    assert (f"{PROJECT}/{MODEL}", "class", "Order") in {
         (file["path"], symbol["kind"], symbol["name"])
         for file in order["files"]
         for symbol in file["symbols"]
-    ] == [(f"{PROJECT}/{MODEL}", "class", "Order")]
+    }
     symbols = {
         (file["path"], symbol["kind"], symbol["name"])
         for file in item["files"]
@@ -166,7 +198,10 @@ def test_trace_manifest_gives_the_symbols_of_the_generated_files() -> None:
         (f"{PROJECT}/app/shared/db/session_gen.py", "function", "get_session"),
     } <= symbols
     python_files = {
-        path for path in files_in(GOLDEN / PROJECT) if path.endswith("_gen.py") and path != MODEL
+        path
+        for path in files_in(GOLDEN / PROJECT)
+        if (path.endswith("_gen.py") and f"{PROJECT}/{path}" not in slice_files and path != MODEL)
+        or path == "migrations/env.py"
     }
     assert {file["path"] for file in item["files"]} == {
         f"{PROJECT}/{path}" for path in python_files
@@ -178,6 +213,7 @@ def test_pyproject_pins_the_versions_of_the_baseline() -> None:
     data = tomllib.loads((GOLDEN / PROJECT / "pyproject.toml").read_text())
     assert data["project"]["requires-python"] == "==3.14.*"
     assert data["project"]["dependencies"] == [
+        f"alembic=={pinned_version('alembic')}",
         f"cryptography=={pinned_version('cryptography')}",
         f"fastapi=={pinned_version('fastapi')}",
         f"psycopg[binary]=={pinned_version('psycopg')}",
@@ -200,6 +236,7 @@ def test_extra_dependencies_of_the_configuration_are_in_the_sorted_list(
     [pyproject] = [file for file in files if file.path == f"{PROJECT}/pyproject.toml"]
     data = tomllib.loads(pyproject.content.decode())
     assert data["project"]["dependencies"] == [
+        f"alembic=={pinned_version('alembic')}",
         "boto3==1.40.0",
         f"cryptography=={pinned_version('cryptography')}",
         f"fastapi=={pinned_version('fastapi')}",
