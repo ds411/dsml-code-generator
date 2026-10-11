@@ -60,4 +60,4 @@ def test_cov_003_accepts_its_accept_model(run_rule: RunRule) -> None:
     assert run_rule("COV-003", "accept.sysml") == ()
 ```
 
-All rule tests share one OpenSysML service, the session fixture `rule_engine`.
+The rule tests of one test module share one OpenSysML service, the module fixture `rule_engine`. The fixture stops the service at the end of the module, because on macOS an open gRPC channel writes log lines to the standard error of a process that a later test starts.
