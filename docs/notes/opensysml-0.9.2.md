@@ -80,12 +80,18 @@ The client also does a check: `opensysml.connect(version="v0.9.2")` raises `Stal
 | `start_line`, `start_column` | `4`, `39` (both start at 1) |
 | `end_line`, `end_column` | `4`, `46` |
 | `severity` | `error` or `warning` |
-| `code` | `syntax`, `unresolved`, `feature-value-overriding` |
+| `code` | `syntax`, `unresolved`, `feature-value-overriding`, `name-conflict` |
 | `message` | `missing ';' at end of declaration` |
 
 The adapter copies these fields into the data class `dsml.adapter.engine.Diagnostic`. It sorts the diagnostics by file, line, column, code and message (PRD-CORE-028). The `code` field is stable. Rules of the SYN category (PRD-CORE-021) must use the code, not the message text.
 
 A syntax error does not stop the parse. OpenSysML gives a diagnostic and a model.
+
+After a syntax error, OpenSysML does not report the names that it cannot resolve. Thus a model with a syntax error can have more errors.
+
+Two members with the same name in one namespace give the warning `name-conflict` and no error. The SYN-002 test model uses this warning.
+
+The module `dsml.adapter.findings` converts each diagnostic into a finding (PRD-CORE-021). The severity `error` gives SYN-001. Each other severity gives SYN-002. The finding message is the OpenSysML message, then the code. The module `dsml.rules` gives the message and the fix hint of each SYN rule (PRD-VAL-001).
 
 ## User-defined keywords
 
