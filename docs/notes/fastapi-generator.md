@@ -1,6 +1,6 @@
 # FastAPI generator: project files and shared code
 
-Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Story #85 added the schema snapshot and the Alembic migrations. Other M6 stories add the slices and `openapi.gen.json`.
+Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Story #84 added the CRUD slices (see `docs/notes/fastapi-slices.md`). Story #85 added the schema snapshot and the Alembic migrations. Other M6 stories add the custom operations and `openapi.gen.json`.
 
 - Generator: `src/dsml/generate/fastapi.py`. It is in the list `GENERATORS` of `src/dsml/generate/generators.py`.
 - Database code: `src/dsml/generate/fastapi_database.py`. The tables and the column types come from `src/dsml/database/schema.py` (see `docs/notes/schema-snapshot.md`).

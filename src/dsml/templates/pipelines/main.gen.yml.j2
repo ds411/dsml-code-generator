@@ -1,0 +1,77 @@
+{#- The main workflow (PRD-CICD-001, PRD-CICD-007, PRD-CICD-009 to
+    PRD-CICD-012, PRD-CICD-014 to PRD-CICD-018, PRD-CICD-021). Each build
+    job builds one image one time. The deploy job deploys the digests of the
+    build jobs to dev. -#}
+{% from "pipelines/deploy.j2" import deploy_job with context %}
+{% include "common/header.j2" %}
+
+name: Main
+
+on:
+  push:
+    branches:
+      - {{ main_branch | yaml_string }}
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+{% for build in builds %}
+{% if not loop.first %}
+
+{% endif %}
+  # Build the image of {{ build.application.name }} one time and push it to the ECR
+  # repository of the tooling account with the push role (PRD-CICD-007,
+  # PRD-CICD-010). The tag is the commit. The tags are immutable, thus a
+  # second run of the same commit uses the image of the first run.
+  {{ build.job }}:
+    name: {{ ("Build " ~ build.application.name) | yaml_string }}
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      {{ build.output }}: {{ "${{ steps.push.outputs.digest }}" }}
+    defaults:
+      run:
+        working-directory: {{ build.folder | yaml_string }}
+    steps:
+      - name: Check out the repository
+        uses: {{ actions.checkout }}
+        with:
+          persist-credentials: false
+
+      - name: Get AWS credentials for the push role
+        uses: {{ actions.configure_aws_credentials }}
+        with:
+          role-to-assume: {{ build.role_arn | yaml_string }}
+          aws-region: {{ build.region | yaml_string }}
+
+      - name: Build and push the image
+        id: push
+        env:
+          REGISTRY: {{ build.registry | yaml_string }}
+          REPOSITORY: {{ build.repository.name | yaml_string }}
+        run: |
+          image="$REGISTRY/$REPOSITORY:$GITHUB_SHA"
+          if ! aws ecr describe-images --repository-name "$REPOSITORY" --image-ids "imageTag=$GITHUB_SHA" > /dev/null 2>&1; then
+            aws ecr get-login-password | docker login --username AWS --password-stdin "$REGISTRY"
+            docker build --platform linux/amd64 --tag "$image" .
+            docker push "$image"
+          fi
+          digest="$(aws ecr describe-images --repository-name "$REPOSITORY" --image-ids "imageTag=$GITHUB_SHA" \
+            --query 'imageDetails[0].imageDigest' --output text)"
+          if ! [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "::error::ECR gave no image digest for $image."
+            exit 1
+          fi
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+{% endfor %}
+{% for deploy in deploys %}
+
+{{ deploy_job(deploy) }}
+{% endfor %}

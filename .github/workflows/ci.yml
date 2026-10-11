@@ -1,7 +1,8 @@
 # CI of the DSML toolchain. This is a hand-written workflow, not a
 # generated pipeline.
 #
-# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-027, PRD-CORE-029, PRD-CORE-035, PRD-CORE-049
+# trace: PRD-TOP-003, PRD-CORE-020, PRD-CORE-027, PRD-CORE-029, PRD-CORE-035, PRD-CORE-049,
+# PRD-VAL-008
 #
 # CI runs only on Linux x64 (Q62, decision record 07). The toolchain
 # still supports the operating systems of decision record 03 (Q50).
@@ -93,6 +94,12 @@ jobs:
       - name: Test
         run: uv run pytest
 
+      # The example model must have no error finding (story #68). The
+      # findings of the reference models are also golden files, which the
+      # step "Test" compares in tests/test_rule_catalog.py.
+      - name: Validate the example model
+        run: uv run dsml validate --config docs/model/examples/dsml.toml
+
       # The golden workflows of the pipeline generator must have no
       # actionlint error (story #83). The step downloads the actionlint
       # release of src/dsml/versions.toml and checks its SHA-256 hash.
@@ -108,38 +115,45 @@ jobs:
           tar --extract --gzip --file "$RUNNER_TEMP/$archive" --directory "$RUNNER_TEMP" actionlint
           "$RUNNER_TEMP/actionlint" -color tests/golden/pipelines/*/.github/workflows/*.yml
 
-  # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-124, PRD-APP-128, PRD-APP-132,
-  # PRD-APP-133, PRD-APP-135
+  # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-113, PRD-APP-114, PRD-APP-124,
+  # PRD-APP-128, PRD-APP-132, PRD-APP-133, PRD-APP-135
   #
   # The golden output of the FastAPI generator (story #75) must pass the
-  # tools of the generated project. The job copies the golden project to a
+  # tools of the generated project. The job copies each golden project to a
   # temporary folder, because uv lock writes uv.lock and the generator does
   # not write lockfiles (PRD-CORE-036). This job needs the network to
-  # install the dependencies of the generated project. The generator does
+  # install the dependencies of the generated projects. The generator does
   # not use the network (PRD-TOP-004).
   #
-  # The migrations of the golden project go into PostgreSQL 18 in a service
-  # container (story #85). The image has a pinned digest.
+  # The golden projects are the example model (order-api) and the test
+  # model tests/models/fastapi/shop.sysml (shop-api, story #84). Their HTTP
+  # tests and their migrations (story #85) use the PostgreSQL 18 service
+  # container. The image has a pinned digest.
   fastapi-golden:
     name: FastAPI golden project (linux-x64)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    env:
-      PROJECT: ${{ github.workspace }}/../order-api
     services:
       postgres:
         image: postgres:18.6-trixie@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
         env:
           POSTGRES_USER: app
           POSTGRES_PASSWORD: ci
-          POSTGRES_DB: orders
+          POSTGRES_DB: app
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready --username app --dbname orders"
-          --health-interval 2s
+          --health-cmd "pg_isready --username app --dbname app"
+          --health-interval 5s
           --health-timeout 5s
-          --health-retries 30
+          --health-retries 10
+    env:
+      PROJECT: ${{ github.workspace }}/../order-api
+      PROJECTS: order-service/services/order-api shop/services/shop-api
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_USER: app
+      DATABASE_PASSWORD: ci
+      DATABASE_SSL_MODE: disable
     steps:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -151,52 +165,83 @@ jobs:
         with:
           version: "0.13.0"
 
-      - name: Copy the golden project
-        run: cp -r tests/golden/fastapi/order-service/services/order-api "$PROJECT"
+      - name: Copy the golden projects
+        run: |
+          for project in $PROJECTS; do
+            cp -r "tests/golden/fastapi/$project" "$GITHUB_WORKSPACE/../$(basename "$project")"
+          done
 
       - name: Lock and install the dependencies
-        working-directory: ${{ env.PROJECT }}
         run: |
-          uv lock
-          uv sync --frozen
+          for project in $PROJECTS; do
+            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            uv lock
+            uv sync --frozen
+          done
 
       - name: Lint
-        working-directory: ${{ env.PROJECT }}
-        run: uv run --frozen ruff check --output-format=github
+        run: |
+          for project in $PROJECTS; do
+            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            uv run --frozen ruff check --output-format=github
+          done
 
       - name: Check the format
-        working-directory: ${{ env.PROJECT }}
-        run: uv run --frozen ruff format --check
+        run: |
+          for project in $PROJECTS; do
+            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            uv run --frozen ruff format --check
+          done
 
       - name: Check the types
-        working-directory: ${{ env.PROJECT }}
-        run: uv run --frozen pyright
+        run: |
+          for project in $PROJECTS; do
+            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            uv run --frozen pyright
+          done
 
+      # Each project uses its own database. The HTTP tests must run: the
+      # step fails if pytest skips a test.
       - name: Test
-        working-directory: ${{ env.PROJECT }}
-        run: uv run --frozen pytest
+        run: |
+          set -o pipefail
+          for project in $PROJECTS; do
+            name="$(basename "$project")"
+            cd "$GITHUB_WORKSPACE/../$name"
+            export DATABASE_NAME="${name%-api}"
+            PGPASSWORD="$DATABASE_PASSWORD" psql --host "$DATABASE_HOST" --username "$DATABASE_USER" \
+              --dbname app --command "CREATE DATABASE \"$DATABASE_NAME\""
+            uv run --frozen pytest -p no:cacheprovider | tee "$RUNNER_TEMP/pytest-$name.txt"
+            if grep --quiet "skipped" "$RUNNER_TEMP/pytest-$name.txt"; then
+              echo "pytest skipped tests of $name. The HTTP tests must run."
+              exit 1
+            fi
+          done
 
       # app/migrate_gen.py must apply the missing migrations and then stop.
       # A second run must apply nothing (PRD-APP-128). "alembic check" then
       # compares the database with the SQLAlchemy models (PRD-APP-124).
+      # Each project uses a new database, not the database of the tests.
       - name: Apply the migrations to PostgreSQL
-        working-directory: ${{ env.PROJECT }}
         env:
           APP_ENVIRONMENT: ci
           AWS_REGION: eu-west-1
           COGNITO_USER_POOL_ID: eu-west-1_ci
           COGNITO_APP_CLIENT_ID: ci
-          DATABASE_HOST: 127.0.0.1
-          DATABASE_NAME: orders
-          DATABASE_USER: app
-          DATABASE_PASSWORD: ci
-          DATABASE_SSL_MODE: disable
         run: |
-          uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/first.txt"
-          grep --quiet "Applied the migrations" "$RUNNER_TEMP/first.txt"
-          uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/second.txt"
-          grep --quiet "No migration was applied" "$RUNNER_TEMP/second.txt"
-          uv run --frozen alembic check
+          set -o pipefail
+          for project in $PROJECTS; do
+            name="$(basename "$project")"
+            cd "$GITHUB_WORKSPACE/../$name"
+            export DATABASE_NAME="${name%-api}_migrations"
+            PGPASSWORD="$DATABASE_PASSWORD" psql --host "$DATABASE_HOST" --username "$DATABASE_USER" \
+              --dbname app --command "CREATE DATABASE \"$DATABASE_NAME\""
+            uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/first-$name.txt"
+            grep --quiet "Applied the migrations" "$RUNNER_TEMP/first-$name.txt"
+            uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/second-$name.txt"
+            grep --quiet "No migration was applied" "$RUNNER_TEMP/second-$name.txt"
+            uv run --frozen alembic check
+          done
 
       - name: Build the container image
         working-directory: ${{ env.PROJECT }}

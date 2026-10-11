@@ -1,0 +1,183 @@
+{
+  "snapshotVersion": 2,
+  "tables": [
+    {
+      "columns": [
+        {
+          "name": "birth_date",
+          "nullable": true,
+          "primaryKey": false,
+          "references": null,
+          "type": "DATE",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "email",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "VARCHAR(120)",
+          "unique": true,
+          "values": []
+        },
+        {
+          "name": "id",
+          "nullable": false,
+          "primaryKey": true,
+          "references": null,
+          "type": "BIGINT",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "name",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "VARCHAR(80)",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "vip",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "BOOLEAN",
+          "unique": false,
+          "values": []
+        }
+      ],
+      "name": "customer"
+    },
+    {
+      "columns": [
+        {
+          "name": "added_at",
+          "nullable": true,
+          "primaryKey": false,
+          "references": null,
+          "type": "TIMESTAMPTZ",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "buyer_id",
+          "nullable": true,
+          "primaryKey": false,
+          "references": {
+            "column": "id",
+            "table": "customer"
+          },
+          "type": "BIGINT",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "code",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "TEXT",
+          "unique": true,
+          "values": []
+        },
+        {
+          "name": "id",
+          "nullable": false,
+          "primaryKey": true,
+          "references": null,
+          "type": "UUID",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "kind",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "VARCHAR(64)",
+          "unique": false,
+          "values": [
+            "book",
+            "music",
+            "video"
+          ]
+        },
+        {
+          "name": "note",
+          "nullable": true,
+          "primaryKey": false,
+          "references": null,
+          "type": "TEXT",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "price",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "NUMERIC(10, 2)",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "stock",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "BIGINT",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "supplier_id",
+          "nullable": false,
+          "primaryKey": false,
+          "references": {
+            "column": "id",
+            "table": "supplier"
+          },
+          "type": "UUID",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "weight",
+          "nullable": true,
+          "primaryKey": false,
+          "references": null,
+          "type": "DOUBLE PRECISION",
+          "unique": false,
+          "values": []
+        }
+      ],
+      "name": "product"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "nullable": false,
+          "primaryKey": true,
+          "references": null,
+          "type": "UUID",
+          "unique": false,
+          "values": []
+        },
+        {
+          "name": "name",
+          "nullable": false,
+          "primaryKey": false,
+          "references": null,
+          "type": "VARCHAR(80)",
+          "unique": false,
+          "values": []
+        }
+      ],
+      "name": "supplier"
+    }
+  ]
+}

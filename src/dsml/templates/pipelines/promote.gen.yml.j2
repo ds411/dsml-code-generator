@@ -1,0 +1,75 @@
+{#- The promote workflow (PRD-CICD-001, PRD-CICD-008 to PRD-CICD-012,
+    PRD-CICD-014 to PRD-CICD-018, PRD-CICD-020, PRD-CICD-021). The workflow
+    builds no image. It finds the image digests of one main build and
+    deploys them to each environment in its order. -#}
+{% from "pipelines/deploy.j2" import deploy_job with context %}
+{% include "common/header.j2" %}
+
+name: Promote
+
+on:
+  push:
+    tags:
+      - {{ release_tags | yaml_string }}
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: The full commit hash of a build of the main workflow.
+        required: true
+        type: string
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Find the image digests of the main build of the commit, with the push
+  # role (PRD-CICD-008, PRD-CICD-010). The commit is the commit of the
+  # release tag, or the input of a manual run.
+  {{ resolve.job }}:
+    name: Find the build
+    runs-on: {{ runner }}
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+    outputs:
+      commit: {{ "${{ steps.build.outputs.commit }}" }}
+{% for build in builds %}
+      {{ build.output }}: {{ "${{ steps.build.outputs." ~ build.output ~ " }}" }}
+{% endfor %}
+    steps:
+      - name: Get AWS credentials for the push role
+        uses: {{ actions.configure_aws_credentials }}
+        with:
+          role-to-assume: {{ resolve.role_arn | yaml_string }}
+          aws-region: {{ resolve.region | yaml_string }}
+
+      - name: Find the image digests of the build
+        id: build
+        env:
+          INPUT_COMMIT: {{ "${{ inputs.commit }}" }}
+        run: |
+          commit="${INPUT_COMMIT:-$GITHUB_SHA}"
+          if ! [[ "$commit" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::The commit must be a full commit hash with 40 lowercase hexadecimal characters."
+            exit 1
+          fi
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          find_digest() {
+            local digest
+            if ! digest="$(aws ecr describe-images --repository-name "$1" --image-ids "imageTag=$commit" \
+              --query 'imageDetails[0].imageDigest' --output text)" || ! [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+              echo "::error::The repository $1 has no image of the commit $commit. Promote only a commit that the main workflow built."
+              exit 1
+            fi
+            echo "$2=$digest" >> "$GITHUB_OUTPUT"
+          }
+{% for build in builds %}
+          find_digest {{ build.repository.name | yaml_string }} {{ build.output }}
+{% endfor %}
+{% for deploy in deploys %}
+
+{{ deploy_job(deploy, checkout_ref="needs." ~ resolve.job ~ ".outputs.commit") }}
+{% endfor %}
