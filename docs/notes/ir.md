@@ -121,3 +121,62 @@ The field `irVersion` has the form `<major>.<minor>.<patch>` (PRD-CORE-023). The
 | Correct a description in the schema, with no change to the data. | Patch |
 
 A change of the IR version also changes the golden IR files (PRD-CORE-027). A minor or patch release of the toolchain must not change the IR of an unchanged model, except to fix a defect that its release notes name (PRD-CORE-037).
+
+## Conversion of the needs and requirements layers (story #30)
+
+Story #30 added the conversion of the packages, the stakeholders, the needs, the requirements and their links into the IR.
+
+- Entry point: `dsml.adapter.convert.build_ir(model, files)`. It gives an `Ir` with the elements, the links and the SYN findings.
+- Reader of the model: `src/dsml/adapter/source.py`.
+- Converter of the needs and requirements layers: `src/dsml/adapter/needs.py`.
+- Tests: `tests/test_ir_needs.py`. Test models: `tests/models/ir/`.
+
+### Source of the data
+
+The adapter reads the model from the SysML v2 API JSON form (`Model.to_api_json()`). `Model.query()` and `Model.get_symbol()` of OpenSysML 0.9.2 do not give the source location of an element, and `Model.query()` does not give the metadata usages. The API JSON form gives:
+
+- The line and the column of each element (`sysx:sourceLine`, `sysx:sourceColumn`). Only a root package gives its file (`sysx:sourceDocument`). The adapter finds the file of an element through its owners.
+- The metadata usages of each element, with the qualified name of the metadata definition. This includes the definitions of the standard library, for example `RequirementDerivation::DerivationMetadata`.
+- The values of the features, as literal expressions, references and the sequence operator ",".
+
+The JSON form refers to elements with internal IDs of OpenSysML. Only `dsml.adapter.source` uses these IDs. The IR uses identities and qualified names (PRD-CORE-025).
+
+OpenSysML marks the API JSON form as experimental. If a new OpenSysML version changes the form, the tests of story #30 fail.
+
+### Elements
+
+| Model element | IR kind | Content |
+| --- | --- | --- |
+| A package or a library package in a model file | `Package` | The annotation `DsmlVersion` of the root package (PRD-DSML-056). |
+| A part definition with `#Stakeholder` | `Stakeholder` | PRD-DSML-011. |
+| A concern usage with `#Need` | `Need` | `title`, `priority` and `status` in `attributes`, the `doc` text in `doc` (PRD-DSML-013). |
+| A requirement usage with `#Requirement` | `Requirement` | `title`, `kind`, `priority`, `status`, and `rationale`, `source` and `owner` if the model gives them (PRD-DSML-015). |
+
+- The identity is the short name. An element with no short name uses its qualified name (PRD-DSML-053).
+- An attribute is an owned feature with a value, for example `:>> priority = Priority::must;`. The attribute name is the name of the feature that it redefines. Thus the IR also holds the attributes that a project library adds (PRD-DSML-019).
+- An enumeration literal gives an `enum` value with the qualified name of the enumeration. A literal that is a SysML keyword has no quotes in the IR, for example `constraint`.
+- The `annotations` of an element hold its plain metadata usages, for example `Waiver` (PRD-DSML-055), with their attributes. The keyword of the element kind is not an annotation.
+- A metadata definition of a project that specializes a DSML keyword, for example `metadata def SafetyRequirement :> DSML::Requirement;`, gives the kind of that keyword.
+- `types` gives the definitions that type the element, for example the definition of a project library.
+- The adapter converts only the elements of the model files. The DSML library and the standard library are not model files.
+
+### Links
+
+The source of a link is the element that declares it.
+
+| Link | Model form | Source | Target |
+| --- | --- | --- | --- |
+| `stakeholder` | `stakeholder s : Owner;` in a need | The need | The stakeholder that types the member |
+| `frame` | `frame n;` in a requirement | The requirement | The framed need |
+| `derivation` | `#derivation connection { end #original ::> r1; end #derive ::> r2; }` | Each `#derive` requirement | The `#original` requirement |
+| `refinement` | `#refinement dependency r2 to r1;` | Each client of the dependency | Each supplier of the dependency |
+
+The location of a `stakeholder` or `frame` link is the location of its member. The location of a `derivation` or `refinement` link is the location of the connection or of the dependency.
+
+### Model with an error
+
+If the parse gives a SYN-001 finding, the IR holds only the files and the SYN findings. The elements of such a model are not complete.
+
+### Size of the API JSON form
+
+The API JSON form of the PRD model (10 files, 311 requirements) is approximately 12 MB. The gRPC client of OpenSysML refuses a message larger than 4 MiB. The engine adds the channel option `grpc.max_receive_message_length = -1` before it connects. The conversion of the PRD model takes approximately 3 s to 6 s in the development container. Story #33 records the time for a model with 1,000 elements (Q50).
