@@ -113,9 +113,11 @@ line = "1.16"
 [hcl-required-version]
 value = ">= 1.13.0"
 
-# The minor is set before the infrastructure generator starts (M6).
+# Each root module pins the exact version (PRD-IAC-005, story #76).
+# "version": the release that decision record 03 gives, 29 July 2026.
 [aws-provider]
 line = "6"
+version = "6.57.1"
 
 [alb-tls-policy]
 value = "ELBSecurityPolicy-TLS13-1-2-2021-06"

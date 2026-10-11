@@ -1,0 +1,39 @@
+{#- The S3 backend of an environment root module (PRD-IAC-006), and the
+    OpenTofu state encryption of the IaC option (PRD-IAC-004). -#}
+{% include "common/header.j2" %}
+
+terraform {
+  backend "s3" {
+    bucket       = {{ state_bucket | hcl_string }}
+    key          = {{ state_key | hcl_string }}
+    region       = {{ region | hcl_string }}
+    encrypt      = true
+    use_lockfile = true
+  }
+{% if state_encryption %}
+
+  # Only OpenTofu accepts this block (iac.opentofu.state_encryption = true).
+  # Terraform does not accept this root module.
+  encryption {
+    key_provider "aws_kms" "state" {
+      kms_key_id = {{ state_kms_alias | hcl_string }}
+      region     = {{ region | hcl_string }}
+      key_spec   = "AES_256"
+    }
+
+    method "aes_gcm" "state" {
+      keys = key_provider.aws_kms.state
+    }
+
+    state {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+
+    plan {
+      method   = method.aes_gcm.state
+      enforced = true
+    }
+  }
+{% endif %}
+}

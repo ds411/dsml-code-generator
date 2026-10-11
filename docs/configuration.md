@@ -78,7 +78,7 @@ All keys are optional, except `schema`. The milestone that uses a key tells what
 | `model.paths` | list of paths | No path | The files and the folders of the model. The toolchain reads each `.sysml` file in a folder and in its subfolders. | PRD-CORE-013, PRD-DSML-007 |
 | `applications.<name>.output` | path | No folder | The output folder of the application `<name>`. `<name>` is the name of the application in the model. It starts with a letter, then has letters, digits, "_" or "-". `dsml generate` stops with an error if an application of the run has no output folder. | PRD-CORE-013, PRD-APP-002 |
 | `applications.<name>.dependencies` | list of texts | No dependency | The extra dependencies of the application. The generator adds them to the dependency list of the target. | PRD-CORE-046, Q56 |
-| `infrastructure.output` | path | No folder | The output folder of the infrastructure code. | PRD-CORE-013, PRD-IAC-001 |
+| `infrastructure.output` | path | No folder | The output folder of the infrastructure code. Without this key, `dsml generate` writes no infrastructure file. | PRD-CORE-013, PRD-IAC-001 |
 | `pipelines.output` | path | No folder | The output folder of the pipelines. | PRD-CORE-013 |
 | `ids.need` | regular expression | `N-[0-9]{3,}` | The pattern of the ID of a need. | PRD-DSML-050, PRD-DSML-051 |
 | `ids.requirement` | regular expression | `R-[0-9]{3,}` | The pattern of the ID of a requirement. | PRD-DSML-050, PRD-DSML-051 |
