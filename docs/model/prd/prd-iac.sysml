@@ -9,12 +9,12 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-002'> iac002 {
         doc /* Each generated HCL file must have a name that ends with .gen.tf. A platform engineer can add hand-written .tf files to a root module, and the generator must not change them. */
-        :>> title = "HCL file names"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "HCL file names"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-003'> iac003 {
         doc /* With the default configuration, the HCL must be valid for the pinned OpenTofu version and for the pinned Terraform version. The required_version constraint must accept the two pinned versions. */
-        :>> title = "Two-tool HCL"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Two-tool HCL"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-004'> iac004 {
@@ -24,7 +24,7 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-005'> iac005 {
         doc /* Each root module must pin the AWS provider to the exact version of the version baseline. */
-        :>> title = "Provider pin"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Provider pin"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-006'> iac006 {
@@ -34,7 +34,7 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-007'> iac007 {
         doc /* The output must use only aws_* resources and data sources and local modules. It must not use a module from a registry or from a different repository. */
-        :>> title = "Raw resources only"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Raw resources only"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-008'> iac008 {
@@ -44,12 +44,12 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-009'> iac009 {
         doc /* The image of each container service must be a root module variable <application>_image_digest. The CI/CD pipeline must give its value. */
-        :>> title = "Image digest variable"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Image digest variable"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-010'> iac010 {
         doc /* Each environment root module must output the values that the pipelines need: the ECS cluster and service names, the API URL, the Cognito user pool ID, app client IDs and login domain, and, in phase 2, the S3 bucket and the CloudFront distribution ID. */
-        :>> title = "Root outputs"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Root outputs"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-011'> iac011 {
@@ -114,7 +114,7 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-023'> iac023 {
         doc /* Each environment root module must call the same local modules. Only the environment attributes of PRD-DSML-042 can make two environments different. */
-        :>> title = "Same modules"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Same modules"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-024'> iac024 {
@@ -124,7 +124,7 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-025'> iac025 {
         doc /* The generator must not create AWS accounts. The accounts and AWS Organizations must exist before the bootstrap. */
-        :>> title = "No account creation"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "No account creation"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-026'> iac026 {
@@ -179,12 +179,12 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-036'> iac036 {
         doc /* The value of dsml:model-commit must come from the root module variable model_commit at plan time. Generated files must not contain the commit. */
-        :>> title = "Commit tag source"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Commit tag source"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }
     #Requirement requirement <'PRD-IAC-037'> iac037 {
         doc /* If a tag value is longer than the AWS limit of 256 characters, the generator must shorten it and add a hash of the full value. */
-        :>> title = "Tag length"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Tag length"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame traceability;
     }
     #Requirement requirement <'PRD-IAC-038'> iac038 {
@@ -204,7 +204,7 @@ package PrdIac {
     }
     #Requirement requirement <'PRD-IAC-041'> iac041 {
         doc /* After an apply, a second tofu plan with the same model and the same commit must show no change. */
-        :>> title = "Stable plan"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Stable plan"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-IAC-042'> iac042 {

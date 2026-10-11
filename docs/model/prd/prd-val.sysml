@@ -9,7 +9,7 @@ package PrdVal {
     }
     #Requirement requirement <'PRD-VAL-002'> val002 {
         doc /* Rule IDs must have the form <CATEGORY>-<NNN>. A deleted rule ID must not be used again. */
-        :>> title = "Rule IDs"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Rule IDs"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-VAL-003'> val003 {
@@ -29,12 +29,12 @@ package PrdVal {
     }
     #Requirement requirement <'PRD-VAL-006'> val006 {
         doc /* The validator must write findings as text, as JSON, or as SARIF 2.1.0 with the rule metadata and the source locations. */
-        :>> title = "Finding formats"; :>> kind = RequirementKind::interface; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Finding formats"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-VAL-007'> val007 {
         doc /* The validator must sort findings by file, line, column and rule ID. */
-        :>> title = "Sorted findings"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Sorted findings"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-VAL-008'> val008 {
@@ -69,7 +69,7 @@ package PrdVal {
     }
     #Requirement requirement <'PRD-VAL-014'> val014 {
         doc /* The text rules must use the project dictionary of the top-level PRD as a list of additional approved words. The toolchain must not claim full STE compliance. */
-        :>> title = "Project dictionary in rules"; :>> kind = RequirementKind::constraint; :>> priority = Priority::must; :>> status = Status::draft;
+        :>> title = "Project dictionary in rules"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
     #Requirement requirement <'PRD-VAL-015'> val015 {

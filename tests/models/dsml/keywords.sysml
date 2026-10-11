@@ -16,13 +16,14 @@ package Keywords {
         :>> title = "Track orders";
         :>> priority = Priority::must;
         :>> status = Status::approved;
+        subject;
         stakeholder s : Owner;
     }
 
     #Requirement requirement <'R-001'> getOrder {
         doc /* The API must return an order. */
         :>> title = "Get order";
-        :>> kind = RequirementKind::constraint;
+        :>> kind = RequirementKind::'constraint';
         :>> priority = Priority::should;
         :>> status = Status::draft;
         :>> rationale = "The owner reads orders.";

@@ -127,3 +127,26 @@ def test_kernel_spec_has_no_api_base_path(tmp_path: Path) -> None:
     assert spec["argv"][:4] == ["java", "-cp", str(jar), "org.omg.sysml.jupyter.kernel.ISysML"]
     assert "ISYSML_API_BASE_PATH" not in spec["env"]
     assert spec["env"]["ISYSML_LIBRARY_PATH"].startswith(str(library))
+
+
+def test_each_file_is_one_cell_without_one_model() -> None:
+    cells = check_pilot.make_cells([("a.sysml", "package A;"), ("b.sysml", "package B;")], False)
+    assert [(cell.label, cell.code) for cell in cells] == [
+        ("a.sysml", "package A;"),
+        ("b.sysml", "package B;"),
+    ]
+
+
+def test_one_model_joins_the_files_into_one_cell() -> None:
+    files = [("lib.sysml", "package L {\n}"), ("m.sysml", "package M;\n"), ("n.sysml", "x\n")]
+    (cell,) = check_pilot.make_cells(files, True)
+    assert cell.label == "lib.sysml and 2 more files"
+    assert cell.code == "package L {\n}\npackage M;\nx\n"
+    assert cell.starts == ((1, "lib.sysml"), (3, "m.sysml"), (4, "n.sysml"))
+
+
+def test_locate_gives_the_file_and_the_line_of_a_diagnostic() -> None:
+    (cell,) = check_pilot.make_cells([("lib.sysml", "a\nb\n"), ("m.sysml", "c\nd\n")], True)
+    line = "ERROR:Bad (1.sysml line : 4 column : 9)"
+    assert cell.locate(line) == f"m.sysml:2: {line}"
+    assert cell.locate("ERROR:Bad") == "ERROR:Bad"

@@ -11,6 +11,7 @@ package OrderService {
         :>> title = "Track orders";
         :>> priority = Priority::must;
         :>> status = Status::approved;
+        subject;
         stakeholder owner : ShopOwner;
     }
 
@@ -27,7 +28,7 @@ package OrderService {
     #Requirement requirement <'R-002'> orderDataSafe {
         doc /* In prod, the order database must continue to operate after the loss of one availability zone. */
         :>> title = "Order data in two zones";
-        :>> kind = RequirementKind::constraint;
+        :>> kind = RequirementKind::'constraint';
         :>> priority = Priority::must;
         :>> status = Status::approved;
         frame trackOrders;

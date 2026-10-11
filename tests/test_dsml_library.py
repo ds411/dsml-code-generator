@@ -213,9 +213,7 @@ def test_keyword_on_a_typed_usage_gives_the_base_type_features(
     assert keywords_model.evaluate_bool("orderDbAws.multiAz == false", namespace)
 
 
-def test_typed_usage_is_not_an_instance_of_the_keyword_base_type(
-    keywords_model: ParsedModel,
-) -> None:
+def test_typed_usage_is_not_an_instance_of_the_keyword_base_type(engine: Engine) -> None:
     """A known limit of OpenSysML 0.9.2. See docs/notes/dsml-library.md.
 
     A usage with a declared type and a keyword gets the features of the
@@ -223,9 +221,10 @@ def test_typed_usage_is_not_an_instance_of_the_keyword_base_type(
     IR adapter must find the keyword with "@", not with "istype". If a new
     OpenSysML version removes the limit, this test fails.
     """
-    assert not keywords_model.is_type(
-        "orderApi::cancelOrder", "DSML::BaseTypes::Exposed", "Keywords"
-    )
+    model = _parse_with_library(engine, "typed-usage.sysml")
+    assert not model.diagnostics
+    assert model.evaluate_bool("shop.target == DSML::Target::fastapi", "TypedUsage")
+    assert not model.is_type("shop", "DSML::BaseTypes::Application", "TypedUsage")
 
 
 # trace: PRD-DSML-009
