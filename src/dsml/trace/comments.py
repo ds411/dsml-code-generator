@@ -124,12 +124,9 @@ def read_trace_comments(
     The caller gives the folders and the generated files, so this package
     reads only the IR and the files on disk (PRD-CORE-026).
     """
-    paths: set[str] = set()
-    for folder in folders:
-        paths.update(_files(root, folder))
     comments: list[TraceComment] = []
     problems: list[TraceProblem] = []
-    for path in sorted(paths.difference(generated)):
+    for path in hand_written_files(root, folders, generated):
         language = LANGUAGES[PurePosixPath(path).suffix]
         try:
             text = (root / path).read_bytes().decode("utf-8-sig")
@@ -143,6 +140,21 @@ def read_trace_comments(
         comments.extend(found)
         problems.extend(found_problems)
     return TraceComments(tuple(comments), tuple(problems))
+
+
+# trace: PRD-TRACE-010, PRD-CORE-032
+def hand_written_files(
+    root: Path, folders: Iterable[PurePosixPath], generated: Collection[str]
+) -> list[str]:
+    """Give the hand-written files with a known extension in the folders, sorted.
+
+    The arguments are the same as the arguments of `read_trace_comments`.
+    The result does not contain the generated files.
+    """
+    paths: set[str] = set()
+    for folder in folders:
+        paths.update(_files(root, folder))
+    return sorted(paths.difference(generated))
 
 
 def _files(root: Path, folder: PurePosixPath) -> Iterator[str]:

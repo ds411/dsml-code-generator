@@ -1,0 +1,14 @@
+# report: orphans
+# model commit: none: the folder is not in a Git repository
+# baseline commit: none
+category,item,location
+element-without-requirement,OrderService::CancelOrder,model/order-service.sysml:49
+element-without-requirement,OrderService::Order,model/order-service.sysml:42
+element-without-requirement,OrderService::network,model/order-service.sysml:69
+element-without-requirement,OrderService::networkAws,model/order-service.sysml:78
+element-without-requirement,OrderService::orderDb,model/order-service.sysml:71
+element-without-requirement,OrderService::orderDbAws,model/order-service.sysml:80
+element-without-requirement,OrderService::users,model/order-service.sysml:72
+element-without-requirement,OrderService::usersAws,model/order-service.sysml:81
+test-file-without-verification,tests/test_smoke.py,tests/test_smoke.py
+unknown-trace-id,R-404,app/features/order/cancel_order/handler.py:1
