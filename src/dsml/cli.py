@@ -209,14 +209,19 @@ def toolchain_version() -> str:
     return metadata.version(PROG)
 
 
-# trace: PRD-CORE-006
+# trace: PRD-CORE-006, PRD-CORE-015, PRD-CORE-034
 def write_report(text: str, output: Path | None) -> None:
     """Write a report to standard output, or to the file that `--output` gives.
 
-    The file has UTF-8 encoding and LF line ends (PRD-CORE-034, PRD-CORE-035).
+    The report has UTF-8 encoding and LF line ends (PRD-CORE-034,
+    PRD-CORE-035). On standard output, the function writes the UTF-8 bytes.
+    Thus the locale and `PYTHONIOENCODING` do not change the report
+    (PRD-CORE-015).
     """
     if output is None:
-        sys.stdout.write(text)
+        sys.stdout.flush()
+        sys.stdout.buffer.write(text.encode("utf-8"))
+        sys.stdout.buffer.flush()
         return
     LOG.debug("Write the report to %s.", output)
     try:
