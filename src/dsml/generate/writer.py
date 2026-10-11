@@ -287,8 +287,7 @@ def make_plan(root: Path, files: Sequence[OutputFile], parts: Collection[str] | 
     # A generated file of the old manifest can become a create-once file. The
     # file then stays, and the developer owns it.
     for file in create_once:
-        target = _target(root, file.path)
-        if not (target.exists() or target.is_symlink()):
+        if not _exists(root, file.path):
             writes.append((file.path, file.content))
             changes.append(Change("add", file.path))
 
@@ -335,6 +334,36 @@ def apply_plan(root: Path, plan: Plan) -> None:
         _write(root, path, content)
     if plan.manifest_changes:
         _write(root, MANIFEST_PATH, plan.manifest)
+
+
+# trace: PRD-CORE-034, PRD-CORE-042, PRD-CORE-044
+def write_create_once(root: Path, files: Sequence[OutputFile]) -> tuple[list[str], list[str]]:
+    """Write each create-once file that does not exist. Do not touch the other files.
+
+    `root` is the folder of the configuration file. Each file must be a
+    create-once file. The function does not read or write the manifest. It
+    gives the paths that it wrote and the paths that it kept, each list
+    sorted by path.
+    """
+    check_files(files)
+    for file in files:
+        if file.kind is not Kind.CREATE_ONCE:
+            raise ToolchainError(f'The file "{file.path}" is not a create-once file.')
+    written: list[str] = []
+    kept: list[str] = []
+    for file in sorted(files, key=lambda file: file.path):
+        if _exists(root, file.path):
+            kept.append(file.path)
+        else:
+            _write(root, file.path, file.content)
+            written.append(file.path)
+    return written, kept
+
+
+def _exists(root: Path, path: str) -> bool:
+    """Tell if a file, a folder or a symbolic link exists at the path."""
+    target = _target(root, path)
+    return target.exists() or target.is_symlink()
 
 
 def _target(root: Path, path: str) -> Path:

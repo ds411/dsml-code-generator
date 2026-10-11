@@ -1,4 +1,4 @@
-"""Tests of the command `dsml` (stories #2 and #34)."""
+"""Tests of the command `dsml` (stories #2, #34 and #38)."""
 
 import argparse
 import re
@@ -15,8 +15,6 @@ from dsml.errors import NOT_AVAILABLE, ToolchainError
 
 SUBCOMMANDS = ("init", "validate", "generate", "trace", "ir", "check-output", "version")
 NOT_AVAILABLE_ARGV = [
-    ["init"],
-    ["init", "--target", "fastapi"],
     ["validate"],
     ["validate", "--format", "sarif", "--baseline", "v1.0.0"],
     ["trace", "coverage"],
@@ -81,6 +79,7 @@ def test_subcommand_with_no_implementation_gives_exit_code_2(
         ["trace"],
         ["trace", "unknown"],
         ["init", "--target"],
+        ["init", "--target", "react"],
     ],
 )
 def test_usage_error_gives_exit_code_2(argv: list[str], capsys: pytest.CaptureFixture[str]) -> None:
@@ -207,6 +206,8 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     if command == "ir":
         (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
         argv = [command, "model.sysml"]
+    if command == "init":
+        argv = [command]
     if command == "generate":
         (tmp_path / "model.sysml").write_text("package Model;\n", encoding="utf-8")
         (tmp_path / "dsml.toml").write_text(
@@ -234,5 +235,7 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
         assert '"files": [\n    "model.sysml"\n  ]' in out
     elif command == "generate":
         assert (returncode, out, err) == (0, "add .dsml/generated.json\n", "")
+    elif command == "init":
+        assert (returncode, out, err) == (0, "add dsml.toml\nadd model/model.sysml\n", "")
     else:
         assert (returncode, out, err) == (2, "", f"dsml: error: {NOT_AVAILABLE}\n")

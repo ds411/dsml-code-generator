@@ -89,7 +89,8 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 
 | Subcommand | Status |
 | --- | --- |
-| `init`, `validate`, `trace`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
+| `init` | Writes a starter configuration file and a starter model as create-once files. See "Command `dsml init`". |
+| `validate`, `trace`, `check-output` | Not available yet. The subcommand stops with exit code 2. |
 | `generate` | Writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. There are no generators yet (M5, M6, M7). `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
@@ -107,6 +108,19 @@ The exit codes are (PRD-CORE-002):
 - 2: a usage error or an internal error occurred. The command writes a short message, not a traceback. With `--verbose`, the traceback is a debug message.
 
 No subcommand reads from a terminal (PRD-CORE-009).
+
+### Command `dsml init`
+
+`dsml init [--target fastapi]` writes two starter files in the current folder:
+
+- `dsml.toml`: a configuration file that reads the model in the folder `model`.
+- `model/model.sysml`: a model with one stakeholder, one need, one requirement and the `@DsmlVersion` metadata. It parses and resolves with the DSML library.
+
+The files are create-once files (PRD-CORE-044). The command writes a file only if no file exists at its path. For a file that exists, the report gives the line `keep <path>: The file exists. The command did not change it.` The command writes no manifest. `dsml generate` writes the manifest.
+
+- Phase 1 accepts only the target `fastapi`. This is also the default target.
+- With `--config <file>`, the command writes the configuration file at this path, and the model in the folder of this file.
+- The starter files are package data in `src/dsml/starter/<target>/`.
 
 ### Command `dsml ir`
 

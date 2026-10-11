@@ -1,2 +1,4 @@
 # Git must not change the line ends of the golden files (PRD-CORE-034).
 tests/golden/** -text
+# Git must not change the line ends of the starter files (PRD-CORE-034).
+src/dsml/starter/** -text
