@@ -20,16 +20,19 @@ labels: milestone
 <!-- Add each story as a sub-issue. Before a story has an issue, you can list it here. -->
 <!-- Give the order of all stories in numbered steps. Do the steps in their order. -->
 <!-- Put the stories that can go in parallel in the same step. Give the stories that each step needs. -->
+<!-- Put 4 or fewer stories in a step. Give the main files that each story changes. -->
+<!-- Stories in one step must change different files. If they must change the same file, add a setup story to the step before (CONTRIBUTING.md, "Parallel stories"). -->
 
 Each story is a sub-issue of this milestone. Do the steps in their order. The stories in one step can go in parallel. Their pull requests merge one at a time, in the order of this list (`CONTRIBUTING.md`, "Merge order").
 
 Step 1. 
 
-- [ ] 
+- [ ] #<issue>. Files: 
 
 Step 2. 
 
-- [ ] 
+- Setup story: <!-- Give the setup story in the step before, and the shared files that it changes. Write "None" if the step has no shared file. -->
+- [ ] #<issue>. Files: 
 
 ## Exit criteria
 
