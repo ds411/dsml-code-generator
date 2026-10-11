@@ -4,6 +4,7 @@
 The engine reads only the IR (PRD-CORE-026). It does not import OpenSysML or
 the IR adapter.
 
+- `dsml.trace.comments`: the trace comments in the hand-written files.
 - `dsml.trace.graph`: the link graph and its queries in the two directions.
 - `dsml.trace.hashes`: the hash of the IR form of an element.
 """
