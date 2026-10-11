@@ -379,7 +379,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/tests/http_support_gen.py",
-      "sha256": "f75b19a0e35385983ebe6dbc9f4f024693df294a20b5f6ca1ad79ca03a32d392"
+      "sha256": "98207fce7818b992cd57217bf843cc7c31aef878d4e32e41fb4ec58088a791de"
     },
     {
       "part": "application/shopApi",

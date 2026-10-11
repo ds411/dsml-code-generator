@@ -493,25 +493,25 @@
             {
               "firstLine": 116,
               "kind": "function",
-              "lastLine": 123,
+              "lastLine": 133,
               "name": "insert"
             },
             {
-              "firstLine": 126,
+              "firstLine": 136,
               "kind": "function",
-              "lastLine": 137,
+              "lastLine": 147,
               "name": "api"
             },
             {
-              "firstLine": 140,
+              "firstLine": 150,
               "kind": "function",
-              "lastLine": 151,
+              "lastLine": 161,
               "name": "same"
             },
             {
-              "firstLine": 154,
+              "firstLine": 164,
               "kind": "function",
-              "lastLine": 158,
+              "lastLine": 168,
               "name": "assert_same"
             }
           ]

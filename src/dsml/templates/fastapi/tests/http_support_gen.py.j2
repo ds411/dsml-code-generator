@@ -121,6 +121,16 @@ def insert(rows: Sequence[tuple[str, Mapping[str, object]]]) -> None:
             values = ", ".join(f":{name}" for name in row)
             statement = text(f'INSERT INTO "{table}" ({columns}) VALUES ({values})')
             connection.execute(statement, dict(row))
+        # The rows give their keys. Thus the next key that the database
+        # makes must be larger than the largest key of each table.
+        for item in Base.metadata.sorted_tables:
+            column = item.autoincrement_column
+            if column is not None:
+                sequence = f"pg_get_serial_sequence('\"{item.name}\"', '{column.name}')"
+                largest = f'coalesce(max("{column.name}"), 0) + 1'
+                connection.execute(
+                    text(f'SELECT setval({sequence}, {largest}, false) FROM "{item.name}"')
+                )
 
 
 @contextmanager
