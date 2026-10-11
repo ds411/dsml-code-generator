@@ -86,6 +86,6 @@ def test_cov_003_accepts_its_accept_model(run_rule: RunRule) -> None:
     assert run_rule("COV-003", "accept.sysml") == ()
 ```
 
-All rule tests share one OpenSysML service, the session fixture `rule_engine`.
+The rule tests of one test module share one OpenSysML service, the module fixture `rule_engine`. The service stops at the end of the module. On macOS, a running service makes gRPC write messages to stderr in each child process, and those messages make the tests of the command line fail.
 
 An IDN rule also has the model `baseline.sysml`. The tests in `tests/test_baseline.py` commit it in a temporary Git repository. Then they compare `accept.sysml` and `reject.sysml` with it.
