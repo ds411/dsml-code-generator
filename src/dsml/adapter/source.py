@@ -66,6 +66,7 @@ class SourceGraph:
             self._items[identifier] = item
         self._elements: dict[str, SourceElement] = {}
         self._documents: dict[str, str | None] = {}
+        self._names: dict[str, str] | None = None
 
     def element(self, identifier: str) -> SourceElement | None:
         """Give the element with an OpenSysML ID, or None if the form does not contain it."""
@@ -82,6 +83,17 @@ class SourceGraph:
         """Give the elements with the IDs that the form contains, in the same order."""
         found = (self.element(identifier) for identifier in identifiers)
         return tuple(element for element in found if element is not None)
+
+    def find(self, qualified_name: str) -> SourceElement | None:
+        """Give the element with a qualified name, for example of the DSML library, or None."""
+        if self._names is None:
+            self._names = {}
+            for identifier, item in self._items.items():
+                name = item.get("qualifiedName")
+                if isinstance(name, str) and name not in self._names:
+                    self._names[name] = identifier
+        identifier = self._names.get(qualified_name)
+        return None if identifier is None else self.element(identifier)
 
     def model_elements(self) -> Iterator[SourceElement]:
         """Give each element of the model files that has a qualified name."""
@@ -258,14 +270,23 @@ class SourceElement:
         return found[0] if found else None
 
     def redefined_name(self) -> str:
-        """Give the name of the feature: its declared name, or the name that it redefines."""
-        if self.name:
-            return self.name
-        for redefined in self.references("redefines"):
-            if redefined.name:
-                return redefined.name
-            if redefined.qualified_name:
-                return redefined.qualified_name.rsplit("::", 1)[-1]
+        """Give the name of the feature: its declared name, or the name that it redefines.
+
+        The function follows a chain of redefinitions, for example an override
+        `:>> desiredCount = 3;` that redefines `:>> desiredCount default = 1;`.
+        """
+        seen: set[str] = set()
+        current: SourceElement = self
+        while current.json_id not in seen:
+            seen.add(current.json_id)
+            if current.name:
+                return current.name
+            redefined = current.references("redefines")
+            if not redefined:
+                break
+            current = redefined[0]
+        if current is not self and current.qualified_name:
+            return current.qualified_name.rsplit("::", 1)[-1]
         return ""
 
     def value(self) -> Value | None:

@@ -172,3 +172,14 @@ Story #13 found more limits with the DSML library. See `docs/notes/dsml-library.
 | macOS arm64 (CI, `macos-15`) | 82 ms | 11 ms | 64 ms | 1108 ms |
 
 The first start includes the download of the binary (43 MB). It took 3.3 s in the development container, and from 1.1 s to 1.8 s in CI. The CI step "Start OpenSysML and measure the times" writes the times for each CI platform. The CI values are from the CI run of pull request #19.
+
+## Values of attributes
+
+Story #31 reads the values of the DSML attributes with expressions (`Model.eval` with a context element):
+
+- The name of an attribute in the context of an element gives its value, also a default value of the library, for example `public`.
+- The name of an attribute in the context of an override gives the value in its environment. The override `:>> desiredCount = 3;` gives 3, and an attribute that the override does not change gives the value of the AWS realization.
+- A list with one item gives one value, not a list. The adapter makes a list again for an attribute with the multiplicity `[*]`.
+- A feature with no value gives an `Undetermined` object. The adapter gives no attribute for it.
+- The quoted form of a name works for each name, also for a SysML keyword, for example `'public'`.
+- In the API JSON form, a redefinition in an override redefines the redefinition in the AWS realization, not the library feature. The two redefinitions have no declared name. The adapter follows the chain of redefinitions to get the name.

@@ -11,7 +11,7 @@ from collections.abc import Collection, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from types import TracebackType
-from typing import Any, Literal, Self
+from typing import Any, Literal, Self, cast
 
 import opensysml
 import opensysml.connection
@@ -31,6 +31,26 @@ _STATUS_VALUES: dict[str, ConstraintValue] = {
 # The gRPC client of OpenSysML refuses a message larger than 4 MiB. The API
 # JSON form of the PRD model is approximately 12 MB. -1 removes the limit.
 _CHANNEL_OPTION_MAX_RECEIVE = ("grpc.max_receive_message_length", -1)
+
+
+# trace: PRD-CORE-024, PRD-CORE-025
+@dataclass(frozen=True, slots=True)
+class EnumLiteral:
+    """A literal of an enumeration that an expression gives.
+
+    `enumeration` is the qualified name of the enumeration definition, and
+    `literal` is the name of the literal, for example "must".
+    """
+
+    enumeration: str
+    literal: str
+
+
+type PlainValue = str | int | float | bool | EnumLiteral | tuple[PlainValue, ...]
+"""A value of an expression, with no OpenSysML object in it.
+
+A tuple is a list of values in the order of the model.
+"""
 
 
 # trace: PRD-CORE-019
@@ -227,6 +247,19 @@ class ParsedModel:
             ) from None
         return _constraint_result(verdict)
 
+    # trace: PRD-CORE-024, PRD-CORE-025
+    def evaluate_value(self, expression: str, namespace: str) -> PlainValue | None:
+        """Evaluate an expression in `namespace` and give its value.
+
+        The result is None if the expression has no value in the model. A list
+        with no items also gives None.
+        """
+        try:
+            value: Any = self._model.eval(expression, context_symbol_id=namespace)
+        except opensysml.OpenSysMLError as error:
+            raise EngineError(f"Cannot evaluate {expression!r}: {error}") from None
+        return _plain_value(value, expression)
+
     def evaluate_bool(self, expression: str, namespace: str) -> bool:
         """Evaluate an expression that gives a Boolean value, in `namespace`."""
         try:
@@ -352,6 +385,29 @@ def _model_element(item: Any) -> ModelElement:
         short_name=str(properties.get("declaredShortName", "")),
         documentation=str(properties.get("documentation", "")),
     )
+
+
+def _plain_value(value: Any, expression: str) -> PlainValue | None:
+    match value:
+        case opensysml.Undetermined() | None:
+            return None
+        case bool() | int() | float() | str():
+            return value
+        case opensysml.EnumLiteral():
+            literal_id = str(value.literal_id)
+            literal = literal_id.rsplit("::", 1)[-1]
+            if len(literal) >= 2 and literal.startswith("'") and literal.endswith("'"):
+                literal = literal[1:-1]
+            return EnumLiteral(enumeration=str(value.enumeration_id), literal=literal)
+        case list() | tuple():
+            items = [_plain_value(item, expression) for item in cast(Sequence[Any], value)]
+            values = tuple(item for item in items if item is not None)
+            return values or None
+        case _:
+            raise EngineError(
+                f"The expression {expression!r} gives a value that the toolchain cannot use: "
+                f"{type(value).__name__}."
+            )
 
 
 def _constraint_result(verdict: Any) -> ConstraintResult:

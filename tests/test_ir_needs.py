@@ -92,6 +92,10 @@ def _values(element: Element | Annotation) -> dict[str, Value]:
     return {attribute.name: attribute.value for attribute in element.attributes}
 
 
+# The link types of the needs and requirements layers.
+NEEDS_LINK_TYPES = {"stakeholder", "frame", "derivation", "refinement"}
+
+
 def _enum(enumeration: str, literal: str) -> EnumValue:
     return EnumValue(enumeration=f"DSML::{enumeration}", literal=literal)
 
@@ -105,7 +109,8 @@ def _line_of(file: str, pattern: str) -> int:
 # trace: PRD-CORE-024, PRD-DSML-011, PRD-DSML-013, PRD-DSML-015, PRD-DSML-053
 def test_example_model_gives_the_needs_and_requirements(example: Ir) -> None:
     elements = _elements(example)
-    assert sorted((e.identity, e.kind) for e in example.elements) == [
+    # The elements of the other layers are in tests/test_solution_layers.py (story #31).
+    assert sorted((e.identity, e.kind) for e in example.elements if e.kind in NEEDS_KINDS) == [
         ("N-001", "Need"),
         ("OrderService", "Package"),
         ("OrderService::ShopOwner", "Stakeholder"),
@@ -136,7 +141,7 @@ def test_example_model_gives_the_needs_and_requirements(example: Ir) -> None:
 
 # trace: PRD-TRACE-001, PRD-TRACE-003
 def test_example_model_gives_each_link_of_the_three_layers(example: Ir) -> None:
-    assert _links(example) == {
+    assert {link for link in _links(example) if link[1] in NEEDS_LINK_TYPES} == {
         ("N-001", "stakeholder", "OrderService::ShopOwner"),
         ("R-001", "frame", "N-001"),
         ("R-002", "frame", "N-001"),
