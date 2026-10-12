@@ -91,6 +91,8 @@ def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
         "tflint-ruleset-aws-sha256",
         "tflint-sha256",
         "types-pg",
+        "types-react",
+        "types-react-dom",
         "typescript",
         "typescript-eslint",
         "uv",

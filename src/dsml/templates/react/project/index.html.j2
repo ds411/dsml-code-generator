@@ -1,0 +1,15 @@
+{#- The index.html of the React target (PRD-APP-233). The header has only line
+    comments, thus the page has no header. -#}
+{% include "common/header.j2" %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ application }}</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/{{ entry_module }}"></script>
+  </body>
+</html>

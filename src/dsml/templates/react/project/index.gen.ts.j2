@@ -1,0 +1,7 @@
+{#- The generated public API of a slice (PRD-APP-204). The create-once index.ts
+    re-exports it. Data: "modules" (the paths of the modules, relative to the
+    slice folder, with no extension, sorted). -#}
+{% include "common/header.j2" %}
+{% for module in modules %}
+export * from "./{{ module }}";
+{% endfor %}

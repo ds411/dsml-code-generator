@@ -25,10 +25,14 @@ class FileType(enum.StrEnum):
 
     DOCKERFILE = "dockerfile"
     HCL = "hcl"
+    HTML = "html"
+    """An HTML page, for example `index.html`. The header has only line comments, thus
+    an HTML page gets no header."""
     IGNORE = "ignore"
     """An ignore file, for example `.dockerignore`."""
     INI = "ini"
     """An INI file, for example `alembic.ini`."""
+    JAVASCRIPT = "javascript"
     JSON = "json"
     PYTHON = "python"
     TOML = "toml"
@@ -41,8 +45,10 @@ class FileType(enum.StrEnum):
 _COMMENT: dict[FileType, str | None] = {
     FileType.DOCKERFILE: "#",
     FileType.HCL: "#",
+    FileType.HTML: None,
     FileType.IGNORE: "#",
     FileType.INI: "#",
+    FileType.JAVASCRIPT: "//",
     FileType.JSON: None,
     FileType.PYTHON: "#",
     FileType.TOML: "#",
@@ -52,7 +58,9 @@ _COMMENT: dict[FileType, str | None] = {
 
 _SUFFIXES: dict[str, FileType] = {
     ".hcl": FileType.HCL,
+    ".html": FileType.HTML,
     ".ini": FileType.INI,
+    ".js": FileType.JAVASCRIPT,
     ".json": FileType.JSON,
     ".py": FileType.PYTHON,
     ".tf": FileType.HCL,

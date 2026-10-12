@@ -1,0 +1,14 @@
+{#- The entry module of the React target. index.html loads it. Story #167
+    renders an empty root. The app layer story adds the providers and the
+    router. -#}
+{% include "common/header.j2" %}
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+
+const root = document.getElementById("root");
+
+if (root === null) {
+  throw new Error('The page has no element with the ID "root".');
+}
+
+createRoot(root).render(<StrictMode />);

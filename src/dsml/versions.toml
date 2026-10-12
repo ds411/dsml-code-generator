@@ -282,6 +282,15 @@ version = "19.3.0"
 line = "19"
 version = "19.3.0"
 
+# The type declarations of React. React does not include them (story #167).
+[types-react]
+line = "19"
+version = "19.3.0"
+
+[types-react-dom]
+line = "19"
+version = "19.3.0"
+
 # React target stack (PRD-APP-201).
 [vite]
 line = "8"
