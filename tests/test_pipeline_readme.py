@@ -55,17 +55,19 @@ def _golden_workflows() -> str:
 
 
 # trace: PRD-CICD-013, PRD-CICD-012
-def test_readme_names_each_environment_and_variable_of_the_golden_workflows() -> None:
+def test_readme_names_each_environment_of_the_golden_workflows() -> None:
     workflows = _golden_workflows()
     environments = re.findall(r'^    environment: "([^"]+)"$', workflows, flags=re.MULTILINE)
-    variables = re.findall(r"\$\{\{ vars\.([A-Za-z0-9_]+) \}\}", workflows)
-    assert environments and variables
+    assert environments
     readme = (GOLDEN / "README.gen.md").read_text(encoding="utf-8")
     assert _first_column(_section(readme, "GitHub environments")) == sorted(
         set(environments), key=environments.index
     )
-    assert sorted(_first_column(_section(readme, "Repository variables"))) == sorted(set(variables))
+    assert "vars." not in workflows
     assert "secrets." not in workflows
+    assert "no repository variable and no repository secret" in _section(
+        readme, "Variables and secrets"
+    )
 
 
 # trace: PRD-CICD-013, PRD-CICD-020
@@ -123,7 +125,7 @@ def test_no_infrastructure_folder_gives_only_the_github_settings(ir: Ir) -> None
     assert "## GitHub environments" not in readme
     assert "`Plan dev`" not in readme
     assert "## Branch protection of the main branch" in readme
-    assert "| `DSML_INDEX_URL` |" in readme
+    assert "DSML_INDEX_URL" not in readme
 
 
 def test_job_names_reads_plain_and_quoted_names() -> None:

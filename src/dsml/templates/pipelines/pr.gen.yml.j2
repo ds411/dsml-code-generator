@@ -1,6 +1,7 @@
 {#- The pull request workflow (PRD-CICD-001 to PRD-CICD-006, PRD-CICD-010,
     PRD-CICD-011, PRD-CICD-014, PRD-CICD-015). Each job declares its own
-    permissions. Only the plan job has "id-token: write". -#}
+    permissions. Only the plan job has "id-token: write". The jobs run dsml
+    through the toolchain action (PRD-CORE-050). -#}
 {% macro setup(with_uv=True) %}
       - name: Check out the repository
         uses: {{ actions.checkout }}
@@ -13,13 +14,6 @@
         with:
           version: {{ uv_version | yaml_string }}
 {% endif %}
-{% endmacro %}
-{% macro install() %}
-      # The index URL is in the repository variable {{ index_variable }}.
-      - name: Install the DSML toolchain
-        env:
-          INDEX_URL: {{ "${{ vars." ~ index_variable ~ " }}" }}
-        run: uv tool install --python "$PYTHON_VERSION" --index "$INDEX_URL" "{{ toolchain }}==$DSML_VERSION"
 {% endmacro %}
 {% include "common/header.j2" %}
 
@@ -34,13 +28,10 @@ concurrency:
   group: pr-{{ "${{ github.workflow }}" }}-{{ "${{ github.ref }}" }}
   cancel-in-progress: true
 
-env:
-  DSML_VERSION: {{ toolchain_version | yaml_string }}
-  PYTHON_VERSION: {{ python_line | yaml_string }}
-
 jobs:
   # Validate the model and upload the findings to GitHub code scanning
-  # (PRD-CICD-002).
+  # (PRD-CICD-002). The toolchain action uploads the findings also when the
+  # model has an error finding.
   validate:
     name: Validate the model
     runs-on: {{ runner }}
@@ -50,17 +41,14 @@ jobs:
       contents: read
       security-events: write
     steps:
-{{ setup() }}
-{{ install() }}
+{{ setup(with_uv=False) }}
       - name: Validate the model
-        run: {{ toolchain }} validate --format sarif --output dsml.sarif
-
-      - name: Upload the findings to code scanning
-        if: {{ "${{ !cancelled() && hashFiles('dsml.sarif') != '' }}" }}
-        uses: {{ actions.upload_sarif }}
+        uses: {{ toolchain_action }}
         with:
-          sarif_file: dsml.sarif
-          category: dsml
+          version: {{ toolchain_version | yaml_string }}
+          command: validate
+          sarif: "true"
+          sarif-category: dsml
 
   # Fail if a generated file is different from the committed file
   # (PRD-CICD-003).
@@ -71,12 +59,17 @@ jobs:
     permissions:
       contents: read
     steps:
-{{ setup() }}
-{{ install() }}
+{{ setup(with_uv=False) }}
       - name: Check the generated files
-        run: {{ toolchain }} generate --check
+        uses: {{ toolchain_action }}
+        with:
+          version: {{ toolchain_version | yaml_string }}
+          command: generate
+          args: --check
 
-  # Run the language tools on the generated code (PRD-CICD-005).
+  # Run the language tools on the generated code (PRD-CICD-005). The job
+  # installs the tools that "dsml check-output" runs, at the versions of
+  # the version baseline of the toolchain.
   check-output:
     name: Check the generated code
     runs-on: {{ runner }}
@@ -84,10 +77,65 @@ jobs:
     permissions:
       contents: read
     steps:
-{{ setup() }}
-{{ install() }}
+{{ setup(with_uv=applications | length > 0) }}
+{% if applications %}
+      # ruff and pyright check each FastAPI application (PRD-CORE-011).
+      - name: Install ruff and pyright
+        env:
+          PYTHON_VERSION: {{ python_line | yaml_string }}
+          RUFF_VERSION: {{ tools.ruff | yaml_string }}
+          PYRIGHT_VERSION: {{ tools.pyright | yaml_string }}
+        run: |
+          uv tool install --python "$PYTHON_VERSION" "ruff==$RUFF_VERSION"
+          uv tool install --python "$PYTHON_VERSION" "pyright==$PYRIGHT_VERSION"
+          uv tool dir --bin >> "$GITHUB_PATH"
+{% for app in applications %}
+
+      # pyright reads the virtual environment of {{ app.name }}.
+      - name: {{ ("Install the dependencies of " ~ app.name) | yaml_string }}
+        working-directory: {{ app.folder | yaml_string }}
+        run: uv sync --frozen
+{% endfor %}
+
+{% endif %}
+{% if check_infrastructure %}
+      # OpenTofu and tflint with the AWS rule set check the infrastructure
+      # code (PRD-IAC-038).
+      - name: Set up OpenTofu
+        uses: {{ actions.setup_opentofu }}
+        with:
+          tofu_version: {{ opentofu_version | yaml_string }}
+          tofu_wrapper: false
+
+      # The archives are for Linux on x64, the platform of the runner. The
+      # step checks the SHA-256 hash of each archive. tflint finds the AWS
+      # rule set in its plugin folder.
+      - name: Install tflint and the AWS rule set
+        env:
+          TFLINT_VERSION: {{ tools.tflint | yaml_string }}
+          TFLINT_SHA256: {{ tools.tflint_sha256 | yaml_string }}
+          RULESET_VERSION: {{ tools.ruleset | yaml_string }}
+          RULESET_SHA256: {{ tools.ruleset_sha256 | yaml_string }}
+        run: |
+          tools="$RUNNER_TEMP/tflint"
+          plugins="$HOME/.tflint.d/plugins/github.com/terraform-linters/tflint-ruleset-aws/$RULESET_VERSION"
+          mkdir -p "$tools" "$plugins"
+          curl --fail --silent --show-error --location --output "$RUNNER_TEMP/tflint.zip" \
+            "https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_amd64.zip"
+          echo "$TFLINT_SHA256  $RUNNER_TEMP/tflint.zip" | sha256sum --check --strict
+          curl --fail --silent --show-error --location --output "$RUNNER_TEMP/ruleset.zip" \
+            "https://github.com/terraform-linters/tflint-ruleset-aws/releases/download/v${RULESET_VERSION}/tflint-ruleset-aws_linux_amd64.zip"
+          echo "$RULESET_SHA256  $RUNNER_TEMP/ruleset.zip" | sha256sum --check --strict
+          unzip -q -o "$RUNNER_TEMP/tflint.zip" tflint -d "$tools"
+          unzip -q -o "$RUNNER_TEMP/ruleset.zip" tflint-ruleset-aws -d "$plugins"
+          echo "$tools" >> "$GITHUB_PATH"
+
+{% endif %}
       - name: Check the generated code
-        run: {{ toolchain }} check-output
+        uses: {{ toolchain_action }}
+        with:
+          version: {{ toolchain_version | yaml_string }}
+          command: check-output
 {% for app in applications %}
 
   # Install the dependencies of {{ app.name }} from the committed lockfile, then

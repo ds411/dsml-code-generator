@@ -1,6 +1,6 @@
 # Pipeline generator
 
-Story #83 added the pipeline generator and the pull request workflow `pr.gen.yml`. Story #87 added the main workflow `main.gen.yml` and the promote workflow `promote.gen.yml`. Story #89 added the README `README.gen.md` with the repository settings.
+Story #83 added the pipeline generator and the pull request workflow `pr.gen.yml`. Story #87 added the main workflow `main.gen.yml` and the promote workflow `promote.gen.yml`. Story #89 added the README `README.gen.md` with the repository settings. Story #140 changed the jobs to use the toolchain GitHub Action.
 
 ## Output
 
@@ -16,17 +16,17 @@ The trigger is `pull_request`. The workflow sets `permissions: {}`. Each job the
 
 | Job | Steps | Permissions | Requirements |
 | --- | --- | --- | --- |
-| `validate` | `dsml validate --format sarif`, then the upload of `dsml.sarif` to code scanning | `actions: read`, `contents: read`, `security-events: write` | PRD-CICD-002 |
-| `generate-check` | `dsml generate --check` | `contents: read` | PRD-CICD-003 |
-| `check-output` | `dsml check-output` | `contents: read` | PRD-CICD-005 |
+| `validate` | The toolchain action with `command: validate` and `sarif: "true"`. The action runs `dsml validate --format sarif` and uploads the findings to code scanning. | `actions: read`, `contents: read`, `security-events: write` | PRD-CICD-002 |
+| `generate-check` | The toolchain action with `command: generate` and `args: --check` | `contents: read` | PRD-CICD-003 |
+| `check-output` | The setup of the language tools, then the toolchain action with `command: check-output` | `contents: read` | PRD-CICD-005 |
 | `test-<application>` | For each FastAPI application: `uv lock --check`, `uv sync --frozen`, ruff, the format check, pyright and pytest | `contents: read` | PRD-CICD-004 |
 | `plan-dev` | `tofu init`, `tofu plan` with the plan role, and the plan text in the job summary | `contents: read`, `id-token: write` | PRD-CICD-006, PRD-CICD-010 |
 
 Notes:
 
 - `uv sync --frozen` does not compare the lockfile with `pyproject.toml`. Thus the step `uv lock --check` comes first. A lockfile that does not agree makes the job fail (PRD-CICD-004).
-- The upload of the findings also runs when `dsml validate` fails, if the SARIF file exists.
-- `dsml check-output` needs the language tools on `PATH` (`docs/notes/check-output.md`). The job does not install them yet. Story #140 adds them.
+- The action uploads the findings also when `dsml validate` finds an error. Then the step fails.
+- `dsml check-output` needs the language tools on `PATH` (`docs/notes/check-output.md`). The section "Tools of the job `check-output`" gives the steps that install them.
 - The plan job is only in the workflow if the model has the environment `dev` and the configuration has the key `infrastructure.output`. It uses the root module `<infrastructure.output>/envs/dev`.
 - The plan role is read-only. It cannot write the S3 state lock, thus `tofu plan` uses `-lock=false`. The job does not apply.
 - `model_commit` is the head commit of the pull request.
@@ -66,7 +66,7 @@ The generator writes `README.gen.md` in the output folder of the workflows (PRD-
 | Order of the setup | Apply the bootstrap root modules, then the tooling root module, then make the GitHub settings. The bootstrap modules write the IAM roles of CI. | The configuration has the key `infrastructure.output`, and the workflows have a plan job or a deploy job. The tooling step needs `main.gen.yml`. |
 | GitHub environments | One row for each deploy job: the environment, the workflow, the deployment branches and tags, and the required reviewers. Only `prod` has required reviewers. | The workflows have a deploy job. |
 | Branch protection of the main branch | A branch ruleset for `main`. The required status checks are the job names of `pr.gen.yml`. | Always |
-| Repository variables | `DSML_INDEX_URL` | Always |
+| Variables and secrets | The workflows use no repository variable and no repository secret. | Always |
 | Code scanning | The upload of the findings needs code scanning. | Always |
 
 The deployment branches and tags of `dev` are the branch `main`. For `staging` and `prod`, they are the branch `main` and the tags `v*`. The trust policy of the push role permits only these refs (PRD-IAC-028). The trust policy of each deploy role permits only its GitHub environment (PRD-IAC-027). Thus the names of the environments must be exactly the same as in the table.
@@ -102,11 +102,28 @@ The jobs get AWS credentials only through GitHub OIDC (PRD-CICD-010). The workfl
 
 The role ARN is `arn:aws:iam::<account>:role/<role>`.
 
-## Toolchain install
+## Toolchain action
 
-The toolchain GitHub Action comes in M7 (PRD-CORE-050). Until then, each job that runs `dsml` installs the toolchain with `uv tool install`, at the version of the toolchain that wrote the workflow. The repository variable `DSML_INDEX_URL` gives the URL of the package index. M7 can change this step to the GitHub Action.
+Each job that runs `dsml` uses the toolchain GitHub Action of `action.yml` (PRD-CORE-050, `docs/action.md`). The input `version` is the version of the toolchain that wrote the workflow. The action installs the wheel of that version from the GitHub release `v<version>` (Q63). There is no package index, and the workflows use no repository variable.
+
+The workflow refers to the action with the release tag, for example `ds411/dsml-code-generator@v0.1.0`. The function `toolchain_action` gives this value. The reasons are:
+
+- The toolchain cannot know the commit SHA of its own release tag. The release tag points to a commit, and that commit contains the templates. Thus a template cannot contain the SHA of that commit.
+- PRD-CICD-014 is for third-party actions. The toolchain action comes from the same repository as the toolchain that wrote the workflow.
+- The action stops if the installed wheel does not have the version of the input `version`.
 
 The workflow gives the full toolchain version. Thus a new toolchain release changes `pr.gen.yml`, and the golden file changes with it. The header still gives only the major version (PRD-CORE-038).
+
+## Tools of the job `check-output`
+
+The job installs only the tools of the targets of `dsml check-output`. The versions come from `src/dsml/versions.toml` (PRD-CORE-011, PRD-IAC-038).
+
+| Condition | Steps |
+| --- | --- |
+| The model has a FastAPI application. | Set up uv. Install `ruff` and `pyright` with `uv tool install`, and add the tool folder of uv to `PATH`. Then, in the folder of each application, run `uv sync --frozen`, because pyright reads the virtual environment `.venv`. |
+| The configuration has the key `infrastructure.output`. | Set up OpenTofu with `opentofu/setup-opentofu`. Download `tflint` and the AWS rule set, and check the SHA-256 hash of each archive. Put the rule set in the plugin folder of tflint. |
+
+The tflint archives are for Linux on x64, the platform of the runner `ubuntu-24.04`. The items `tflint-sha256` and `tflint-ruleset-aws-sha256` give the hashes of these archives.
 
 ## Pinned actions
 
@@ -119,6 +136,8 @@ Each third-party action is pinned to a full commit SHA, with its version in a co
 | `action-setup-opentofu` | `opentofu/setup-opentofu` | 2.0.2 |
 | `action-setup-uv` | `astral-sh/setup-uv` | 10.3.0 |
 | `action-upload-sarif` | `github/codeql-action/upload-sarif` | 4.38.3 |
+
+The generated workflows do not use `action-upload-sarif` now, because the toolchain action uploads the findings. The toolchain action uses the same pinned upload action.
 
 The SHA is the commit of the release tag. For an annotated tag, it is the commit that the tag points to, not the tag object. The plan job installs the OpenTofu version of the item `opentofu`.
 

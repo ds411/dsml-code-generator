@@ -12,13 +12,10 @@ concurrency:
   group: pr-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  DSML_VERSION: "0.1.0"
-  PYTHON_VERSION: "3.14"
-
 jobs:
   # Validate the model and upload the findings to GitHub code scanning
-  # (PRD-CICD-002).
+  # (PRD-CICD-002). The toolchain action uploads the findings also when the
+  # model has an error finding.
   validate:
     name: Validate the model
     runs-on: ubuntu-24.04
@@ -33,26 +30,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
-        with:
-          version: "0.13.0"
-
-      # The index URL is in the repository variable DSML_INDEX_URL.
-      - name: Install the DSML toolchain
-        env:
-          INDEX_URL: ${{ vars.DSML_INDEX_URL }}
-        run: uv tool install --python "$PYTHON_VERSION" --index "$INDEX_URL" "dsml==$DSML_VERSION"
-
       - name: Validate the model
-        run: dsml validate --format sarif --output dsml.sarif
-
-      - name: Upload the findings to code scanning
-        if: ${{ !cancelled() && hashFiles('dsml.sarif') != '' }}
-        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        uses: ds411/dsml-code-generator@v0.1.0
         with:
-          sarif_file: dsml.sarif
-          category: dsml
+          version: "0.1.0"
+          command: validate
+          sarif: "true"
+          sarif-category: dsml
 
   # Fail if a generated file is different from the committed file
   # (PRD-CICD-003).
@@ -68,21 +52,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
-        with:
-          version: "0.13.0"
-
-      # The index URL is in the repository variable DSML_INDEX_URL.
-      - name: Install the DSML toolchain
-        env:
-          INDEX_URL: ${{ vars.DSML_INDEX_URL }}
-        run: uv tool install --python "$PYTHON_VERSION" --index "$INDEX_URL" "dsml==$DSML_VERSION"
-
       - name: Check the generated files
-        run: dsml generate --check
+        uses: ds411/dsml-code-generator@v0.1.0
+        with:
+          version: "0.1.0"
+          command: generate
+          args: --check
 
-  # Run the language tools on the generated code (PRD-CICD-005).
+  # Run the language tools on the generated code (PRD-CICD-005). The job
+  # installs the tools that "dsml check-output" runs, at the versions of
+  # the version baseline of the toolchain.
   check-output:
     name: Check the generated code
     runs-on: ubuntu-24.04
@@ -100,14 +79,58 @@ jobs:
         with:
           version: "0.13.0"
 
-      # The index URL is in the repository variable DSML_INDEX_URL.
-      - name: Install the DSML toolchain
+      # ruff and pyright check each FastAPI application (PRD-CORE-011).
+      - name: Install ruff and pyright
         env:
-          INDEX_URL: ${{ vars.DSML_INDEX_URL }}
-        run: uv tool install --python "$PYTHON_VERSION" --index "$INDEX_URL" "dsml==$DSML_VERSION"
+          PYTHON_VERSION: "3.14"
+          RUFF_VERSION: "0.17.0"
+          PYRIGHT_VERSION: "1.1.414"
+        run: |
+          uv tool install --python "$PYTHON_VERSION" "ruff==$RUFF_VERSION"
+          uv tool install --python "$PYTHON_VERSION" "pyright==$PYRIGHT_VERSION"
+          uv tool dir --bin >> "$GITHUB_PATH"
+
+      # pyright reads the virtual environment of orderApi.
+      - name: "Install the dependencies of orderApi"
+        working-directory: "services/order-api"
+        run: uv sync --frozen
+
+      # OpenTofu and tflint with the AWS rule set check the infrastructure
+      # code (PRD-IAC-038).
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version: "1.13.1"
+          tofu_wrapper: false
+
+      # The archives are for Linux on x64, the platform of the runner. The
+      # step checks the SHA-256 hash of each archive. tflint finds the AWS
+      # rule set in its plugin folder.
+      - name: Install tflint and the AWS rule set
+        env:
+          TFLINT_VERSION: "0.64.0"
+          TFLINT_SHA256: "cca9d13e2e1d7a2c627af60ff899a3c9b74212899416aeb96ec764d2ef954537"
+          RULESET_VERSION: "0.49.0"
+          RULESET_SHA256: "98a530130d33efd49408f3d0ab9198072192ede413cc2a2ce38295d0922eb1c6"
+        run: |
+          tools="$RUNNER_TEMP/tflint"
+          plugins="$HOME/.tflint.d/plugins/github.com/terraform-linters/tflint-ruleset-aws/$RULESET_VERSION"
+          mkdir -p "$tools" "$plugins"
+          curl --fail --silent --show-error --location --output "$RUNNER_TEMP/tflint.zip" \
+            "https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_linux_amd64.zip"
+          echo "$TFLINT_SHA256  $RUNNER_TEMP/tflint.zip" | sha256sum --check --strict
+          curl --fail --silent --show-error --location --output "$RUNNER_TEMP/ruleset.zip" \
+            "https://github.com/terraform-linters/tflint-ruleset-aws/releases/download/v${RULESET_VERSION}/tflint-ruleset-aws_linux_amd64.zip"
+          echo "$RULESET_SHA256  $RUNNER_TEMP/ruleset.zip" | sha256sum --check --strict
+          unzip -q -o "$RUNNER_TEMP/tflint.zip" tflint -d "$tools"
+          unzip -q -o "$RUNNER_TEMP/ruleset.zip" tflint-ruleset-aws -d "$plugins"
+          echo "$tools" >> "$GITHUB_PATH"
 
       - name: Check the generated code
-        run: dsml check-output
+        uses: ds411/dsml-code-generator@v0.1.0
+        with:
+          version: "0.1.0"
+          command: check-output
 
   # Install the dependencies of orderApi from the committed lockfile, then
   # run the linter, the type checker and the tests (PRD-CICD-004).

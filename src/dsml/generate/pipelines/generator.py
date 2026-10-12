@@ -30,9 +30,11 @@ deploys it to `dev`. `promote.gen.yml` deploys the images of one main
 build to `staging`, then to `prod`. The module
 `dsml.generate.pipelines.deploy` gives their jobs.
 
-Until the toolchain GitHub Action of PRD-CORE-050 is available, the jobs
-install the toolchain with `uv tool install`. The package index is the
-URL in the repository variable `DSML_INDEX_URL`.
+Each job that runs `dsml` uses the toolchain GitHub Action of
+PRD-CORE-050, at the release tag of the toolchain version that wrote the
+workflow. The action installs the wheel from the GitHub release (Q63).
+The job `check-output` also installs the language tools that
+`dsml check-output` runs, at the versions of the version baseline.
 """
 
 import json
@@ -94,8 +96,8 @@ FIND_BUILD_JOB: Final = "find-build"
 PLAN_ENVIRONMENT: Final = "dev"
 """The environment that the pull request workflow plans (PRD-CICD-006)."""
 
-INDEX_VARIABLE: Final = "DSML_INDEX_URL"
-"""The repository variable with the URL of the package index of the toolchain."""
+TOOLCHAIN_ACTION: Final = "ds411/dsml-code-generator"
+"""The repository of the toolchain GitHub Action (PRD-CORE-050)."""
 
 ACTIONS: Final = {
     "checkout": "action-checkout",
@@ -216,8 +218,32 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
     return value
 
 
+# trace: PRD-CORE-050, PRD-CICD-014
+def toolchain_action(version: str) -> str:
+    """Give the value of the key `uses:` of the toolchain action for a toolchain version.
+
+    The value is the release tag `v<version>`, not a commit SHA. The
+    toolchain cannot know the commit of its own release tag, because the
+    tag comes after the commit. PRD-CICD-014 is for third-party actions.
+    """
+    return f"{TOOLCHAIN_ACTION}@v{version}"
+
+
+# trace: PRD-CICD-005, PRD-CORE-011, PRD-IAC-038
+def check_tools(baseline: dict[str, Pin]) -> dict[str, str]:
+    """Give the versions and the SHA-256 hashes of the tools of `dsml check-output`."""
+    return {
+        "pyright": pinned_version("pyright", baseline),
+        "ruff": pinned_version("ruff", baseline),
+        "ruleset": pinned_version("tflint-ruleset-aws", baseline),
+        "ruleset_sha256": _value(baseline, "tflint-ruleset-aws-sha256"),
+        "tflint": pinned_version("tflint", baseline),
+        "tflint_sha256": _value(baseline, "tflint-sha256"),
+    }
+
+
 # trace: PRD-CICD-001, PRD-CICD-002, PRD-CICD-003, PRD-CICD-004, PRD-CICD-005
-# trace: PRD-CICD-006, PRD-CICD-010, PRD-CICD-011, PRD-CICD-014
+# trace: PRD-CICD-006, PRD-CICD-010, PRD-CICD-011, PRD-CICD-014, PRD-CORE-050
 def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) -> dict[str, Any]:
     """Give the template data of `pr.gen.yml`.
 
@@ -225,6 +251,7 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
     `version`, the function uses the version of the installed toolchain.
     """
     baseline = load_baseline()
+    toolchain_version = metadata.version(PROG) if version is None else version
     apps = application_jobs(ir, configuration)
     plan = plan_job(ir, configuration)
     elements = [*root_packages(ir), *(app.element.identity for app in apps)]
@@ -235,13 +262,14 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
         "elements": elements,
         "actions": actions(baseline),
         "applications": apps,
-        "index_variable": INDEX_VARIABLE,
+        "check_infrastructure": configuration.infrastructure is not None,
         "opentofu_version": pinned_version("opentofu", baseline),
         "plan": plan,
         "python_line": baseline["python"].line,
         "runner": _value(baseline, "github-runner"),
-        "toolchain": PROG,
-        "toolchain_version": metadata.version(PROG) if version is None else version,
+        "tools": check_tools(baseline),
+        "toolchain_action": toolchain_action(toolchain_version),
+        "toolchain_version": toolchain_version,
         "uv_version": pinned_version("uv", baseline),
     }
 
@@ -394,18 +422,6 @@ class GitHubEnvironment:
         return self.name == REVIEWED_ENVIRONMENT
 
 
-# trace: PRD-CICD-013
-@dataclass(frozen=True, slots=True)
-class RepositoryVariable:
-    """A repository variable that a workflow reads."""
-
-    name: str
-    value: str
-    """The text that tells what the value is."""
-    workflow: str
-    """The file name of the workflow that reads the variable."""
-
-
 # trace: PRD-CICD-013, PRD-CICD-012, PRD-CICD-020
 def readme_data(
     configuration: Configuration,
@@ -416,10 +432,10 @@ def readme_data(
 ) -> dict[str, Any]:
     """Give the template data of `README.gen.md`.
 
-    The README gives the GitHub environments of the deploy jobs, the
-    required status checks of the main branch (the jobs of `pr.gen.yml`) and
-    the repository variables. The deploy jobs can start only from the main
-    branch and from the release tags. The trust policy of the push role
+    The README gives the GitHub environments of the deploy jobs and the
+    required status checks of the main branch (the jobs of `pr.gen.yml`).
+    The workflows use no repository variable. The deploy jobs can start
+    only from the main branch and from the release tags. The trust policy of the push role
     permits only these (PRD-IAC-028).
     """
     environments: list[GitHubEnvironment] = []
@@ -443,11 +459,6 @@ def readme_data(
         "main_branch": MAIN_BRANCH,
         "pr_workflow": PR_WORKFLOW,
         "tooling": main is not None,
-        "variables": (
-            RepositoryVariable(
-                INDEX_VARIABLE, "The URL of the package index of the toolchain", PR_WORKFLOW
-            ),
-        ),
     }
 
 
