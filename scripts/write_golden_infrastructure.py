@@ -19,6 +19,9 @@ trace manifest, but not the manifest `.dsml/generated.json`.
 
 Story #162 added the phase 2 reference model "order portal". Its golden
 files have the static site module.
+
+Story #181 added the phase 3 reference model "order web". Its golden files
+have the container service of a Next.js application.
 """
 
 import os
@@ -38,6 +41,7 @@ GOLDEN = ROOT / "tests" / "golden" / "infrastructure"
 REFERENCE_MODELS: dict[str, Path] = {
     "order-service": ROOT / "docs" / "model" / "examples" / "order-service.sysml",
     "order-portal": ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml",
+    "order-web": ROOT / "docs" / "model" / "examples" / "order-web" / "order-web.sysml",
 }
 """The model file of each reference model."""
 

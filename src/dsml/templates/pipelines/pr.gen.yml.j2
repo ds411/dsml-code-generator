@@ -171,7 +171,7 @@ jobs:
       - name: Test
         run: uv run --frozen pytest
 {% endfor %}
-{% for app in react_applications %}
+{% for app in pnpm_applications %}
 
   # Install the dependencies of {{ app.name }} from the committed lockfile, then
   # run the type checker, the linters, the format check and the tests

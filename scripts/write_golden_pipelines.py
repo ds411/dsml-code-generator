@@ -3,7 +3,9 @@
 
 Stories #83, #87 and #89 added the golden output of the example model in
 tests/golden/pipelines/order-service/. Story #165 added the golden output
-of the phase 2 reference model in tests/golden/pipelines/order-portal/. The
+of the phase 2 reference model in tests/golden/pipelines/order-portal/.
+Story #181 added the golden output of the phase 3 reference model in
+tests/golden/pipelines/order-web/. The
 tests tests/test_pipeline_generator.py and tests/test_pipeline_deploy.py
 compare the output of the pipeline generator with these files. The CI step
 "Lint the golden workflows" runs actionlint on the golden workflows. Run
@@ -28,6 +30,7 @@ from dsml.generate.writer import apply_plan, make_plan
 ROOT = Path(__file__).resolve().parent.parent
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 PORTAL_MODEL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
+WEB_MODEL = ROOT / "docs" / "model" / "examples" / "order-web" / "order-web.sysml"
 GOLDEN = ROOT / "tests" / "golden" / "pipelines" / "order-service"
 CONFIGURATION = """\
 schema = 1
@@ -66,9 +69,27 @@ output = ".github/workflows"
 """
 """The configuration file of the golden output of the order portal."""
 
+WEB_CONFIGURATION = """\
+schema = 1
+
+[model]
+paths = ["model"]
+
+[applications.orderWeb]
+output = "apps/order-web"
+
+[infrastructure]
+output = "infra"
+
+[pipelines]
+output = ".github/workflows"
+"""
+"""The configuration file of the golden output of the order web."""
+
 MODELS = {
     "order-portal": (PORTAL_MODEL, PORTAL_CONFIGURATION),
     "order-service": (EXAMPLE_MODEL, CONFIGURATION),
+    "order-web": (WEB_MODEL, WEB_CONFIGURATION),
 }
 """The model file and the configuration file of each golden output, by folder name."""
 

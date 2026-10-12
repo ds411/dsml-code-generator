@@ -1,0 +1,130 @@
+{
+  "elements": [
+    {
+      "element": "OrderWeb",
+      "files": [
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "job",
+              "lastLine": 39,
+              "name": "validate"
+            },
+            {
+              "firstLine": 43,
+              "kind": "job",
+              "lastLine": 60,
+              "name": "generate-check"
+            },
+            {
+              "firstLine": 65,
+              "kind": "job",
+              "lastLine": 112,
+              "name": "check-output"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::dev",
+      "files": [
+        {
+          "path": ".github/workflows/main.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 70,
+              "kind": "job",
+              "lastLine": 214,
+              "name": "deploy-dev"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 167,
+              "kind": "job",
+              "lastLine": 211,
+              "name": "plan-dev"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::orderWeb",
+      "files": [
+        {
+          "path": ".github/workflows/main.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "job",
+              "lastLine": 64,
+              "name": "build-order-web"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 117,
+              "kind": "job",
+              "lastLine": 160,
+              "name": "test-order-web"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "job",
+              "lastLine": 63,
+              "name": "find-build"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::prod",
+      "files": [
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 221,
+              "kind": "job",
+              "lastLine": 367,
+              "name": "deploy-prod"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::staging",
+      "files": [
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 69,
+              "kind": "job",
+              "lastLine": 214,
+              "name": "deploy-staging"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}
