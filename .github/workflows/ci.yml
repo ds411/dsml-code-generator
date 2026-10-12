@@ -622,6 +622,7 @@ jobs:
               docker logs order-web > logs.txt
               cat logs.txt
               docker rm --force order-web
+              echo "Redirect of /orders: $(cat redirect.txt)"
               grep --quiet "eu-west-1_runtimeMarker" page.html
               test "$(cat redirect.txt)" = "307 http://127.0.0.1:3000/auth/login?next=%2Forders"
               grep '"requestId":"ci-healthz"' logs.txt | jq --exit-status '.path == "/healthz" and .status == 200'
