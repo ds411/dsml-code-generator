@@ -106,6 +106,13 @@ jobs:
       - name: Validate the example model
         run: uv run dsml validate --config docs/model/examples/dsml.toml
 
+      # trace: PRD-VAL-003, PRD-VAL-015
+      # The phase 2 reference model "order portal" must have no error finding
+      # (story #166, M9 exit criterion). The step "Test" compares its
+      # findings with tests/golden/validate/order-portal.findings.*.
+      - name: Validate the order portal model
+        run: uv run dsml validate --config docs/model/examples/order-portal/dsml.toml
+
       # trace: PRD-TOP-011, PRD-VAL-015
       # The PRD model must have no error finding (story #138, M7 exit
       # criterion).

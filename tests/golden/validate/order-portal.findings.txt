@@ -1,0 +1,9 @@
+docs/model/examples/order-portal/order-portal.sysml:181:9: warning: COV-006: The verification V-001 refers to the test file "services/order-api/app/features/order/read_order/test_endpoint.py". This file does not exist.
+  fix: Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file.
+docs/model/examples/order-portal/order-portal.sysml:193:9: warning: COV-006: The verification V-003 refers to the test file "apps/order-portal/src/pages/order-detail/ui/order-detail-page.test.tsx". This file does not exist.
+  fix: Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file.
+docs/model/examples/order-portal/order-portal.sysml:193:9: warning: COV-006: The verification V-003 refers to the test file "apps/order-portal/src/pages/order-list/ui/order-list-page.test.tsx". This file does not exist.
+  fix: Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file.
+docs/model/examples/order-portal/order-portal.sysml:199:9: warning: COV-006: The verification V-004 refers to the test file "apps/order-portal/src/pages/place-order-form/ui/place-order-form-page.test.tsx". This file does not exist.
+  fix: Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file.
+Findings: 0 errors, 4 warnings, 0 info.

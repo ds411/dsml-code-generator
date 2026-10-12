@@ -117,7 +117,8 @@ def test_findings_of_reference_model_agree_with_golden_file(
 
 
 # trace: PRD-VAL-003
-def test_example_model_has_no_error_finding() -> None:
-    # The PRD model can have error findings until milestone M7 corrects them.
-    data = json.loads(write_golden_findings.golden_file("order-service", "json").read_bytes())
+@pytest.mark.parametrize("name", ["order-portal", "order-service", "prd"])
+def test_reference_model_has_no_error_finding(name: str) -> None:
+    # Story #166 adds the phase 2 reference model "order portal".
+    data = json.loads(write_golden_findings.golden_file(name, "json").read_bytes())
     assert data["summary"]["error"] == 0

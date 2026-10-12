@@ -18,6 +18,7 @@ from dsml.validate.sarif import relative_uri, sarif_report
 
 SCHEMA_FILE = Path(__file__).resolve().parent / "schemas" / "sarif-schema-2.1.0.json"
 SYN_002_REJECT = RULE_MODELS / "SYN-002" / "reject.sysml"
+GOLDEN = Path(__file__).resolve().parent / "golden" / "validate"
 
 
 def _rule(rule: Rule) -> RuleCheck:
@@ -191,3 +192,11 @@ def test_validate_writes_sarif_to_a_file(
         for item in data["runs"][0]["results"]
     }
     assert uris == {"model/reject.sysml"}
+
+
+# trace: PRD-VAL-006, PRD-CORE-030
+@pytest.mark.parametrize("name", ["order-portal", "order-service", "prd"])
+def test_golden_sarif_of_reference_model_agrees_with_the_schema(name: str) -> None:
+    # Story #166 adds the golden findings of the order portal.
+    data = _check_schema((GOLDEN / f"{name}.findings.sarif").read_text(encoding="utf-8"))
+    assert data["runs"][0]["tool"]["driver"]["name"]
