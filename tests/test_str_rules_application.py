@@ -1,4 +1,4 @@
-"""Tests of the STR rules of the applications and the environments (story #60).
+"""Tests of the STR rules of the applications and the environments (stories #60 and #161).
 
 Each rule has one model that it accepts and one model that it rejects
 (PRD-VAL-008). The models are in `tests/models/rules/<rule>/`.
@@ -166,6 +166,20 @@ def test_rule_rejects_its_reject_model(
     run_rule: RunRule, rule: str, expected: tuple[Finding, ...]
 ) -> None:
     assert run_rule(rule, "reject.sysml") == expected
+
+
+# trace: PRD-VAL-008, PRD-DSML-031, PRD-DSML-033
+def test_str_010_accepts_views_with_roles_or_public(run_rule: RunRule) -> None:
+    assert run_rule("STR-010", "accept-views.sysml") == ()
+
+
+# trace: PRD-VAL-008, PRD-DSML-031, PRD-DSML-033
+def test_str_010_rejects_a_view_with_no_roles_that_is_not_public(run_rule: RunRule) -> None:
+    location = Location("tests/models/rules/STR-010/reject-views.sysml", 11, 9)
+    message = "The view orderList has no allowedRoles and is not public."
+    assert run_rule("STR-010", "reject-views.sysml") == (
+        Finding("STR-010", "error", message, location, "Str010Reject::portal::orderList"),
+    )
 
 
 # trace: PRD-VAL-015

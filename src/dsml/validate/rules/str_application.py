@@ -1,9 +1,8 @@
 # trace: PRD-VAL-015
 """The STR rules of the application layer: STR-005 to STR-010.
 
-The rules read only the IR (PRD-VAL-001, PRD-CORE-026). The views of phase 2
-are not in the IR of phase 1. Thus STR-010 examines the exposed entities and
-operations only.
+The rules read only the IR (PRD-VAL-001, PRD-CORE-026). STR-010 examines the
+exposed entities, the exposed operations and the views.
 """
 
 from collections.abc import Iterator
@@ -209,20 +208,24 @@ def str_009(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
             )
 
 
-# trace: PRD-DSML-033
+# trace: PRD-DSML-031, PRD-DSML-033
 @implements(STR_010)
 def str_010(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
-    for exposed in _of_kind(ir, "Exposed"):
-        roles = attribute(exposed, "allowedRoles")
-        public = attribute(exposed, "public")
+    guarded = sorted(
+        (item for item in ir.elements if item.kind in ("Exposed", "View")), key=Element.sort_key
+    )
+    for element in guarded:
+        roles = attribute(element, "allowedRoles")
+        public = attribute(element, "public")
         if isinstance(public, BooleanValue) and public.value:
             continue
         if isinstance(roles, ListValue) and roles.items:
             continue
+        noun = "view" if element.kind == "View" else "exposed element"
         yield Hit(
-            f"The exposed element {exposed.name} has no allowedRoles and is not public.",
-            exposed.location,
-            exposed.identity,
+            f"The {noun} {element.name} has no allowedRoles and is not public.",
+            element.location,
+            element.identity,
         )
 
 
