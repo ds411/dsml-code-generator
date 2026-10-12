@@ -1,0 +1,78 @@
+{#- The ui segment of the feature slice of delete: a button with a confirmation
+    dialog (PRD-APP-210). The dialog is a Radix UI alert dialog, thus the
+    user can reach each control with the keyboard (PRD-APP-228). The button
+    shows the title and the detail of a problem details response
+    (PRD-APP-227). Data: "feature" (a
+    dsml.generate.react_features.FeatureSlice). -#}
+{% include "common/header.j2" %}
+{% for line in feature.ui_import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The properties of the button of the operation {{ feature.description }}. */
+export interface {{ feature.component }}Props {
+  /** The key of the entity that the button deletes. */
+  {{ feature.key }}: {{ feature.key_type }};
+  /** The function that the button calls after a success of the operation. */
+  onSuccess?: () => void;
+}
+
+/** Show an error of the operation. A problem details response gives the title and the detail. */
+function OperationError({ error }: { error: Error }): ReactNode {
+  const title = error instanceof ApiError ? error.title : error.message;
+  const detail = error instanceof ApiError ? error.detail : undefined;
+  return (
+    <Alert variant="destructive">
+      <AlertTitle>{title}</AlertTitle>
+      {detail === undefined ? null : (
+        <AlertDescription>{detail}</AlertDescription>
+      )}
+    </Alert>
+  );
+}
+
+/**
+ * The button of the operation {{ feature.description }}: {{ feature.route }}.
+ * The user must confirm the operation in a dialog.
+ */
+{% for line in feature.component_lines() %}
+{{ line }}
+{% endfor %}
+  const mutation = {{ feature.hook }}();
+  return (
+    <div className="flex flex-col gap-3">
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="destructive" disabled={mutation.isPending}>
+            Delete
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+{% for line in feature.dialog_title_lines("            ") %}
+{{ line }}
+{% endfor %}
+            <AlertDialogDescription>
+              The deletion is permanent.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+{% for line in feature.mutate_lines("                ") %}
+{{ line }}
+{% endfor %}
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      {mutation.error === null ? null : (
+        <OperationError error={mutation.error} />
+      )}
+    </div>
+  );
+}

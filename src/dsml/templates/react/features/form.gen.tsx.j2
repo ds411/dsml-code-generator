@@ -1,0 +1,116 @@
+{#- The ui segment of a feature slice of create, update or a custom operation:
+    the TanStack Form form (PRD-APP-210, PRD-APP-226). The Zod schema of the
+    operation validates the values. Each field has a label and an error
+    message. The form shows the title and the detail of a problem details
+    response (PRD-APP-227). Each control is a native control, thus the user
+    can reach it with the keyboard (PRD-APP-228). Data: "feature" (a
+    dsml.generate.react_features.FeatureSlice). -#}
+{% include "common/header.j2" %}
+{% for line in feature.ui_import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The properties of the form of the operation {{ feature.description }}. */
+export interface {{ feature.component }}Props {
+{% if feature.kind == "update" %}
+  /** The key of the entity that the form changes. */
+  {{ feature.key }}: {{ feature.key_type }};
+{% endif %}
+  /** The first values of the fields. */
+  defaultValues?: Partial<{{ feature.input_type }}>;
+  /** The function that the form calls after a success of the operation. */
+  onSuccess?: {{ feature.success_type }};
+}
+
+/** The values of the fields in a new form. */
+{% for line in feature.initial_lines() %}
+{{ line }}
+{% endfor %}
+
+/** Tell if the form shows the field as not valid: after the user touches it. */
+function isInvalid(meta: { isTouched: boolean; isValid: boolean }): boolean {
+  return meta.isTouched && !meta.isValid;
+}
+
+/** Give the errors of a field that the form shows: after the user touches it. */
+function shownErrors<T>(meta: { isTouched: boolean; errors: T[] }): T[] {
+  return meta.isTouched ? meta.errors : [];
+}
+{% if "optionalNumber" in feature.form_helpers %}
+
+/** Give the value of an optional number field. An empty field gives no value. */
+function optionalNumber(value: number): number | undefined {
+  return Number.isNaN(value) ? undefined : value;
+}
+{% endif %}
+{% if "optionalText" in feature.form_helpers %}
+
+/** Give the value of an optional text field. An empty field gives no value. */
+function optionalText(value: string): string | undefined {
+  return value === "" ? undefined : value;
+}
+{% endif %}
+{% if "textLines" in feature.form_helpers %}
+
+/** Give the values of a list field: one value on each line. */
+function textLines(value: string): string[] {
+  return value === "" ? [] : value.split("\n");
+}
+{% endif %}
+
+/** Show an error of the operation. A problem details response gives the title and the detail. */
+function OperationError({ error }: { error: Error }): ReactNode {
+  const title = error instanceof ApiError ? error.title : error.message;
+  const detail = error instanceof ApiError ? error.detail : undefined;
+  return (
+    <Alert variant="destructive">
+      <AlertTitle>{title}</AlertTitle>
+      {detail === undefined ? null : (
+        <AlertDescription>{detail}</AlertDescription>
+      )}
+    </Alert>
+  );
+}
+
+/** The form of the operation {{ feature.description }}: {{ feature.route }}. */
+{% for line in feature.component_lines() %}
+{{ line }}
+{% endfor %}
+  const formId = useId();
+  const mutation = {{ feature.hook }}();
+  const form = useForm({
+    defaultValues: { ...initialValues, ...defaultValues },
+    validators: {
+      onSubmit: {{ feature.input_schema }},
+    },
+    onSubmit: ({ value }) => {
+{% for line in feature.mutate_lines("      ") %}
+{{ line }}
+{% endfor %}
+    },
+  });
+  return (
+    <form
+      noValidate
+      className="flex flex-col gap-6"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void form.handleSubmit();
+      }}
+    >
+      <FieldGroup>
+{% for line in feature.field_lines() %}
+{{ line }}
+{% endfor %}
+      </FieldGroup>
+      {mutation.error === null ? null : (
+        <OperationError error={mutation.error} />
+      )}
+      <Field orientation="horizontal">
+{% for line in feature.submit_lines("        ") %}
+{{ line }}
+{% endfor %}
+      </Field>
+    </form>
+  );
+}

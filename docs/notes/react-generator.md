@@ -29,7 +29,7 @@ All files are generated files. The generator writes them again at each run. It d
 | `vite.config.ts` | The React and Tailwind CSS plugins. The alias `@/` to `/src/`. The output folder `dist/`. The Vitest settings. | PRD-APP-205, PRD-APP-233, Q64 |
 | `index.html` | The page. It loads `src/main.gen.tsx`. | PRD-APP-233 |
 | `components.json` | The settings of shadcn/ui: the components are in `@/shared/ui`. | PRD-APP-201, Q41 |
-| `steiger.config.ts` | The recommended rules of the FSD plugin of Steiger. | PRD-APP-234 |
+| `steiger.config.ts` | The recommended rules of the FSD plugin of Steiger, with the rule `fsd/repetitive-naming` off (story #172). | PRD-APP-234 |
 | `eslint.config.js` | The type-aware rules of `typescript-eslint` (`strictTypeChecked`). | PRD-APP-201, Q64 |
 | `src/main.gen.tsx` | The entry module. It renders an empty root. | PRD-APP-202 |
 
@@ -92,6 +92,40 @@ The copy has the components `alert`, `button`, `card`, `input`, `table` and `tex
 
 No generated file contains an environment value (PRD-APP-233). The application reads the values from `/config.json` at run time.
 
+## Features layer
+
+Story #172 added the features layer: `src/dsml/generate/react_features.py` and the templates in `src/dsml/templates/react/features/`.
+
+The React application gets one slice in `src/features/<operation>/` for each operation with a change of each FastAPI application that it calls (`#Calls`). These are `create`, `update`, `delete` and each custom operation that does not use the method GET. The operations `read` and `list` and a custom operation with the method GET do not change data, thus they give no feature slice. The slice name of a CRUD operation is the operation and the entity, for example `create-order`. The slice name of a custom operation is the name of the exposed action, for example `place-order` (PRD-APP-206).
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `api/<operation>.gen.ts` | The function of the operation, for example `createOrder`, and the hook of the TanStack Query mutation, for example `useCreateOrderMutation`. A custom operation also gets its Zod schemas: `<operation>InputSchema` and `<operation>OutputSchema`. | PRD-APP-005, PRD-APP-210, PRD-APP-225 |
+| `ui/<operation>-form.gen.tsx` | The TanStack Form form of `create`, `update` or a custom operation, for example `CreateOrderForm`. | PRD-APP-210, PRD-APP-226, PRD-APP-227, PRD-APP-228 |
+| `ui/<operation>-button.gen.tsx` | The button of `delete` with a confirmation dialog, for example `DeleteCustomerButton`. | PRD-APP-210, PRD-APP-227, PRD-APP-228 |
+| `index.gen.ts`, `index.ts` | The public API of the slice. `index.ts` is a create-once file. | PRD-APP-204 |
+
+The rules of the mutations:
+
+- The function of `create` and `update` parses the request body with the input schema of the entity slice, and the response with the output schema of the entity slice.
+- The function of a custom operation parses its input with its own input schema. The `in` parameters in the path go into the path. The other `in` parameters are the request body. The input schema and the output schema follow the Pydantic models of the called application. Thus the field names are the JSON names in snake case, for example `order_id`.
+- A decimal `in` parameter of a custom operation has no precision. The function `decimalValue` accepts a number, or a text with a decimal number.
+- After a success, the mutation invalidates the queries of each changed entity with the query key of its entity slice, for example `["order"]` (PRD-APP-225). The changed entities of a custom operation are the entities of its parameters that have an entity slice.
+
+The rules of the forms:
+
+- The Zod schema of the operation is the validator of the form (`validators.onSubmit`, PRD-APP-226). The form shows the error of a field after the user touches the field. A submit touches all fields.
+- Each field uses the shadcn/ui components `Field`, `FieldLabel` and `FieldError`. The label is the field name in words, for example `Order id` for `order_id`.
+- The control of a field follows the field type: `NativeSelect` for an enumeration, a check box for a Boolean, a number input for an integer or a real number, a date input for a date, a `datetime-local` input for a date and time, and a text input for the other types. A text field with no `maxLength`, or a `maxLength` more than 200, uses a `Textarea`. A list parameter uses a `Textarea` with one value on each line. A list of numbers or Boolean values gives an error, because the target has no control for it.
+- An empty optional field gives no value. A required number field with no value gives `NaN`, thus the schema refuses it.
+- An error of the mutation shows in an `Alert`. For a problem details response, the alert shows the `title` and the `detail` (PRD-APP-227).
+- The component gets the optional properties `defaultValues` and `onSuccess`. The form of `update` and the button of `delete` also get the key of the entity.
+- The forms use native controls and the Radix UI alert dialog. Thus the user can reach each control with the Tab key (PRD-APP-228).
+
+The features layer added the shadcn/ui components `alert-dialog`, `field`, `label`, `native-select` and `separator` to the pinned copy. They need the packages `@radix-ui/react-alert-dialog`, `@radix-ui/react-label`, `@radix-ui/react-separator` and `lucide-react`. The component tests need `jsdom` and Testing Library, thus the generated `package.json` has these dev dependencies: `jsdom`, `@testing-library/dom`, `@testing-library/react` and `@testing-library/user-event`. A test file selects the DOM environment with the comment `// @vitest-environment jsdom`. The default environment of Vitest stays `node`.
+
+The slice names of the features layer repeat the entity names, for example `create-order` and `place-order`. Thus the generated `steiger.config.ts` sets the rule `fsd/repetitive-naming` off.
+
 ## Golden files and tests
 
 The golden folder is the project folder of the application `orderPortal` of the order portal model. It has no manifests in `.dsml/`. The phase 2 exit story (#177) adds them.
@@ -102,8 +136,8 @@ The CI job "React golden project" does these steps:
 
 1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035).
 2. It copies the golden project to `apps/order-portal` in a temporary folder. It also copies the order portal model and its `dsml.toml` to the temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
-3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger (story #170, `docs/notes/check-output.md`). While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices yet.
-4. It copies `tests/react/field-rules/` and `tests/react/shared/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors.
+3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger (story #170, `docs/notes/check-output.md`). While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices and the feature slices yet. It also sets the rule `fsd/repetitive-naming` off, as the generated configuration does.
+4. It copies `tests/react/features/`, `tests/react/field-rules/` and `tests/react/shared/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation.
 5. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
 
 ## Differences from the story text

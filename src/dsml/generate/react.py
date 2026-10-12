@@ -60,6 +60,9 @@ PROJECT_VERSION: Final = "0.1.0"
 """The version of the generated project."""
 
 RUNTIME_PACKAGES: Final = {
+    "@radix-ui/react-alert-dialog": "radix-ui-react-alert-dialog",
+    "@radix-ui/react-label": "radix-ui-react-label",
+    "@radix-ui/react-separator": "radix-ui-react-separator",
     "@radix-ui/react-slot": "radix-ui-react-slot",
     "@tanstack/react-form": "tanstack-react-form",
     "@tanstack/react-query": "tanstack-react-query",
@@ -67,6 +70,7 @@ RUNTIME_PACKAGES: Final = {
     "aws-amplify": "aws-amplify",
     "class-variance-authority": "class-variance-authority",
     "clsx": "clsx",
+    "lucide-react": "lucide-react",
     "react": "react",
     "react-dom": "react-dom",
     "tailwind-merge": "tailwind-merge",
@@ -79,10 +83,14 @@ DEV_PACKAGES: Final = {
     "@feature-sliced/steiger-plugin": "feature-sliced-steiger-plugin",
     "@steiger/toolkit": "steiger-toolkit",
     "@tailwindcss/vite": "tailwindcss-vite",
+    "@testing-library/dom": "testing-library-dom",
+    "@testing-library/react": "testing-library-react",
+    "@testing-library/user-event": "testing-library-user-event",
     "@types/react": "types-react",
     "@types/react-dom": "types-react-dom",
     "@vitejs/plugin-react": "vitejs-plugin-react",
     "eslint": "eslint",
+    "jsdom": "jsdom",
     "prettier": "prettier",
     "steiger": "steiger",
     "tailwindcss": "tailwindcss",
