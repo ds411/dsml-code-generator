@@ -1,6 +1,130 @@
 {
   "elements": [
     {
+      "element": "Shop::ArchiveSupplier",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "archive_supplier"
+            },
+            {
+              "firstLine": 31,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "POST /suppliers/{supplier}/archive"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/archive_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "ArchiveSupplierInput"
+            },
+            {
+              "firstLine": 25,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "ArchiveSupplierBody"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_archive_supplier_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 53,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::CountCustomers",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/count_customers/count_customers/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "count_customers"
+            },
+            {
+              "firstLine": 34,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "GET /customer-count"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/count_customers/count_customers/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 19,
+              "name": "CountCustomersInput"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 29,
+              "name": "CountCustomersOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_count_customers_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 49,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 55,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 58,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 69,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "Shop::Customer",
       "files": [
         {
@@ -332,6 +456,80 @@
       ]
     },
     {
+      "element": "Shop::FindProducts",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "find_products"
+            },
+            {
+              "firstLine": 35,
+              "kind": "route",
+              "lastLine": 43,
+              "name": "GET /product-search"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/find_products/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "FindProductsInput"
+            },
+            {
+              "firstLine": 31,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "FindProductsQuery"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 54,
+              "name": "FindProductsOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_find_products_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 37,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 64,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 67,
+              "kind": "function",
+              "lastLine": 72,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "Shop::Product",
       "files": [
         {
@@ -404,6 +602,46 @@
               "kind": "function",
               "lastLine": 30,
               "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "find_products"
+            },
+            {
+              "firstLine": 35,
+              "kind": "route",
+              "lastLine": 43,
+              "name": "GET /product-search"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/find_products/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "FindProductsInput"
+            },
+            {
+              "firstLine": 31,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "FindProductsQuery"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 54,
+              "name": "FindProductsOutput"
             }
           ]
         },
@@ -492,6 +730,46 @@
           ]
         },
         {
+          "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "restock_product"
+            },
+            {
+              "firstLine": 36,
+              "kind": "route",
+              "lastLine": 47,
+              "name": "POST /products/{productId}/restock"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/restock_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 29,
+              "name": "RestockProductInput"
+            },
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "RestockProductBody"
+            },
+            {
+              "firstLine": 41,
+              "kind": "class",
+              "lastLine": 55,
+              "name": "RestockProductOutput"
+            }
+          ]
+        },
+        {
           "path": "services/shop-api/app/features/product/update_product/endpoint_gen.py",
           "symbols": [
             {
@@ -544,6 +822,35 @@
               "kind": "class",
               "lastLine": 56,
               "name": "Product"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_find_products_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 37,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 64,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 67,
+              "kind": "function",
+              "lastLine": 72,
+              "name": "test_stub_returns_501"
             }
           ]
         },
@@ -659,12 +966,149 @@
               "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
             }
           ]
+        },
+        {
+          "path": "services/shop-api/tests/test_restock_product_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 54,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 71,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::RestockProduct",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "restock_product"
+            },
+            {
+              "firstLine": 36,
+              "kind": "route",
+              "lastLine": 47,
+              "name": "POST /products/{productId}/restock"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/restock_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 29,
+              "name": "RestockProductInput"
+            },
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "RestockProductBody"
+            },
+            {
+              "firstLine": 41,
+              "kind": "class",
+              "lastLine": 55,
+              "name": "RestockProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_restock_product_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 54,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 71,
+              "name": "test_stub_returns_501"
+            }
+          ]
         }
       ]
     },
     {
       "element": "Shop::Supplier",
       "files": [
+        {
+          "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "archive_supplier"
+            },
+            {
+              "firstLine": 31,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "POST /suppliers/{supplier}/archive"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/archive_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "ArchiveSupplierInput"
+            },
+            {
+              "firstLine": 25,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "ArchiveSupplierBody"
+            }
+          ]
+        },
         {
           "path": "services/shop-api/app/features/supplier/create_supplier/endpoint_gen.py",
           "symbols": [
@@ -806,6 +1250,23 @@
           ]
         },
         {
+          "path": "services/shop-api/tests/test_archive_supplier_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 53,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        },
+        {
           "path": "services/shop-api/tests/test_suppliers_http_gen.py",
           "symbols": [
             {
@@ -879,27 +1340,27 @@
           "path": "services/shop-api/app/main_gen.py",
           "symbols": [
             {
-              "firstLine": 37,
+              "firstLine": 43,
               "kind": "class",
-              "lastLine": 40,
+              "lastLine": 46,
               "name": "Health"
-            },
-            {
-              "firstLine": 43,
-              "kind": "function",
-              "lastLine": 46,
-              "name": "healthz"
-            },
-            {
-              "firstLine": 43,
-              "kind": "route",
-              "lastLine": 46,
-              "name": "GET /healthz"
             },
             {
               "firstLine": 49,
               "kind": "function",
-              "lastLine": 88,
+              "lastLine": 52,
+              "name": "healthz"
+            },
+            {
+              "firstLine": 49,
+              "kind": "route",
+              "lastLine": 52,
+              "name": "GET /healthz"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 98,
               "name": "create_app"
             }
           ]
@@ -1082,39 +1543,45 @@
           "path": "services/shop-api/app/shared/errors_gen.py",
           "symbols": [
             {
-              "firstLine": 22,
+              "firstLine": 24,
               "kind": "class",
-              "lastLine": 28,
+              "lastLine": 30,
               "name": "ProblemError"
             },
             {
-              "firstLine": 31,
+              "firstLine": 33,
               "kind": "function",
-              "lastLine": 47,
+              "lastLine": 49,
               "name": "problem_response"
             },
             {
-              "firstLine": 50,
+              "firstLine": 52,
               "kind": "function",
-              "lastLine": 54,
+              "lastLine": 57,
               "name": "register_error_handlers"
             },
             {
-              "firstLine": 57,
+              "firstLine": 60,
               "kind": "function",
-              "lastLine": 59,
+              "lastLine": 62,
               "name": "_problem"
             },
             {
-              "firstLine": 62,
+              "firstLine": 65,
               "kind": "function",
-              "lastLine": 66,
+              "lastLine": 69,
               "name": "_http"
             },
             {
-              "firstLine": 69,
+              "firstLine": 72,
               "kind": "function",
-              "lastLine": 81,
+              "lastLine": 74,
+              "name": "_not_implemented"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 89,
               "name": "_validation"
             }
           ]
@@ -1259,13 +1726,19 @@
             {
               "firstLine": 51,
               "kind": "function",
-              "lastLine": 55,
+              "lastLine": 61,
+              "name": "test_not_implemented_error_returns_501"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 68,
               "name": "test_missing_mandatory_variable_stops_the_app"
             },
             {
-              "firstLine": 58,
+              "firstLine": 71,
               "kind": "function",
-              "lastLine": 60,
+              "lastLine": 73,
               "name": "test_log_level_that_is_not_correct_stops_the_app"
             }
           ]
@@ -1456,6 +1929,130 @@
               "kind": "function",
               "lastLine": 38,
               "name": "test_migrations_give_sql_with_no_database"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi::archiveSupplier",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "archive_supplier"
+            },
+            {
+              "firstLine": 31,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "POST /suppliers/{supplier}/archive"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/supplier/archive_supplier/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "ArchiveSupplierInput"
+            },
+            {
+              "firstLine": 25,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "ArchiveSupplierBody"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_archive_supplier_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 53,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi::countCustomers",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/count_customers/count_customers/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "count_customers"
+            },
+            {
+              "firstLine": 34,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "GET /customer-count"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/count_customers/count_customers/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 19,
+              "name": "CountCustomersInput"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 29,
+              "name": "CountCustomersOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_count_customers_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 49,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 55,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 58,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 69,
+              "name": "test_stub_returns_501"
             }
           ]
         }
@@ -1782,6 +2379,80 @@
       ]
     },
     {
+      "element": "Shop::shopApi::findProducts",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "find_products"
+            },
+            {
+              "firstLine": 35,
+              "kind": "route",
+              "lastLine": 43,
+              "name": "GET /product-search"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/find_products/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "FindProductsInput"
+            },
+            {
+              "firstLine": 31,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "FindProductsQuery"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 54,
+              "name": "FindProductsOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_find_products_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 37,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 64,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 67,
+              "kind": "function",
+              "lastLine": 72,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "Shop::shopApi::products",
       "files": [
         {
@@ -2096,6 +2767,80 @@
               "kind": "function",
               "lastLine": 283,
               "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "Shop::shopApi::restockProduct",
+      "files": [
+        {
+          "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "restock_product"
+            },
+            {
+              "firstLine": 36,
+              "kind": "route",
+              "lastLine": 47,
+              "name": "POST /products/{productId}/restock"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/app/features/product/restock_product/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 29,
+              "name": "RestockProductInput"
+            },
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "RestockProductBody"
+            },
+            {
+              "firstLine": 41,
+              "kind": "class",
+              "lastLine": 55,
+              "name": "RestockProductOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/shop-api/tests/test_restock_product_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 54,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 71,
+              "name": "test_stub_returns_501"
             }
           ]
         }

@@ -280,6 +280,30 @@ jobs:
           cat output.txt
           grep --quiet "APP_ENVIRONMENT" output.txt
 
+      # trace: PRD-CORE-045, PRD-APP-116, PRD-APP-117
+      # Generated code calls a hand-written handler through a typed
+      # interface (story #88). A hand-written handler of the operation
+      # cancel_order must pass the type check. Then the step puts the
+      # generated files of a changed model into the project: the in
+      # parameter orderId has the new name orderKey. The type check must
+      # then fail on the handler. This step changes the project, thus it is
+      # the last step of the job.
+      - name: Check the typed interface of a custom operation
+        working-directory: ${{ env.PROJECT }}
+        run: |
+          check="$GITHUB_WORKSPACE/tests/golden/fastapi/handler-check"
+          slice="app/features/order/cancel_order"
+          cp "$check/handler.py" "$slice/handler.py"
+          uv run --frozen pyright
+          cp "$check/endpoint_gen.py" "$check/schemas_gen.py" "$slice/"
+          if uv run --frozen pyright > "$RUNNER_TEMP/pyright.txt"; then
+            cat "$RUNNER_TEMP/pyright.txt"
+            echo "The type check found no error in the handler of the changed model."
+            exit 1
+          fi
+          cat "$RUNNER_TEMP/pyright.txt"
+          grep --quiet "$slice/handler.py.*order_id" "$RUNNER_TEMP/pyright.txt"
+
   # trace: PRD-IAC-003, PRD-IAC-039, PRD-IAC-040, PRD-CORE-035
   #
   # The golden HCL of the infrastructure generator must pass the language

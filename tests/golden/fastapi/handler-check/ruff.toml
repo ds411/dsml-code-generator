@@ -1,0 +1,11 @@
+# The ruff settings of the generated FastAPI project. The files of this
+# folder go into the golden project order-api, where "app" is the first
+# party package.
+target-version = "py314"
+line-length = 100
+
+[lint]
+select = ["B", "E", "F", "I", "UP", "W"]
+
+[lint.isort]
+known-first-party = ["app"]

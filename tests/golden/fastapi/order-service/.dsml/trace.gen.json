@@ -1,8 +1,110 @@
 {
   "elements": [
     {
+      "element": "OrderService::CancelOrder",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/cancel_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "cancel_order"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 40,
+              "name": "POST /orders/{orderId}/cancel"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/cancel_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CancelOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_cancel_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 63,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "element": "OrderService::Order",
       "files": [
+        {
+          "path": "services/order-api/app/features/order/cancel_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "cancel_order"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 40,
+              "name": "POST /orders/{orderId}/cancel"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/cancel_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CancelOrderOutput"
+            }
+          ]
+        },
         {
           "path": "services/order-api/app/features/order/create_order/endpoint_gen.py",
           "symbols": [
@@ -144,6 +246,35 @@
           ]
         },
         {
+          "path": "services/order-api/tests/test_cancel_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 63,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        },
+        {
           "path": "services/order-api/tests/test_orders_http_gen.py",
           "symbols": [
             {
@@ -229,27 +360,27 @@
           "path": "services/order-api/app/main_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "class",
-              "lastLine": 30,
+              "lastLine": 31,
               "name": "Health"
             },
             {
-              "firstLine": 33,
+              "firstLine": 34,
               "kind": "function",
-              "lastLine": 36,
+              "lastLine": 37,
               "name": "healthz"
             },
             {
-              "firstLine": 33,
+              "firstLine": 34,
               "kind": "route",
-              "lastLine": 36,
+              "lastLine": 37,
               "name": "GET /healthz"
             },
             {
-              "firstLine": 39,
+              "firstLine": 40,
               "kind": "function",
-              "lastLine": 68,
+              "lastLine": 70,
               "name": "create_app"
             }
           ]
@@ -432,39 +563,45 @@
           "path": "services/order-api/app/shared/errors_gen.py",
           "symbols": [
             {
-              "firstLine": 22,
+              "firstLine": 24,
               "kind": "class",
-              "lastLine": 28,
+              "lastLine": 30,
               "name": "ProblemError"
             },
             {
-              "firstLine": 31,
+              "firstLine": 33,
               "kind": "function",
-              "lastLine": 47,
+              "lastLine": 49,
               "name": "problem_response"
             },
             {
-              "firstLine": 50,
+              "firstLine": 52,
               "kind": "function",
-              "lastLine": 54,
+              "lastLine": 57,
               "name": "register_error_handlers"
             },
             {
-              "firstLine": 57,
+              "firstLine": 60,
               "kind": "function",
-              "lastLine": 59,
+              "lastLine": 62,
               "name": "_problem"
             },
             {
-              "firstLine": 62,
+              "firstLine": 65,
               "kind": "function",
-              "lastLine": 66,
+              "lastLine": 69,
               "name": "_http"
             },
             {
-              "firstLine": 69,
+              "firstLine": 72,
               "kind": "function",
-              "lastLine": 81,
+              "lastLine": 74,
+              "name": "_not_implemented"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 89,
               "name": "_validation"
             }
           ]
@@ -609,13 +746,19 @@
             {
               "firstLine": 51,
               "kind": "function",
-              "lastLine": 55,
+              "lastLine": 61,
+              "name": "test_not_implemented_error_returns_501"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 68,
               "name": "test_missing_mandatory_variable_stops_the_app"
             },
             {
-              "firstLine": 58,
+              "firstLine": 71,
               "kind": "function",
-              "lastLine": 60,
+              "lastLine": 73,
               "name": "test_log_level_that_is_not_correct_stops_the_app"
             }
           ]
@@ -806,6 +949,74 @@
               "kind": "function",
               "lastLine": 38,
               "name": "test_migrations_give_sql_with_no_database"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderService::orderApi::cancelOrder",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/cancel_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "cancel_order"
+            },
+            {
+              "firstLine": 32,
+              "kind": "route",
+              "lastLine": 40,
+              "name": "POST /orders/{orderId}/cancel"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/cancel_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CancelOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_cancel_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 63,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "test_stub_returns_501"
             }
           ]
         }

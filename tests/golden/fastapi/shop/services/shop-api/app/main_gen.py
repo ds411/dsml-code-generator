@@ -13,6 +13,9 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from pydantic import BaseModel
 
+from app.features.count_customers.count_customers.endpoint_gen import (
+    router as count_customers_router,
+)
 from app.features.customer.create_customer.endpoint_gen import router as create_customer_router
 from app.features.customer.delete_customer.endpoint_gen import router as delete_customer_router
 from app.features.customer.list_customer.endpoint_gen import router as list_customer_router
@@ -20,9 +23,12 @@ from app.features.customer.read_customer.endpoint_gen import router as read_cust
 from app.features.customer.update_customer.endpoint_gen import router as update_customer_router
 from app.features.product.create_product.endpoint_gen import router as create_product_router
 from app.features.product.delete_product.endpoint_gen import router as delete_product_router
+from app.features.product.find_products.endpoint_gen import router as find_products_router
 from app.features.product.list_product.endpoint_gen import router as list_product_router
 from app.features.product.read_product.endpoint_gen import router as read_product_router
+from app.features.product.restock_product.endpoint_gen import router as restock_product_router
 from app.features.product.update_product.endpoint_gen import router as update_product_router
+from app.features.supplier.archive_supplier.endpoint_gen import router as archive_supplier_router
 from app.features.supplier.create_supplier.endpoint_gen import router as create_supplier_router
 from app.features.supplier.list_supplier.endpoint_gen import router as list_supplier_router
 from app.features.supplier.read_supplier.endpoint_gen import router as read_supplier_router
@@ -72,6 +78,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_error_handlers(app)
     app.middleware("http")(request_context)
     app.include_router(health_router)
+    app.include_router(count_customers_router)
     app.include_router(create_customer_router)
     app.include_router(delete_customer_router)
     app.include_router(list_customer_router)
@@ -79,9 +86,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(update_customer_router)
     app.include_router(create_product_router)
     app.include_router(delete_product_router)
+    app.include_router(find_products_router)
     app.include_router(list_product_router)
     app.include_router(read_product_router)
+    app.include_router(restock_product_router)
     app.include_router(update_product_router)
+    app.include_router(archive_supplier_router)
     app.include_router(create_supplier_router)
     app.include_router(list_supplier_router)
     app.include_router(read_supplier_router)

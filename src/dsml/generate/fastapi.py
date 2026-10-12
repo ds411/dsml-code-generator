@@ -26,9 +26,13 @@ also writes the migration files (`dsml.generate.fastapi_migrations`):
 `app/migrate_gen.py` and the tests of the migrations (PRD-APP-124 to
 PRD-APP-128).
 
+Each CRUD operation is a slice with a generated handler
+(`dsml.generate.fastapi_slices`). Each custom operation is a slice with a
+create-once `handler.py` stub that a developer owns
+(`dsml.generate.fastapi_operations`, PRD-APP-116, PRD-APP-117).
+
 The versions come from the version baseline `versions.toml` (PRD-APP-101).
 The generator gives the symbols of each Python file for the trace manifest.
-Other M6 stories add the slices.
 """
 
 from collections.abc import Collection, Sequence
@@ -42,6 +46,7 @@ from dsml.database.snapshot import SNAPSHOT_PATH
 from dsml.errors import ToolchainError
 from dsml.generate.fastapi_database import MODELS_FOLDER, Model, import_lines, models
 from dsml.generate.fastapi_migrations import Call, code_lines, migration_files
+from dsml.generate.fastapi_operations import HANDLER_FILE, CustomSlice, custom_slices
 from dsml.generate.fastapi_slices import (
     FEATURES_FOLDER,
     LIMIT_DEFAULT,
@@ -132,7 +137,7 @@ _DATABASE_TEMPLATES: Final = {
     "tests/test_migrations_gen.py": "fastapi/migrations/test_migrations_gen.py.j2",
 }
 
-# The templates of the shared code of the CRUD slices, by the path in the output folder.
+# The templates of the shared code of the slices, by the path in the output folder.
 _SLICE_TEMPLATES: Final = {
     f"{FEATURES_FOLDER}/__init__.py": "fastapi/init.py.j2",
     "app/shared/db/commit_gen.py": "fastapi/db/commit_gen.py.j2",
@@ -145,6 +150,13 @@ _SLICE_FILES: Final = {
     "endpoint_gen.py": "fastapi/slices/endpoint_gen.py.j2",
     "handler_gen.py": "fastapi/slices/handler_gen.py.j2",
     "schemas_gen.py": "fastapi/slices/schemas_gen.py.j2",
+}
+
+# The templates of the generated files of one custom slice, by the name of the file.
+_CUSTOM_FILES: Final = {
+    "__init__.py": "fastapi/init.py.j2",
+    "endpoint_gen.py": "fastapi/operations/endpoint_gen.py.j2",
+    "schemas_gen.py": "fastapi/operations/schemas_gen.py.j2",
 }
 
 
@@ -315,7 +327,7 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
     return value
 
 
-# trace: PRD-APP-002, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104, PRD-APP-105,
+# trace: PRD-APP-002, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104, PRD-APP-105, PRD-APP-116,
 # PRD-APP-120, PRD-APP-124, PRD-APP-128, PRD-APP-130, PRD-APP-131, PRD-APP-133,
 # PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
 def application_files(
@@ -331,11 +343,13 @@ def application_files(
     entity_models = models(ir, application)
     database = bool(entity_models)
     crud = slices(ir, application, entity_models)
+    custom = custom_slices(ir, application, entity_models, crud)
+    routers: list[Slice | CustomSlice] = sorted([*crud, *custom], key=lambda item: item.folder)
     runtime, dev = dependencies(application, configuration, baseline, database)
     elements = (application.identity,)
     variables = VARIABLES + DATABASE_VARIABLES if database else VARIABLES
     templates = {**_TEMPLATES, **_DATABASE_TEMPLATES} if database else dict(_TEMPLATES)
-    if crud:
+    if routers:
         templates.update(_SLICE_TEMPLATES)
     data: dict[str, object] = {
         "elements": list(elements),
@@ -363,10 +377,10 @@ def application_files(
             ),
             0,
         ),
-        "slices": crud,
+        "slices": routers,
         "router_import_lines": [
             line
-            for item in crud
+            for item in routers
             for line in import_lines(f"{item.package}.endpoint_gen", [f"router as {item.router}"])
         ],
         "models_lines": models_tuple_lines([model.class_name for model in entity_models]),
@@ -394,10 +408,11 @@ def application_files(
         symbols = python_symbols(content, elements) if file_type is FileType.PYTHON else ()
         files.append(OutputFile(f"{folder}{path}", content, Kind.GENERATED, part, symbols))
     files.extend(model_file(engine, model, folder, part) for model in entity_models)
-    files.extend(slice_files(engine, crud, folder, part))
+    files.extend(slice_files(engine, crud, folder, part, custom))
     files.extend(
         test_file(engine, tests, folder, part) for tests in entity_tests(ir, crud, entity_models)
     )
+    files.extend(operation_test_file(engine, item, folder, part) for item in custom)
     if database:
         schema = application_schema(ir, application.identity)
         files.extend(migration_files(engine, ir, application, configuration, schema, folder, part))
@@ -428,14 +443,20 @@ def model_file(engine: TemplateEngine, model: Model, folder: str, part: str) -> 
     return OutputFile(f"{folder}{model.path}", content, Kind.GENERATED, part, symbols)
 
 
-# trace: PRD-APP-017, PRD-APP-102, PRD-APP-103, PRD-TRACE-005, PRD-TRACE-006
+# trace: PRD-APP-017, PRD-APP-102, PRD-APP-103, PRD-APP-117, PRD-CORE-044, PRD-TRACE-005,
+# PRD-TRACE-006
 def slice_files(
-    engine: TemplateEngine, items: Sequence[Slice], folder: str, part: str
+    engine: TemplateEngine,
+    items: Sequence[Slice],
+    folder: str,
+    part: str,
+    custom: Sequence[CustomSlice] = (),
 ) -> list[OutputFile]:
-    """Give the files of the CRUD slices and the `__init__.py` of each entity folder.
+    """Give the files of the slices and the `__init__.py` of each entity folder.
 
     The header of a slice file gives the exposed element and the entity. The
-    endpoint file gives one route symbol for its endpoint.
+    endpoint file gives one route symbol for its endpoint. The `handler.py`
+    of a custom slice is a create-once file with no symbols (PRD-CORE-044).
     """
     files: list[OutputFile] = []
     entity_folders: dict[str, list[str]] = {}
@@ -454,6 +475,23 @@ def slice_files(
             files.append(
                 OutputFile(f"{folder}{item.folder}/{name}", content, Kind.GENERATED, part, symbols)
             )
+    for item in custom:
+        # The `__init__.py` of the entity folder gives only the entity, so that
+        # its header stays short.
+        entity_folders.setdefault(item.folder.rpartition("/")[0], []).extend(
+            [item.folder_entity] if item.folder_entity is not None else []
+        )
+        data = {"file_type": FileType.PYTHON.value, "elements": item.elements, "operation": item}
+        for name, template in sorted(_CUSTOM_FILES.items()):
+            content = engine.render_bytes(template, data)
+            symbols = python_symbols(content, tuple(item.elements))
+            files.append(
+                OutputFile(f"{folder}{item.folder}/{name}", content, Kind.GENERATED, part, symbols)
+            )
+        content = engine.render_bytes("fastapi/operations/handler.py.j2", data)
+        files.append(
+            OutputFile(f"{folder}{item.folder}/{HANDLER_FILE}", content, Kind.CREATE_ONCE, part)
+        )
     for path, elements in sorted(entity_folders.items()):
         identities = sorted(set(elements))
         content = engine.render_bytes(
@@ -472,6 +510,19 @@ def test_file(engine: TemplateEngine, tests: EntityTests, folder: str, part: str
     )
     symbols = python_symbols(content, tuple(tests.elements))
     return OutputFile(f"{folder}{tests.path}", content, Kind.GENERATED, part, symbols)
+
+
+# trace: PRD-APP-116, PRD-APP-117, PRD-APP-135, PRD-TRACE-005, PRD-TRACE-006
+def operation_test_file(
+    engine: TemplateEngine, item: CustomSlice, folder: str, part: str
+) -> OutputFile:
+    """Give the file of the HTTP tests of one custom operation."""
+    content = engine.render_bytes(
+        "fastapi/tests/test_operation_http_gen.py.j2",
+        {"file_type": FileType.PYTHON.value, "elements": item.elements, "operation": item},
+    )
+    symbols = python_symbols(content, tuple(item.elements))
+    return OutputFile(f"{folder}{item.test_path}", content, Kind.GENERATED, part, symbols)
 
 
 def models_tuple_lines(names: list[str]) -> list[str]:

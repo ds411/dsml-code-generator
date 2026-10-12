@@ -1,7 +1,10 @@
 // A test model for the CRUD slices of the FastAPI generator (story #84).
 // It has the five CRUD operations, each field type, the field rules, a
-// unique rule, a [1] relation, a [0..1] relation and a public entity. The
-// golden files in tests/golden/fastapi/shop/ are its output.
+// unique rule, a [1] relation, a [0..1] relation and a public entity. It
+// also has custom operations with path parameters, a request body, query
+// parameters, an entity output, a list output, a scalar output, no output
+// and a public operation (story #88). The golden files in
+// tests/golden/fastapi/shop/ are its output.
 package Shop {
     private import DSML::*;
     private import ScalarValues::*;
@@ -36,6 +39,38 @@ package Shop {
         ref buyer : Customer [0..1];
     }
 
+    #Operation action def RestockProduct {
+        in productId : Uuid;
+        in amount : Integer;
+        in note : String [0..1];
+        out product : Product;
+        :>> method = HttpMethod::post;
+        :>> path = "/products/{productId}/restock";
+    }
+
+    #Operation action def FindProducts {
+        in kind : ProductKind;
+        in codes : String [0..*];
+        out products : Product [0..*];
+        :>> method = HttpMethod::get;
+        :>> path = "/product-search";
+    }
+
+    #Operation action def CountCustomers {
+        out total : Integer;
+        out vipTotal : Integer;
+        out newest : Date [0..1];
+        :>> method = HttpMethod::get;
+        :>> path = "/customer-count";
+    }
+
+    #Operation action def ArchiveSupplier {
+        in supplier : Supplier;
+        in reason : String;
+        :>> method = HttpMethod::post;
+        :>> path = "/suppliers/{supplier}/archive";
+    }
+
     #Application part shopApi {
         :>> target = Target::fastapi;
         #Exposed part products : Product [*] {
@@ -48,6 +83,18 @@ package Shop {
         }
         #Exposed part suppliers : Supplier [*] {
             :>> crud = (CrudKind::create, CrudKind::read, CrudKind::list);
+            :>> 'public' = true;
+        }
+        #Exposed action restockProduct : RestockProduct {
+            :>> allowedRoles = (ShopRoles::clerk, ShopRoles::admin);
+        }
+        #Exposed action findProducts : FindProducts {
+            :>> allowedRoles = (ShopRoles::clerk);
+        }
+        #Exposed action countCustomers : CountCustomers {
+            :>> allowedRoles = (ShopRoles::admin);
+        }
+        #Exposed action archiveSupplier : ArchiveSupplier {
             :>> 'public' = true;
         }
     }

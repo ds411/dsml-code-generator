@@ -1,6 +1,6 @@
 # FastAPI generator: CRUD slices
 
-Story #84 added the CRUD slices to the FastAPI generator (phase 1). Each CRUD operation of an exposed entity is one vertical slice with an endpoint, the Pydantic schemas and a handler. The custom operations come in a later story.
+Story #84 added the CRUD slices to the FastAPI generator (phase 1). Each CRUD operation of an exposed entity is one vertical slice with an endpoint, the Pydantic schemas and a handler. Story #88 added the custom operations (see `docs/notes/fastapi-custom-operations.md`).
 
 - Slices: `src/dsml/generate/fastapi_slices.py`. The methods and the paths come from `src/dsml/ir/operations.py`, the module that the rule STR-009 also uses (PRD-APP-110).
 - Test values: `src/dsml/generate/fastapi_examples.py`.
@@ -20,7 +20,7 @@ For each CRUD operation of each `#Exposed` entity, the generator writes the fold
 | `handler_gen.py` | The handler that reads or writes the database. | PRD-APP-103, PRD-APP-113, PRD-APP-114 |
 | `__init__.py` | The header only. | PRD-APP-134 |
 
-The generator also writes these files if the application has one or more CRUD operations:
+The generator also writes these files if the application has one or more CRUD operations or custom operations:
 
 | File | Content | Requirements |
 | --- | --- | --- |

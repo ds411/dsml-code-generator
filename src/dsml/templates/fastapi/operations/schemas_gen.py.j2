@@ -1,0 +1,66 @@
+{#- The Pydantic v2 models of one custom operation slice (PRD-APP-102, PRD-APP-116,
+    PRD-CORE-045). Data: "operation" (a dsml.generate.fastapi_operations.CustomSlice). -#}
+{% include "common/header.j2" %}
+"""The schemas of the operation {{ operation.name }}: {{ operation.route }}.
+
+The hand-written handler gets the input schema and returns the output
+schema. If the operation changes in the model, a type check shows each
+place where the handler does not agree with the schemas. The generator
+writes this file again at each run.
+"""
+
+{% for line in operation.schema_import_lines %}
+{{ line }}
+{% endfor %}
+{% for alias in operation.value_aliases %}
+
+{% for line in alias[1] %}
+{{ line }}
+{% endfor %}
+{% endfor %}
+
+
+class {{ operation.input_class }}(BaseModel):
+    """The input of the operation: the `in` parameters."""
+
+    model_config = ConfigDict(extra="forbid")
+{% if operation.input_field_lines %}
+
+{% for line in operation.input_field_lines %}
+{{ line }}
+{% endfor %}
+{% endif %}
+{% if operation.request_class %}
+
+
+class {{ operation.request_class }}(BaseModel):
+{% if operation.has_body %}
+    """The request body: the `in` parameters that are not in the path."""
+{% else %}
+    """The query parameters: the `in` parameters that are not in the path."""
+{% endif %}
+
+    model_config = ConfigDict(extra="forbid")
+
+{% for line in operation.request_field_lines %}
+{{ line }}
+{% endfor %}
+{% endif %}
+{% if operation.output_class %}
+
+
+class {{ operation.output_class }}(BaseModel):
+{% if operation.entity_many %}
+    """One entity of the output of the operation. A related entity is its key."""
+{% elif operation.entity_output is not none %}
+    """The output of the operation: one entity. A related entity is its key."""
+{% else %}
+    """The output of the operation: the `out` parameters."""
+{% endif %}
+
+    model_config = ConfigDict(from_attributes=True)
+
+{% for line in operation.output_field_lines %}
+{{ line }}
+{% endfor %}
+{% endif %}

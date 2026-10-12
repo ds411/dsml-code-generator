@@ -83,7 +83,9 @@ def test_output_of_the_shop_model_agrees_with_the_golden_files(shop_ir: Ir, tmp_
 # trace: PRD-APP-102, PRD-APP-103
 def test_each_crud_operation_has_a_slice_with_three_generated_files() -> None:
     slices = sorted(
-        path.relative_to(FEATURES).as_posix() for path in FEATURES.glob("*/*") if path.is_dir()
+        path.relative_to(FEATURES).as_posix()
+        for path in FEATURES.glob("*/*")
+        if path.is_dir() and not (path / "handler.py").exists()
     )
     assert slices == [
         "customer/create_customer",
@@ -169,6 +171,10 @@ def test_each_endpoint_has_the_method_and_the_path_of_the_crud_table() -> None:
         ("supplier/create_supplier/endpoint_gen.py", "POST /suppliers"),
         ("supplier/read_supplier/endpoint_gen.py", "GET /suppliers/{id}"),
         ("supplier/list_supplier/endpoint_gen.py", "GET /suppliers"),
+        ("product/restock_product/endpoint_gen.py", "POST /products/{productId}/restock"),
+        ("product/find_products/endpoint_gen.py", "GET /product-search"),
+        ("count_customers/count_customers/endpoint_gen.py", "GET /customer-count"),
+        ("supplier/archive_supplier/endpoint_gen.py", "POST /suppliers/{supplier}/archive"),
         (f"{PROJECT}/app/main_gen.py", "GET /healthz"),
     }
 
@@ -184,8 +190,8 @@ def test_main_registers_the_router_of_each_slice_in_sorted_order() -> None:
     text = (SHOP / PROJECT / "app" / "main_gen.py").read_text()
     registered = re.findall(r"app\.include_router\((\w+)\)", text)
     assert registered[0] == "health_router"
-    imports = re.findall(r"from (app\.features\.\S+) import router as (\w+)", text)
-    assert len(imports) == 13
+    imports = re.findall(r"from (app\.features\.\S+) import \(?\s*router as (\w+)", text)
+    assert len(imports) == 17
     assert [module for module, _ in imports] == sorted(module for module, _ in imports)
     assert registered[1:] == [router for _, router in imports]
     assert (
