@@ -63,6 +63,7 @@ module "api_service" {
   ecr_repository = "order-service-tooling-order-api"
   element        = "OrderService::apiService"
   environment_variables = {
+    APP_ENVIRONMENT       = local.environment
     AWS_REGION            = local.aws_region
     COGNITO_APP_CLIENT_ID = module.users.app_client_ids["order_api"]
     COGNITO_USER_POOL_ID  = module.users.user_pool_id

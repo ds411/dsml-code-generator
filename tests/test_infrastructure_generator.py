@@ -266,7 +266,7 @@ def test_each_top_level_block_is_a_symbol_of_the_environment(ir: Ir) -> None:
             ("module.network", 11, 18),
             ("module.order_db", 20, 35),
             ("module.users", 37, 51),
-            ("module.api_service", 53, 102),
+            ("module.api_service", 53, 103),
         ],
         "outputs": [
             ("output.aws_account_id", 4, 7),
