@@ -7,6 +7,7 @@ layout with the layer names `_app` and `_pages` (PRD-APP-303). The golden
 tests of the React generator show that the React output does not change.
 """
 
+import re
 from dataclasses import replace
 from pathlib import Path
 
@@ -32,6 +33,18 @@ PORTAL_MODEL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-po
 # The folder and the import path of each layer that the Next.js layout renames.
 RENAMED = {"src/app/": "src/_app/", "src/pages/": "src/_pages/"}
 RENAMED_IMPORTS = {'"@/app/': '"@/_app/', '"@/pages/': '"@/_pages/'}
+
+# The folders of the client components of the slices. With the Next.js
+# layout, each module in them starts with the directive "use client" after
+# the header (PRD-APP-321).
+CLIENT_FOLDERS = re.compile(r"src/(features|widgets)/[^/]+/ui/")
+
+
+def with_client_directive(content: str) -> str:
+    """Add the directive "use client" after the header comment lines."""
+    lines = content.splitlines(keepends=True)
+    start = next(index for index, line in enumerate(lines) if not line.startswith("//"))
+    return "".join([*lines[:start], '"use client";\n', "\n", *lines[start:]])
 
 
 @pytest.fixture(scope="module")
@@ -91,6 +104,7 @@ def test_react_layout_has_the_standard_layer_names() -> None:
     assert [REACT_LAYOUT.layer_name(layer) for layer in LAYERS] == list(LAYERS)
     assert REACT_LAYOUT.alias == "@/"
     assert not REACT_LAYOUT.server_api
+    assert not REACT_LAYOUT.rsc
     assert REACT_LAYOUT.slice_folder("pages", "orderList") == "src/pages/order-list"
 
 
@@ -106,6 +120,7 @@ def test_nextjs_layout_renames_the_layers_app_and_pages() -> None:
     ]
     assert NEXTJS_LAYOUT.alias == "@/"
     assert NEXTJS_LAYOUT.server_api
+    assert NEXTJS_LAYOUT.rsc
 
 
 # trace: PRD-APP-206, PRD-APP-303, PRD-APP-304
@@ -132,7 +147,9 @@ def test_an_unknown_layer_has_no_name() -> None:
 def test_layer_writers_use_the_layer_names_of_the_layout(portal_ir: Ir) -> None:
     """The Next.js layout moves the files of `app` and `pages` and changes their imports.
 
-    All other paths and all other text are the same as in the React layout.
+    The forms, the buttons and the widgets also start with the directive
+    "use client". All other paths and all other text are the same as in the
+    React layout.
     """
     react = layer_files(portal_context(portal_ir, REACT_LAYOUT))
     nextjs = layer_files(portal_context(portal_ir, NEXTJS_LAYOUT))
@@ -144,6 +161,8 @@ def test_layer_writers_use_the_layer_names_of_the_layout(portal_ir: Ir) -> None:
         content = file.content.decode()
         for old, new in RENAMED_IMPORTS.items():
             content = content.replace(old, new)
+        if CLIENT_FOLDERS.match(path):
+            content = with_client_directive(content)
         expected[path] = content.encode()
     assert {path: file.content for path, file in nextjs.items()} == expected
     assert any(path.startswith("src/_pages/") for path in nextjs)

@@ -567,11 +567,14 @@ jobs:
 
       # The auth tests examine the role check, the server helper authorize
       # with test tokens and the redirect of the request interceptor
-      # (PRD-APP-008, PRD-APP-323, PRD-APP-324).
+      # (PRD-APP-008, PRD-APP-323, PRD-APP-324). The features and widgets
+      # tests render the client components of the slices. They examine the
+      # requests to the route handlers under /api (PRD-APP-314,
+      # PRD-APP-321).
       - name: Copy the Vitest tests
         run: |
           mkdir -p "$PROJECT/tests"
-          cp -r tests/nextjs/auth "$PROJECT/tests/"
+          cp -r tests/nextjs/auth tests/nextjs/features tests/nextjs/widgets "$PROJECT/tests/"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}

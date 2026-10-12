@@ -53,6 +53,7 @@ GENERATED_SERVER_API: Final = "index.server.gen.ts"
 
 
 # trace: PRD-APP-202, PRD-APP-205, PRD-APP-206, PRD-APP-303, PRD-APP-304, PRD-APP-305
+# trace: PRD-APP-321
 @dataclass(frozen=True, slots=True)
 class FsdLayout:
     """The layout of the FSD layers in `src/` for one target.
@@ -71,6 +72,12 @@ class FsdLayout:
     """The path alias that refers to `src/` (PRD-APP-205)."""
     server_api: bool = False
     """Tell if a slice exports its server-only modules through `index.server.ts` (PRD-APP-305)."""
+    rsc: bool = False
+    """Tell if the target has React server components.
+
+    Then each module of a slice with React hooks starts with the directive
+    `"use client"`, for example a form or a table (PRD-APP-321).
+    """
 
     def layer_name(self, layer: str) -> str:
         """Give the folder name of a layer, for example `_pages` for `pages` in Next.js."""
@@ -106,12 +113,13 @@ class FsdLayout:
 REACT_LAYOUT: Final = FsdLayout(app="app", pages="pages")
 """The layout of the React target: the standard layer names (PRD-APP-202)."""
 
-NEXTJS_LAYOUT: Final = FsdLayout(app="_app", pages="_pages", server_api=True)
-"""The layout of the Next.js target (PRD-APP-303, PRD-APP-305).
+NEXTJS_LAYOUT: Final = FsdLayout(app="_app", pages="_pages", server_api=True, rsc=True)
+"""The layout of the Next.js target (PRD-APP-303, PRD-APP-305, PRD-APP-321).
 
 The layers `app` and `pages` have the names `_app` and `_pages`, because
 the Next.js `app/` folder holds the routes. A slice exports its server-only
-modules through `index.server.ts`.
+modules through `index.server.ts`. A module with React hooks is a client
+component.
 """
 
 

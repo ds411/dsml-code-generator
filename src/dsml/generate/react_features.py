@@ -65,8 +65,8 @@ from dsml.generate.react_entities import (
     EntitySlice,
     ExternalEntitySlice,
     ZodField,
+    api_applications,
     base_chain,
-    called_applications,
     entity_slices,
     external_entity_slices,
     input_rule_chain,
@@ -1045,7 +1045,7 @@ def feature_slices(ir: Ir, application: Element) -> list[FeatureSlice]:
     entities = entity_slices(ir, application)
     by_entity = {item.entity: item for item in entities}
     items: list[FeatureSlice] = []
-    for api in called_applications(ir, application):
+    for api in api_applications(ir, application):
         found = models(ir, api)
         crud = slices(ir, api, found)
         items.extend(

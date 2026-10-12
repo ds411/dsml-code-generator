@@ -57,7 +57,7 @@ from dsml.generate.react_external import (
 )
 from dsml.generate.typescript_symbols import typescript_symbols
 from dsml.generate.writer import OutputFile
-from dsml.ir.model import Element, Ir
+from dsml.ir.model import Element, EnumValue, Ir
 
 LAYER: Final = "entities"
 """The FSD layer of this module."""
@@ -67,6 +67,9 @@ PRINT_WIDTH: Final = 80
 
 INDENT: Final = "  "
 """One level of indentation in the Prettier format."""
+
+FULL_STACK_TARGET: Final = "nextjs"
+"""The target of an application that holds its own API (PRD-APP-304)."""
 
 QUERY_OPERATIONS: Final = ("read", "list")
 """The CRUD operations that have query options. The other operations are mutations."""
@@ -351,16 +354,37 @@ def called_applications(ir: Ir, application: Element) -> list[Element]:
     return [item for item in fastapi_applications(ir) if item.identity in called]
 
 
+# trace: PRD-APP-005, PRD-APP-304
+def api_applications(ir: Ir, application: Element) -> list[Element]:
+    """Give the applications with the API that the client code of an application calls.
+
+    A `react` application calls the FastAPI applications of its `#Calls`
+    links. A `nextjs` application holds its own API: its route handlers
+    under `/api` (PRD-APP-304, PRD-APP-311). Thus it gets the slices of
+    its own entities and operations.
+    """
+    if _target(application) == FULL_STACK_TARGET:
+        return [application]
+    return called_applications(ir, application)
+
+
+def _target(application: Element) -> str | None:
+    for attribute in application.attributes:
+        if attribute.name == "target" and isinstance(attribute.value, EnumValue):
+            return attribute.value.literal
+    return None
+
+
 # trace: PRD-APP-005, PRD-APP-210
 def entity_slices(ir: Ir, application: Element) -> list[EntitySlice]:
     """Give the entity slices of a React application, sorted by slice name.
 
-    Each exposed entity of a called application gives one slice. Two called
-    applications that expose the same entity, or two entities with one slice
-    name, give a `ToolchainError`.
+    Each exposed entity of an application of `api_applications` gives one
+    slice. Two called applications that expose the same entity, or two
+    entities with one slice name, give a `ToolchainError`.
     """
     result: dict[str, EntitySlice] = {}
-    for api in called_applications(ir, application):
+    for api in api_applications(ir, application):
         by_entity: dict[str, list[Slice]] = {}
         for item in slices(ir, api, models(ir, api)):
             by_entity.setdefault(item.model.entity, []).append(item)

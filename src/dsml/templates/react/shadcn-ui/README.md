@@ -37,7 +37,7 @@ Story #172 added `alert-dialog`, `field`, `label`, `native-select` and `separato
 The shadcn CLI makes the first three changes when it copies a component into a project. The copy has the result, thus the generator does not run the CLI.
 
 1. The import of `cn` is from `@/shared/lib/utils`, the alias `utils` of `components.json`.
-2. The directive `"use client"` is removed, because `components.json` has `"rsc": false`.
+2. The directive `"use client"` is removed, because `components.json` has `"rsc": false`. The Next.js generator adds the directive again to `alert-dialog.tsx`, `field.tsx`, `label.tsx` and `separator.tsx`, because its `components.json` has `"rsc": true` (story #184).
 3. The files have the Prettier format of the generated project.
 4. `ui/button.tsx` imports `Slot` from `@radix-ui/react-slot`, not `Slot.Root` from `radix-ui`. The version baseline pins `@radix-ui/react-slot` (story #190).
 5. `ui/alert-dialog.tsx`, `ui/label.tsx` and `ui/separator.tsx` import the primitive from its own Radix UI package, for example `import * as LabelPrimitive from "@radix-ui/react-label"`, not from `radix-ui`.

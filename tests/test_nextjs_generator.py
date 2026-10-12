@@ -34,6 +34,7 @@ from dsml.generate.nextjs import (
 )
 from dsml.generate.react import dependencies
 from dsml.generate.react_common import NEXTJS_LAYOUT, ReactContext
+from dsml.generate.react_shared import SHADCN_SEGMENTS, shadcn_files
 from dsml.generate.templates import TemplateEngine
 from dsml.generate.writer import LOCKFILES, Kind, OutputFile, application_part, is_generated_name
 from dsml.ir.model import Attribute, Element, EnumValue, Ir, Location
@@ -106,6 +107,18 @@ AUTH_FILES = [
 With no view that needs a session, the generator writes no `proxy.ts`.
 """
 
+SLICE_FILES = [
+    "src/shared/api/client.gen.ts",
+    "src/shared/api/index.gen.ts",
+    "src/shared/api/index.ts",
+    *(
+        f"src/shared/{segment}/{name}"
+        for segment in SHADCN_SEGMENTS
+        for name in [*shadcn_files(segment), "index.gen.ts", "index.ts"]
+    ),
+]
+"""The files of the slices part (story #184) for an application with no entity and no view."""
+
 PART_FOLDERS = (
     "app/api/",
     "app/auth/",
@@ -117,8 +130,11 @@ PART_FOLDERS = (
     "src/_pages/",
     "src/entities/",
     "src/features/",
+    "src/shared/api/",
     "src/shared/auth/",
     "src/shared/db/",
+    "src/shared/lib/",
+    "src/shared/ui/",
     "src/widgets/",
     "standalone-migrate.gen.mjs",
 )
@@ -230,10 +246,13 @@ def test_fixed_names_and_no_lockfile(web_ir: Ir) -> None:
         ".dockerignore",
     }
     files = collect([NextjsGenerator()], web_ir, configuration(), None)
-    # Only the public API index.ts and index.server.ts of a segment are
-    # create-once files (PRD-APP-204, PRD-APP-305).
+    # Only the public API index.ts and index.server.ts of a segment, and the
+    # shadcn/ui copy, are create-once files (PRD-APP-204, PRD-APP-212,
+    # PRD-APP-305).
     assert all(
-        file.kind is Kind.GENERATED or Path(file.path).name in ("index.ts", "index.server.ts")
+        file.kind is Kind.GENERATED
+        or Path(file.path).name in ("index.ts", "index.server.ts")
+        or file.path.startswith(("order-web/src/shared/lib/", "order-web/src/shared/ui/"))
         for file in files
     )
     assert not [file.path for file in files if Path(file.path).name in LOCKFILES]
@@ -447,7 +466,7 @@ def test_generator_writes_into_the_output_folder_of_each_application() -> None:
     files = NextjsGenerator().generate(ir, settings, None)
     paths = sorted(file.path for file in files)
     assert paths == sorted(
-        f"apps/web/{path}" for path in [*PROJECT_FILES, *DATABASE_FILES, *AUTH_FILES]
+        f"apps/web/{path}" for path in [*PROJECT_FILES, *DATABASE_FILES, *AUTH_FILES, *SLICE_FILES]
     )
     assert {file.part for file in files} == {application_part("orderWeb")}
 
@@ -482,7 +501,7 @@ def test_generator_calls_each_part_module(monkeypatch: pytest.MonkeyPatch) -> No
     assert {f"src/{name}.gen.ts" for name in names} <= set(output_files(files))
 
 
-def test_part_modules_after_the_auth_give_no_file_yet() -> None:
+def test_part_modules_after_the_slices_give_no_file_yet() -> None:
     item = application()
     context = ReactContext(
         TemplateEngine(),
@@ -501,5 +520,5 @@ def test_part_modules_after_the_auth_give_no_file_yet() -> None:
         "dsml.generate.nextjs_routes",
         "dsml.generate.nextjs_pages",
     ]
-    for function in PART_FUNCTIONS[2:]:
+    for function in PART_FUNCTIONS[3:]:
         assert function(context) == [], function.__module__
