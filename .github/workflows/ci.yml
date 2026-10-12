@@ -369,6 +369,7 @@ jobs:
     env:
       CHECK: ${{ github.workspace }}/../check-output
       PROJECT: ${{ github.workspace }}/../check-output/apps/order-portal
+      EXTERNAL: ${{ github.workspace }}/../check-external
     steps:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -410,6 +411,24 @@ jobs:
       - name: Check the generated code with dsml check-output
         working-directory: ${{ env.CHECK }}
         run: uv run --project "$GITHUB_WORKSPACE" dsml check-output --application orderPortal
+
+      # Story #175: the golden project of the external API model. The
+      # application petPortal calls an imported OpenAPI file (PRD-APP-006).
+      # The IR adapter reads the file relative to the current folder.
+      - name: Copy the golden project of the external API model
+        run: |
+          mkdir -p "$EXTERNAL/apps" "$EXTERNAL/tests/models/react/external-api"
+          cp tests/models/react/external-api/dsml.toml tests/models/react/external-api/external-api.sysml "$EXTERNAL/"
+          cp tests/models/react/external-api/pet-store.openapi.json "$EXTERNAL/tests/models/react/external-api/"
+          cp -r tests/golden/react/external-api "$EXTERNAL/apps/pet-portal"
+
+      - name: Install the dependencies of the external API project
+        working-directory: ${{ env.EXTERNAL }}/apps/pet-portal
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Check the external API project with dsml check-output
+        working-directory: ${{ env.EXTERNAL }}
+        run: uv run --project "$GITHUB_WORKSPACE" dsml check-output --application petPortal
 
       # The Zod schemas must accept and refuse the same values as the
       # Pydantic models (PRD-APP-211). tests/test_react_entities.py gives

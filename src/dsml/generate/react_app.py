@@ -253,7 +253,14 @@ class AppData:
         ]
 
     def navigation_lines(self) -> list[str]:
+        """Give the lines of the constant `NAVIGATION`.
+
+        An empty navigation has an explicit type. Without it, the type of
+        the items is `never`, and `tsc` refuses the navigation component.
+        """
         items = [f"VIEWS.{route.key}" for route in self.navigation]
+        if not items:
+            return ["export const NAVIGATION: readonly View[] = [];"]
         return _list_lines("export const NAVIGATION = ", items, " as const;")
 
     def import_lines(self) -> list[str]:

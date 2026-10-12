@@ -20,6 +20,13 @@ The Zod schemas apply the same field rules as the Pydantic models
 
 The query functions call the API client `apiRequest` of the segment
 `shared/api` through its public API `@/shared/api`.
+
+A React application can also call an external API from an imported OpenAPI
+file (PRD-APP-006). Then the function gives one slice for each object
+schema of a success response of the external API (`ExternalEntitySlice`).
+The model file has the Zod schema of the object schema, and of each schema
+that it refers to. The query file has the query options of each operation
+with the method GET that gives the schema.
 """
 
 import json
@@ -39,6 +46,13 @@ from dsml.generate.react_common import (
     public_api_files,
     slice_folder,
     slice_name,
+)
+from dsml.generate.react_external import (
+    ExternalApi,
+    ExternalEntity,
+    ExternalField,
+    ExternalOperation,
+    external_apis,
 )
 from dsml.generate.typescript_symbols import typescript_symbols
 from dsml.generate.writer import OutputFile
@@ -362,12 +376,313 @@ def entity_slices(ir: Ir, application: Element) -> list[EntitySlice]:
     return [result[name] for name in sorted(result)]
 
 
+_TYPESCRIPT_TYPES: Final = {"Boolean": "boolean", "Integer": "number", "Real": "number"}
+"""The TypeScript type of a parameter of each field type. Other types are a `string`."""
+
+
+# trace: PRD-APP-006
+def schema_constant(entity: ExternalEntity) -> str:
+    """Give the name of the Zod schema of an object schema, for example `petSchema`."""
+    return f"{camel_case(entity.name)}Schema"
+
+
+# trace: PRD-APP-006, PRD-APP-211
+def external_output_chain(api: ExternalApi, item: ExternalField) -> list[str]:
+    """Give the parts of the Zod schema of one property of an external API in a response.
+
+    The OpenAPI file gives a decimal value as a number or a text. A
+    reference to an object schema uses the Zod schema of that schema. An
+    optional property can be missing or null.
+    """
+    if item.target is not None:
+        chain = [schema_constant(api.entities[item.target])]
+    else:
+        assert item.rules is not None
+        if item.rules.kind == "Decimal":
+            chain = ["z.union([z.number(), z.string()])"]
+        else:
+            chain = base_chain(item.rules)
+    if item.many:
+        return [f"z.array({''.join(chain)})"]
+    if item.optional:
+        chain.extend((".nullable()", ".optional()"))
+    return chain
+
+
+# trace: PRD-APP-006
+def typescript_type(item: ExternalField) -> str:
+    """Give the TypeScript type of one path or query parameter of an external API."""
+    assert item.rules is not None
+    if item.rules.kind == "Enumeration":
+        return " | ".join(string_literal(value) for value in item.rules.values)
+    return _TYPESCRIPT_TYPES.get(item.rules.kind, "string")
+
+
+# trace: PRD-APP-006
+def path_expression(path: str, source: str, parameters: Sequence[ExternalField]) -> str:
+    """Give the path of an operation as a TypeScript literal, with the path parameters.
+
+    `source` is the object of the values, for example `parameters`.
+    """
+    result = path
+    for item in parameters:
+        value = f"{source}.{item.name}"
+        if typescript_type(item) != "string":
+            value = f"String({value})"
+        result = result.replace(f"{{{item.name}}}", f"${{encodeURIComponent({value})}}")
+    if result == path:
+        return string_literal(path)
+    return f"`{result}`"
+
+
+# trace: PRD-APP-006
+def query_lines(indent: str, source: str, parameters: Sequence[ExternalField]) -> list[str]:
+    """Give the lines of the property `query` of a request, with the Prettier line breaks.
+
+    An optional parameter with no value is not in the query.
+    """
+    if not parameters:
+        return []
+    deeper = indent + INDENT
+    lines = [f"{indent}query: {{"]
+    for item in parameters:
+        value = f"{source}.{item.name}"
+        if not item.optional:
+            lines.append(f"{deeper}{item.name}: {value},")
+            continue
+        line = f"{deeper}...({value} == null ? {{}} : {{ {item.name}: {value} }}),"
+        if len(line) <= PRINT_WIDTH:
+            lines.append(line)
+        else:
+            lines.extend(
+                (
+                    f"{deeper}...({value} == null",
+                    f"{deeper}{INDENT}? {{}}",
+                    f"{deeper}{INDENT}: {{ {item.name}: {value} }}),",
+                )
+            )
+    lines.append(f"{indent}}},")
+    return lines
+
+
+# trace: PRD-APP-006, PRD-APP-210, PRD-APP-224
+@dataclass(frozen=True, slots=True)
+class ExternalEntitySlice:
+    """The slice of one object schema of an external API in `src/entities/`."""
+
+    api: ExternalApi
+    entity: ExternalEntity
+    queries: tuple[ExternalOperation, ...]
+    """The operations with the method GET that give the schema, sorted by name."""
+
+    @property
+    def name(self) -> str:
+        return self.entity.name
+
+    @property
+    def schemas(self) -> list[ExternalEntity]:
+        """The schema and each schema that it refers to. The schema of the slice is the last."""
+        return self.api.closure(self.entity.identity)
+
+    @property
+    def elements(self) -> list[str]:
+        """The identities of the header: the schemas and the operations, sorted."""
+        found = {item.identity for item in self.schemas}
+        found.update(item.identity for item in self.queries)
+        return sorted(found)
+
+    @property
+    def slice(self) -> str:
+        return slice_name(self.name)
+
+    @property
+    def folder(self) -> str:
+        return slice_folder(LAYER, self.name)
+
+    @property
+    def model_module(self) -> str:
+        return f"model/{file_name(self.name)}.gen"
+
+    @property
+    def queries_module(self) -> str:
+        return f"api/{file_name(self.name, 'queries')}.gen"
+
+    @property
+    def camel(self) -> str:
+        return camel_case(self.name)
+
+    @property
+    def pascal(self) -> str:
+        return pascal_case(self.name)
+
+    @property
+    def schema(self) -> str:
+        return schema_constant(self.entity)
+
+    # The lines of the model file.
+
+    def schema_lines(self, entity: ExternalEntity) -> list[str]:
+        """Give the lines of the Zod schema of one object schema, with no declaration."""
+        return object_lines(
+            "z.object",
+            [(item.name, external_output_chain(self.api, item)) for item in entity.fields],
+        )
+
+    def type_lines(self) -> list[str]:
+        line = f"export type {self.pascal} = z.infer<typeof {self.schema}>;"
+        if len(line) <= PRINT_WIDTH:
+            return [line]
+        return [f"export type {self.pascal} = z.infer<", f"{INDENT}typeof {self.schema}", ">;"]
+
+    # The lines of the query file.
+
+    @property
+    def uses_array(self) -> bool:
+        """Tell if an operation of the query file gives an array: then the file imports Zod."""
+        return any(item.response_many for item in self.queries)
+
+    def query_lines(self, operation: ExternalOperation) -> list[str]:
+        """Give the lines of the parameters, the query key and the query options of a GET."""
+        camel = camel_case(operation.name)
+        pascal = pascal_case(operation.name)
+        lines: list[str] = []
+        argument = ""
+        parameter = ""
+        if operation.parameters:
+            argument = "parameters"
+            parameter = f"parameters: {pascal}Parameters"
+            if all(item.optional for item in operation.parameters):
+                parameter += " = {}"
+            lines.append(f"/** The parameters of the operation {operation.name}. */")
+            lines.append(f"export interface {pascal}Parameters {{")
+            for item in operation.parameters:
+                place = operation.places[item.name]
+                mark = "?" if item.optional else ""
+                lines.append(f"{INDENT}/** The {place} parameter {item.name}. */")
+                lines.append(f"{INDENT}{item.name}{mark}: {typescript_type(item)};")
+            lines.extend(("}", ""))
+        key_items = [string_literal(self.slice), string_literal(camel)]
+        if argument:
+            key_items.append(argument)
+        form = "schema, operation, parameters" if argument else "schema, operation"
+        lines.append(f"/** The query key of the operation {operation.name}: [{form}]. */")
+        lines.extend(self._signature(f"{camel}QueryKey", parameter))
+        line = f"{INDENT}return [{', '.join(key_items)}] as const;"
+        if len(line) <= PRINT_WIDTH:
+            lines.append(line)
+        else:
+            lines.extend(
+                (
+                    f"{INDENT}return [",
+                    *(f"{INDENT * 2}{item}," for item in key_items),
+                    f"{INDENT}] as const;",
+                )
+            )
+        lines.extend(("}", ""))
+        lines.append(
+            f"/** The query options of the operation {operation.name}: {operation.route}. */"
+        )
+        lines.extend(self._signature(f"{camel}QueryOptions", parameter))
+        parse = f"z.array({self.schema})" if operation.response_many else self.schema
+        path = path_expression(operation.path, argument, operation.path_parameters)
+        indent = INDENT * 4
+        lines.extend(
+            (
+                f"{INDENT}return queryOptions({{",
+                f"{INDENT * 2}queryKey: {camel}QueryKey({argument}),",
+                f"{INDENT * 2}queryFn: async ({{ signal }}) => {{",
+                f"{INDENT * 3}const body = await apiRequest({{",
+                f'{indent}method: "GET",',
+                f"{indent}path: {path},",
+                *query_lines(indent, argument, operation.query_parameters),
+                f"{indent}signal,",
+                f"{INDENT * 3}}});",
+                f"{INDENT * 3}return {parse}.parse(body);",
+                f"{INDENT * 2}}},",
+                f"{INDENT}}});",
+                "}",
+            )
+        )
+        return lines
+
+    def _signature(self, function: str, parameter: str) -> list[str]:
+        line = f"export function {function}({parameter}) {{"
+        if len(line) <= PRINT_WIDTH or not parameter:
+            return [line]
+        return [f"export function {function}(", f"{INDENT}{parameter},", ") {"]
+
+
+# trace: PRD-APP-006, PRD-APP-210
+def external_entity_slices(ir: Ir, application: Element) -> list[ExternalEntitySlice]:
+    """Give the entity slices of the external APIs of a React application, sorted by slice name.
+
+    Each object schema of a success response gives one slice. An operation
+    with the method GET and no response content gives a `ToolchainError`,
+    because a query must give data. Two schemas with one slice name give a
+    `ToolchainError`.
+    """
+    result: dict[str, ExternalEntitySlice] = {}
+    for api in external_apis(ir, application):
+        queries: dict[str, list[ExternalOperation]] = {}
+        for operation in api.operations:
+            if operation.response is None:
+                if operation.method == "get":
+                    raise ToolchainError(
+                        f"The operation {operation.name} of the external API {api.name} uses "
+                        "the method GET and has no JSON response. The React target makes a "
+                        "query only for an operation that gives an object schema."
+                    )
+                continue
+            found = queries.setdefault(operation.response, [])
+            if operation.method == "get":
+                found.append(operation)
+        for identity, items in sorted(queries.items()):
+            entry = ExternalEntitySlice(api, api.entities[identity], tuple(items))
+            if entry.slice in result:
+                raise ToolchainError(
+                    f"The application {application.name} calls two external APIs with a "
+                    f'schema with the slice name "{entry.slice}". Give one of the schemas an '
+                    "other name."
+                )
+            result[entry.slice] = entry
+    return [result[name] for name in sorted(result)]
+
+
 # trace: PRD-APP-017, PRD-APP-202, PRD-APP-204, PRD-APP-210, PRD-APP-211, PRD-APP-224
-# trace: PRD-CORE-031, PRD-TRACE-005, PRD-TRACE-006
+# trace: PRD-APP-006, PRD-CORE-031, PRD-TRACE-005, PRD-TRACE-006
 def entities_files(context: ReactContext) -> list[OutputFile]:
     """Give the files of the layer `entities` of one application."""
     files: list[OutputFile] = []
-    for entity in entity_slices(context.ir, context.application):
+    entities = entity_slices(context.ir, context.application)
+    external = external_entity_slices(context.ir, context.application)
+    for name in sorted({item.slice for item in entities} & {item.slice for item in external}):
+        raise ToolchainError(
+            f"The application {context.application.name} calls an application and an "
+            f'external API with an entity slice "{name}". Give the entity or the schema an '
+            "other name."
+        )
+    for item in external:
+        modules = [item.model_module]
+        files.append(
+            _source_file(
+                context,
+                f"{item.folder}/{item.model_module}.ts",
+                "react/entities/external-model.gen.ts.j2",
+                item,
+            )
+        )
+        if item.queries:
+            modules.append(item.queries_module)
+            files.append(
+                _source_file(
+                    context,
+                    f"{item.folder}/{item.queries_module}.ts",
+                    "react/entities/external-queries.gen.ts.j2",
+                    item,
+                )
+            )
+        files.extend(public_api_files(context, item.folder, modules, item.elements))
+    for entity in entities:
         modules = [entity.model_module]
         files.append(
             _source_file(
@@ -392,7 +707,7 @@ def entities_files(context: ReactContext) -> list[OutputFile]:
 
 
 def _source_file(
-    context: ReactContext, path: str, template: str, entity: EntitySlice
+    context: ReactContext, path: str, template: str, entity: EntitySlice | ExternalEntitySlice
 ) -> OutputFile:
     data: dict[str, object] = {
         "entity": entity,

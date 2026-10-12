@@ -338,7 +338,7 @@ def test_application_with_no_views_has_the_home_route_only(shop_base: Ir) -> Non
     assert "requireView" not in routes
     assert "eslint-disable" not in routes
     views = shop_text(ir, "src/app/router/views.gen.ts")
-    assert "export const NAVIGATION = [] as const;" in views
+    assert "export const NAVIGATION: readonly View[] = [];" in views
 
 
 # trace: PRD-APP-203

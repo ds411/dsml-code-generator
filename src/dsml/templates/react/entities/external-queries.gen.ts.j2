@@ -1,0 +1,22 @@
+{#- The api segment of the entity slice of an object schema of an external
+    API: the query keys and the TanStack Query options of each operation
+    with the method GET that gives the schema (PRD-APP-006, PRD-APP-224).
+    Data: "entity" (a dsml.generate.react_entities.ExternalEntitySlice). -#}
+{% include "common/header.j2" %}
+import { queryOptions } from "@tanstack/react-query";
+{% if entity.uses_array %}
+import { z } from "zod";
+{% endif %}
+
+import { apiRequest } from "@/shared/api";
+
+import { {{ entity.schema }} } from "../{{ entity.model_module }}";
+
+/** The query key of all the queries of the schema {{ entity.name }}. */
+export const {{ entity.camel }}QueryKey = ["{{ entity.slice }}"] as const;
+{% for operation in entity.queries %}
+
+{% for line in entity.query_lines(operation) %}
+{{ line }}
+{% endfor %}
+{% endfor %}

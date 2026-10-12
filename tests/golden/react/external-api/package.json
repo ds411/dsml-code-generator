@@ -1,0 +1,61 @@
+{
+  "name": "pet-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The application petPortal. dsml generates this file. Add a dependency to the key applications.petPortal.dependencies of the configuration file, not to this file.",
+  "type": "module",
+  "packageManager": "pnpm@12.11.2",
+  "scripts": {
+    "build": "vite build",
+    "format": "prettier --check .",
+    "lint": "eslint .",
+    "steiger": "steiger ./src",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@radix-ui/react-alert-dialog": "1.2.0",
+    "@radix-ui/react-label": "2.1.17",
+    "@radix-ui/react-separator": "1.2.0",
+    "@radix-ui/react-slot": "1.5.0",
+    "@tanstack/react-form": "1.33.5",
+    "@tanstack/react-query": "5.104.2",
+    "@tanstack/react-router": "1.170.42",
+    "aws-amplify": "6.22.1",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "1.55.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwind-merge": "3.7.0",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@feature-sliced/steiger-plugin": "0.8.0",
+    "@steiger/toolkit": "0.2.3",
+    "@tailwindcss/vite": "4.3.3",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "eslint": "10.12.0",
+    "jsdom": "30.1.2",
+    "prettier": "3.9.10",
+    "steiger": "0.7.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1",
+    "vite": "8.3.4",
+    "vitest": "5.0.3"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.11.1",
+      "onFail": "download"
+    }
+  }
+}
