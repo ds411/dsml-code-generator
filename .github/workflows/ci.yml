@@ -423,10 +423,15 @@ jobs:
 
       # dsml check-output runs ruff and pyright on the FastAPI application,
       # and tsc, ESLint and Steiger from node_modules/.bin of the React
-      # application (PRD-CORE-011, PRD-APP-016, PRD-APP-234).
+      # application (PRD-CORE-011, PRD-APP-016, PRD-APP-234). The tools of
+      # the FastAPI application come from PATH. Thus the step puts the
+      # virtual environment of the generated project first on PATH: it has
+      # the pinned ruff and pyright.
       - name: Check the full output with dsml check-output
         working-directory: ${{ env.CHECK }}
-        run: uv run --project "$GITHUB_WORKSPACE" dsml check-output
+        run: |
+          export PATH="$CHECK/services/order-api/.venv/bin:$PATH"
+          uv run --project "$GITHUB_WORKSPACE" dsml check-output
 
       # Story #175: the golden project of the external API model. The
       # application petPortal calls an imported OpenAPI file (PRD-APP-006).
