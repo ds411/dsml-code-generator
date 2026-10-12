@@ -1,6 +1,6 @@
 # Command `dsml check-output`
 
-Story #134 added the subcommand `dsml check-output` (PRD-CORE-011). Story #170 added the tools of the React target. It runs the language tools on the generated code of the selected targets. The module is `src/dsml/check_output.py`.
+Story #134 added the subcommand `dsml check-output` (PRD-CORE-011). Story #170 added the tools of the React target. Story #185 added the tools of the Next.js target. It runs the language tools on the generated code of the selected targets. The module is `src/dsml/check_output.py`.
 
 ## Selection
 
@@ -14,12 +14,13 @@ Only an application check reads the model. The model gives the target of each ap
 
 ## Tools
 
-The tools come from `PATH`. The tools of a React application come first from the folder `node_modules/.bin` of the project, then from `PATH`. The tools must have the versions of `src/dsml/versions.toml` or of the generated `package.json`.
+The tools come from `PATH`. The tools of a React application and of a Next.js application come first from the folder `node_modules/.bin` of the project, then from `PATH`. The tools must have the versions of `src/dsml/versions.toml` or of the generated `package.json`.
 
 | Target | Tools | Folder | Requirements |
 | --- | --- | --- | --- |
 | FastAPI application | `ruff check --no-cache`, `ruff format --check --no-cache`, `pyright` | The output folder of the application | PRD-CORE-011, PRD-APP-016 |
 | React application | `tsc --noEmit`, `eslint .`, `steiger ./src` | The output folder of the application | PRD-CORE-011, PRD-APP-016, PRD-APP-234 |
+| Next.js application | `tsc --noEmit`, `eslint .`, `steiger ./src` | The output folder of the application | PRD-CORE-011, PRD-APP-016, PRD-APP-306 |
 | Infrastructure | `tofu fmt -check -recursive -diff` | The output folder of the infrastructure | PRD-IAC-038 |
 | Infrastructure | `tflint --init` with the AWS rule set | A temporary copy of the output folder | PRD-IAC-038 |
 | Each root module | `tofu init -backend=false`, `tofu validate`, `tflint --call-module-type=local` | The root module in the temporary copy | PRD-IAC-038 |
@@ -27,7 +28,7 @@ The tools come from `PATH`. The tools of a React application come first from the
 Notes:
 
 - pyright reads the virtual environment `.venv` of the generated project (`[tool.pyright]` in `pyproject.toml`). Run `uv sync` in the folder of the application before the check.
-- `tsc`, ESLint and Steiger of a React application come from the dependencies of the generated `package.json`. Run `pnpm install` in the folder of the application before the check. The command puts the folder `node_modules/.bin` of the application first on `PATH` for these tools. If a tool is missing, the message tells you to run `pnpm install`.
+- `tsc`, ESLint and Steiger of a React application or a Next.js application come from the dependencies of the generated `package.json`. Run `pnpm install` in the folder of the application before the check. The command puts the folder `node_modules/.bin` of the application first on `PATH` for these tools. If a tool is missing, the message tells you to run `pnpm install`.
 - Steiger reads the generated `steiger.config.ts`. ESLint reads the generated `eslint.config.js`.
 - A root module is a folder with the file `versions.gen.tf`. The command does not look in a folder with a name that starts with ".", for example `.terraform`.
 - `tofu init` writes the folder `.terraform` and the lock file. Thus `tofu init`, `tofu validate` and `tflint` run on a temporary copy of the output folder. The command deletes the copy at the end. The generated folder does not change.
@@ -53,19 +54,21 @@ The check found errors. 2 steps of 4 did not pass.
 | --- | --- |
 | Each tool passed. | 0 |
 | A tool found an error, or a tool is missing. A missing tool gives the message `The tool "<tool>" is missing.` | 1 |
-| An application with a target that has no tools in this version, for example `nextjs` | 1 |
+| An application with no target, or with a target that has no tools in this version | 1 |
 | A usage error, a missing key in the configuration file, a missing output folder, or an infrastructure folder with no root module | 2 |
 
 `tofu validate` runs only if `tofu init` passed on the same root module. `tflint` on a root module runs only if `tflint --init` passed.
 
-## Targets of later phases
+## Next.js target
 
-M11 (#156) adds the tools of the Next.js target of phase 3 (PRD-CORE-011, PRD-APP-306). They go in `src/dsml/check_output.py`, with one function for the target, like `react_steps`. Until then, an application with the target `nextjs` gives an error line, and the exit code is 1.
+`nextjs_steps` gives the same tools as `react_steps` (PRD-CORE-011, Q64). Steiger reads the generated `steiger.config.ts` of the Next.js project, and ESLint reads the generated `eslint.config.js`. Thus the FSD rules of PRD-APP-306 apply to the layers in `src/`. `docs/notes/nextjs-generator.md` gives the layout of the project.
 
 ## CI
 
 The job "Infrastructure golden HCL" of `.github/workflows/ci.yml` runs `dsml check-output --infrastructure` on the golden output of the order service. The step copies the output and writes a configuration file in a temporary folder, because a path in the configuration file cannot contain "..".
 
 The job "React golden project" runs `dsml check-output` on the full output of the order portal (stories #170 and #177). The job writes the output with `dsml generate` in a temporary folder, with the order portal model and its configuration file. It runs `pnpm install` in `apps/order-portal` and `uv sync` in `services/order-api` first. The command checks the FastAPI application `orderApi` and the React application `orderPortal`. The job also runs `dsml check-output --application petPortal` on the golden output of the external API model (story #175).
+
+The job "Next.js golden project" runs `dsml check-output --application orderWeb` on a copy of the golden order web (story #185). The step copies the order web model and its configuration file to the folder of the copy. It runs `pnpm install` first.
 
 The generated workflow `pr.gen.yml` runs `dsml check-output` through the toolchain action (PRD-CICD-005). The job installs the tools first (story #140, `docs/notes/pipeline-generator.md`).

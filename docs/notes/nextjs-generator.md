@@ -137,7 +137,7 @@ The rules of the Next.js slices:
 - `apiRequest` sends each request to `/api<path>` on the same origin, for example `/api/orders?limit=50&offset=0` (PRD-APP-311). The browser sends the cookies of the Amplify session, thus the client adds no bearer token (PRD-APP-322). A problem details response gives an `ApiError` with its `title` and `detail` (PRD-APP-227).
 - The files `alert-dialog.tsx`, `field.tsx`, `label.tsx` and `separator.tsx` of the shadcn/ui copy start with `"use client"`, as in the source, because `components.json` has `"rsc": true`.
 - No module of this part is server-only. Thus the slices have no `index.server.ts` yet. The test `test_each_server_only_module_imports_server_only` examines each server-only module of the full output: it imports `server-only`, and only `index.server.gen.ts` of its folder exports it (PRD-APP-305).
-- Steiger finds no error in the golden project (PRD-APP-306).
+- Steiger finds no error in the golden project (PRD-APP-306). Story #185 added the Next.js tools to `dsml check-output`. The CI job runs `dsml check-output --application orderWeb` on the golden project (`docs/notes/check-output.md`).
 
 The Vitest tests render the client components in jsdom and replace `fetch`. The features test examines the request of the form `cancelOrder` to `/api/orders/<id>/cancel`, a field error, a problem details error and the invalidation of the order queries after a delete. The widgets test examines the requests of the table and of the details. The CI job copies the folders to `tests/features/` and `tests/widgets/` of the golden project. V-004 of the order web names `tests/features/features.test.tsx`.
 

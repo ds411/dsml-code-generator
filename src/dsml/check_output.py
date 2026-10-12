@@ -1,4 +1,4 @@
-# trace: PRD-CORE-011, PRD-IAC-038, PRD-APP-234
+# trace: PRD-CORE-011, PRD-IAC-038, PRD-APP-234, PRD-APP-306
 """Run the language tools on the generated code: the subcommand `dsml check-output`.
 
 The tools of each phase 1 target are:
@@ -6,10 +6,10 @@ The tools of each phase 1 target are:
 - FastAPI application: `ruff check`, `ruff format --check` and `pyright`.
   The tools run in the output folder of the application. pyright reads the
   virtual environment `.venv` of the project, thus `uv sync` must run first.
-- React application: `tsc --noEmit`, `eslint .` and `steiger ./src`. The
-  tools run in the output folder of the application. They come from the
-  folder `node_modules/.bin` of the project, thus `pnpm install` must run
-  first.
+- React application and Next.js application: `tsc --noEmit`, `eslint .`
+  and `steiger ./src`. The tools run in the output folder of the
+  application. They come from the folder `node_modules/.bin` of the
+  project, thus `pnpm install` must run first.
 - Infrastructure: `tofu fmt -check` on the output folder, then
   `tofu init -backend=false`, `tofu validate` and `tflint` with the AWS rule
   set on each root module (PRD-IAC-038). A root module is a folder with the
@@ -19,10 +19,9 @@ The tools of each phase 1 target are:
 infrastructure tools other than `tofu fmt` run on a temporary copy of the
 output folder. The generated folder does not change.
 
-The tools come from `PATH`. The tools of a React application come first
-from `node_modules/.bin`, then from `PATH`. A missing tool is an error with
-the tool name (PRD-CORE-011). The Next.js target of phase 3 has no tools in
-this version.
+The tools come from `PATH`. The tools of a React application and of a
+Next.js application come first from `node_modules/.bin`, then from `PATH`.
+A missing tool is an error with the tool name (PRD-CORE-011).
 """
 
 import os
@@ -46,8 +45,11 @@ FASTAPI: Final = "fastapi"
 REACT: Final = "react"
 """The target of a React application in the model."""
 
+NEXTJS: Final = "nextjs"
+"""The target of a Next.js application in the model."""
+
 NODE_TOOLS: Final = PurePosixPath("node_modules/.bin")
-"""The folder of the tools of a React project, relative to its output folder."""
+"""The folder of the tools of a Node.js project, relative to its output folder."""
 
 ROOT_MODULE_FILE: Final = "versions.gen.tf"
 """Each root module of the infrastructure has this file."""
@@ -161,6 +163,8 @@ def check_output(
             steps.extend(fastapi_steps(root, application))
         elif application.target == REACT:
             steps.extend(react_steps(root, application))
+        elif application.target == NEXTJS:
+            steps.extend(nextjs_steps(root, application))
         else:
             results.append(_not_supported(application))
     if not infrastructure:
@@ -200,7 +204,22 @@ def fastapi_steps(root: Path, application: ApplicationCode) -> list[Step]:
 
 # trace: PRD-CORE-011, PRD-APP-016, PRD-APP-234
 def react_steps(root: Path, application: ApplicationCode) -> list[Step]:
-    """Give the tools of one React application: `tsc`, ESLint and Steiger.
+    """Give the tools of one React application: `tsc`, ESLint and Steiger."""
+    return _node_steps(root, application)
+
+
+# trace: PRD-CORE-011, PRD-APP-016, PRD-APP-306
+def nextjs_steps(root: Path, application: ApplicationCode) -> list[Step]:
+    """Give the tools of one Next.js application: `tsc`, ESLint and Steiger.
+
+    The tools are the same as the tools of a React application. Steiger
+    reads the generated `steiger.config.ts` of the Next.js project.
+    """
+    return _node_steps(root, application)
+
+
+def _node_steps(root: Path, application: ApplicationCode) -> list[Step]:
+    """Give `tsc`, ESLint and Steiger for one Node.js project.
 
     The tools come first from the folder `node_modules/.bin` of the project.
     The path of this folder is absolute, because the tools run in the output
