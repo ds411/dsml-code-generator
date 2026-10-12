@@ -1,0 +1,109 @@
+{#- The segment shared/api of the Next.js target: the client of the route
+    handlers (PRD-APP-014, PRD-APP-227, PRD-APP-314). The entity and feature
+    slices call apiRequest through the public API @/shared/api. The route
+    handlers are on the same origin under the path prefix /api (PRD-APP-311).
+    The browser sends the cookies of the Amplify session with each request
+    (PRD-APP-322). Data: "problem_media_type", "api_prefix". -#}
+{% include "common/header.j2" %}
+import { z } from "zod";
+
+/** One request to a route handler of the application. */
+export interface ApiRequest {
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  /** The path of the operation, after the path prefix of the API. */
+  path: string;
+  /** The query parameters. */
+  query?: Readonly<Record<string, string | number | boolean>>;
+  /** The request body. The client sends it as JSON. */
+  body?: unknown;
+  signal?: AbortSignal;
+}
+
+/** The path prefix of the route handlers. */
+export const API_PREFIX = "{{ api_prefix }}";
+
+/** The media type of a problem details response (RFC 9457). */
+export const PROBLEM_MEDIA_TYPE = "{{ problem_media_type }}";
+
+/** The members of a problem details response that the client uses. */
+export const problemSchema = z.object({
+  title: z.string().optional(),
+  detail: z.string().optional(),
+});
+
+/**
+ * An error response of the API. The message has the title and the detail
+ * of the problem details response.
+ */
+export class ApiError extends Error {
+  readonly status: number;
+  readonly title: string;
+  readonly detail: string | undefined;
+
+  constructor(status: number, title: string, detail?: string) {
+    super(detail === undefined ? title : `${title}: ${detail}`);
+    this.name = "ApiError";
+    this.status = status;
+    this.title = title;
+    this.detail = detail;
+  }
+}
+
+/** Give the URL of a request on this site: the path prefix, the path and the query. */
+export function apiUrl(path: string, query: ApiRequest["query"] = {}): string {
+  const parameters = new URLSearchParams();
+  for (const [name, value] of Object.entries(query)) {
+    parameters.set(name, String(value));
+  }
+  const search = parameters.toString();
+  return `${API_PREFIX}${path}${search === "" ? "" : `?${search}`}`;
+}
+
+/**
+ * Send a request to a route handler and give the JSON body of the
+ * response. A response with no body gives `undefined`. The browser sends
+ * the session cookies, thus the client adds no token. An error response
+ * gives an ApiError.
+ */
+export async function apiRequest(request: ApiRequest): Promise<unknown> {
+  const headers = new Headers({
+    Accept: `application/json, ${PROBLEM_MEDIA_TYPE}`,
+  });
+  let body: string | null = null;
+  if (request.body !== undefined) {
+    headers.set("Content-Type", "application/json");
+    body = JSON.stringify(request.body);
+  }
+  const response = await fetch(apiUrl(request.path, request.query), {
+    method: request.method,
+    headers,
+    body,
+    credentials: "same-origin",
+    signal: request.signal ?? null,
+  });
+  if (!response.ok) {
+    throw await apiError(response);
+  }
+  const text = await response.text();
+  return text === "" ? undefined : (JSON.parse(text) as unknown);
+}
+
+/** Give the ApiError of an error response. */
+async function apiError(response: Response): Promise<ApiError> {
+  const fallback =
+    response.statusText || `The status is ${String(response.status)}.`;
+  const mediaType = response.headers.get("Content-Type") ?? "";
+  if (mediaType.split(";")[0]?.trim().toLowerCase() !== PROBLEM_MEDIA_TYPE) {
+    return new ApiError(response.status, fallback);
+  }
+  const body: unknown = await response.json().catch(() => undefined);
+  const problem = problemSchema.safeParse(body);
+  if (!problem.success) {
+    return new ApiError(response.status, fallback);
+  }
+  return new ApiError(
+    response.status,
+    problem.data.title ?? fallback,
+    problem.data.detail,
+  );
+}

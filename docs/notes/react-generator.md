@@ -62,6 +62,7 @@ Story #179 lets the layer modules write the layer names of the Next.js target (P
 | Folders of the other layers | `src/<layer>` | `src/<layer>` |
 | Path alias of `src/` | `@/` | `@/` |
 | Server-only public API `index.server.ts` | No | Yes |
+| Directive `"use client"` in the forms, the buttons and the widgets (`rsc`) | No | Yes |
 
 - `layer_folder` gives the folder of a layer. `slice_folder` gives the folder of a slice. The method `folder(layout)` of each slice class uses it.
 - `import_path` gives the import path of a layer or of a slice with the alias, for example `@/_pages/order-list`. The import methods of the slice classes and the templates of the layers use it. The project templates of the React target, for example `main.gen.tsx.j2`, keep the React layer names.

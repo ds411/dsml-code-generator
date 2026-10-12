@@ -117,6 +117,30 @@ The interceptor calls `requireSession`. With no session, it sends HTTP 307 to `/
 - `tests/nextjs/auth/auth.test.ts` is a Vitest test. The CI job copies it into the golden project. It replaces the Amplify adapter and gives test tokens. It examines the 401 and 403 results of `authorize`, the redirect of the interceptor and the path after the login.
 - The CI job gets `/orders` from the container with no session. The response must be HTTP 307 to `/auth/login?next=%2Forders`.
 
+## Entity, feature and widget slices
+
+Story #184 added the slices part: `src/dsml/generate/nextjs_slices.py` and the template `src/dsml/templates/nextjs/slices/client.gen.ts.j2`. The module uses the layer writers of the React target with `NEXTJS_LAYOUT` (PRD-APP-304). `docs/notes/react-generator.md` gives the rules of the entities, features and widgets layers. The tests are in `tests/test_nextjs_slices.py`, `tests/nextjs/features/` and `tests/nextjs/widgets/`.
+
+A `nextjs` application holds its own API. Thus the function `api_applications` of `react_entities.py` gives the application itself, and the slices come from its own entities and operations. A `react` application gets the applications of its `#Calls` links, as before.
+
+| Files | Content | Requirements |
+| --- | --- | --- |
+| `src/entities/<entity>/` | The types, the Zod schemas and the query options of each exposed entity. | PRD-APP-210, PRD-APP-211, PRD-APP-224 |
+| `src/features/<operation>/` (client files) | The mutation, and the form or the delete button, of each operation with a change. | PRD-APP-210, PRD-APP-225, PRD-APP-226, PRD-APP-228, PRD-APP-321 |
+| `src/widgets/<entity>-list/`, `src/widgets/<entity>-details/` | The table and the details of the entities of the views. | PRD-APP-210, PRD-APP-228 |
+| `src/shared/api/client.gen.ts` | `apiRequest`: the client of the route handlers. | PRD-APP-014, PRD-APP-227, PRD-APP-314 |
+| `src/shared/ui/`, `src/shared/lib/` | The pinned copy of shadcn/ui, as create-once files. | PRD-APP-212, PRD-CORE-048 |
+
+The rules of the Next.js slices:
+
+- The forms, the delete buttons and the widgets are client components. They start with the directive `"use client"` after the header (PRD-APP-321). The layout item `rsc` of `NEXTJS_LAYOUT` sets the directive in the React templates. The mutation files, the model files and the query files have no directive.
+- `apiRequest` sends each request to `/api<path>` on the same origin, for example `/api/orders?limit=50&offset=0` (PRD-APP-311). The browser sends the cookies of the Amplify session, thus the client adds no bearer token (PRD-APP-322). A problem details response gives an `ApiError` with its `title` and `detail` (PRD-APP-227).
+- The files `alert-dialog.tsx`, `field.tsx`, `label.tsx` and `separator.tsx` of the shadcn/ui copy start with `"use client"`, as in the source, because `components.json` has `"rsc": true`.
+- No module of this part is server-only. Thus the slices have no `index.server.ts` yet. The test `test_each_server_only_module_imports_server_only` examines each server-only module of the full output: it imports `server-only`, and only `index.server.gen.ts` of its folder exports it (PRD-APP-305).
+- Steiger finds no error in the golden project (PRD-APP-306).
+
+The Vitest tests render the client components in jsdom and replace `fetch`. The features test examines the request of the form `cancelOrder` to `/api/orders/<id>/cancel`, a field error, a problem details error and the invalidation of the order queries after a delete. The widgets test examines the requests of the table and of the details. The CI job copies the folders to `tests/features/` and `tests/widgets/` of the golden project. V-004 of the order web names `tests/features/features.test.tsx`.
+
 ## Notes for the next stories
 
 - The golden test of each part story compares only the files of its part. `PART_FOLDERS` in `tests/test_nextjs_generator.py` gives these folders. `src/_app/api-routes/healthz.gen.ts` belongs to the project files.
@@ -126,3 +150,5 @@ The interceptor calls `requireSession`. With no session, it sends HTTP 307 to `/
 - ESLint does not examine the scripts `*.gen.mjs`, because the type-aware rules need the TypeScript project.
 - The root layout has no providers and no style sheet yet. Story #188 adds the providers, the navigation and the style sheet `src/_app/styles/index.css` of `components.json`. A client component that calls Amplify Auth, for example a logout button, must first call `configureAuth` of `@/shared/auth` with `usePublicConfig()` and `window.location.origin`.
 - The CI job runs Vitest with no tests. The part stories add their tests.
+- Story #186 writes the server functions in `src/features/<operation>/api/`. A slice with a server function must also get `index.server.gen.ts` and `index.server.ts`. Give the server modules to `public_api_files` of the slice. The feature slices of story #184 have only `index.gen.ts` and `index.ts`.
+- The route handlers (#186) must accept the requests of `apiRequest`: the paths of the FastAPI contract after `/api`, and the session in the cookies.
