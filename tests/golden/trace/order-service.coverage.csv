@@ -3,4 +3,4 @@
 # baseline commit: none
 requirement,needs,satisfiedBy,generatedFiles,traceComments,verifications,status
 R-001,N-001,OrderService::orderApi,,app/features/order/read_order/test_endpoint.py:1,V-001,verified
-R-002,N-001,,,,,missing
+R-002,N-001,OrderService::prod::orderDbProd,,,V-002,verified

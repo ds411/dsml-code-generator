@@ -13,64 +13,8 @@
                   "uri": "order-service.sysml"
                 },
                 "region": {
-                  "startColumn": 5,
-                  "startLine": 28
-                }
-              }
-            },
-            {
-              "logicalLocations": [
-                {
-                  "fullyQualifiedName": "R-002"
-                }
-              ]
-            }
-          ],
-          "message": {
-            "text": "The requirement R-002 has the status \"approved\" but no satisfying element."
-          },
-          "ruleId": "COV-003",
-          "ruleIndex": 7
-        },
-        {
-          "level": "warning",
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "order-service.sysml"
-                },
-                "region": {
-                  "startColumn": 5,
-                  "startLine": 28
-                }
-              }
-            },
-            {
-              "logicalLocations": [
-                {
-                  "fullyQualifiedName": "R-002"
-                }
-              ]
-            }
-          ],
-          "message": {
-            "text": "The requirement R-002 has the status \"approved\" but no verification."
-          },
-          "ruleId": "COV-004",
-          "ruleIndex": 8
-        },
-        {
-          "level": "warning",
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "order-service.sysml"
-                },
-                "region": {
                   "startColumn": 9,
-                  "startLine": 102
+                  "startLine": 103
                 }
               }
             },

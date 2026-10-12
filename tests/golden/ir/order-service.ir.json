@@ -1384,7 +1384,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/examples/order-service.sysml",
-            "line": 101
+            "line": 102
           },
           "name": "method",
           "value": {
@@ -1397,7 +1397,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/examples/order-service.sysml",
-            "line": 102
+            "line": 103
           },
           "name": "testFiles",
           "value": {
@@ -1414,7 +1414,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/examples/order-service.sysml",
-            "line": 100
+            "line": 101
           },
           "name": "title",
           "value": {
@@ -1430,13 +1430,58 @@
       "location": {
         "column": 5,
         "file": "docs/model/examples/order-service.sysml",
-        "line": 99
+        "line": 100
       },
       "multiplicity": null,
       "name": "orderStatusTest",
       "owner": "OrderService",
       "qualifiedName": "OrderService::orderStatusTest",
       "shortName": "V-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 109
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "analysis",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-service.sysml",
+            "line": 108
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order database in two zones analysis"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Evidence: the IR adapter evaluates the formal constraint of R-002 on the prod override orderDbProd. The result is true.",
+      "identity": "V-002",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 106
+      },
+      "multiplicity": null,
+      "name": "orderDataSafeAnalysis",
+      "owner": "OrderService",
+      "qualifiedName": "OrderService::orderDataSafeAnalysis",
+      "shortName": "V-002",
       "types": []
     }
   ],
@@ -1530,6 +1575,16 @@
       "location": {
         "column": 5,
         "file": "docs/model/examples/order-service.sysml",
+        "line": 97
+      },
+      "source": "OrderService::prod::orderDbProd",
+      "target": "R-002",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-service.sysml",
         "line": 85
       },
       "source": "OrderService::usersAws",
@@ -1560,10 +1615,20 @@
       "location": {
         "column": 21,
         "file": "docs/model/examples/order-service.sysml",
-        "line": 103
+        "line": 104
       },
       "source": "V-001",
       "target": "R-001",
+      "type": "verify"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-service.sysml",
+        "line": 110
+      },
+      "source": "V-002",
+      "target": "R-002",
       "type": "verify"
     }
   ]
