@@ -523,35 +523,63 @@ def _sort_key(action: argparse.Action) -> tuple[int, str]:
 
 
 # trace: PRD-AI-007, PRD-AI-015, PRD-CORE-028
+def _command_rows(sub: argparse.ArgumentParser, common: set[str]) -> str:
+    """Give the rows of the arguments of `sub` that are not in `common`."""
+    own = sorted(
+        (action for action in _arguments(sub) if _argument_name(action) not in common),
+        key=_sort_key,
+    )
+    return _argument_rows(own) if own else "The subcommand has no other options."
+
+
+# trace: PRD-AI-007, PRD-AI-015, PRD-CORE-028
 def commands() -> str:
-    """Give the `commands` part: each `dsml` subcommand with its options."""
+    """Give the `commands` part: each `dsml` subcommand with its options.
+
+    The common options are the options that all subcommands with `--config`
+    accept. A subcommand without `--config`, for example `dsml mcp`, gives all
+    its options. A subcommand with actions, for example `dsml skills`, gives
+    each action and its options.
+    """
     parser = build_parser()
     subcommands = _subcommands(parser)
     names = sorted(subcommands)
-    option_sets = [
-        {_argument_name(action) for action in _arguments(subcommands[name][1])} for name in names
-    ]
-    common: set[str] = set(option_sets[0]) if option_sets else set()
-    for options in option_sets[1:]:
-        common &= options
+    option_sets = {
+        name: {_argument_name(action) for action in _arguments(subcommands[name][1])}
+        for name in names
+    }
+    with_config = [name for name in names if "--config" in option_sets[name]]
+    common: set[str] = set(option_sets[with_config[0]]) if with_config else set()
+    for name in with_config[1:]:
+        common &= option_sets[name]
+    others = [name for name in names if not common <= option_sets[name]]
     sections: list[str] = []
-    if names:
-        first = _arguments(subcommands[names[0]][1])
+    if common:
+        first = _arguments(subcommands[with_config[0]][1])
         shared = sorted(
             (action for action in first if _argument_name(action) in common), key=_sort_key
         )
-        sections += [
-            "## Common options",
-            "Each subcommand accepts these options.\n\n" + _argument_rows(shared),
-        ]
+        text = "Each subcommand accepts these options"
+        if others:
+            text += ", except " + " and ".join(f"`{parser.prog} {name}`" for name in others)
+        sections += ["## Common options", f"{text}.\n\n" + _argument_rows(shared)]
     for name in names:
         summary, sub = subcommands[name]
-        own = sorted(
-            (action for action in _arguments(sub) if _argument_name(action) not in common),
-            key=_sort_key,
-        )
+        skipped: set[str] = set() if name in others else common
         lines = [f"## `{parser.prog} {name}`", "", sub.description or summary]
-        lines += ["", _argument_rows(own) if own else "The subcommand has no other options."]
+        actions = _subcommands(sub)
+        if not actions:
+            lines += ["", _command_rows(sub, skipped)]
+        for action in sorted(actions):
+            action_summary, action_parser = actions[action]
+            lines += [
+                "",
+                f"### `{parser.prog} {name} {action}`",
+                "",
+                action_parser.description or action_summary,
+                "",
+                _command_rows(action_parser, skipped),
+            ]
         sections.append("\n".join(lines))
     introduction = "\n".join(
         [

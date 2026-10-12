@@ -14,6 +14,8 @@ from dsml.cli import Outcome, main
 from dsml.errors import ToolchainError
 
 SUBCOMMANDS = ("init", "validate", "generate", "trace", "ir", "check-output", "version")
+AI_SUBCOMMANDS = ("skills", "mcp")
+"""The subcommands for AI agents (story #229). They do not have the common options."""
 VERSION_TEXT = (
     f"toolchain: {metadata.version('dsml')}\n"
     "DSML library: 1.1.0\n"
@@ -29,13 +31,13 @@ def test_version_writes_the_versions(capsys: pytest.CaptureFixture[str]) -> None
     assert captured.err == ""
 
 
-def test_help_lists_the_seven_subcommands(capsys: pytest.CaptureFixture[str]) -> None:
+def test_help_lists_the_nine_subcommands(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit) as stop:
         main(["--help"])
     assert stop.value.code == 0
     out = capsys.readouterr().out
     listed = [line.split()[0] for line in out.splitlines() if re.match(r"    \S", line)]
-    assert sorted(listed) == sorted(SUBCOMMANDS)
+    assert sorted(listed) == sorted(SUBCOMMANDS + AI_SUBCOMMANDS)
 
 
 @pytest.mark.parametrize("command", SUBCOMMANDS)

@@ -131,6 +131,28 @@ def test_wheel_contains_the_templates(wheel_files: set[str]) -> None:
     assert _package_files(PACKAGE / "starter", "*") <= wheel_files
 
 
+# trace: PRD-AI-001, PRD-AI-008
+def test_wheel_contains_the_skills_and_the_mcp_server(wheel_files: set[str]) -> None:
+    assert "dsml/skills/__init__.py" in wheel_files
+    assert _package_files(PACKAGE / "skills", "*") <= wheel_files
+    mcp = {f"dsml/mcp/{name}.py" for name in ("server", "project", "tools_model", "prompts")}
+    assert mcp <= wheel_files
+    assert _package_files(PACKAGE / "mcp", "*.py") <= wheel_files
+
+
+# trace: PRD-TOP-002, PRD-AI-009
+def test_wheel_has_the_mcp_sdk_only_in_the_optional_group_mcp(package_dir: Path) -> None:
+    with zipfile.ZipFile(package_dir / WHEEL_NAME) as wheel:
+        metadata = wheel.read(f"dsml-{VERSION}.dist-info/METADATA").decode()
+    requires = sorted(line for line in metadata.splitlines() if line.startswith("Requires-Dist:"))
+    assert requires == [
+        "Requires-Dist: jinja2==3.1.6",
+        "Requires-Dist: mcp==2.3.0 ; extra == 'mcp'",
+        "Requires-Dist: opensysml==0.9.2",
+    ]
+    assert "\nProvides-Extra: mcp\n" in metadata
+
+
 # trace: PRD-CORE-047
 def test_wheel_gives_the_command_dsml(package_dir: Path) -> None:
     with zipfile.ZipFile(package_dir / WHEEL_NAME) as wheel:
