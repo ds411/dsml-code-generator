@@ -1,7 +1,13 @@
 {#- The Steiger configuration of the React target (PRD-APP-234): the
-    recommended rules of the FSD plugin. -#}
+    recommended rules of the FSD plugin. The rule fsd/repetitive-naming is
+    off, because the slice names are the names of the model elements
+    (PRD-APP-206). For example, the feature slices create-order and
+    place-order both contain the word "order". -#}
 {% include "common/header.j2" %}
 import fsd from "@feature-sliced/steiger-plugin";
 import { defineConfig } from "steiger";
 
-export default defineConfig(fsd.configs.recommended);
+export default defineConfig([
+  ...fsd.configs.recommended,
+  { rules: { "fsd/repetitive-naming": "off" } },
+]);

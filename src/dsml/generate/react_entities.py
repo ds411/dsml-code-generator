@@ -30,6 +30,7 @@ from typing import Final
 from dsml.errors import ToolchainError
 from dsml.generate.fastapi import applications as fastapi_applications
 from dsml.generate.fastapi_database import models
+from dsml.generate.fastapi_examples import Rules
 from dsml.generate.fastapi_slices import LIMIT_DEFAULT, LIMIT_MAX, SchemaField, Slice, slices
 from dsml.generate.names import camel_case, pascal_case
 from dsml.generate.react_common import (
@@ -108,21 +109,7 @@ class ZodField:
         nullable field can have the value `null` and can be missing. Each
         field of the update input can be missing (PRD-APP-111).
         """
-        rules = self.field.rules
-        if self.decimal:
-            chain = [f"decimal({self._decimal_rules()})"]
-        else:
-            chain = self._base()
-            if rules.min_length is not None:
-                chain.append(f".min({rules.min_length})")
-            if rules.max_length is not None:
-                chain.append(f".max({rules.max_length})")
-            if rules.min_value is not None:
-                chain.append(f".min({_number(rules.min_value)})")
-            if rules.max_value is not None:
-                chain.append(f".max({_number(rules.max_value)})")
-            if rules.pattern is not None:
-                chain.append(f".regex(new RegExp({_string(rules.pattern)}))")
+        chain = input_rule_chain(self.field.rules)
         if self.field.nullable:
             chain.extend((".nullable()", ".optional()"))
         elif operation == "update":
@@ -131,22 +118,53 @@ class ZodField:
 
     def _base(self) -> list[str]:
         """Give the head and the first call of the Zod schema of the field type."""
-        rules = self.field.rules
-        if rules.kind == "Enumeration":
-            return ["z", f".enum([{', '.join(_string(value) for value in rules.values)}])"]
-        return list(_OUTPUT_TYPES[rules.kind])
+        return base_chain(self.field.rules)
 
-    def _decimal_rules(self) -> str:
-        """Give the object of the rules of a decimal field, for the function `decimal`."""
-        rules = self.field.rules
-        precision = rules.precision or 0
-        scale = rules.scale or 0
-        items = [f"whole: {precision - scale}", f"places: {scale}"]
-        if rules.min_value is not None:
-            items.append(f"min: {_number(rules.min_value)}")
-        if rules.max_value is not None:
-            items.append(f"max: {_number(rules.max_value)}")
-        return "{ " + ", ".join(items) + " }"
+
+# trace: PRD-APP-112, PRD-APP-211
+def base_chain(rules: Rules) -> list[str]:
+    """Give the head and the first call of the Zod schema of a field type in a response."""
+    if rules.kind == "Enumeration":
+        return ["z", f".enum([{', '.join(string_literal(value) for value in rules.values)}])"]
+    return list(_OUTPUT_TYPES[rules.kind])
+
+
+# trace: PRD-APP-112, PRD-APP-211
+def input_rule_chain(rules: Rules) -> list[str]:
+    """Give the parts of the Zod schema of one value in a request, with the field rules.
+
+    A decimal value with a precision uses the function `decimal` of the
+    generated file. A decimal value with no precision, for example an `in`
+    parameter of a custom operation, uses the function `decimalValue`.
+    """
+    if rules.kind == "Decimal":
+        if rules.precision is None:
+            return ["decimalValue()"]
+        return [f"decimal({_decimal_rules(rules)})"]
+    chain = base_chain(rules)
+    if rules.min_length is not None:
+        chain.append(f".min({rules.min_length})")
+    if rules.max_length is not None:
+        chain.append(f".max({rules.max_length})")
+    if rules.min_value is not None:
+        chain.append(f".min({number_literal(rules.min_value)})")
+    if rules.max_value is not None:
+        chain.append(f".max({number_literal(rules.max_value)})")
+    if rules.pattern is not None:
+        chain.append(f".regex(new RegExp({string_literal(rules.pattern)}))")
+    return chain
+
+
+def _decimal_rules(rules: Rules) -> str:
+    """Give the object of the rules of a decimal value, for the function `decimal`."""
+    precision = rules.precision or 0
+    scale = rules.scale or 0
+    items = [f"whole: {precision - scale}", f"places: {scale}"]
+    if rules.min_value is not None:
+        items.append(f"min: {number_literal(rules.min_value)}")
+    if rules.max_value is not None:
+        items.append(f"max: {number_literal(rules.max_value)}")
+    return "{ " + ", ".join(items) + " }"
 
 
 # trace: PRD-APP-005, PRD-APP-210, PRD-APP-224
@@ -229,14 +247,14 @@ class EntitySlice:
     # The lines of the model file.
 
     def output_lines(self) -> list[str]:
-        return _object_lines("z.object", [(item.name, item.output_chain()) for item in self.fields])
+        return object_lines("z.object", [(item.name, item.output_chain()) for item in self.fields])
 
     def input_lines(self, operation: str) -> list[str]:
         """Give the lines of the input schema of `create` or `update`. The key is not in it."""
         fields = [
             (item.name, item.input_chain(operation)) for item in self.fields if not item.field.key
         ]
-        return _object_lines("z.strictObject", fields)
+        return object_lines("z.strictObject", fields)
 
     def input_doc(self, operation: str) -> str:
         if operation == "update":
@@ -291,7 +309,7 @@ class EntitySlice:
     def list_path(self) -> str:
         item = self.operation("list")
         assert item is not None
-        return _string(item.path)
+        return string_literal(item.path)
 
     def route(self, kind: str) -> str:
         """Give the method and the path of an operation, for example `GET /orders/{id}`."""
@@ -386,7 +404,7 @@ def _source_file(
     return OutputFile(file.path, file.content, file.kind, file.part, symbols)
 
 
-def _object_lines(function: str, fields: Sequence[tuple[str, list[str]]]) -> list[str]:
+def object_lines(function: str, fields: Sequence[tuple[str, list[str]]]) -> list[str]:
     """Give the lines of a Zod object schema in the Prettier format, with no last line end."""
     if not fields:
         return [f"{function}({{}});"]
@@ -415,14 +433,14 @@ def _property_lines(name: str, chain: list[str]) -> list[str]:
     ]
 
 
-def _number(value: int | float) -> str:
+def number_literal(value: int | float) -> str:
     """Give a number in the Prettier format of JavaScript."""
     if isinstance(value, float) and value.is_integer():
         value = int(value)
     return repr(value).replace("e+", "e")
 
 
-def _string(text: str) -> str:
+def string_literal(text: str) -> str:
     """Give a JavaScript string literal in the Prettier format.
 
     Prettier uses double quotes, except when the text has more double

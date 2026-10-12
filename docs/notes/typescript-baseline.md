@@ -32,6 +32,10 @@ Story #158 added the items of the React and Next.js targets to the version basel
 | `tailwindcss-vite` | `@tailwindcss/vite` | 4 | 4.3.3 | MIT |
 | `shadcn-ui` | `shadcn` (the CLI release of the copy) | 4 | 4.21.4 | MIT |
 | `radix-ui-react-slot` | `@radix-ui/react-slot` | 1 | 1.5.0 | MIT |
+| `radix-ui-react-alert-dialog` | `@radix-ui/react-alert-dialog` | 1 | 1.2.0 | MIT |
+| `radix-ui-react-label` | `@radix-ui/react-label` | 2 | 2.1.17 | MIT |
+| `radix-ui-react-separator` | `@radix-ui/react-separator` | 1 | 1.2.0 | MIT |
+| `lucide-react` | `lucide-react` | 1 | 1.55.0 | ISC |
 | `class-variance-authority` | `class-variance-authority` | 0.7 | 0.7.1 | Apache-2.0 |
 | `clsx` | `clsx` | 2 | 2.1.1 | MIT |
 | `tailwind-merge` | `tailwind-merge` | 3 | 3.7.0 | MIT |
@@ -49,8 +53,14 @@ Story #158 added the items of the React and Next.js targets to the version basel
 | `eslint-js` | `@eslint/js` | 10 | 10.0.1 | MIT |
 | `typescript-eslint` | `typescript-eslint` | 8 | 8.71.1 | MIT |
 | `vitest` | `vitest` | 5 | 5.0.3 | MIT |
+| `jsdom` | `jsdom` | 30 | 30.1.2 | MIT |
+| `testing-library-dom` | `@testing-library/dom` | 10 | 10.4.2 | MIT |
+| `testing-library-react` | `@testing-library/react` | 16 | 16.3.3 | MIT |
+| `testing-library-user-event` | `@testing-library/user-event` | 14 | 14.6.7 | MIT |
 
-MIT and Apache-2.0 are permissive licenses. The company accepts them for internal software (PRD-TOP-007).
+Story #172 added the items of the Radix UI packages, `lucide-react`, `jsdom` and Testing Library. The shadcn/ui components of the features layer need the Radix UI packages and `lucide-react`. The component tests need `jsdom` and Testing Library. Each version is the newest release of its line on 12 October 2026.
+
+MIT, Apache-2.0 and ISC are permissive licenses. The company accepts them for internal software (PRD-TOP-007).
 
 ## Copy of shadcn/ui
 

@@ -316,6 +316,24 @@ version = "1.33.5"
 line = "4"
 version = "4.6.6"
 
+# The DOM and the testing library of the component tests with Vitest
+# (story #172).
+[jsdom]
+line = "30"
+version = "30.1.2"
+
+[testing-library-dom]
+line = "10"
+version = "10.4.2"
+
+[testing-library-react]
+line = "16"
+version = "16.3.3"
+
+[testing-library-user-event]
+line = "14"
+version = "14.6.7"
+
 [tailwindcss]
 line = "4"
 version = "4.3.3"
@@ -339,6 +357,24 @@ value = "3464245c4513b7998b1d11fa9c67b71cc1534dc7"
 [radix-ui-react-slot]
 line = "1"
 version = "1.5.0"
+
+# The Radix UI packages and the icons of the form components and of the
+# confirmation dialog of the features layer (story #172).
+[radix-ui-react-alert-dialog]
+line = "1"
+version = "1.2.0"
+
+[radix-ui-react-label]
+line = "2"
+version = "2.1.17"
+
+[radix-ui-react-separator]
+line = "1"
+version = "1.2.0"
+
+[lucide-react]
+line = "1"
+version = "1.55.0"
 
 [class-variance-authority]
 line = "0.7"

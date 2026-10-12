@@ -17,13 +17,20 @@ The items `shadcn-ui` and `shadcn-ui-commit` of `src/dsml/versions.toml` give th
 | --- | --- |
 | `lib/utils.ts` | `lib/utils.ts` (the function `cn`) |
 | `ui/alert.tsx` | `ui/alert.tsx` |
+| `ui/alert-dialog.tsx` | `ui/alert-dialog.tsx` |
 | `ui/button.tsx` | `ui/button.tsx` |
 | `ui/card.tsx` | `ui/card.tsx` |
+| `ui/field.tsx` | `ui/field.tsx` |
 | `ui/input.tsx` | `ui/input.tsx` |
+| `ui/label.tsx` | `ui/label.tsx` |
+| `ui/native-select.tsx` | `ui/native-select.tsx` |
+| `ui/separator.tsx` | `ui/separator.tsx` |
 | `ui/table.tsx` | `ui/table.tsx` |
 | `ui/textarea.tsx` | `ui/textarea.tsx` |
 
-These components use only the dependencies of the version baseline: `@radix-ui/react-slot`, `class-variance-authority`, `clsx` and `tailwind-merge`.
+These components use only the dependencies of the version baseline: `@radix-ui/react-alert-dialog`, `@radix-ui/react-label`, `@radix-ui/react-separator`, `@radix-ui/react-slot`, `class-variance-authority`, `clsx`, `lucide-react` and `tailwind-merge`.
+
+Story #172 added `alert-dialog`, `field`, `label`, `native-select` and `separator` for the forms and the confirmation dialog of the features layer.
 
 ## Changes to the source files
 
@@ -33,6 +40,9 @@ The shadcn CLI makes the first three changes when it copies a component into a p
 2. The directive `"use client"` is removed, because `components.json` has `"rsc": false`.
 3. The files have the Prettier format of the generated project.
 4. `ui/button.tsx` imports `Slot` from `@radix-ui/react-slot`, not `Slot.Root` from `radix-ui`. The version baseline pins `@radix-ui/react-slot` (story #190).
+5. `ui/alert-dialog.tsx`, `ui/label.tsx` and `ui/separator.tsx` import the primitive from its own Radix UI package, for example `import * as LabelPrimitive from "@radix-ui/react-label"`, not from `radix-ui`.
+6. A component imports an other component of the copy with a relative path, for example `./button`. The shadcn CLI writes `@/shared/ui/button`. The test of the copy accepts no other import with the alias `@/` than `@/shared/lib/utils`.
+7. `ui/field.tsx` compares `uniqueErrors.length === 1`, not `uniqueErrors?.length == 1`. The rule `no-unnecessary-condition` of `typescript-eslint` refuses the optional chain on a value that is not nullable.
 
 ## Update the copy
 

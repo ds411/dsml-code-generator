@@ -47,7 +47,19 @@ USER_DIRECTORY = (
 )
 CONFIGURATION = '[applications.orderPortal]\noutput = "."\n'
 APP = "OrderPortal::orderPortal"
-COMPONENTS = ["alert", "button", "card", "input", "table", "textarea"]
+COMPONENTS = [
+    "alert-dialog",
+    "alert",
+    "button",
+    "card",
+    "field",
+    "input",
+    "label",
+    "native-select",
+    "separator",
+    "table",
+    "textarea",
+]
 
 
 def configuration() -> Configuration:
@@ -119,7 +131,7 @@ def test_shadcn_ui_files_and_public_apis_are_create_once_files(portal_ir: Ir) ->
     assert files["web/src/shared/ui/button.tsx"].content == shadcn_files("ui")["button.tsx"]
     index = files["web/src/shared/ui/index.gen.ts"].content.decode()
     assert [line for line in index.splitlines() if line.startswith("export")] == [
-        f'export * from "./{name}";' for name in COMPONENTS
+        f'export * from "./{name}";' for name in sorted(COMPONENTS)
     ]
     assert golden_text("src/shared/api/index.ts").endswith('export * from "./index.gen";\n')
 
@@ -163,9 +175,12 @@ def test_shadcn_ui_copy_imports_only_packages_of_the_baseline() -> None:
     for segment in SHADCN_SEGMENTS:
         for content in shadcn_files(segment).values():
             imports.update(re.findall(r'from "([^"]+)"', content.decode()))
-    external = {name for name in imports if not name.startswith("@/")}
+    external = {name for name in imports if not name.startswith(("@/", "./"))}
     assert external <= set(dependencies), external - set(dependencies)
     assert {name for name in imports if name.startswith("@/")} == {"@/shared/lib/utils"}
+    # A component imports an other component of the copy with a relative path.
+    components = {f"./{name}" for name in COMPONENTS}
+    assert {name for name in imports if name.startswith("./")} <= components
 
 
 # trace: PRD-APP-010, PRD-APP-230

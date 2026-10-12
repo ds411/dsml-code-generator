@@ -350,7 +350,8 @@ jobs:
           cat "$RUNNER_TEMP/pyright.txt"
           grep --quiet "$slice/handler.py.*order_id" "$RUNNER_TEMP/pyright.txt"
 
-  # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-211, PRD-APP-233, PRD-APP-234
+  # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-211, PRD-APP-225, PRD-APP-226
+  # trace: PRD-APP-227, PRD-APP-228, PRD-APP-233, PRD-APP-234
   #
   # The golden output of the React generator (story #167) must pass the
   # tools of the generated project. Prettier must find no change in the
@@ -423,11 +424,14 @@ jobs:
       # Pydantic models (PRD-APP-211). tests/test_react_entities.py gives
       # the same values to the Pydantic models. The shared layer tests
       # examine the runtime configuration, Amplify Auth and the API client
-      # (PRD-APP-227, PRD-APP-230, PRD-APP-231, PRD-APP-232).
+      # (PRD-APP-227, PRD-APP-230, PRD-APP-231, PRD-APP-232). The component
+      # tests of the features layer render the forms in jsdom. They examine
+      # the field errors, the problem details errors, the keyboard access
+      # and the invalidation of the queries (PRD-APP-225 to PRD-APP-228).
       - name: Copy the Vitest tests
         run: |
           mkdir -p "$PROJECT/tests"
-          cp -r tests/react/field-rules tests/react/shared "$PROJECT/tests/"
+          cp -r tests/react/features tests/react/field-rules tests/react/shared "$PROJECT/tests/"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}

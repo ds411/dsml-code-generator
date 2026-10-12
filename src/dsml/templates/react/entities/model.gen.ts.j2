@@ -7,42 +7,7 @@
 import { z } from "zod";
 {% if entity.uses_decimal %}
 
-/**
- * Give the Zod schema of a decimal value in a request body. The value is a
- * number or a text. It has no more than `whole` digits before the decimal
- * point and no more than `places` digits after it, with no zeros at the
- * start or at the end. These are the rules of the Pydantic models.
- */
-function decimal(rules: {
-  whole: number;
-  places: number;
-  min?: number;
-  max?: number;
-}) {
-  return z
-    .union([z.number(), z.string()])
-    .refine(
-      (value) => {
-        const text = typeof value === "number" ? String(value) : value.trim();
-        const match = /^[+-]?(?=\.?\d)(\d*)(?:\.(\d*))?$/.exec(text);
-        if (match === null) {
-          return false;
-        }
-        const whole = (match[1] ?? "").replace(/^0+/, "").length;
-        const places = (match[2] ?? "").replace(/0+$/, "").length;
-        return whole <= rules.whole && places <= rules.places;
-      },
-      {
-        message: `The value must be a decimal number with no more than ${String(rules.whole)} digits before the decimal point and ${String(rules.places)} digits after it.`,
-      },
-    )
-    .refine((value) => rules.min === undefined || Number(value) >= rules.min, {
-      message: `The value must be ${String(rules.min)} or more.`,
-    })
-    .refine((value) => rules.max === undefined || Number(value) <= rules.max, {
-      message: `The value must be ${String(rules.max)} or less.`,
-    });
-}
+{% include "react/entities/decimal.ts.j2" %}
 {% endif %}
 {% if entity.has_output %}
 
