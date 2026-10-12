@@ -1,0 +1,17 @@
+{#- The outputs of the local module "static-site" (PRD-IAC-010). -#}
+{% include "common/header.j2" %}
+
+output "bucket_name" {
+  description = "The name of the S3 bucket of the static files."
+  value       = aws_s3_bucket.site.bucket
+}
+
+output "distribution_id" {
+  description = "The ID of the CloudFront distribution."
+  value       = aws_cloudfront_distribution.site.id
+}
+
+output "url" {
+  description = "The URL of the site."
+  value       = "https://${var.domain_name}"
+}

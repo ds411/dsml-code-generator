@@ -31,6 +31,7 @@ def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
         "aws-provider",
         "checkov",
         "class-variance-authority",
+        "cloudfront-tls-policy",
         "clsx",
         "cryptography",
         "drizzle-orm",

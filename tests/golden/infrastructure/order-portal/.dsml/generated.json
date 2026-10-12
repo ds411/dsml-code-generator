@@ -1,0 +1,341 @@
+{
+  "createOnce": [],
+  "generated": [
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/dev/README.gen.md",
+      "sha256": "bc40cd5702cde117476dc9ea9a72f3491ef60fd8a2348fe6aa90734531d918ac"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/dev/iam.gen.tf",
+      "sha256": "dae264cbaf44da3b9f96f704457ea5f4a35cccede7da6e9c9644fba5af2868c8"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/dev/main.gen.tf",
+      "sha256": "c70a4a0d5d0b9a673fb5cddf662d1547f0017d431a2f1c96f9fede200441e608"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/dev/outputs.gen.tf",
+      "sha256": "fcbaaa1b9c70ad33fd8d0d6fa67b9c15585b7d97cd62b3a9459cb6d371bbf2f5"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/dev/providers.gen.tf",
+      "sha256": "2804124e3773c9b067b1bf5d5e29701ee326d460012c10e939e1e7491fba8504"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/dev/variables.gen.tf",
+      "sha256": "608a1f919c47686aeaa6c955d8e85f7c9fef29f3382f6d2d2195f2ba2302fe5d"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/dev/versions.gen.tf",
+      "sha256": "125eed28e3d48da28b26753bc6087d03ce69b953abc97ea3ae2a137ec97e873e"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/prod/README.gen.md",
+      "sha256": "855cb9e2cfa4d1385e05f197fea9ceffb17b55a9bb1a3fc598eb67b7dc63c6d1"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/prod/iam.gen.tf",
+      "sha256": "c9fbc48210d77e7ba33c546d882d0db4a5accefe35c660351d26c3ac71bfcbf6"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/prod/main.gen.tf",
+      "sha256": "bbb1b79cc8c175b1dcfb16f2b2410bf4e1c67c13adea54185886f31375f4d485"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/prod/outputs.gen.tf",
+      "sha256": "2c56acb71af3e27c5305bcd300cc4c81236e6dff689ae74cee1ba859667920bf"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/prod/providers.gen.tf",
+      "sha256": "ecdfa16264a487c0a719ac96493d756d9ec21e5858095d49da79afd86e474f83"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/prod/variables.gen.tf",
+      "sha256": "b78ea2f99938862376184d59e04a00101e789a7dc71e4a3e27867a1fc9a5cc45"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/prod/versions.gen.tf",
+      "sha256": "2d08c969ac016b1c546e7b12fbb2fdca045214ac483089cd92e1c43f5439ba63"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/staging/README.gen.md",
+      "sha256": "5e2c086901ccfea0f34ab13966da3fd7f7c1af9e457a429489ebd5b7fefbcfc8"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/staging/iam.gen.tf",
+      "sha256": "106e434ad6781baa5ed18d5da1a6d9a248257364a1e814d346db8c1c37780f72"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/staging/main.gen.tf",
+      "sha256": "8ae85ae065a989e5ad6849c5ee4d1c418f1b361082e9fdc8be814823d9a3c4cc"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/staging/outputs.gen.tf",
+      "sha256": "6549aa0ded5c2c7cc611e4d4e4ea2ae71de909b440ec56476b8041819f570b5d"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/staging/providers.gen.tf",
+      "sha256": "6bdf3f7040d00673971cf971f442b560b8ce13adcb64452f0e637e35adb1b17c"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/staging/variables.gen.tf",
+      "sha256": "3716751d08c9c74f5a24d3bca4c11b3db4ebdfd1216e6a7bed2bb5f1fc26baad"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/staging/versions.gen.tf",
+      "sha256": "a4c7b2e7c472585c48d2ba8c43b6891853d88678f406096e3cb803989b61813a"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/tooling/README.gen.md",
+      "sha256": "51a196f6dd5ca0d65c7edaae4ab4df591f02b53922ad085af6b7aff4ff37c438"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/tooling/iam.gen.tf",
+      "sha256": "64ef983a7b1c2b3461d3956a8e0ce2f6d960b8061b7d22dda289c5890bdc4683"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/tooling/main.gen.tf",
+      "sha256": "e13352d5165547ead5bad86acdcd160bc1b6ea5c888b095702656c3f2828c7b5"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/tooling/outputs.gen.tf",
+      "sha256": "cc905e34341ff0cff71cfe5b81bafed3e1efa7500ed03f5e1dd8028627e2331e"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/tooling/providers.gen.tf",
+      "sha256": "9f441088c777c5f6cb046c03e0e2bbfd0e54079a5d57e0a11f0f429c87755895"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/tooling/variables.gen.tf",
+      "sha256": "de284930b24b84d4e5bed5f0137c5ff95e85d23ded0e93f54bc033eac5c5366d"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/bootstrap/tooling/versions.gen.tf",
+      "sha256": "4251567760449b2215f57e5d529551c86e8cb766387122ffecac860a8604c588"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/backend.gen.tf",
+      "sha256": "1c728f1b9a25c5de7f32e858949b65d37ac229dca8b24de4e4c76a4900cb4b07"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/main.gen.tf",
+      "sha256": "d534464a617d735ede0099536a733e6990961be10c742d208ef7425ec98635fb"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/outputs.gen.tf",
+      "sha256": "90b59a24cc14045cb8607aaae176c3b0c35ac9f3ec0681e39ee3199428e9bc1d"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/providers.gen.tf",
+      "sha256": "17a7c6390c39d3ea1f862591bd353feaeda73d92956b0b4c88ea41934f0047f1"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/variables.gen.tf",
+      "sha256": "ee20b3bba1a06fd6d3a81df52b0243e31cf45c4f91684a1dedc1578970268951"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/dev/versions.gen.tf",
+      "sha256": "125eed28e3d48da28b26753bc6087d03ce69b953abc97ea3ae2a137ec97e873e"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/backend.gen.tf",
+      "sha256": "679a49247a6f53ff865203f04479ddfe2745c16d260ead1d52a2fccd9bc24ddb"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/main.gen.tf",
+      "sha256": "abcc017b1063b4885b3fb5947eb43b6dfcc435d0d7f054f5f1b4d16246479b89"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/outputs.gen.tf",
+      "sha256": "c3acc8b57b7b059a2fdc44377a63930a81fb90bda2a2f2ce1d6426266fede211"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/providers.gen.tf",
+      "sha256": "ea006f7b8612215bc9f1f4d950a9fe56e41c58475b75b14866363c6fd14893ea"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/variables.gen.tf",
+      "sha256": "83f99e33d593c744a3f4d378f6d96bb8a90ae66e10a7ba0a458a566959ed2975"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/prod/versions.gen.tf",
+      "sha256": "2d08c969ac016b1c546e7b12fbb2fdca045214ac483089cd92e1c43f5439ba63"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/backend.gen.tf",
+      "sha256": "1bbe31fa8461019000c95277f662bd5b56829dc8f2f0ea3f8aa9225c05979db3"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/main.gen.tf",
+      "sha256": "c4f555e086778e699cfe9431ea38199f4089a800ef08eabe788a91d39ac27d5f"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/outputs.gen.tf",
+      "sha256": "7433e1b95525f964db480a4bafdd27f0a9d65cdd992fef4c61c8d5090e8c84bd"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/providers.gen.tf",
+      "sha256": "9d768fb9e1c6858a87a72a908b0be2b9a451fdaf56dbe5260c2054a9b990b244"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/variables.gen.tf",
+      "sha256": "120024776b218afad60af04029a6c0180a2d2ed631ba9bd55c7b617d621e4cce"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/envs/staging/versions.gen.tf",
+      "sha256": "a4c7b2e7c472585c48d2ba8c43b6891853d88678f406096e3cb803989b61813a"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/container-service/main.gen.tf",
+      "sha256": "7b78ec9d742d013cd6ae47333914d0e415eb36578fd5e9600504dfdcf339bb88"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/container-service/outputs.gen.tf",
+      "sha256": "f1976de8b9d6e8aa32cdafc7ebd1fc50f204211aeb692733af7908c54ce34252"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/container-service/variables.gen.tf",
+      "sha256": "a1ca3c26fba945dc114fd4eca5508068b4d7fb5c668e55665490686949740f5b"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/network/main.gen.tf",
+      "sha256": "8a9e484b5398b3c94ec830155512d5981a4db632390e168f9351a3df4005b44b"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/network/outputs.gen.tf",
+      "sha256": "6794a6314b9b2772e51d5a0b23e45e553641da1af6da4378e650b2a997ebadec"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/network/variables.gen.tf",
+      "sha256": "5e2e5af5ac0a0e82eb13cbb85cdff967dec8d8d8284505aa96fa3b6e51037276"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/relational-database/main.gen.tf",
+      "sha256": "fbb5b0666e09c831688a2b28e947e1e21bd1a08b46c341d133a14ce1ecab6b54"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/relational-database/outputs.gen.tf",
+      "sha256": "79c7e45cf42f831bb7c9db1cedcc300748d65cf2aa1c7113fb412caef5e2b47c"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/relational-database/variables.gen.tf",
+      "sha256": "09083ddf8b891cf2745f33250610a3414ae5e468c14582d125fd3afa74c7e44b"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/static-site/main.gen.tf",
+      "sha256": "82ac8361c5d369f9d2c357a496fbaa3ece3ce0783c507eda725f65dce584b00d"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/static-site/outputs.gen.tf",
+      "sha256": "6facb52e692070aa240ca5b14d0d6244cb722298889ea51adb835d1f1800a75a"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/static-site/variables.gen.tf",
+      "sha256": "0a1f5ede787555e2286a5cce07e23d7b3091129b0da3bf2e01e3f7e71f810080"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/user-directory/main.gen.tf",
+      "sha256": "19217ac6b93b7d56cf3a2c9b63854b32f18f368aae08ba5abe3db7596d0b9117"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/user-directory/outputs.gen.tf",
+      "sha256": "f2914328bf57aeb3b3af02ea4b64dd93b9276de1e7a5a587e78197fe88462462"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/modules/user-directory/variables.gen.tf",
+      "sha256": "33b5b2775c98939084f5df502fbda8f3815391a2ee6bdf2161c054d569d9fc38"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/tooling/backend.gen.tf",
+      "sha256": "e1d03fd40f97ee4a6f150d4832537d7da50fdd3ccb0d075a0dc1a76bb092eca5"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/tooling/main.gen.tf",
+      "sha256": "ddac5c44cfa984863ade0b1e214ee68ad73b682e33f00b0a689a07894dd1914f"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/tooling/outputs.gen.tf",
+      "sha256": "f12e0a5a3af45b1c870ff80cd54050e2dd52faab382a5eecf00b981ace085bbd"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/tooling/providers.gen.tf",
+      "sha256": "9f441088c777c5f6cb046c03e0e2bbfd0e54079a5d57e0a11f0f429c87755895"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/tooling/variables.gen.tf",
+      "sha256": "9edc5ec71eb0227399ee3309ef3e562b14c2c15a027c872a8b5e7c3ea13b726c"
+    },
+    {
+      "part": "infrastructure",
+      "path": "infra/tooling/versions.gen.tf",
+      "sha256": "4251567760449b2215f57e5d529551c86e8cb766387122ffecac860a8604c588"
+    }
+  ],
+  "manifestVersion": 1
+}

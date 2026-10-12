@@ -23,6 +23,7 @@ skip-check:
   - CKV2_AWS_30 # Query logs of PostgreSQL.
   - CKV2_AWS_62 # Event notifications of S3 buckets.
   - CKV_AWS_18 # Access logs of S3 buckets.
+  - CKV_AWS_86 # Access logs of CloudFront distributions.
   - CKV_AWS_91 # Access logs of the ALB.
   - CKV_AWS_118 # Enhanced monitoring of RDS.
   - CKV_AWS_129 # Export of the RDS logs to CloudWatch Logs.
@@ -53,12 +54,19 @@ skip-check:
 
   # The phase 1 PRD does not give these items.
   - CKV2_AWS_28 # WAF on the ALB.
+  - CKV_AWS_68 # WAF on CloudFront distributions.
+  - CKV2_AWS_47 # Log4j rule of the WAF on CloudFront distributions. The site has no WAF and no Java.
   - CKV_AWS_150 # Deletion protection of the ALB. PRD-IAC-017 gives it only for RDS.
   - CKV2_AWS_57 # Automatic rotation of the secrets. The owners of the secrets set the values.
   - CKV2_AWS_61 # Lifecycle rules of S3 buckets. Versions of the state must stay.
   - CKV_AWS_144 # Replication of S3 buckets to a second region.
   - CKV_AWS_161 # IAM authentication of RDS. The application uses the master password secret (PRD-IAC-017).
   - CKV_AWS_336 # Read-only root file system of the containers.
+
+  # The phase 2 PRD does not give these items for the static site (story
+  # #162, PRD-IAC-021).
+  - CKV_AWS_310 # Origin failover of CloudFront. The site has one S3 bucket.
+  - CKV_AWS_374 # Geo restriction of CloudFront. The site is for users in all countries.
 
   # The network module uses the first zones of the region (PRD-IAC-011). The
   # generator does not know the zone names of each region.
