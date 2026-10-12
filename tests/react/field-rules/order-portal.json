@@ -1,0 +1,258 @@
+{
+  "description": "The test values of the field rules of the order portal. tests/test_react_entities.py gives each value to the Pydantic model of the called FastAPI application. field-rules.test.ts gives each value to the Zod schema of the React application. Both must accept the values with valid = true and refuse the other values.",
+  "cases": [
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "valid",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": "10.5"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "note maxLength",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": "10.5",
+        "note": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "note maxLength",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": "10.5",
+        "note": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "note nullable",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": "10.5",
+        "note": null
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "status values",
+      "valid": true,
+      "value": {
+        "status": "shipped",
+        "total": "10.5"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "status values",
+      "valid": false,
+      "value": {
+        "status": "closed",
+        "total": "10.5"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "status required",
+      "valid": false,
+      "value": {
+        "total": "10.5"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total minValue",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": "0"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total minValue",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": 0
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total minValue",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": "-0.01"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total minValue",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": -1
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total digits",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": "12345678901234.1234"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total digits",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": "00012345678901234"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total digits",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": "123456789012345"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total places",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": "1.123400"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total places",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": "1.12345"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total places",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": 0.12345
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total decimal",
+      "valid": true,
+      "value": {
+        "status": "open",
+        "total": 12.5
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total decimal",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": "ten"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total decimal",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": ""
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total decimal",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": true
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "total required",
+      "valid": false,
+      "value": {
+        "status": "open"
+      }
+    },
+    {
+      "schema": "createOrderInputSchema",
+      "rule": "extra field",
+      "valid": false,
+      "value": {
+        "status": "open",
+        "total": "10.5",
+        "id": "0b6f7a52-3c4e-4d4b-9a51-6f0d9c2f6a10"
+      }
+    },
+    {
+      "schema": "orderSchema",
+      "rule": "valid",
+      "valid": true,
+      "value": {
+        "id": "0b6f7a52-3c4e-4d4b-9a51-6f0d9c2f6a10",
+        "note": null,
+        "status": "open",
+        "total": "10.5000"
+      }
+    },
+    {
+      "schema": "orderSchema",
+      "rule": "note nullable",
+      "valid": true,
+      "value": {
+        "id": "0b6f7a52-3c4e-4d4b-9a51-6f0d9c2f6a10",
+        "note": "Ring the bell.",
+        "status": "open",
+        "total": "10.5000"
+      }
+    },
+    {
+      "schema": "orderSchema",
+      "rule": "status values",
+      "valid": false,
+      "value": {
+        "id": "0b6f7a52-3c4e-4d4b-9a51-6f0d9c2f6a10",
+        "note": null,
+        "status": "closed",
+        "total": "10.5000"
+      }
+    },
+    {
+      "schema": "orderSchema",
+      "rule": "id uuid",
+      "valid": false,
+      "value": {
+        "id": "42",
+        "note": null,
+        "status": "open",
+        "total": "10.5000"
+      }
+    }
+  ]
+}

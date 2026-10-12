@@ -350,7 +350,7 @@ jobs:
           cat "$RUNNER_TEMP/pyright.txt"
           grep --quiet "$slice/handler.py.*order_id" "$RUNNER_TEMP/pyright.txt"
 
-  # trace: PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-233, PRD-APP-234
+  # trace: PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-211, PRD-APP-233, PRD-APP-234
   #
   # The golden output of the React generator (story #167) must pass the
   # tools of the generated project. Prettier must find no change in the
@@ -381,10 +381,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check the format of the golden files
-        run: pnpm exec prettier --check tests/golden/react
+        run: pnpm exec prettier --check tests/golden/react tests/react
 
+      # The stand-in of the API client in tests/react/stubs/ goes into the
+      # copy only if the golden project has no file with the same path.
+      # The shared layer story (#169) writes the real client.
       - name: Copy the golden project
-        run: cp -r tests/golden/react/order-portal "$PROJECT"
+        run: |
+          cp -r tests/golden/react/order-portal "$PROJECT"
+          cp -r --update=none tests/react/stubs/src/. "$PROJECT/src/"
 
       # The project has no lockfile, thus pnpm makes one.
       - name: Install the dependencies
@@ -399,9 +404,21 @@ jobs:
         working-directory: ${{ env.PROJECT }}
         run: pnpm exec eslint .
 
+      # Until the pages story (#174) writes src/pages, no page refers to the
+      # entity slices. Then the rule fsd/insignificant-slice is off.
       - name: Check the layers
         working-directory: ${{ env.PROJECT }}
-        run: pnpm exec steiger ./src
+        run: |
+          if [ ! -d src/pages ]; then
+            cp "$GITHUB_WORKSPACE/tests/react/steiger-before-pages.config.ts" steiger.config.ts
+          fi
+          pnpm exec steiger ./src
+
+      # The Zod schemas must accept and refuse the same values as the
+      # Pydantic models (PRD-APP-211). tests/test_react_entities.py gives
+      # the same values to the Pydantic models.
+      - name: Copy the field rule tests
+        run: cp -r tests/react/field-rules "$PROJECT/tests/"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}

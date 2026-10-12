@@ -144,7 +144,8 @@ def test_fixed_names_and_no_lockfile(portal_ir: Ir) -> None:
         "eslint.config.js",
     }
     files = collect([ReactGenerator()], portal_ir, configuration(), None)
-    assert all(file.kind is Kind.GENERATED for file in files)
+    # Only the public API index.ts of a slice is a create-once file (PRD-APP-204).
+    assert all(file.kind is Kind.GENERATED or Path(file.path).name == "index.ts" for file in files)
     assert not [file.path for file in files if Path(file.path).name in LOCKFILES]
     assert not [file.path for file in files if file.path.startswith(".dsml/")]
 
