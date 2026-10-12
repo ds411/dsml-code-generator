@@ -66,6 +66,8 @@ The toolchain is a Python 3.14 project that uv manages. pnpm manages only the No
    uv build
    ```
 
+`docs/release.md` gives the steps of a release, from the tag to the installation with `uv tool install`. `CHANGELOG.md` gives the changes of each release.
+
 In a Claude Code cloud session, the SessionStart hook `.claude/hooks/session-start.sh` does steps 1 and 2 at the start of the session.
 
 ### CI

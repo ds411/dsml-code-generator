@@ -1,0 +1,100 @@
+# Release of the DSML toolchain (story #141). This is a hand-written
+# workflow, not a generated pipeline.
+#
+# trace: PRD-CORE-047, PRD-CORE-048, PRD-CORE-049, PRD-CORE-052, PRD-DSML-006
+#
+# A push of a tag v<major>.<minor>.<patch> starts the workflow. The job
+# makes sure that the tag agrees with the version in pyproject.toml, builds
+# the wheel and the sdist with uv, and examines the package. Then it makes
+# a GitHub release with the notes of CHANGELOG.md and attaches the wheel and
+# the sdist as assets (Q63). There is no package index. docs/release.md
+# gives the steps of a release. CI runs only on Linux x64 (Q62).
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: read
+
+# Two runs for the same tag must not make two releases.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release (linux-x64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      # "gh release create" needs this permission.
+      contents: write
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      # The full history lets the job make sure that main contains the
+      # commit of the tag.
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.0"
+          enable-cache: false
+
+      # The tag must be v<version>, with the version of pyproject.toml. A
+      # release comes only from a commit on main.
+      - name: Check the tag
+        id: tag
+        run: |
+          version="$(uv version --short)"
+          if [ "$TAG" != "v${version}" ]; then
+            echo "::error::The tag ${TAG} does not agree with the version ${version} in pyproject.toml. Use the tag v${version}."
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::The commit of the tag ${TAG} is not on main. Put the tag on a commit of main."
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install the Python dependencies
+        run: uv sync --frozen
+
+      # The step stops the release if CHANGELOG.md has no section for the
+      # version (PRD-CORE-052).
+      - name: Write the release notes
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: uv run python scripts/release_notes.py "$VERSION" --output "$RUNNER_TEMP/notes.md"
+
+      - name: Build the wheel and the sdist
+        run: uv build --out-dir "$RUNNER_TEMP/dist"
+
+      # The package tests install the built wheel with "uv tool install".
+      # Thus the installed toolchain gets sysml-grpc and checks its SHA-256
+      # hash (PRD-CORE-049).
+      - name: Examine the package
+        env:
+          DSML_PACKAGE_DIR: ${{ runner.temp }}/dist
+        run: uv run pytest tests/test_package.py
+
+      # The release attaches only the wheel and the sdist (Q63).
+      - name: Make the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          gh release create "$TAG" \
+            "$RUNNER_TEMP/dist/dsml-${VERSION}-py3-none-any.whl" \
+            "$RUNNER_TEMP/dist/dsml-${VERSION}.tar.gz" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --title "DSML toolchain ${TAG}" \
+            --notes-file "$RUNNER_TEMP/notes.md"
