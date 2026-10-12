@@ -1,0 +1,81 @@
+{#- The model segment of an entity slice: the TypeScript types and the Zod
+    schemas (PRD-APP-210, PRD-APP-211). Data: "entity" (a
+    dsml.generate.react_entities.EntitySlice). The schemas follow the
+    Pydantic models of the called application (PRD-APP-005, PRD-APP-112,
+    PRD-APP-115). -#}
+{% include "common/header.j2" %}
+import { z } from "zod";
+{% if entity.uses_decimal %}
+
+/**
+ * Give the Zod schema of a decimal value in a request body. The value is a
+ * number or a text. It has no more than `whole` digits before the decimal
+ * point and no more than `places` digits after it, with no zeros at the
+ * start or at the end. These are the rules of the Pydantic models.
+ */
+function decimal(rules: {
+  whole: number;
+  places: number;
+  min?: number;
+  max?: number;
+}) {
+  return z
+    .union([z.number(), z.string()])
+    .refine(
+      (value) => {
+        const text = typeof value === "number" ? String(value) : value.trim();
+        const match = /^[+-]?(?=\.?\d)(\d*)(?:\.(\d*))?$/.exec(text);
+        if (match === null) {
+          return false;
+        }
+        const whole = (match[1] ?? "").replace(/^0+/, "").length;
+        const places = (match[2] ?? "").replace(/0+$/, "").length;
+        return whole <= rules.whole && places <= rules.places;
+      },
+      {
+        message: `The value must be a decimal number with no more than ${String(rules.whole)} digits before the decimal point and ${String(rules.places)} digits after it.`,
+      },
+    )
+    .refine((value) => rules.min === undefined || Number(value) >= rules.min, {
+      message: `The value must be ${String(rules.min)} or more.`,
+    })
+    .refine((value) => rules.max === undefined || Number(value) <= rules.max, {
+      message: `The value must be ${String(rules.max)} or less.`,
+    });
+}
+{% endif %}
+{% if entity.has_output %}
+
+/** The entity {{ entity.name }} in a response. A related entity is its key. */
+export const {{ entity.camel }}Schema = {% for line in entity.output_lines() %}{{ line }}
+{% endfor %}
+
+/** The entity {{ entity.name }} in a response. */
+{% for line in entity.type_lines(entity.pascal, "infer", entity.camel ~ "Schema") %}
+{{ line }}
+{% endfor %}
+{% endif %}
+{% if "list" in entity.queries %}
+
+/** One page of the entities {{ entity.name }}, sorted by key, and the number of all entities. */
+export const {{ entity.camel }}PageSchema = z.object({
+  items: z.array({{ entity.camel }}Schema),
+  total: z.int(),
+});
+
+/** One page of the entities {{ entity.name }}. */
+{% for line in entity.type_lines(entity.pascal ~ "Page", "infer", entity.camel ~ "PageSchema") %}
+{{ line }}
+{% endfor %}
+{% endif %}
+{% for operation in entity.inputs %}
+
+/** {{ entity.input_doc(operation) }} */
+export const {{ operation }}{{ entity.pascal }}InputSchema = {% for line in entity.input_lines(operation) %}{{ line }}
+{% endfor %}
+
+/** {{ entity.input_doc(operation) }} */
+{% for line in entity.type_lines((operation | pascal_case) ~ entity.pascal ~ "Input", "input", operation ~ entity.pascal ~ "InputSchema") %}
+{{ line }}
+{% endfor %}
+{% endfor %}

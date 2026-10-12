@@ -1,0 +1,80 @@
+{#- The api segment of an entity slice: the query keys and the TanStack Query
+    options of the operations read and list (PRD-APP-210, PRD-APP-224).
+    Data: "entity" (a dsml.generate.react_entities.EntitySlice),
+    "limit_default" and "limit_max" (PRD-APP-114). -#}
+{% include "common/header.j2" %}
+import { queryOptions } from "@tanstack/react-query";
+
+import { apiRequest } from "@/shared/api";
+
+{% for line in entity.model_import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The query key of all the queries of the entity {{ entity.name }}. */
+export const {{ entity.camel }}QueryKey = ["{{ entity.slice }}"] as const;
+{% if "read" in entity.queries %}
+{% set parameter = entity.read_parameter %}
+
+/** The query key of the operation read: [entity, operation, parameters]. */
+{% for line in entity.signature("read" ~ entity.pascal ~ "QueryKey", parameter ~ ": " ~ entity.key_type) %}
+{{ line }}
+{% endfor %}
+  return ["{{ entity.slice }}", "read", { {{ parameter }} }] as const;
+}
+
+/** The query options of the operation read: {{ entity.route("read") }}. */
+{% for line in entity.signature("read" ~ entity.pascal ~ "QueryOptions", parameter ~ ": " ~ entity.key_type) %}
+{{ line }}
+{% endfor %}
+  return queryOptions({
+    queryKey: read{{ entity.pascal }}QueryKey({{ parameter }}),
+    queryFn: async ({ signal }) => {
+      const body = await apiRequest({
+        method: "GET",
+        path: {{ entity.read_path }},
+        signal,
+      });
+      return {{ entity.camel }}Schema.parse(body);
+    },
+  });
+}
+{% endif %}
+{% if "list" in entity.queries %}
+
+/** The parameters of the operation list. */
+export interface {{ entity.pascal }}ListParameters {
+  /** The maximum number of entities on the page: 1 to {{ limit_max }}. The default is {{ limit_default }}. */
+  limit?: number;
+  /** The number of entities before the page. The default is 0. */
+  offset?: number;
+}
+
+/** The query key of the operation list: [entity, operation, parameters]. */
+{% for line in entity.signature("list" ~ entity.pascal ~ "QueryKey", "parameters: " ~ entity.pascal ~ "ListParameters = {}") %}
+{{ line }}
+{% endfor %}
+  const limit = parameters.limit ?? {{ limit_default }};
+  const offset = parameters.offset ?? 0;
+  return ["{{ entity.slice }}", "list", { limit, offset }] as const;
+}
+
+/** The query options of the operation list: {{ entity.route("list") }}. */
+{% for line in entity.signature("list" ~ entity.pascal ~ "QueryOptions", "parameters: " ~ entity.pascal ~ "ListParameters = {}") %}
+{{ line }}
+{% endfor %}
+  const queryKey = list{{ entity.pascal }}QueryKey(parameters);
+  return queryOptions({
+    queryKey,
+    queryFn: async ({ signal }) => {
+      const body = await apiRequest({
+        method: "GET",
+        path: {{ entity.list_path }},
+        query: queryKey[2],
+        signal,
+      });
+      return {{ entity.camel }}PageSchema.parse(body);
+    },
+  });
+}
+{% endif %}

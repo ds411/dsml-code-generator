@@ -50,6 +50,33 @@ The generator calls the function of each layer module, from the lowest to the hi
 - `public_api_files` gives the public API of a slice: a generated `index.gen.ts` that re-exports the modules of the slice, and a create-once `index.ts` that re-exports `index.gen.ts` (PRD-APP-204, PRD-CORE-044). A create-once file has no header, because a developer owns it.
 - `ReactContext.generated_file` renders a template into a generated file with the header.
 
+## Entities layer
+
+Story #168 added the entities layer: `src/dsml/generate/react_entities.py` and the templates in `src/dsml/templates/react/entities/`.
+
+The React application gets one slice in `src/entities/<entity>/` for each exposed entity of each FastAPI application that it calls (`#Calls`). The slice uses the CRUD slices of the FastAPI generator (`dsml.generate.fastapi_slices`). Thus the Zod schemas and the Pydantic models come from the same IR entities and operations (PRD-APP-005).
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `model/<entity>.gen.ts` | The output schema `<entity>Schema`, the page schema `<entity>PageSchema` (if the entity has `list`), the input schemas `create<Entity>InputSchema` and `update<Entity>InputSchema` (if the entity has `create` or `update`), and their TypeScript types. | PRD-APP-112, PRD-APP-115, PRD-APP-210, PRD-APP-211 |
+| `api/<entity>-queries.gen.ts` | The query keys and the TanStack Query options of `read` and `list`, if the entity has these operations. | PRD-APP-114, PRD-APP-210, PRD-APP-224 |
+| `index.gen.ts`, `index.ts` | The public API of the slice. `index.ts` is a create-once file. | PRD-APP-204 |
+
+The rules of the schemas:
+
+- The field names are the JSON names of the API. A related entity is its key (PRD-APP-115).
+- An input schema is a strict object, because the Pydantic input models refuse other fields. The key is not in an input schema.
+- A nullable field accepts `null` and can be missing. Each field of the update input can be missing. The field rules become Zod rules: `min` and `max` for `minLength`, `maxLength`, `minValue` and `maxValue`, and `regex` for `pattern` (PRD-APP-112, PRD-APP-211).
+- A `Decimal` value in a request is a number or a text. The function `decimal` in the model file applies the precision, the scale, `minValue` and `maxValue` as Pydantic does. Pydantic ignores the zeros at the start and at the end of the value. The client does not accept a text with an exponent, for example `1e2`.
+- A `Decimal` value in a response is a text, as in `openapi.gen.json`. An output schema has no field rules, as the Pydantic output model.
+- `z.guid()` checks a UUID, because Pydantic accepts each UUID form with hexadecimal digits.
+
+Each query key is an array `[<entity>, <operation>, <parameters>]` (PRD-APP-224), for example `["order", "read", { id }]` and `["order", "list", { limit, offset }]`. The key of all queries of an entity is `["order"]`. The features story (#172) uses it to invalidate the queries after a mutation (PRD-APP-225). The list key gives the default values of `limit` (50) and `offset` (0), so the two forms of one request have one key.
+
+The query functions call `apiRequest` from `@/shared/api`. The function takes an object with `method`, `path`, `query`, `body` and `signal`, and gives the JSON body of the response as `unknown`. The query function parses the body with the Zod schema. The shared layer story (#169) must write `apiRequest` with these types. Until then, the CI job uses the stand-in `tests/react/stubs/src/shared/api/index.ts`.
+
+The model files and the query files have trace symbols (PRD-TRACE-006). `src/dsml/generate/typescript_symbols.py` finds the top-level declarations of a generated TypeScript file. A function gives a symbol of the kind `function`. A constant, a type or an interface gives a symbol of the kind `class`.
+
 ## Golden files and tests
 
 The golden folder is the project folder of the application `orderPortal` of the order portal model. It has no manifests in `.dsml/`. The phase 2 exit story (#177) adds them.
@@ -58,10 +85,11 @@ The test of the project files compares only the files outside the layer folders 
 
 The CI job "React golden project" does these steps:
 
-1. It runs Prettier in check mode on `tests/golden/react/` (PRD-CORE-035).
-2. It copies the golden project to a temporary folder and runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
-3. It runs `tsc --noEmit`, ESLint, Steiger and Vitest.
-4. It runs `pnpm build` and makes sure that `dist/index.html` exists (PRD-APP-233).
+1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035).
+2. It copies the golden project to a temporary folder. It adds the stand-in files of `tests/react/stubs/` that the golden project does not have. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
+3. It runs `tsc --noEmit`, ESLint and Steiger. While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices yet.
+4. It copies `tests/react/field-rules/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211).
+5. It runs `pnpm build` and makes sure that `dist/index.html` exists (PRD-APP-233).
 
 ## Differences from the story text
 
@@ -70,5 +98,7 @@ The CI job "React golden project" does these steps:
 ## Items for the next stories
 
 - `components.json` gives `src/app/styles/index.css` as the Tailwind CSS file. The story that writes the app layer must write this file and import it in the entry module.
+- The shared layer story (#169) must write `apiRequest` in `src/shared/api/` with the types of the stand-in `tests/react/stubs/src/shared/api/index.ts`. Then it can delete the stand-in.
+- The pages story (#174) makes the pages refer to the entity slices. Then the CI job uses the generated `steiger.config.ts`, and `tests/react/steiger-before-pages.config.ts` can go.
 - The shared layer story (#169) reads `/config.json`. The keys are `apiBaseUrl`, `region`, `userPoolId`, `appClientId` and `loginDomain` (story #165).
 - With pnpm 12, `pnpm install` can write `pnpm-workspace.yaml` in the project (the setting `minimumReleaseAgeExclude`). `pnpm-lock.yaml` and this file do not have the Prettier format. Thus `prettier --check .` in the generated pipeline finds them. The project has no `.prettierignore`, because the file is not on the fixed-name list of PRD-APP-235.
