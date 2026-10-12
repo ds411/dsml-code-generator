@@ -1,0 +1,19 @@
+{#- The server function of the operation read (PRD-APP-113, PRD-APP-313,
+    PRD-APP-314). An entity that does not exist gives HTTP 404. Data: see
+    _server_head.ts.j2. -#}
+{% include "nextjs/routes/_server_head.ts.j2" %}
+
+/**
+ * The server function of the operation {{ operation.description }}: {{ operation.route }}.
+ * Give the entity with the key. Throw HTTP 404 if there is none.
+ */
+{% for line in server.signature %}
+{{ line }}
+{% endfor %}
+  const rows = await getDatabase().select().from(table).where(eq(KEY, key));
+  const row = rows[0];
+  if (row === undefined) {
+    throw new ProblemError(404, NOT_FOUND);
+  }
+  return entityOf(row);
+}

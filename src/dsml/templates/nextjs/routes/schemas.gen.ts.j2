@@ -1,0 +1,42 @@
+{#- The Zod schemas of the input and of the output of a custom operation with
+    the method GET (PRD-APP-005, PRD-APP-312). The client has no feature
+    slice for the operation, thus the server slice has the schemas. Data:
+    "feature" (a dsml.generate.react_features.FeatureSlice). -#}
+{% include "common/header.j2" %}
+import { z } from "zod";
+{% if "decimal" in feature.decimal_helpers %}
+
+{% include "react/entities/decimal.ts.j2" %}
+{% endif %}
+{% if "decimalValue" in feature.decimal_helpers %}
+
+/**
+ * Give the Zod schema of a decimal value with no precision in a request
+ * body: a number, or a text with a decimal number.
+ */
+function decimalValue() {
+  return z.union([
+    z.number(),
+    z.string().regex(/^\s*[+-]?(?=\.?\d)\d*(?:\.\d*)?\s*$/, {
+      message: "The value must be a decimal number.",
+    }),
+  ]);
+}
+{% endif %}
+
+/** {{ feature.input_doc }} */
+export const {{ feature.input_schema }} = {% for line in feature.input_schema_lines() %}{{ line }}
+{% endfor %}
+
+/** The input of the operation {{ feature.name }}. */
+export type {{ feature.input_type }} = z.input<typeof {{ feature.input_schema }}>;
+{% if feature.output_schema is not none %}
+
+/** {{ feature.output_doc }} */
+{% for line in feature.output_schema_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The output of the operation {{ feature.name }}. */
+export type {{ feature.output_type }} = z.infer<typeof {{ feature.output_schema }}>;
+{% endif %}

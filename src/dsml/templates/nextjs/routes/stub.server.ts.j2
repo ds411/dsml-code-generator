@@ -1,0 +1,39 @@
+{#- The create-once stub of the server function of one custom operation
+    (PRD-APP-313, PRD-CORE-044, PRD-CORE-045). It has no generated header,
+    because a developer owns the file. The route handler calls the typed
+    function. Until a developer writes the logic, the function gives HTTP
+    501. Data: "operation" (a dsml.generate.nextjs_routes.Operation),
+    "http_source", "db_source" and "auth_source". -#}
+// The server function of the operation {{ operation.name }}: {{ operation.route }}.
+//
+// Write the logic of the operation in this file. The generator wrote this
+// file one time, and it does not change it again. The route handler in
+// src/_app/api-routes/{{ operation.slice }}.gen.ts validates the input and checks the
+// roles. Then it calls {{ operation.server_function }} with the input and the session of
+// the user. Get the database with getDatabase() of {{ db_source }}.
+// Throw a ProblemError to return an API error, for example HTTP 404.
+//
+// If the operation changes in the model, the generator changes the schemas.
+// Then a type check shows each place where this file does not agree with
+// the schemas. Until you write the logic, the route handler returns HTTP 501.
+import "server-only";
+
+import type { Session } from "{{ auth_source }}";
+import { ProblemError } from "{{ http_source }}";
+
+{% for line in operation.stub_import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The detail of the response HTTP 501. */
+const NOT_IMPLEMENTED = "Write the logic of the operation {{ operation.name }}.";
+
+/** The type of the server function. The route handler calls it with these parameters. */
+{% for line in operation.handler_type_lines() %}
+{{ line }}
+{% endfor %}
+
+// trace: {{ operation.custom.operation }}
+/** Do the operation {{ operation.custom.operation_name }}. Replace this body with the logic. */
+export const {{ operation.server_function }}: Handler = () =>
+  Promise.reject(new ProblemError(501, NOT_IMPLEMENTED));

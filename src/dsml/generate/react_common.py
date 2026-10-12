@@ -217,6 +217,20 @@ def public_api_files(
     return files
 
 
+# trace: PRD-APP-017, PRD-APP-305, PRD-CORE-044, PRD-TRACE-005
+def server_api_files(
+    context: ReactContext, folder: str, server_modules: Sequence[str], elements: Sequence[str]
+) -> list[OutputFile]:
+    """Give only the server-only public API files of one slice or segment folder.
+
+    A part module uses this function when a different part module gives
+    `index.gen.ts` and `index.ts` of the same folder (PRD-APP-305).
+    """
+    if not context.layout.server_api:
+        raise ValueError(f'The layout of the folder "{folder}" has no server-only public API.')
+    return _api_files(context, folder, server_modules, elements, GENERATED_SERVER_API, SERVER_API)
+
+
 def _api_files(
     context: ReactContext,
     folder: str,

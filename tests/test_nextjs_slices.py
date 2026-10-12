@@ -74,7 +74,12 @@ def web_files(web_ir: Ir, tmp_path_factory: pytest.TempPathFactory) -> dict[str,
 
 
 def _slice_files(files: dict[str, bytes]) -> dict[str, bytes]:
-    return {path: content for path, content in files.items() if path.startswith(SLICE_PATHS)}
+    """Give the files of the slices part. The server files of a feature belong to story #186."""
+    return {
+        path: content
+        for path, content in files.items()
+        if path.startswith(SLICE_PATHS) and ".server" not in path
+    }
 
 
 def _text(path: str) -> str:
@@ -145,15 +150,20 @@ def test_each_server_only_module_imports_server_only(web_files: dict[str, Output
         assert 'import "server-only";' in text, path
         folder, name = path.rsplit("/", 1)
         module = name.rsplit(".", 1)[0]
+        if folder.endswith("/api") and folder.startswith("src/features/"):
+            # The server function of a feature slice is in its segment api.
+            folder = folder.removesuffix("/api")
+            module = f"api/{module}"
         server_api = web_files[f"{folder}/index.server.gen.ts"].content.decode("utf-8")
         assert f'export * from "./{module}";' in server_api, path
-        public_api = web_files[f"{folder}/index.gen.ts"].content.decode("utf-8")
-        assert module not in public_api, path
+        public_api = web_files.get(f"{folder}/index.gen.ts")
+        if public_api is not None:
+            assert module not in public_api.content.decode("utf-8"), path
         assert web_files[f"{folder}/index.server.ts"].kind == Kind.CREATE_ONCE
     for path, file in web_files.items():
         if path.endswith("/index.gen.ts"):
             assert ".server" not in file.content.decode("utf-8"), path
-        if path.startswith(SLICE_PATHS):
+        if path.startswith(SLICE_PATHS) and not path.startswith("src/features/"):
             assert ".server." not in path, "The slices part must have no server-only module."
 
 
@@ -214,7 +224,8 @@ def test_slices_import_only_lower_layers() -> None:
             text = path.read_text(encoding="utf-8")
             for source in _IMPORT.findall(text):
                 assert source.startswith(prefixes), f"{path}: {source}"
-                assert source.count("/") == 2, f"{path}: {source} is not a public API"
+                public_api = source.removesuffix("/index.server")
+                assert public_api.count("/") == 2, f"{path}: {source} is not a public API"
 
 
 # trace: PRD-APP-005, PRD-APP-304

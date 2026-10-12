@@ -576,14 +576,27 @@ jobs:
       # (PRD-APP-008, PRD-APP-323, PRD-APP-324). The features and widgets
       # tests render the client components of the slices. They examine the
       # requests to the route handlers under /api (PRD-APP-314,
-      # PRD-APP-321).
+      # PRD-APP-321). The routes tests send HTTP requests to the route
+      # handlers with the PostgreSQL service container (PRD-APP-008,
+      # PRD-APP-113, PRD-APP-114, PRD-APP-311, PRD-APP-312, PRD-APP-313).
       - name: Copy the Vitest tests
         run: |
           mkdir -p "$PROJECT/tests"
-          cp -r tests/nextjs/auth tests/nextjs/features tests/nextjs/widgets "$PROJECT/tests/"
+          cp -r tests/nextjs/auth tests/nextjs/features tests/nextjs/routes tests/nextjs/widgets "$PROJECT/tests/"
+
+      - name: Make the database of the HTTP tests
+        env:
+          PGPASSWORD: ci
+        run: psql --host 127.0.0.1 --username app --dbname app --command "CREATE DATABASE order_web_routes"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}
+        env:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_NAME: order_web_routes
+          DATABASE_USER: app
+          DATABASE_PASSWORD: ci
+          DATABASE_SSL_MODE: disable
         run: pnpm exec vitest run
 
       # "next build" must not change tsconfig.json. The build must not
@@ -616,7 +629,9 @@ jobs:
       # The root layout must give the public runtime values of the
       # environment of the container to the page (PRD-APP-325). The request
       # interceptor must send a request for a protected page with no
-      # session to the login (PRD-APP-323).
+      # session to the login (PRD-APP-323). A route handler under /api must
+      # give HTTP 401 with problem details to a request with no session
+      # (PRD-APP-008, PRD-APP-014, PRD-APP-310).
       - name: Start the container and get GET /healthz
         run: |
           test "$(docker run --rm --entrypoint id order-web:test -u)" != "0"
@@ -628,12 +643,16 @@ jobs:
               echo
               curl --silent http://127.0.0.1:3000/ > page.html || true
               curl --silent --output /dev/null --write-out '%{http_code} %{redirect_url}' http://127.0.0.1:3000/orders > redirect.txt || true
+              curl --silent --output api.json --write-out '%{http_code} %{content_type}' http://127.0.0.1:3000/api/orders > api.txt || true
               docker logs order-web > logs.txt
               cat logs.txt
               docker rm --force order-web
               echo "Redirect of /orders: $(cat redirect.txt)"
               grep --quiet "eu-west-1_runtimeMarker" page.html
               test "$(cat redirect.txt)" = "307 http://127.0.0.1:3000/auth/login?next=%2Forders"
+              echo "Response of /api/orders: $(cat api.txt) $(cat api.json)"
+              test "$(cat api.txt)" = "401 application/problem+json"
+              jq --exit-status '.status == 401' api.json
               grep '"requestId":"ci-healthz"' logs.txt | jq --exit-status '.path == "/healthz" and .status == 200'
               exit 0
             fi

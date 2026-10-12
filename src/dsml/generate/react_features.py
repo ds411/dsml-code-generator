@@ -41,7 +41,7 @@ A module imports only from lower layers, through the public API of a slice
 """
 
 import re
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Final
 
@@ -1008,7 +1008,12 @@ def _crud_slice(item: Slice, entity: EntitySlice) -> FeatureSlice:
     )
 
 
-def _custom_slice(item: CustomSlice, by_entity: dict[str, EntitySlice]) -> FeatureSlice:
+# trace: PRD-APP-005, PRD-APP-210
+def custom_feature_slice(item: CustomSlice, by_entity: Mapping[str, EntitySlice]) -> FeatureSlice:
+    """Give the feature slice of a custom operation, with the Zod schemas of its input and output.
+
+    The Next.js generator also uses it for a custom operation with the method GET.
+    """
     output: tuple[ZodField, ...] = ()
     if item.entity_output is not None:
         output = tuple(ZodField(column) for column in item.entity_output)
@@ -1054,7 +1059,7 @@ def feature_slices(ir: Ir, application: Element) -> list[FeatureSlice]:
             if item.operation in CHANGE_OPERATIONS and item.model.entity in by_entity
         )
         items.extend(
-            _custom_slice(item, by_entity)
+            custom_feature_slice(item, by_entity)
             for item in custom_slices(ir, api, found, crud)
             if item.method != "get"
         )
