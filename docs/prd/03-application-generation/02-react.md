@@ -30,7 +30,7 @@ src/
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-APP-201 | The React target must use strict TypeScript, pnpm, Vite, React, TanStack Router, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui and Amplify Auth. The versions must come from the version baseline. | Inspection | Q17, Q49 |
+| PRD-APP-201 | The React target must use strict TypeScript, pnpm, Vite, React, TanStack Router, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Amplify Auth, ESLint with `typescript-eslint` and Vitest. The versions must come from the version baseline. | Inspection | Q17, Q49, Q64 |
 | PRD-APP-202 | The generator must put the code in the FSD layers `app`, `pages`, `widgets`, `features`, `entities` and `shared` in `src/`. | Test | AD2 |
 | PRD-APP-203 | Generated code must obey the FSD import rules: a module imports only from lower layers, and only through the public API of a slice. | Test | AD2 |
 | PRD-APP-204 | Each slice must have a create-once `index.ts` that re-exports the generated `index.gen.ts`. | Test | Q34 |
@@ -85,4 +85,4 @@ One static build operates in all environments. At start, the application reads `
 | PRD-APP-232 | The API client must add the access token of the session to each request as a bearer token. | Test | Q42 |
 | PRD-APP-233 | `pnpm build` must write the static files to `dist/`. The build must not contain environment values. | Test | Q43 |
 | PRD-APP-234 | The generator must write a Steiger configuration, and `dsml check-output` must run Steiger with no error. | Test | AD2, Q28 |
-| PRD-APP-235 | The fixed-name generated files of the React target must be: `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html`, `components.json` and `steiger.config.ts`. | Inspection | Q34, PRD-CORE-039 |
+| PRD-APP-235 | The fixed-name generated files of the React target must be: `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html`, `components.json`, `steiger.config.ts` and `eslint.config.js`. | Inspection | Q34, PRD-CORE-039, Q64 |

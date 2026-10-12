@@ -4,7 +4,7 @@ package PrdAppWeb {
 
     // React target (phase 2)
     #Requirement requirement <'PRD-APP-201'> app201 {
-        doc /* The React target must use strict TypeScript, pnpm, Vite, React, TanStack Router, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui and Amplify Auth. The versions must come from the version baseline. */
+        doc /* The React target must use strict TypeScript, pnpm, Vite, React, TanStack Router, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Amplify Auth, ESLint with typescript-eslint and Vitest. The versions must come from the version baseline. */
         :>> title = "React stack"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -119,14 +119,14 @@ package PrdAppWeb {
         frame correctModel;
     }
     #Requirement requirement <'PRD-APP-235'> app235 {
-        doc /* The fixed-name generated files of the React target must be: package.json, tsconfig.json, vite.config.ts, index.html, components.json and steiger.config.ts. */
+        doc /* The fixed-name generated files of the React target must be: package.json, tsconfig.json, vite.config.ts, index.html, components.json, steiger.config.ts and eslint.config.js. */
         :>> title = "React fixed names"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
 
     // Next.js target (phase 3)
     #Requirement requirement <'PRD-APP-301'> app301 {
-        doc /* The Next.js target must use strict TypeScript, pnpm, Next.js with the App Router, React, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Drizzle ORM and Amplify Auth with its Next.js adapter. The versions must come from the version baseline. */
+        doc /* The Next.js target must use strict TypeScript, pnpm, Next.js with the App Router, React, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Drizzle ORM with the PostgreSQL driver pg, Amplify Auth with its Next.js adapter, ESLint with typescript-eslint and Vitest. The versions must come from the version baseline. */
         :>> title = "Next.js stack"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -221,7 +221,7 @@ package PrdAppWeb {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-332'> app332 {
-        doc /* PRD-APP-125 to PRD-APP-128 must also apply to the Next.js target. The migration command must be node migrate.gen.mjs. */
+        doc /* PRD-APP-125 to PRD-APP-128 must also apply to the Next.js target, with the SQL file name migrations/<NNNN>_<slug>.gen.sql. The migration command must be node migrate.gen.mjs. */
         :>> title = "Next.js migration rules"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }
@@ -231,7 +231,7 @@ package PrdAppWeb {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-APP-334'> app334 {
-        doc /* The fixed-name generated files of the Next.js target must be: package.json, tsconfig.json, next.config.ts, the full app/ folder, middleware.ts or proxy.ts, drizzle.config.ts, components.json, steiger.config.ts, Dockerfile and .dockerignore. */
+        doc /* The fixed-name generated files of the Next.js target must be: package.json, tsconfig.json, next.config.ts, the full app/ folder, middleware.ts or proxy.ts, drizzle.config.ts, components.json, steiger.config.ts, eslint.config.js, vitest.config.ts, migrations/meta/_journal.json, Dockerfile and .dockerignore. */
         :>> title = "Next.js fixed names"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
         frame deterministicGeneration;
     }

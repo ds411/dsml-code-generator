@@ -94,3 +94,15 @@ The catalog has 45 rules in eight categories. Each rule reports a finding when t
 | TXT-001 | warning | A sentence in the text of a need or requirement has more than 25 words. |
 | TXT-002 | warning | A requirement text uses "shall", "should", "may" or "will" in place of "must". |
 | TXT-003 | warning | A requirement text has more than one "must", so it can contain more than one requirement. |
+
+## Rule catalog additions for phase 2
+
+Phase 2 adds one rule for the imported OpenAPI files of decision Q65.
+
+| ID | Requirement | Verification | Source |
+| --- | --- | --- | --- |
+| PRD-VAL-016 | Phase 2: the validator must contain each rule in the catalog of the section "Rule catalog additions for phase 2", with its default severity. | Test | Q65 |
+
+| Rule | Severity | The rule reports a finding when |
+| --- | --- | --- |
+| STR-017 | error | An imported OpenAPI file does not exist, or it contains an item that the toolchain cannot read. |

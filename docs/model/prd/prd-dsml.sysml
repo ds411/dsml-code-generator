@@ -152,6 +152,11 @@ package PrdDsml {
         :>> title = "Calls dependency"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }
+    #Requirement requirement <'PRD-DSML-058'> dsml058 {
+        doc /* Phase 2: an external API must be a part usage with the keyword #ExternalApi. Its attribute openApiFile must give the path of an OpenAPI 3.1 JSON file, relative to the repository root. A react application can call it with a #Calls dependency. */
+        :>> title = "External API"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
+        frame oneModel;
+    }
     #Requirement requirement <'PRD-DSML-031'> dsml031 {
         doc /* Phase 2: a view must be a part usage in an application with the keyword #View. Its attribute kind must be list, detail or form. A list or detail view must refer to one entity. A form view must refer to one operation. */
         :>> title = "View"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
