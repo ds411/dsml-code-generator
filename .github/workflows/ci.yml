@@ -75,9 +75,6 @@ jobs:
       - name: Check the format of the golden files
         run: uv run ruff format --check --no-cache tests/golden
 
-      - name: Check the types
-        run: pnpm typecheck
-
       # Get sysml-grpc of the pinned version before the work and check its
       # SHA-256 hash against src/dsml/versions.toml (PRD-CORE-049). After
       # this step, a start of OpenSysML does not use the network.
@@ -99,6 +96,21 @@ jobs:
       # reference models with tests/golden/ir/ (PRD-CORE-027, PRD-CORE-029).
       - name: Test
         run: uv run pytest
+
+      # trace: PRD-AI-008, PRD-AI-009, PRD-AI-010
+      # The step "Test" runs without the optional dependency group "mcp".
+      # Thus the tests of the other subcommands operate without the MCP
+      # Python SDK (Q69), and the tests with the mark "mcp" are skipped.
+      # This step installs the SDK for the type check and the MCP tests.
+      - name: Install the MCP SDK
+        run: uv sync --frozen --extra mcp
+
+      # The type check needs the MCP SDK, because the MCP server imports it.
+      - name: Check the types
+        run: pnpm typecheck
+
+      - name: Test the MCP server
+        run: uv run --frozen --extra mcp pytest -m mcp
 
       # The example model must have no error finding (story #68). The
       # findings of the reference models are also golden files, which the
