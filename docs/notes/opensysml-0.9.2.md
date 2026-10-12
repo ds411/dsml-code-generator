@@ -6,6 +6,7 @@ Story #12 examined the `opensysml` 0.9.2 Python client and `sysml-grpc` 0.9.2. T
 
 - `opensysml` 0.9.2 installs from PyPI with uv. It is a pure Python wheel. The license is Apache-2.0.
 - The client downloads `sysml-grpc` one time and checks its SHA-256 hash. Then it starts `sysml-grpc` as a private child process.
+- Before each start, the toolchain checks the SHA-256 hash of the binary from each source (story #135). See "Hash check of the toolchain".
 - OpenSysML parses and resolves a metadata definition that specializes `Metaobjects::SemanticMetadata`, and a usage with a user-defined keyword.
 - Each diagnostic gives the file, the line, the column, the severity, a code and a message.
 - OpenSysML evaluates a constraint. The result is `holds`, `violated` or `undecided`. An `undecided` result names the feature that has no value.
@@ -26,24 +27,47 @@ The client finds the binary in this sequence:
 3. A download of the release of the client version, from `https://github.com/Open-MBEE/OpenSysML/releases/download/v0.9.2/sysml-grpc-<os>-<arch>`.
 4. A `sysml-grpc` on `PATH`.
 
-The client does a check of the downloaded binary against a SHA-256 hash in the wheel (`opensysml/release-digests.json`). If the hash is different, the client stops with `ChecksumMismatchError` and does not install the binary. This satisfies the hash check of PRD-CORE-049. The client also writes `~/.opensysml/bin/sysml-grpc.json` with the release tag and the hash.
+The client does a check of the downloaded binary against a SHA-256 hash in the wheel (`opensysml/release-digests.json`). If the hash is different, the client stops with `ChecksumMismatchError` and does not install the binary. The client also writes `~/.opensysml/bin/sysml-grpc.json` with the release tag and the hash.
 
-The hashes of release v0.9.2 in the wheel are:
+The client does not do a hash check of a binary from `OPENSYSML_BINARY` or from `PATH`. Thus the toolchain does its own check (story #135).
+
+### Hash check of the toolchain
+
+The module `dsml.adapter.binary` checks the hash of `sysml-grpc` before each start (PRD-CORE-049):
+
+- `src/dsml/versions.toml` gives the expected hash for each platform of Q50. The items are `sysml-grpc-sha256-linux-amd64`, `sysml-grpc-sha256-linux-arm64` and `sysml-grpc-sha256-darwin-arm64`.
+- The client finds the binary with `ensure_binary()` immediately before it starts the child process. The adapter puts a function in its place. This function calls `ensure_binary()` and checks the hash of the binary that it gives. Thus the check applies to the cache file, to `OPENSYSML_BINARY`, to `PATH` and to a download.
+- If the hash is different, the toolchain stops with exit code 2. The message gives the hash of the binary and the expected hash.
+- If the platform has no hash, the toolchain stops with exit code 2. The message gives the platforms with a hash.
+- A hash check reads the full binary (43 MB) one time for each start of the child process.
+
+The hashes of release v0.9.2 are:
 
 | Asset | SHA-256 |
 | --- | --- |
 | `sysml-grpc-linux-amd64` | `8577dacafa512416942639a3b2a7e38dc4a0bd89e64abce2e5e4faca581ee7c3` |
 | `sysml-grpc-linux-arm64` | `289f3fdff259f1a49960abbdead31a9cd7bb4d3789430303d1823beffda1b3cf` |
 | `sysml-grpc-darwin-arm64` | `f216818f2b37767d1aa7531a692612c7235e64ae9a21efe6b4de13d6832422f4` |
-| `sysml-grpc-darwin-amd64` | `e0a899530c03dfc4364c472d04e3f8748338ae72132f75f9351b9d162c8cb2cc` |
-| `sysml-grpc-windows-amd64.exe` | `d58a5b3ace4a627e59988b85d94d1b753ba7403b1477860f3ae2e8d83b3c3e99` |
+
+The wheel also has hashes for `sysml-grpc-darwin-amd64` and `sysml-grpc-windows-amd64.exe`. The toolchain does not support these platforms (Q50), so `versions.toml` does not have them. On Windows, use WSL.
+
+### Get the binary before the work
+
+Do this step one time after the installation of the toolchain, and after each change of the OpenSysML version:
+
+```sh
+python -m dsml.adapter.binary
+```
+
+In the repository, use `uv run python -m dsml.adapter.binary`. The command gets `sysml-grpc` of the pinned version into the cache, if the cache does not have it. Then it checks the hash. It writes the path and the hash of the binary. If the check fails, the exit code is 2.
+
+After this step, `dsml validate` and `dsml generate` do not use the network (PRD-TOP-004). The CI step "Get sysml-grpc and check its hash" runs the command. The GitHub Action and the release documentation must use the same command (story #137).
 
 Network use:
 
-- The download uses the network one time. After the download, a start uses the cache and does not use the network. A test with a proxy that refuses all connections showed this.
+- The download uses the network one time. After the download, a start uses the cache and does not use the network. A test with a proxy that refuses all connections showed this. Story #135 did the test again with `dsml validate` on the example model.
 - Without a cache and without a network, the start fails with `EngineError` ("Cannot start sysml-grpc: Failed to download binary ...").
-- To work offline, put the binary in the cache before the work. The CI step "Start OpenSysML and measure the times" does this.
-- The client does not do a hash check of a binary from `OPENSYSML_BINARY` or from `PATH`. The toolchain must not set `OPENSYSML_BINARY` for a release. The version check at start still applies to these binaries.
+- The toolchain asks the client for the release "v0.9.2". Thus the client uses a binary on `PATH` only if the release has no asset for the platform. The hash check also applies to this binary.
 
 ## Start of the child process
 

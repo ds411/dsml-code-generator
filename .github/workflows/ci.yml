@@ -78,8 +78,14 @@ jobs:
       - name: Check the types
         run: pnpm typecheck
 
-      # The first start of OpenSysML downloads sysml-grpc and checks its
-      # SHA-256 hash (PRD-CORE-049). The script writes the start time and the
+      # Get sysml-grpc of the pinned version before the work and check its
+      # SHA-256 hash against src/dsml/versions.toml (PRD-CORE-049). After
+      # this step, a start of OpenSysML does not use the network.
+      - name: Get sysml-grpc and check its hash
+        run: uv run python -m dsml.adapter.binary
+
+      # Before each start, the toolchain checks the SHA-256 hash of
+      # sysml-grpc (PRD-CORE-049). The script writes the start time and the
       # parse times for docs/notes/opensysml-0.9.2.md.
       - name: Start OpenSysML and measure the times
         run: uv run python scripts/measure_opensysml.py

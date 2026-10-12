@@ -39,13 +39,19 @@ The toolchain is a Python 3.14 project that uv manages. pnpm manages only the No
    pnpm install
    ```
 
-3. Run the command `dsml`:
+3. Get the `sysml-grpc` binary of OpenSysML and check its SHA-256 hash. After this step, the toolchain does not use the network:
+
+   ```sh
+   uv run python -m dsml.adapter.binary
+   ```
+
+4. Run the command `dsml`:
 
    ```sh
    uv run dsml version
    ```
 
-4. Run the checks. Each check must pass before you open a pull request:
+5. Run the checks. Each check must pass before you open a pull request:
 
    ```sh
    uv run ruff check
@@ -54,7 +60,7 @@ The toolchain is a Python 3.14 project that uv manages. pnpm manages only the No
    uv run pytest
    ```
 
-5. Build the package. The wheel and the source archive go to `dist/`:
+6. Build the package. The wheel and the source archive go to `dist/`:
 
    ```sh
    uv build
@@ -64,7 +70,7 @@ In a Claude Code cloud session, the SessionStart hook `.claude/hooks/session-sta
 
 ### CI
 
-The workflow `.github/workflows/ci.yml` runs the checks of step 4 on each pull request and on each push to `main`. It runs only on Linux x64 (`ubuntu-24.04`), as decision record 07 gives (Q62). The steps are:
+The workflow `.github/workflows/ci.yml` runs the checks of step 5 on each pull request and on each push to `main`. It runs only on Linux x64 (`ubuntu-24.04`), as decision record 07 gives (Q62). The steps are:
 
 1. `uv sync --frozen`
 2. `pnpm install --frozen-lockfile`
