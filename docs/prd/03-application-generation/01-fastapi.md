@@ -104,3 +104,4 @@ One shared dependency checks the Cognito access token for all slices. The contai
 | PRD-APP-133 | The Dockerfile must install the locked dependencies with `uv sync --frozen --no-dev` and run Uvicorn on port 8000. | Test | Q25 |
 | PRD-APP-134 | The fixed-name generated files of the FastAPI target must be: `pyproject.toml`, `Dockerfile`, `.dockerignore`, `alembic.ini`, `migrations/env.py` and each `__init__.py` in a generated folder. | Inspection | Q34, PRD-CORE-039 |
 | PRD-APP-135 | `pytest` must run on the generated project with no error when the project has no tests. | Test | Q13 |
+| PRD-APP-136 | Phase 2: a FastAPI application that `react` applications call must send CORS headers only for the site domains of those applications. The application reads these domains from an environment variable at start. | Test | Q66, PRD-APP-010 |

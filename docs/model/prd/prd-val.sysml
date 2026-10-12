@@ -77,4 +77,9 @@ package PrdVal {
         :>> title = "Rule catalog"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
+    #Requirement requirement <'PRD-VAL-016'> val016 {
+        doc /* Phase 2: the validator must contain each rule in the catalog of the section "Rule catalog additions for phase 2", with its default severity. */
+        :>> title = "Phase 2 rule catalog"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
+        frame correctModel;
+    }
 }

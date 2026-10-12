@@ -28,7 +28,7 @@ migrations/
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-APP-301 | The Next.js target must use strict TypeScript, pnpm, Next.js with the App Router, React, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Drizzle ORM and Amplify Auth with its Next.js adapter. The versions must come from the version baseline. | Inspection | Q17, Q49 |
+| PRD-APP-301 | The Next.js target must use strict TypeScript, pnpm, Next.js with the App Router, React, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Drizzle ORM with the PostgreSQL driver `pg`, Amplify Auth with its Next.js adapter, ESLint with `typescript-eslint` and Vitest. The versions must come from the version baseline. | Inspection | Q17, Q49, Q64 |
 | PRD-APP-302 | The Next.js `app/` folder must be at the project root and hold only route files that re-export from `src/`. The generator must own the full `app/` folder. | Test | Q36, Q34 |
 | PRD-APP-303 | The FSD layers must be in `src/`, and the layers `app` and `pages` must have the names `_app` and `_pages`. | Test | Q36, AD2 |
 | PRD-APP-304 | The generator must map model elements to slices as PRD-APP-210 gives, with the layer names of PRD-APP-303. | Test | Q35 |
@@ -68,6 +68,6 @@ Drizzle holds the schema and the queries in `src/shared/db`. The generator write
 | --- | --- | --- | --- |
 | PRD-APP-330 | The generator must write the Drizzle schema of all entities in `src/shared/db/schema.gen.ts`, with the type map of PRD-APP-121. | Test | Q36, Q19 |
 | PRD-APP-331 | The generator must write each migration from the difference between `.dsml/schema-snapshot.json` and the IR, in the file format that the Drizzle migrator reads. The project must not use `drizzle-kit generate`. | Test | Q19, Q16 |
-| PRD-APP-332 | PRD-APP-125 to PRD-APP-128 must also apply to the Next.js target. The migration command must be `node migrate.gen.mjs`. | Test | Q19, Q53 |
+| PRD-APP-332 | PRD-APP-125 to PRD-APP-128 must also apply to the Next.js target, with the SQL file name `migrations/<NNNN>_<slug>.gen.sql`. The migration command must be `node migrate.gen.mjs`. | Test | Q19, Q53, Q67 |
 | PRD-APP-333 | The Next.js build must use the `standalone` output. The Dockerfile must run the server on port 3000. | Test | Q25 |
-| PRD-APP-334 | The fixed-name generated files of the Next.js target must be: `package.json`, `tsconfig.json`, `next.config.ts`, the full `app/` folder, `middleware.ts` or `proxy.ts`, `drizzle.config.ts`, `components.json`, `steiger.config.ts`, `Dockerfile` and `.dockerignore`. | Inspection | Q34, PRD-CORE-039 |
+| PRD-APP-334 | The fixed-name generated files of the Next.js target must be: `package.json`, `tsconfig.json`, `next.config.ts`, the full `app/` folder, `middleware.ts` or `proxy.ts`, `drizzle.config.ts`, `components.json`, `steiger.config.ts`, `eslint.config.js`, `vitest.config.ts`, `migrations/meta/_journal.json`, `Dockerfile` and `.dockerignore`. | Inspection | Q34, PRD-CORE-039, Q64, Q67 |
