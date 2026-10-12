@@ -64,16 +64,17 @@ def _solution(graph: LinkGraph, identities: tuple[str, ...]) -> list[str]:
 def test_example_need_goes_down_to_its_elements_and_verifications(example: Ir) -> None:
     graph = LinkGraph(example)
     assert graph.downstream("N-001", ["Requirement"]) == ("R-001", "R-002")
-    assert graph.downstream("N-001", ["Verification"]) == ("V-001",)
+    assert graph.downstream("N-001", ["Verification"]) == ("V-001", "V-002")
     assert _solution(graph, graph.downstream("N-001")) == [
         "OrderService::apiService",
         "OrderService::apiServiceAws",
         "OrderService::orderApi",
+        "OrderService::prod::orderDbProd",
     ]
     assert graph.satisfying_elements("R-001") == ("OrderService::orderApi",)
     assert graph.verifications("R-001") == ("V-001",)
-    assert graph.satisfying_elements("R-002") == ()
-    assert graph.verifications("R-002") == ()
+    assert graph.satisfying_elements("R-002") == ("OrderService::prod::orderDbProd",)
+    assert graph.verifications("R-002") == ("V-002",)
 
 
 # trace: PRD-TRACE-004

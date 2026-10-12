@@ -412,7 +412,7 @@ def _direction(source: SourceElement) -> Direction | None:
 def _links(source: SourceElement) -> Iterator[Link]:
     metaclass = source.metaclass
     if metaclass == "SatisfyRequirementUsage":
-        for satisfier in source.references("subject"):
+        for satisfier in _satisfiers(source):
             for requirement in source.references("subsets"):
                 yield from _link("satisfy", satisfier, requirement, source)
     elif metaclass == "RequirementUsage" and source.data.get("sysx:declaredKeyword") == "verify":
@@ -430,6 +430,33 @@ def _links(source: SourceElement) -> Iterator[Link]:
             for client in source.references("client"):
                 for supplier in source.references("supplier"):
                     yield from _link(_DEPENDENCY_LINKS[keyword], client, supplier, source)
+
+
+# trace: PRD-TRACE-002
+def _satisfiers(source: SourceElement) -> tuple[SourceElement, ...]:
+    """Give the elements after `by` in a `satisfy` link.
+
+    OpenSysML 0.9.2 gives a feature chain after `by`, for example
+    `prod.orderDbProd`, as text, not as a reference. The function finds the
+    element of the chain. It looks for the chain in the namespace of the
+    link, then in each namespace that contains it. Each name after the
+    first name must be an owned member of the element before it.
+    """
+    found = source.references("subject")
+    chain = source.data.get("subject")
+    if found or not isinstance(chain, str):
+        return found
+    names = chain.split(".")
+    if not all(names):
+        return ()
+    scope = source.owner
+    while scope is not None:
+        if scope.qualified_name:
+            element = source.graph.find("::".join((scope.qualified_name, *names)))
+            if element is not None and element.in_model:
+                return (element,)
+        scope = scope.owner
+    return ()
 
 
 def _link(

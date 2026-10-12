@@ -50,7 +50,7 @@ The CI job "Pilot" sends the example model and the PRD model, each with the libr
 | 6 | `RequirementKind::interface` | `RequirementKind::'interface'` | PRD model (29) | `interface` is a SysML keyword. The reason is the same as for change 5. |
 | 7 | A need with a stakeholder has no subject, for example `#Need concern <'N-001'> trackOrders { ... stakeholder owner : ShopOwner; }`. | `subject;` before the first stakeholder. | Example model (1), PRD model (5), `tests/models/dsml/keywords.sysml` (1), example model in the DSML PRD (1) | A stakeholder is a parameter. The pilot kernel gives "Subject must be first parameter" if a concern has a stakeholder and no subject before it. |
 
-The enumeration literals of the DSML library that are SysML keywords are `RequirementKind::'interface'`, `RequirementKind::'constraint'` and `VerificationMethod::'analysis'`. No model uses `VerificationMethod::'analysis'` at this time. The other literals of the library are not SysML keywords.
+The enumeration literals of the DSML library that are SysML keywords are `RequirementKind::'interface'`, `RequirementKind::'constraint'` and `VerificationMethod::'analysis'`. The example model uses `VerificationMethod::'analysis'` in V-002 (story #136). The other literals of the library are not SysML keywords.
 
 ### Rule for models
 
@@ -70,6 +70,19 @@ The sketch did not give the full form of `#derivation` and `#refinement` (PRD-DS
 | Refinement | `#refinement dependency r2 to r1;` | `private import ModelingMetadata::*;` |
 
 A project keyword can specialize a DSML keyword, for example `metadata def SafetyRequirement :> DSML::Requirement;`. It cannot redefine `baseType`, because the DSML keyword gives the value with `=` (code `feature-value-overriding`). To add attributes, the project library specializes the base type, for example `requirement def ProjectRequirement :> BaseTypes::Requirement { ... }`. Then the model types the element with it: `#Requirement requirement <'R-001'> r : ProjectRequirement { ... }`. See `tests/models/ir/project-library/`.
+
+## Link from an element in an environment (story #136)
+
+Story #136 added `satisfy orderDataSafe by prod.orderDbProd;` and the verification V-002 to the example model and to its copy in the DSML PRD. The sketch did not give the form of a `satisfy` link from an element in an environment.
+
+| Form | OpenSysML 0.9.2 | Pilot kernel |
+| --- | --- | --- |
+| `satisfy orderDataSafe by prod.orderDbProd;` | Accepts it. The IR adapter finds the element of the chain (`docs/notes/ir-solution-layers.md`, "Links"). | Accepts it. |
+| `satisfy orderDataSafe by prod::orderDbProd;` | Accepts it. | Does not accept it: "Must be an accessible feature (use dot notation for nesting)". |
+
+### Rule for models
+
+To refer to an element in an environment in a `satisfy` link, use a feature chain with `.`, not a qualified name with `::`.
 
 ## Items for later stories
 

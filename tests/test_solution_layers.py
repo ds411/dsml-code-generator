@@ -137,6 +137,7 @@ def test_example_ir_holds_each_element_of_the_three_layers(example: Ir) -> None:
         "OrderService::prod::apiServiceProd": "Override",
         "OrderService::prod::orderDbProd": "Override",
         "V-001": "Verification",
+        "V-002": "Verification",
     }
 
 
@@ -154,7 +155,9 @@ def test_example_ir_holds_each_link_of_the_three_layers(example: Ir) -> None:
         ),
         Link("realizes", "OrderService::orderDbAws", "OrderService::orderDb", at(file, 84, 5)),
         Link("realizes", "OrderService::usersAws", "OrderService::users", at(file, 85, 5)),
-        Link("verify", "V-001", "R-001", at(file, 103, 21)),
+        Link("satisfy", "OrderService::prod::orderDbProd", "R-002", at(file, 97, 5)),
+        Link("verify", "V-001", "R-001", at(file, 104, 21)),
+        Link("verify", "V-002", "R-002", at(file, 110, 21)),
     }
 
 
@@ -195,7 +198,8 @@ def test_element_locations_point_to_their_declarations(example: Ir) -> None:
         "OrderService::Order::total": (45, 9),
         "OrderService::orderApi::orders": (58, 9),
         "OrderService::prod::apiServiceProd": (94, 9),
-        "V-001": (99, 5),
+        "V-001": (100, 5),
+        "V-002": (106, 5),
     }
     for identity, (line, column) in expected.items():
         assert _element(example, identity).location == at(EXAMPLE, line, column)

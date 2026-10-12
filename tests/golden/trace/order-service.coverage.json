@@ -36,10 +36,14 @@
         "N-001"
       ],
       "requirement": "R-002",
-      "satisfiedBy": [],
-      "status": "missing",
+      "satisfiedBy": [
+        "OrderService::prod::orderDbProd"
+      ],
+      "status": "verified",
       "traceComments": [],
-      "verifications": []
+      "verifications": [
+        "V-002"
+      ]
     }
   ]
 }

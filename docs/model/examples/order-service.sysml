@@ -94,6 +94,7 @@ package OrderService {
         #Override part apiServiceProd :> apiServiceAws { :>> desiredCount = 3; }
         #Override part orderDbProd :> orderDbAws { :>> multiAz = true; }
     }
+    satisfy orderDataSafe by prod.orderDbProd;
 
     // Verification layer
     #Verification verification <'V-001'> orderStatusTest {
@@ -101,5 +102,11 @@ package OrderService {
         :>> method = VerificationMethod::test;
         :>> testFiles = ("app/features/order/read_order/test_endpoint.py");
         objective { verify getOrderStatus; }
+    }
+    #Verification verification <'V-002'> orderDataSafeAnalysis {
+        doc /* Evidence: the IR adapter evaluates the formal constraint of R-002 on the prod override orderDbProd. The result is true. */
+        :>> title = "Order database in two zones analysis";
+        :>> method = VerificationMethod::'analysis';
+        objective { verify orderDataSafe; }
     }
 }
