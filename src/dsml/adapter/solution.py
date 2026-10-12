@@ -41,8 +41,8 @@ from dsml.ir.model import (
 )
 from dsml.ir.operations import CRUD_DEFAULTS
 
-# trace: PRD-DSML-020, PRD-DSML-022, PRD-DSML-027, PRD-DSML-028, PRD-DSML-033,
-# PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-042, PRD-DSML-043, PRD-DSML-045
+# trace: PRD-DSML-020, PRD-DSML-022, PRD-DSML-027, PRD-DSML-028, PRD-DSML-033
+# trace: PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-042, PRD-DSML-043, PRD-DSML-045
 KEYWORDS: dict[str, ElementKind] = {
     "Application": "Application",
     "Entity": "Entity",
@@ -407,8 +407,8 @@ def _direction(source: SourceElement) -> Direction | None:
 # Links ------------------------------------------------------------------------
 
 
-# trace: PRD-TRACE-001, PRD-TRACE-002, PRD-TRACE-003, PRD-DSML-030, PRD-DSML-037,
-# PRD-DSML-039, PRD-DSML-040, PRD-DSML-047
+# trace: PRD-TRACE-001, PRD-TRACE-002, PRD-TRACE-003, PRD-DSML-030, PRD-DSML-037
+# trace: PRD-DSML-039, PRD-DSML-040, PRD-DSML-047
 def _links(source: SourceElement) -> Iterator[Link]:
     metaclass = source.metaclass
     if metaclass == "SatisfyRequirementUsage":

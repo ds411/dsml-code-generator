@@ -661,8 +661,8 @@ def _hcl_list(values: Sequence[str]) -> str:
     return f"[{', '.join(values)}]"
 
 
-# trace: PRD-IAC-008, PRD-IAC-009, PRD-IAC-012, PRD-IAC-013, PRD-IAC-014, PRD-IAC-015,
-# PRD-IAC-016, PRD-IAC-035, PRD-IAC-037
+# trace: PRD-IAC-008, PRD-IAC-009, PRD-IAC-012, PRD-IAC-013, PRD-IAC-014, PRD-IAC-015
+# trace: PRD-IAC-016, PRD-IAC-035, PRD-IAC-037
 def _container_service_arguments(
     element: Element, attributes: Mapping[str, Attribute], context: CallContext
 ) -> dict[str, str]:

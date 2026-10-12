@@ -216,8 +216,8 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
     return value
 
 
-# trace: PRD-CICD-001, PRD-CICD-002, PRD-CICD-003, PRD-CICD-004, PRD-CICD-005,
-# PRD-CICD-006, PRD-CICD-010, PRD-CICD-011, PRD-CICD-014
+# trace: PRD-CICD-001, PRD-CICD-002, PRD-CICD-003, PRD-CICD-004, PRD-CICD-005
+# trace: PRD-CICD-006, PRD-CICD-010, PRD-CICD-011, PRD-CICD-014
 def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) -> dict[str, Any]:
     """Give the template data of `pr.gen.yml`.
 
@@ -291,8 +291,8 @@ def _deploy_elements(builds: Sequence[BuildJob], deploys: Sequence[DeployJob]) -
     return sorted(identities)
 
 
-# trace: PRD-CICD-001, PRD-CICD-007, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011,
-# PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-021
+# trace: PRD-CICD-001, PRD-CICD-007, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011
+# trace: PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-021
 def main_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
     """Give the template data of `main.gen.yml`, or `None` if the workflow has no build job."""
     builds = build_jobs(ir, configuration)
@@ -316,9 +316,9 @@ def main_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
     }
 
 
-# trace: PRD-CICD-001, PRD-CICD-008, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011,
-# PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-020,
-# PRD-CICD-021
+# trace: PRD-CICD-001, PRD-CICD-008, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011
+# trace: PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-020
+# trace: PRD-CICD-021
 def promote_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
     """Give the template data of `promote.gen.yml`, or `None` if the workflow has no deploy job.
 

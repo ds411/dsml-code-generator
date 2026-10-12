@@ -1,11 +1,17 @@
 # The configuration of the PRD model. Story #68 uses it for the golden
-# findings in tests/golden/validate/:
+# findings in tests/golden/validate/, and CI uses it to validate the PRD
+# model (story #138):
 #
 #     uv run dsml validate --config docs/model/prd/dsml.toml
 #
 # The short name of each requirement is its PRD ID, for example
 # PRD-CORE-012. Thus the key ids.requirement must accept these IDs, or rule
 # STR-003 reports each requirement (PRD-DSML-051).
+#
+# A path in this file cannot contain "..". Thus this file cannot name the
+# folders src/ and tests/ for the trace comments of the toolchain. The file
+# dsml-prd.toml in the root folder of the repository names them for the
+# trace reports (story #138).
 schema = 1
 
 [model]

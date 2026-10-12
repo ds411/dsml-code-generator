@@ -1,5 +1,5 @@
-# trace: PRD-APP-102, PRD-APP-103, PRD-APP-106, PRD-APP-110, PRD-APP-116, PRD-APP-117,
-# PRD-CORE-044, PRD-CORE-045
+# trace: PRD-APP-102, PRD-APP-103, PRD-APP-106, PRD-APP-110, PRD-APP-116, PRD-APP-117
+# trace: PRD-CORE-044, PRD-CORE-045
 """The custom operation slices of the FastAPI generator.
 
 Each custom operation of an application is one vertical slice in

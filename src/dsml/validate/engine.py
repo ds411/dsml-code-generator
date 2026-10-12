@@ -1,5 +1,5 @@
-# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-009, PRD-VAL-010,
-# PRD-VAL-011, PRD-VAL-013, PRD-CORE-026
+# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-009, PRD-VAL-010
+# trace: PRD-VAL-011, PRD-VAL-013, PRD-CORE-026
 """The rule engine. It runs the enabled rules on the IR.
 
 The engine reads only the IR and the configuration (PRD-CORE-026). It applies
@@ -87,8 +87,8 @@ def _sorted(findings: list[Finding]) -> tuple[Finding, ...]:
     return tuple(sorted(findings, key=lambda item: (*item.sort_key(), item.element or "")))
 
 
-# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-009, PRD-VAL-010,
-# PRD-VAL-011
+# trace: PRD-VAL-001, PRD-VAL-003, PRD-VAL-004, PRD-VAL-007, PRD-VAL-009, PRD-VAL-010
+# trace: PRD-VAL-011
 class Validator:
     """Run the enabled rules on the IR.
 

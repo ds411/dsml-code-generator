@@ -1,21 +1,29 @@
-"""Tests of the DSML model of the PRD set (story #15).
+"""Tests of the DSML model of the PRD set (stories #15 and #138).
 
 These tests start a private `sysml-grpc` child process. If the binary is not
 in the cache, the `opensysml` client downloads it one time.
 """
 
 import csv
+import re
 from collections.abc import Iterator
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pytest
 
 from dsml.adapter.engine import Engine, ModelElement, ParsedModel
+from dsml.cli import trace_folders
+from dsml.config import load_configuration
 from dsml.library import library_document
+from dsml.trace.comments import read_trace_comments
 
 ROOT = Path(__file__).resolve().parent.parent
 PRD_MODEL = ROOT / "docs" / "model" / "prd"
 REQUIREMENTS_CSV = ROOT / "docs" / "index" / "requirements.csv"
+PRD_CONFIG = PRD_MODEL / "dsml.toml"
+TRACE_CONFIG = ROOT / "dsml-prd.toml"
+GOLDEN = "tests/golden/"
+PRD_ID = re.compile(r"PRD-[A-Z]+-[0-9]{3}")
 
 
 def _prd_documents() -> list[tuple[str, str]]:
@@ -90,3 +98,36 @@ def test_model_text_agrees_with_the_index(prd_model: ParsedModel) -> None:
         if key in requirements and requirements[key][0].documentation != _plain(text)
     ]
     assert differences == []
+
+
+# trace: PRD-TRACE-010
+def test_trace_configuration_agrees_with_the_model_configuration() -> None:
+    model = load_configuration(PRD_CONFIG)
+    trace = load_configuration(TRACE_CONFIG)
+    assert [(trace.root / path).resolve() for path in trace.model] == [
+        (model.root / path).resolve() for path in model.model
+    ]
+    assert trace.ids == model.ids
+    assert trace_folders(trace) == [PurePosixPath("src"), PurePosixPath("tests")]
+
+
+# trace: PRD-TRACE-009, PRD-TRACE-010, PRD-TRACE-012
+def test_trace_comments_of_the_toolchain_are_correct() -> None:
+    """The reader reads each trace comment of the toolchain, and each PRD ID is in the index.
+
+    The golden files in tests/golden/ are the output of other models. The
+    note docs/notes/prd-model-trace.md gives their trace comments.
+    """
+    configuration = load_configuration(TRACE_CONFIG)
+    found = read_trace_comments(configuration.root, trace_folders(configuration), ())
+    own = [item for item in found.comments if not item.path.startswith(GOLDEN)]
+    assert [(item.path, item.line, item.message) for item in found.problems] == []
+    assert own != []
+    index = _csv_rows()
+    unknown = sorted(
+        f"{item.path}:{item.line}: {id_}"
+        for item in own
+        for id_ in item.ids
+        if PRD_ID.fullmatch(id_) is None or id_ not in index
+    )
+    assert unknown == []

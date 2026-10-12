@@ -1,5 +1,5 @@
-# trace: PRD-APP-102, PRD-APP-103, PRD-APP-106, PRD-APP-110, PRD-APP-111, PRD-APP-112,
-# PRD-APP-113, PRD-APP-114, PRD-APP-115
+# trace: PRD-APP-102, PRD-APP-103, PRD-APP-106, PRD-APP-110, PRD-APP-111, PRD-APP-112
+# trace: PRD-APP-113, PRD-APP-114, PRD-APP-115
 """The CRUD slices of the FastAPI generator.
 
 Each CRUD operation of an exposed entity is one vertical slice in

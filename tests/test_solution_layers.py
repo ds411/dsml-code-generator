@@ -100,8 +100,8 @@ def at(file: str, line: int, column: int) -> Location:
 # Elements -------------------------------------------------------------------
 
 
-# trace: PRD-CORE-024, PRD-DSML-020, PRD-DSML-022, PRD-DSML-027, PRD-DSML-028,
-# PRD-DSML-033, PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-043, PRD-DSML-045
+# trace: PRD-CORE-024, PRD-DSML-020, PRD-DSML-022, PRD-DSML-027, PRD-DSML-028
+# trace: PRD-DSML-033, PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-043, PRD-DSML-045
 def test_example_ir_holds_each_element_of_the_three_layers(example: Ir) -> None:
     kinds = {
         element.identity: element.kind

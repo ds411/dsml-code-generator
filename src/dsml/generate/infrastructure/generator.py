@@ -113,8 +113,8 @@ def environment_roots(ir: Ir) -> tuple[EnvironmentRoot, ...]:
     )
 
 
-# trace: PRD-IAC-003, PRD-IAC-004, PRD-IAC-005, PRD-IAC-006, PRD-IAC-024, PRD-IAC-035,
-# PRD-IAC-036, PRD-IAC-037
+# trace: PRD-IAC-003, PRD-IAC-004, PRD-IAC-005, PRD-IAC-006, PRD-IAC-024, PRD-IAC-035
+# trace: PRD-IAC-036, PRD-IAC-037
 def template_data(root: EnvironmentRoot, configuration: Configuration) -> dict[str, Any]:
     """Give the template data of the files of one environment root module."""
     baseline = load_baseline()

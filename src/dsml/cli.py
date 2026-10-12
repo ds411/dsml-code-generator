@@ -455,8 +455,8 @@ def read_baseline_model(args: argparse.Namespace, configuration: Configuration) 
     return read_baseline(ref, configuration, Path.cwd())
 
 
-# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-VAL-003, PRD-VAL-005, PRD-VAL-006,
-# PRD-VAL-009, PRD-VAL-010, PRD-VAL-011
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-VAL-003, PRD-VAL-005, PRD-VAL-006
+# trace: PRD-VAL-009, PRD-VAL-010, PRD-VAL-011
 def run_validate(args: argparse.Namespace) -> Outcome:
     """Run all enabled rules on the IR and write the findings.
 
@@ -489,8 +489,8 @@ def run_validate(args: argparse.Namespace) -> Outcome:
     return Outcome.ERROR_FINDING if fails(findings, args.fail_on) else Outcome.SUCCESS
 
 
-# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-003, PRD-CORE-004, PRD-CORE-005, PRD-CORE-043,
-# PRD-VAL-003, PRD-VAL-009
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-003, PRD-CORE-004, PRD-CORE-005, PRD-CORE-043
+# trace: PRD-VAL-003, PRD-VAL-009
 def run_generate(args: argparse.Namespace) -> Outcome:
     """Validate the model, then write the generated files through the file writer.
 
@@ -574,8 +574,8 @@ def read_trace_baseline(args: argparse.Namespace, configuration: Configuration) 
     return load_baseline(ref, configuration, cwd)
 
 
-# trace: PRD-CORE-001, PRD-CORE-006, PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013,
-# PRD-TRACE-016, PRD-TRACE-017, PRD-TRACE-018
+# trace: PRD-CORE-001, PRD-CORE-006, PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013
+# trace: PRD-TRACE-016, PRD-TRACE-017, PRD-TRACE-018
 def run_trace(args: argparse.Namespace) -> Outcome:
     """Write a trace report as HTML, CSV or JSON.
 
