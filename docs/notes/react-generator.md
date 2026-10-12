@@ -126,6 +126,28 @@ The features layer added the shadcn/ui components `alert-dialog`, `field`, `labe
 
 The slice names of the features layer repeat the entity names, for example `create-order` and `place-order`. Thus the generated `steiger.config.ts` sets the rule `fsd/repetitive-naming` off.
 
+## Widgets layer
+
+Story #173 added the widgets layer: `src/dsml/generate/react_widgets.py` and the templates in `src/dsml/templates/react/widgets/`.
+
+The React application gets one widget slice for each entity of its list views and one for each entity of its detail views (PRD-APP-210). Two views of one kind for one entity give one slice. The entity must have an entity slice with the operation `list` (list view) or `read` (detail view). If not, `dsml generate` stops with an error.
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `<entity>-list/ui/<entity>-table.gen.tsx` | The table of the entity, for example `OrderTable`. It has a column header for each field and paging with `limit` and `offset`. | PRD-APP-114, PRD-APP-210, PRD-APP-228 |
+| `<entity>-details/ui/<entity>-details.gen.tsx` | The details of one entity, for example `OrderDetails`. A description list shows each field. | PRD-APP-210 |
+| `index.gen.ts`, `index.ts` | The public API of the slice. `index.ts` is a create-once file. | PRD-APP-204 |
+
+The rules of the widgets:
+
+- A widget reads the data with `useQuery` and the query options of the entity slice. Thus it uses the same query keys as the loaders of the pages (PRD-APP-223, PRD-APP-224).
+- The table and the details show the key first, then the other fields in the order of the schema. The column header is the field name in words, as the label of a form field. A Boolean value shows as `Yes` or `No`. A `null` value shows as an empty text.
+- The table gets the optional properties `pageSize` (1 to 200, the default is 50) and `actions`. `actions` gives the controls of one row, for example a link to the details or the delete button. If `actions` is set, the table has the column "Actions". The pages story (#174) gives these controls, because a widget cannot import the routes of the app layer.
+- The buttons "Previous page" and "Next page" change the `offset` by `pageSize`. The text below the table gives the items on the page and the number of all items. While the next page loads, the table shows the previous page (`keepPreviousData`).
+- The details widget gets the key of the entity, for example `id`.
+- An error of the query shows in an `Alert`. For a problem details response, the alert shows the `title` and the `detail` (PRD-APP-227).
+- The column headers are `th` elements with `scope="col"`. The paging controls are native buttons, thus the user can reach each control with the Tab key (PRD-APP-228).
+
 ## Golden files and tests
 
 The golden folder is the project folder of the application `orderPortal` of the order portal model. It has no manifests in `.dsml/`. The phase 2 exit story (#177) adds them.
@@ -137,7 +159,7 @@ The CI job "React golden project" does these steps:
 1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035).
 2. It copies the golden project to `apps/order-portal` in a temporary folder. It also copies the order portal model and its `dsml.toml` to the temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
 3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger (story #170, `docs/notes/check-output.md`). While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices and the feature slices yet. It also sets the rule `fsd/repetitive-naming` off, as the generated configuration does.
-4. It copies `tests/react/features/`, `tests/react/field-rules/` and `tests/react/shared/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation.
+4. It copies `tests/react/features/`, `tests/react/field-rules/`, `tests/react/shared/` and `tests/react/widgets/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation. The widgets test renders the table and the details. It examines the column headers, the change to the next page, the keyboard access and a problem details error.
 5. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
 
 ## Differences from the story text
@@ -149,5 +171,6 @@ The CI job "React golden project" does these steps:
 - `components.json` gives `src/app/styles/index.css` as the Tailwind CSS file. The story that writes the app layer must write this file and import it in the entry module.
 - The pages story (#174) makes the pages refer to the entity slices. Then the CI job uses the generated `steiger.config.ts`, and `tests/react/steiger-before-pages.config.ts` can go.
 - The pages story (#174) writes the entry module and the app layer. Before the first render, the entry module must call `loadRuntimeConfig` and then `configureAuth` (PRD-APP-230, PRD-APP-231). The router must have the route `/auth/callback`. `beforeLoad` can use `currentSession` and `startLogin` (PRD-APP-222).
+- The pages story (#174) gives the property `actions` of each table: a link to the detail route, and the delete button if the entity has `delete`. The detail page gives the key from the path parameter `$id` to the details widget.
 - The app layer must write the Tailwind CSS theme variables of shadcn/ui (for example `--primary`) in `src/app/styles/index.css`, because the components use them.
 - With pnpm 12, `pnpm install` can write `pnpm-workspace.yaml` in the project (the setting `minimumReleaseAgeExclude`). `pnpm-lock.yaml` and this file do not have the Prettier format. Thus `prettier --check .` in the generated pipeline finds them. The project has no `.prettierignore`, because the file is not on the fixed-name list of PRD-APP-235.

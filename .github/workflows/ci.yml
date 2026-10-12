@@ -428,10 +428,13 @@ jobs:
       # tests of the features layer render the forms in jsdom. They examine
       # the field errors, the problem details errors, the keyboard access
       # and the invalidation of the queries (PRD-APP-225 to PRD-APP-228).
+      # The component tests of the widgets layer examine the column
+      # headers, the paging and the keyboard access (PRD-APP-114,
+      # PRD-APP-228).
       - name: Copy the Vitest tests
         run: |
           mkdir -p "$PROJECT/tests"
-          cp -r tests/react/features tests/react/field-rules tests/react/shared "$PROJECT/tests/"
+          cp -r tests/react/features tests/react/field-rules tests/react/shared tests/react/widgets "$PROJECT/tests/"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}

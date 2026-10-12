@@ -91,7 +91,7 @@ _KEY_TYPES: Final = {"Integer": "number", "Real": "number"}
 """The TypeScript type of a path parameter of each field type. Other types are a `string`."""
 
 
-def _label(name: str) -> str:
+def field_label(name: str) -> str:
     """Give the label of a field, for example `Birth date` for `birth_date`."""
     text = " ".join(words(name))
     return text[:1].upper() + text[1:]
@@ -111,7 +111,7 @@ class FormField:
 
     @property
     def label(self) -> str:
-        return _label(self.name)
+        return field_label(self.name)
 
     @property
     def kind(self) -> str:
@@ -363,7 +363,7 @@ class FeatureSlice:
             return "Create"
         if self.kind == "update":
             return "Save"
-        return _label(self.name)
+        return field_label(self.name)
 
     # The types of the operation.
 
@@ -747,9 +747,12 @@ def _output_property(item: ParameterField) -> tuple[str, list[str]]:
 
 
 def import_lines(names: Sequence[str], source: str) -> list[str]:
-    """Give the lines of one import statement, with the Prettier line breaks."""
+    """Give the lines of one import statement, with the Prettier line breaks.
+
+    Prettier keeps an import of one name on one line, also if the line is too long.
+    """
     line = f'import {{ {", ".join(names)} }} from "{source}";'
-    if len(line) <= PRINT_WIDTH:
+    if len(line) <= PRINT_WIDTH or len(names) == 1:
         return [line]
     return ["import {", *(f"{INDENT}{name}," for name in names), f'}} from "{source}";']
 

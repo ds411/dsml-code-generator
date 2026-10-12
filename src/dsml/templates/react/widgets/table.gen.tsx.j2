@@ -1,0 +1,141 @@
+{#- The ui segment of the widget slice of a list view: a table with a header
+    for each column, and paging with "limit" and "offset" (PRD-APP-114,
+    PRD-APP-210). The table reads the data with the query options of the
+    entity slice. The paging controls are native buttons, thus the user can
+    reach each control with the keyboard (PRD-APP-228). Data: "widget" (a
+    dsml.generate.react_widgets.WidgetSlice). -#}
+{% include "common/header.j2" %}
+{% for line in widget.import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The properties of the table of the entity {{ widget.entity.name }}. */
+export interface {{ widget.component }}Props {
+  /** The maximum number of rows on one page: 1 to {{ widget.page_max }}. The default is {{ widget.page_default }}. */
+  pageSize?: number;
+  /**
+   * Give the controls of one row, for example a link to the details. If
+   * the property is set, the table has the column "Actions".
+   */
+  actions?: (item: {{ widget.entity.pascal }}) => ReactNode;
+}
+
+/** Show an error of the query. A problem details response gives the title and the detail. */
+function QueryError({ error }: { error: Error }): ReactNode {
+  const title = error instanceof ApiError ? error.title : error.message;
+  const detail = error instanceof ApiError ? error.detail : undefined;
+  return (
+    <Alert variant="destructive">
+      <AlertTitle>{title}</AlertTitle>
+      {detail === undefined ? null : (
+        <AlertDescription>{detail}</AlertDescription>
+      )}
+    </Alert>
+  );
+}
+{% if widget.uses_yes_no %}
+
+/** Give the text of a Boolean value. A null value gives an empty text. */
+function yesNo(value: boolean | null): string {
+  if (value === null) {
+    return "";
+  }
+  return value ? "Yes" : "No";
+}
+{% endif %}
+
+/** Give the text of the paging: the items on the page and the number of all items. */
+function pageText(offset: number, count: number, total: number): string {
+  if (count === 0) {
+    return `No items of ${String(total)}`;
+  }
+  return `Items ${String(offset + 1)} to ${String(offset + count)} of ${String(total)}`;
+}
+
+/**
+ * The table of the entities {{ widget.entity.name }}: {{ widget.route }}. The table shows
+ * one page of the entities, sorted by key. The buttons show the previous
+ * page and the next page.
+ */
+{% for line in widget.component_lines() %}
+{{ line }}
+{% endfor %}
+  const [offset, setOffset] = useState(0);
+{% for line in widget.query_lines() %}
+{{ line }}
+{% endfor %}
+  if (query.error !== null) {
+    return <QueryError error={query.error} />;
+  }
+  if (query.data === undefined) {
+    return (
+      <p role="status" className="text-muted-foreground text-sm">
+        Wait for the data.
+      </p>
+    );
+  }
+  const { items, total } = query.data;
+  return (
+    <div className="flex flex-col gap-3">
+      <Table>
+        <TableHeader>
+          <TableRow>
+{% for line in widget.header_lines("            ") %}
+{{ line }}
+{% endfor %}
+            {actions === undefined ? null : (
+              <TableHead scope="col">Actions</TableHead>
+            )}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={actions === undefined ? {{ widget.column_count }} : {{ widget.column_count + 1 }}}>
+                There are no items.
+              </TableCell>
+            </TableRow>
+          ) : (
+            items.map((item) => (
+              <TableRow key={{ "{" }}{{ widget.row_key }}{{ "}" }}>
+{% for line in widget.cell_lines("                ") %}
+{{ line }}
+{% endfor %}
+                {actions === undefined ? null : (
+                  <TableCell>{actions(item)}</TableCell>
+                )}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p aria-live="polite" className="text-muted-foreground text-sm">
+          {pageText(offset, items.length, total)}
+        </p>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={offset === 0}
+            onClick={() => {
+              setOffset(Math.max(0, offset - pageSize));
+            }}
+          >
+            Previous page
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={query.isPlaceholderData || offset + pageSize >= total}
+            onClick={() => {
+              setOffset(offset + pageSize);
+            }}
+          >
+            Next page
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
