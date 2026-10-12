@@ -6,11 +6,14 @@ subprocess with a changed environment:
 
     python tests/dsml_test_command.py generate --config dsml.toml
 
-The real generators come in a later milestone (M6). Until then, the
-script adds the test generator `IrGenerator`. The test generator reads only
-the IR, like a real generator (PRD-CORE-026). Its output files contain the
-IR, the output of a template and the header, so that a change in the IR or
-in the template engine changes them. The test generator also gives the
+The script uses the test generator `IrGenerator` in place of the list of
+the generators. If the environment variable `DSML_TEST_GENERATORS` has the
+value `toolchain`, the script keeps the generators of the toolchain. The
+determinism test of the order portal (story #177) uses them.
+
+The test generator reads only the IR, like a real generator (PRD-CORE-026).
+Its output files contain the IR, the output of a template and the header,
+so that a change in the IR or in the template engine changes them. The test generator also gives the
 symbols of its generated files, so `dsml generate` writes a trace manifest.
 
 The script reads these environment variables before it imports `dsml`:
@@ -19,6 +22,7 @@ The script reads these environment variables before it imports `dsml`:
   clock of `time` and `datetime`.
 - `DSML_TEST_HOST_NAME`: the host name that `socket.gethostname()` and
   `platform.node()` give.
+- `DSML_TEST_GENERATORS`: `toolchain` keeps the generators of the toolchain.
 """
 
 import datetime
@@ -33,6 +37,8 @@ from typing import Self
 
 CLOCK_OFFSET = "DSML_TEST_CLOCK_OFFSET"
 HOST_NAME = "DSML_TEST_HOST_NAME"
+GENERATORS = "DSML_TEST_GENERATORS"
+TOOLCHAIN_GENERATORS = "toolchain"
 TEMPLATES = Path(__file__).resolve().parent / "templates"
 
 
@@ -220,5 +226,6 @@ class IrGenerator:
 
 
 if __name__ == "__main__":
-    generators.GENERATORS[:] = [IrGenerator()]
+    if os.environ.get(GENERATORS) != TOOLCHAIN_GENERATORS:
+        generators.GENERATORS[:] = [IrGenerator()]
     raise SystemExit(main(sys.argv[1:]))

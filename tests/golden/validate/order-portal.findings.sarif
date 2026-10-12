@@ -55,7 +55,7 @@
             }
           ],
           "message": {
-            "text": "The verification V-003 refers to the test file \"apps/order-portal/src/pages/order-detail/ui/order-detail-page.test.tsx\". This file does not exist."
+            "text": "The verification V-003 refers to the test file \"apps/order-portal/tests/app/app.test.tsx\". This file does not exist."
           },
           "ruleId": "COV-006",
           "ruleIndex": 10
@@ -83,7 +83,35 @@
             }
           ],
           "message": {
-            "text": "The verification V-003 refers to the test file \"apps/order-portal/src/pages/order-list/ui/order-list-page.test.tsx\". This file does not exist."
+            "text": "The verification V-003 refers to the test file \"apps/order-portal/tests/shared/shared.test.ts\". This file does not exist."
+          },
+          "ruleId": "COV-006",
+          "ruleIndex": 10
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "order-portal.sysml"
+                },
+                "region": {
+                  "startColumn": 9,
+                  "startLine": 193
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "V-003"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "The verification V-003 refers to the test file \"apps/order-portal/tests/widgets/widgets.test.tsx\". This file does not exist."
           },
           "ruleId": "COV-006",
           "ruleIndex": 10
@@ -111,7 +139,35 @@
             }
           ],
           "message": {
-            "text": "The verification V-004 refers to the test file \"apps/order-portal/src/pages/place-order-form/ui/place-order-form-page.test.tsx\". This file does not exist."
+            "text": "The verification V-004 refers to the test file \"apps/order-portal/tests/features/features.test.tsx\". This file does not exist."
+          },
+          "ruleId": "COV-006",
+          "ruleIndex": 10
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "order-portal.sysml"
+                },
+                "region": {
+                  "startColumn": 9,
+                  "startLine": 199
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "V-004"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "The verification V-004 refers to the test file \"apps/order-portal/tests/field-rules/field-rules.test.ts\". This file does not exist."
           },
           "ruleId": "COV-006",
           "ruleIndex": 10

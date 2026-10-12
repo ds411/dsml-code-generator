@@ -1,5 +1,10 @@
-"""Tests of `dsml trace` with the coverage and orphans reports (story #72)."""
+"""Tests of `dsml trace` with the coverage and orphans reports (story #72).
 
+The phase 2 exit story (#177) added the reports of the order portal model.
+"""
+
+import contextlib
+import csv
 import dataclasses
 import importlib.util
 import json
@@ -146,6 +151,71 @@ def test_report_of_example_model_agrees_with_golden_file(
         f"The {report} report is not the same as {golden.relative_to(ROOT)}. "
         "If the change is correct, run scripts/write_golden_reports.py."
     )
+
+
+@pytest.fixture(scope="module")
+def portal_project(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """The order portal project with the full output of `dsml generate` and the Vitest tests."""
+    folder = tmp_path_factory.mktemp("order-portal") / "project"
+    folder.mkdir()
+    with write_golden_reports.outside_git():
+        write_golden_reports.write_portal_project(folder)
+    return folder
+
+
+# trace: PRD-CORE-030, PRD-TRACE-013, PRD-TRACE-017
+@pytest.mark.parametrize("report_format", write_golden_reports.FORMATS)
+@pytest.mark.parametrize("report", write_golden_reports.REPORTS)
+def test_report_of_order_portal_agrees_with_golden_file(
+    report: str, report_format: str, portal_project: Path, tmp_path: Path
+) -> None:
+    output = tmp_path / "report.out"
+    with write_golden_reports.outside_git(), contextlib.chdir(portal_project):
+        assert main(["trace", report, "--format", report_format, "--output", str(output)]) == 0
+    golden: Path = write_golden_reports.golden_file(
+        report, report_format, write_golden_reports.PORTAL
+    )
+    assert output.read_bytes() == golden.read_bytes(), (
+        f"The {report} report is not the same as {golden.relative_to(ROOT)}. "
+        "If the change is correct, run scripts/write_golden_reports.py."
+    )
+
+
+def _csv_rows(report: str, name: str) -> list[dict[str, str]]:
+    text = write_golden_reports.golden_file(report, "csv", name).read_text("utf-8")
+    return list(csv.DictReader(line for line in text.splitlines() if not line.startswith("#")))
+
+
+# trace: PRD-TRACE-013, PRD-TRACE-014
+def test_coverage_report_of_order_portal_shows_each_requirement_as_verified() -> None:
+    rows = _csv_rows("coverage", write_golden_reports.PORTAL)
+    assert {row["requirement"]: row["status"] for row in rows} == {
+        "R-001": VERIFIED,
+        "R-002": VERIFIED,
+        "R-003": VERIFIED,
+        "R-004": VERIFIED,
+    }
+    react = {row["requirement"]: row for row in rows if row["requirement"] in ("R-003", "R-004")}
+    for row in react.values():
+        assert row["satisfiedBy"] == "OrderPortal::orderPortal"
+        assert "apps/order-portal/src/app/router/routes.gen.tsx" in row["generatedFiles"]
+    assert react["R-003"]["verifications"] == "V-003"
+    assert react["R-004"]["verifications"] == "V-004"
+
+
+# trace: PRD-TRACE-012, PRD-DSML-048
+def test_verifications_of_order_portal_name_each_vitest_file(
+    portal_project: Path, tmp_path: Path
+) -> None:
+    """The orphans report has no test file, and each test file of V-003 and V-004 exists."""
+    rows = _csv_rows("orphans", write_golden_reports.PORTAL)
+    assert [row for row in rows if row["category"] == TEST_FILE_WITHOUT_VERIFICATION] == []
+    output = tmp_path / "findings.json"
+    with write_golden_reports.outside_git(), contextlib.chdir(portal_project):
+        assert main(["validate", "--format", "json", "--output", str(output)]) == 0
+    findings = json.loads(output.read_bytes())["findings"]
+    # The FastAPI story of V-001 (M9) gives no test file of this name.
+    assert [item["element"] for item in findings if item["rule"] == "COV-006"] == ["V-001"]
 
 
 # trace: PRD-CORE-006

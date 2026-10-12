@@ -352,16 +352,20 @@ jobs:
 
   # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-211, PRD-APP-225, PRD-APP-226
   # trace: PRD-APP-227, PRD-APP-228, PRD-APP-233, PRD-APP-234, PRD-APP-009, PRD-APP-222, PRD-APP-223
+  # trace: PRD-CORE-029, PRD-APP-016
   #
   # The golden output of the React generator (story #167) must pass the
   # tools of the generated project. Prettier must find no change in the
-  # golden files (PRD-CORE-035). The job copies the golden project to a
-  # temporary folder, because "pnpm install" writes pnpm-lock.yaml and the
-  # generator does not write lockfiles (PRD-CORE-036). The temporary folder
-  # also gets the order portal model and its configuration file, because
-  # dsml check-output reads them (story #170). This job needs the
-  # network to install the dependencies of the generated project. The
-  # generator does not use the network (PRD-TOP-004).
+  # golden files (PRD-CORE-035). Story #177: the job writes the full output
+  # of the order portal with "dsml generate" in a temporary folder, with
+  # the order portal model and its configuration file. The React output
+  # must agree with the golden files. Then dsml check-output runs on the
+  # FastAPI application and on the React application (PRD-APP-016). The
+  # output is in a temporary folder, because "pnpm install" and "uv lock"
+  # write lockfiles and the generator does not write lockfiles
+  # (PRD-CORE-036). This job needs the network to install the dependencies
+  # of the generated projects. The generator does not use the network
+  # (PRD-TOP-004).
   react-golden:
     name: React golden project (linux-x64)
     runs-on: ubuntu-24.04
@@ -393,24 +397,41 @@ jobs:
       - name: Check the format of the golden files
         run: pnpm exec prettier --check tests/golden/react tests/react
 
-      # The configuration file gives the output folder apps/order-portal
-      # for the application orderPortal.
-      - name: Copy the golden project and the model
+      # The configuration file gives the output folder services/order-api
+      # for the application orderApi and apps/order-portal for the
+      # application orderPortal.
+      - name: Write the full output of the order portal
         run: |
-          mkdir -p "$CHECK/apps"
+          mkdir -p "$CHECK"
           cp docs/model/examples/order-portal/dsml.toml docs/model/examples/order-portal/order-portal.sysml "$CHECK/"
-          cp -r tests/golden/react/order-portal "$PROJECT"
+          cd "$CHECK"
+          uv run --project "$GITHUB_WORKSPACE" dsml generate
 
-      # The project has no lockfile, thus pnpm makes one.
+      # The golden folder also has the manifests in .dsml/. In the full
+      # output, the manifests are in the folder of the configuration file.
+      - name: Compare the React output with the golden files
+        run: diff -r --exclude=.dsml tests/golden/react/order-portal "$PROJECT"
+
+      # The projects have no lockfiles, thus pnpm and uv make them.
       - name: Install the dependencies
-        working-directory: ${{ env.PROJECT }}
-        run: pnpm install --no-frozen-lockfile
+        run: |
+          cd "$PROJECT"
+          pnpm install --no-frozen-lockfile
+          cd "$CHECK/services/order-api"
+          uv lock
+          uv sync --frozen
 
-      # dsml check-output runs tsc, ESLint and Steiger from node_modules/.bin
-      # of the project (PRD-CORE-011, PRD-APP-234).
-      - name: Check the generated code with dsml check-output
+      # dsml check-output runs ruff and pyright on the FastAPI application,
+      # and tsc, ESLint and Steiger from node_modules/.bin of the React
+      # application (PRD-CORE-011, PRD-APP-016, PRD-APP-234). The tools of
+      # the FastAPI application come from PATH. Thus the step puts the
+      # virtual environment of the generated project first on PATH: it has
+      # the pinned ruff and pyright.
+      - name: Check the full output with dsml check-output
         working-directory: ${{ env.CHECK }}
-        run: uv run --project "$GITHUB_WORKSPACE" dsml check-output --application orderPortal
+        run: |
+          export PATH="$CHECK/services/order-api/.venv/bin:$PATH"
+          uv run --project "$GITHUB_WORKSPACE" dsml check-output
 
       # Story #175: the golden project of the external API model. The
       # application petPortal calls an imported OpenAPI file (PRD-APP-006).

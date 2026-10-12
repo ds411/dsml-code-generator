@@ -7,7 +7,7 @@ Story #167 added the first part of the React generator (phase 2). The generator 
 - Layer modules: `react_shared.py`, `react_entities.py`, `react_features.py`, `react_widgets.py`, `react_pages.py` and `react_app.py` in `src/dsml/generate/`.
 - Templates: `src/dsml/templates/react/project/`.
 - Tests: `tests/test_react_generator.py`.
-- Golden files: `tests/golden/react/order-portal/`. Write them again with `uv run python scripts/write_golden_react.py`.
+- Golden files: `tests/golden/react/order-portal/`, with the manifests in `.dsml/` (story #177). Write them again with `uv run python scripts/write_golden_react.py`.
 - CI: the job "React golden project" in `.github/workflows/ci.yml`.
 
 ## Inputs
@@ -224,28 +224,58 @@ The model has no views. An application with no views has an empty navigation. Th
 
 ## Golden files and tests
 
-The golden folder is the project folder of the application `orderPortal` of the order portal model. It has no manifests in `.dsml/`. The phase 2 exit story (#177) adds them.
+The golden folder is the project folder of the application `orderPortal` of the order portal model. The configuration file of the golden output gives the output folder `.`. Thus the manifests `.dsml/generated.json` and `.dsml/trace.gen.json` are in the golden folder, and their paths start at the project folder (story #177, PRD-CORE-040, PRD-TRACE-006).
 
-The test of the project files compares only the files outside the layer folders `src/<layer>/`. The test of each layer story compares the folder of its layer. Thus the stories of one step change different golden files.
+The test of the project files compares only the files outside the layer folders `src/<layer>/` and `.dsml/`. The test of each layer story compares the folder of its layer. The test of the full output writes all files and the manifests, as `dsml generate` does, and compares all bytes with the golden folder (PRD-CORE-029, PRD-CORE-030).
+
+The trace manifest gives the symbols of each TypeScript module with a top-level declaration. These generated files have no symbols, thus they are not in the trace manifest: the public API files `index.gen.ts` (they only re-export), the entry module `src/main.gen.tsx`, `steiger.config.ts` and `vite.config.ts`. The FastAPI generator also writes no entry for a file with no symbol, for example `__init__.py`.
 
 The CI job "React golden project" does these steps:
 
-1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035).
-2. It copies the golden project to `apps/order-portal` in a temporary folder. It also copies the order portal model and its `dsml.toml` to the temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
-3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger with the generated `steiger.config.ts` (story #170, `docs/notes/check-output.md`).
-4. It copies `tests/react/app/`, `tests/react/features/`, `tests/react/field-rules/`, `tests/react/shared/` and `tests/react/widgets/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation. The widgets test renders the table and the details. It examines the column headers, the change to the next page, the keyboard access and a problem details error. The app test renders the application with a memory history. It examines the start of the login with no session, the "not permitted" page, the route loaders, the link to the details and the navigation for each set of roles.
-5. It copies the golden project of the external API model to `apps/pet-portal` in a second temporary folder, with the model, its `dsml.toml` and the OpenAPI file. It runs `pnpm install` and `dsml check-output --application petPortal` (story #175).
-6. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
+1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035). The manifests in `.dsml/` are JSON files, thus Prettier also examines them.
+2. It copies the order portal model and its `dsml.toml` to a temporary folder. It runs `dsml generate` there. This writes the full output of the model: `services/order-api` and `apps/order-portal` (story #177).
+3. It compares `apps/order-portal` with the golden folder, but not `.dsml/`. In the full output, the manifests are in the folder of the configuration file.
+4. It runs `pnpm install` in `apps/order-portal`, and `uv lock` and `uv sync` in `services/order-api`. The install makes the lockfiles in the temporary folder.
+5. It runs `dsml check-output` with no option. The command runs ruff and pyright on the FastAPI application, and `tsc --noEmit`, ESLint and Steiger with the generated `steiger.config.ts` on the React application (stories #170 and #177, PRD-APP-016, `docs/notes/check-output.md`).
+6. It copies `tests/react/app/`, `tests/react/features/`, `tests/react/field-rules/`, `tests/react/shared/` and `tests/react/widgets/` into `apps/order-portal/tests/` and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation. The widgets test renders the table and the details. It examines the column headers, the change to the next page, the keyboard access and a problem details error. The app test renders the application with a memory history. It examines the start of the login with no session, the "not permitted" page, the route loaders, the link to the details and the navigation for each set of roles.
+7. It copies the golden project of the external API model to `apps/pet-portal` in a second temporary folder, with the model, its `dsml.toml` and the OpenAPI file. It runs `pnpm install` and `dsml check-output --application petPortal` (story #175).
+8. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
+
+## Phase 2 exit
+
+Story #177 completed the checks of the full React output and the phase 2 exit criteria that do not need AWS.
+
+| Check | Where | Requirements |
+| --- | --- | --- |
+| The full React output of the order portal, with the manifests, agrees with the golden files. | `tests/test_react_generator.py`, and step 3 of the CI job | PRD-CORE-029, PRD-CORE-030, PRD-CORE-040, PRD-TRACE-006 |
+| The environment and the clock do not change the full output of the order portal. The output has no absolute path, no user name and no host name. | `tests/test_determinism.py`, in the CI job "Check (linux-x64)" | PRD-CORE-015, PRD-CORE-028, PRD-CORE-033, Q62 |
+| The coverage, orphans, impact and suspect reports of the order portal agree with the golden files. The coverage report shows each requirement as `verified`. | `tests/test_trace_reports.py`, `tests/test_trace_changes.py`, `tests/golden/trace/order-portal.*` | PRD-TRACE-001 to PRD-TRACE-018 |
+| `dsml check-output` finds no error on the full output. | Step 5 of the CI job | PRD-APP-016, PRD-APP-234 |
+| `dist/` of `pnpm build` contains no environment value. | Step 8 of the CI job | PRD-APP-233 |
+
+The determinism test runs `tests/dsml_test_command.py` with the environment variable `DSML_TEST_GENERATORS=toolchain`. Thus the script keeps the generators of the toolchain in place of the test generator. The configuration file of the test gives an output folder to each generator: the FastAPI application, the React application, the infrastructure and the workflows.
+
+`scripts/write_golden_reports.py` writes the reports of the order portal from a project with the full output of `dsml generate`. The Vitest tests of `tests/react/` are in `apps/order-portal/tests/`, as in the CI job. The verifications V-003 and V-004 of the order portal model name these test files:
+
+- V-003 (R-003, the list and the details of the orders): `app.test.tsx`, `shared.test.ts` and `widgets.test.tsx`.
+- V-004 (R-004, the form that places an order): `features.test.tsx` and `field-rules.test.ts`.
+
+The model folder `docs/model/examples/order-portal/` has no test files. Thus `dsml validate` on the model gives the warning COV-006 for each test file. In the project of the reports, only V-001 gets COV-006. The FastAPI generator writes the tests of the order API as generated files in `services/order-api/tests/`, not the hand-written file of V-001.
+
+The Git repository of the impact and suspect reports of the order portal keeps only the configuration file and the model. Its `.gitignore` names the output folders. Thus a change to a generator does not change the commit hashes in these reports. A change to the file list or to the symbols of a generator can change the reports. Then run `uv run python scripts/write_golden_reports.py`.
+
+The phase 2 exit criterion "The reference model with a React application and a FastAPI application deploys to dev" waits for an AWS account (Q58, M8 #142).
 
 ## Differences from the story text
 
 - The story gives `src/main.tsx` as a generated file. PRD-CORE-039 and PRD-APP-235 permit only names that end with `.gen.<ext>` and the fixed-name list. `main.tsx` is not on that list. Thus the entry module is `src/main.gen.tsx`.
 - Story #174: the Steiger rule `fsd/insignificant-slice` stays off in the generated configuration. Each model element has its own slice (PRD-APP-210). Thus only the page of a form view uses the feature slice of its operation, and no page uses the feature slice of an operation with no form view. The rule finds these slices.
 - Story #174: the Steiger rule `fsd/segments-by-purpose` refuses the segment name `providers`. PRD-APP-210 gives this name, thus the rule is off for `src/app/providers`.
+- Story #177: the story asks that the status of each verified requirement becomes `verified`. The coverage report gives this status from the links (PRD-TRACE-014). The attribute `status` of the requirements in the model stays `approved`, as in the order service model of phase 1.
 - Story #174: TanStack Query 5.104 marks `queryClient.ensureQueryData` as deprecated. PRD-APP-223 gives this method. Thus `routes.gen.tsx` sets the ESLint rule `@typescript-eslint/no-deprecated` off. A change to PRD-APP-223 can replace the method with `queryClient.query` and `staleTime: "static"`.
 
 ## Items for the next stories
 
 - The application reads one API base URL, `apiBaseUrl` in `/config.json`. Thus an application that calls an application of the model and an external API sends the requests of both to one URL.
 
-- With pnpm 12, `pnpm install` can write `pnpm-workspace.yaml` in the project (the setting `minimumReleaseAgeExclude`). `pnpm-lock.yaml` and this file do not have the Prettier format. Thus `prettier --check .` in the generated pipeline finds them. The project has no `.prettierignore`, because the file is not on the fixed-name list of PRD-APP-235.
+- With pnpm 12, `pnpm install` can write `pnpm-workspace.yaml` in the project (the setting `minimumReleaseAgeExclude`). `pnpm-lock.yaml` and this file do not have the Prettier format. Thus `prettier --check .` in the generated pipeline finds them. The project has no `.prettierignore`, because the file is not on the fixed-name list of PRD-APP-235. The M10 exit criterion examines only the golden files, and Prettier finds no change in them. Thus this item stays open.

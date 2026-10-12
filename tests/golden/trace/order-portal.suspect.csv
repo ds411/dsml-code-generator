@@ -1,0 +1,9 @@
+# report: suspect
+# model commit: 50b2642847a86e7a8dfd15f9348067d648b5fffa
+# baseline commit: a676eff611e18029805c5d208e8f4ddd9c110280
+linkType,source,target,changedEnds,changedElements
+allocate,OrderPortal::orderApi,OrderPortal::apiService,source,OrderPortal::Order::note
+frame,R-004,N-002,source,R-004
+satisfy,OrderPortal::orderApi,R-001,source,OrderPortal::Order::note
+satisfy,OrderPortal::orderPortal,R-004,target,R-004
+verify,V-004,R-004,target,R-004

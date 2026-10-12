@@ -1,0 +1,2175 @@
+{
+  "elements": [
+    {
+      "element": "OrderPortal::CancelOrder",
+      "files": [
+        {
+          "path": "src/features/cancel-order/api/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "cancelOrderInputSchema"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "cancelOrderOutputSchema"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderOutput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "cancelOrder"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "useCancelOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "CancelOrderFormProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 125,
+              "name": "CancelOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/cancel-order-form/ui/cancel-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::Order",
+      "files": [
+        {
+          "path": "src/entities/order/api/order-queries.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 10,
+              "name": "orderQueryKey"
+            },
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 15,
+              "name": "readOrderQueryKey"
+            },
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "readOrderQueryOptions"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "OrderListParameters"
+            },
+            {
+              "firstLine": 41,
+              "kind": "function",
+              "lastLine": 45,
+              "name": "listOrderQueryKey"
+            },
+            {
+              "firstLine": 48,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "listOrderQueryOptions"
+            }
+          ]
+        },
+        {
+          "path": "src/entities/order/model/order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "decimal"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 48,
+              "name": "orderSchema"
+            },
+            {
+              "firstLine": 51,
+              "kind": "class",
+              "lastLine": 51,
+              "name": "Order"
+            },
+            {
+              "firstLine": 54,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "orderPageSchema"
+            },
+            {
+              "firstLine": 60,
+              "kind": "class",
+              "lastLine": 60,
+              "name": "OrderPage"
+            },
+            {
+              "firstLine": 63,
+              "kind": "class",
+              "lastLine": 67,
+              "name": "createOrderInputSchema"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 70,
+              "name": "CreateOrderInput"
+            }
+          ]
+        },
+        {
+          "path": "src/features/cancel-order/api/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "cancelOrderInputSchema"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "cancelOrderOutputSchema"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderOutput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "cancelOrder"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "useCancelOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "CancelOrderFormProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 125,
+              "name": "CancelOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/features/create-order/api/create-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "createOrder"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "useCreateOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/create-order/ui/create-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 35,
+              "name": "CreateOrderFormProps"
+            },
+            {
+              "firstLine": 38,
+              "kind": "class",
+              "lastLine": 41,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 54,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "optionalText"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 178,
+              "name": "CreateOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/features/place-order/api/place-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 20,
+              "name": "decimalValue"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "placeOrderInputSchema"
+            },
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "PlaceOrderInput"
+            },
+            {
+              "firstLine": 31,
+              "kind": "class",
+              "lastLine": 36,
+              "name": "placeOrderOutputSchema"
+            },
+            {
+              "firstLine": 39,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "PlaceOrderOutput"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "placeOrder"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "usePlaceOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/place-order/ui/place-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "PlaceOrderFormProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 124,
+              "name": "PlaceOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/cancel-order-form/ui/cancel-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/order-detail/ui/order-detail-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 6,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 9,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "OrderDetailPageProps"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 23,
+              "name": "OrderDetailPage"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/order-list/ui/order-list-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 31,
+              "name": "OrderListPage"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/place-order-form/ui/place-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "PlaceOrderFormPage"
+            }
+          ]
+        },
+        {
+          "path": "src/widgets/order-details/ui/order-details.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "OrderDetailsProps"
+            },
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 28,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "OrderDetails"
+            }
+          ]
+        },
+        {
+          "path": "src/widgets/order-list/ui/order-table.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "OrderTableProps"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 47,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "pageText"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 141,
+              "name": "OrderTable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::PlaceOrder",
+      "files": [
+        {
+          "path": "src/features/place-order/api/place-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 20,
+              "name": "decimalValue"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "placeOrderInputSchema"
+            },
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "PlaceOrderInput"
+            },
+            {
+              "firstLine": 31,
+              "kind": "class",
+              "lastLine": 36,
+              "name": "placeOrderOutputSchema"
+            },
+            {
+              "firstLine": 39,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "PlaceOrderOutput"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "placeOrder"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "usePlaceOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/place-order/ui/place-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "PlaceOrderFormProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 124,
+              "name": "PlaceOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/place-order-form/ui/place-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "PlaceOrderFormPage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi::cancelOrder",
+      "files": [
+        {
+          "path": "src/features/cancel-order/api/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "cancelOrderInputSchema"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "cancelOrderOutputSchema"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderOutput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "cancelOrder"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "useCancelOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "CancelOrderFormProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 125,
+              "name": "CancelOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/cancel-order-form/ui/cancel-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi::orders",
+      "files": [
+        {
+          "path": "src/entities/order/api/order-queries.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 10,
+              "name": "orderQueryKey"
+            },
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 15,
+              "name": "readOrderQueryKey"
+            },
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "readOrderQueryOptions"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "OrderListParameters"
+            },
+            {
+              "firstLine": 41,
+              "kind": "function",
+              "lastLine": 45,
+              "name": "listOrderQueryKey"
+            },
+            {
+              "firstLine": 48,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "listOrderQueryOptions"
+            }
+          ]
+        },
+        {
+          "path": "src/entities/order/model/order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "decimal"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 48,
+              "name": "orderSchema"
+            },
+            {
+              "firstLine": 51,
+              "kind": "class",
+              "lastLine": 51,
+              "name": "Order"
+            },
+            {
+              "firstLine": 54,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "orderPageSchema"
+            },
+            {
+              "firstLine": 60,
+              "kind": "class",
+              "lastLine": 60,
+              "name": "OrderPage"
+            },
+            {
+              "firstLine": 63,
+              "kind": "class",
+              "lastLine": 67,
+              "name": "createOrderInputSchema"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 70,
+              "name": "CreateOrderInput"
+            }
+          ]
+        },
+        {
+          "path": "src/features/create-order/api/create-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "createOrder"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "useCreateOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/create-order/ui/create-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 35,
+              "name": "CreateOrderFormProps"
+            },
+            {
+              "firstLine": 38,
+              "kind": "class",
+              "lastLine": 41,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 54,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "optionalText"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 178,
+              "name": "CreateOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/order-detail/ui/order-detail-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 6,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 9,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "OrderDetailPageProps"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 23,
+              "name": "OrderDetailPage"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/order-list/ui/order-list-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 31,
+              "name": "OrderListPage"
+            }
+          ]
+        },
+        {
+          "path": "src/widgets/order-details/ui/order-details.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "OrderDetailsProps"
+            },
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 28,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "OrderDetails"
+            }
+          ]
+        },
+        {
+          "path": "src/widgets/order-list/ui/order-table.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "OrderTableProps"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 47,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "pageText"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 141,
+              "name": "OrderTable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi::placeOrder",
+      "files": [
+        {
+          "path": "src/features/place-order/api/place-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 20,
+              "name": "decimalValue"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "placeOrderInputSchema"
+            },
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "PlaceOrderInput"
+            },
+            {
+              "firstLine": 31,
+              "kind": "class",
+              "lastLine": 36,
+              "name": "placeOrderOutputSchema"
+            },
+            {
+              "firstLine": 39,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "PlaceOrderOutput"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "placeOrder"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "usePlaceOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "src/features/place-order/ui/place-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "PlaceOrderFormProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 124,
+              "name": "PlaceOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/place-order-form/ui/place-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "PlaceOrderFormPage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderPortal",
+      "files": [
+        {
+          "path": "src/app/layout/app-layout.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "APPLICATION_TITLE"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "AppLayoutProps"
+            },
+            {
+              "firstLine": 23,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "AppLayout"
+            }
+          ]
+        },
+        {
+          "path": "src/app/layout/navigation.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "NavigationProps"
+            },
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "Navigation"
+            }
+          ]
+        },
+        {
+          "path": "src/app/layout/status-pages.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "HomePageProps"
+            },
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 31,
+              "name": "HomePage"
+            },
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "NotPermittedPage"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "NotFoundPage"
+            },
+            {
+              "firstLine": 67,
+              "kind": "function",
+              "lastLine": 94,
+              "name": "RouteError"
+            }
+          ]
+        },
+        {
+          "path": "src/app/providers/app-providers.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 9,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "AppProvidersProps"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "AppProviders"
+            }
+          ]
+        },
+        {
+          "path": "src/app/providers/query-client.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 6,
+              "name": "STALE_TIME"
+            },
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 19,
+              "name": "createQueryClient"
+            }
+          ]
+        },
+        {
+          "path": "src/app/providers/session.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "function",
+              "lastLine": 13,
+              "name": "startSession"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/access.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 11,
+              "name": "ViewAccess"
+            },
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 19,
+              "name": "NotPermittedError"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "LoginStartedError"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "isPermitted"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 65,
+              "name": "checkAccess"
+            },
+            {
+              "firstLine": 68,
+              "kind": "function",
+              "lastLine": 74,
+              "name": "requireView"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/router.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 24,
+              "name": "createAppRouter"
+            },
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "AppRouter"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/routes.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 31,
+              "name": "RouterContext"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "rootRoute"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "RootLayout"
+            },
+            {
+              "firstLine": 53,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "homeRoute"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "HomeRoute"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 74,
+              "name": "callbackRoute"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 79,
+              "name": "CallbackRoute"
+            },
+            {
+              "firstLine": 82,
+              "kind": "class",
+              "lastLine": 87,
+              "name": "cancelOrderFormRoute"
+            },
+            {
+              "firstLine": 90,
+              "kind": "class",
+              "lastLine": 97,
+              "name": "orderDetailRoute"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 103,
+              "name": "OrderDetailPageRoute"
+            },
+            {
+              "firstLine": 106,
+              "kind": "class",
+              "lastLine": 113,
+              "name": "orderListRoute"
+            },
+            {
+              "firstLine": 116,
+              "kind": "class",
+              "lastLine": 121,
+              "name": "placeOrderFormRoute"
+            },
+            {
+              "firstLine": 124,
+              "kind": "class",
+              "lastLine": 131,
+              "name": "routeTree"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/views.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 9,
+              "name": "View"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "VIEWS"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "NAVIGATION"
+            }
+          ]
+        },
+        {
+          "path": "src/shared/api/client.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 9,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "ApiRequest"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "PROBLEM_MEDIA_TYPE"
+            },
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "problemSchema"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 45,
+              "name": "ApiError"
+            },
+            {
+              "firstLine": 48,
+              "kind": "function",
+              "lastLine": 55,
+              "name": "apiUrl"
+            },
+            {
+              "firstLine": 62,
+              "kind": "function",
+              "lastLine": 86,
+              "name": "apiRequest"
+            },
+            {
+              "firstLine": 89,
+              "kind": "function",
+              "lastLine": 106,
+              "name": "apiError"
+            }
+          ]
+        },
+        {
+          "path": "src/shared/auth/amplify.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "CALLBACK_PATH"
+            },
+            {
+              "firstLine": 17,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "LOGOUT_PATH"
+            },
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "SCOPES"
+            },
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "configureAuth"
+            },
+            {
+              "firstLine": 50,
+              "kind": "class",
+              "lastLine": 55,
+              "name": "Session"
+            },
+            {
+              "firstLine": 58,
+              "kind": "function",
+              "lastLine": 71,
+              "name": "currentSession"
+            },
+            {
+              "firstLine": 74,
+              "kind": "function",
+              "lastLine": 77,
+              "name": "accessToken"
+            },
+            {
+              "firstLine": 80,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "startLogin"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 87,
+              "name": "logout"
+            }
+          ]
+        },
+        {
+          "path": "src/shared/config/runtime-config.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 6,
+              "name": "RUNTIME_CONFIG_PATH"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "runtimeConfigSchema"
+            },
+            {
+              "firstLine": 25,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "RuntimeConfig"
+            },
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "loaded"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "loadRuntimeConfig"
+            },
+            {
+              "firstLine": 46,
+              "kind": "function",
+              "lastLine": 53,
+              "name": "runtimeConfig"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderPortal::cancelOrderForm",
+      "files": [
+        {
+          "path": "src/app/router/routes.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 31,
+              "name": "RouterContext"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "rootRoute"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "RootLayout"
+            },
+            {
+              "firstLine": 53,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "homeRoute"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "HomeRoute"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 74,
+              "name": "callbackRoute"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 79,
+              "name": "CallbackRoute"
+            },
+            {
+              "firstLine": 82,
+              "kind": "class",
+              "lastLine": 87,
+              "name": "cancelOrderFormRoute"
+            },
+            {
+              "firstLine": 90,
+              "kind": "class",
+              "lastLine": 97,
+              "name": "orderDetailRoute"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 103,
+              "name": "OrderDetailPageRoute"
+            },
+            {
+              "firstLine": 106,
+              "kind": "class",
+              "lastLine": 113,
+              "name": "orderListRoute"
+            },
+            {
+              "firstLine": 116,
+              "kind": "class",
+              "lastLine": 121,
+              "name": "placeOrderFormRoute"
+            },
+            {
+              "firstLine": 124,
+              "kind": "class",
+              "lastLine": 131,
+              "name": "routeTree"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/views.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 9,
+              "name": "View"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "VIEWS"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "NAVIGATION"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/cancel-order-form/ui/cancel-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderPortal::orderDetail",
+      "files": [
+        {
+          "path": "src/app/router/routes.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 31,
+              "name": "RouterContext"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "rootRoute"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "RootLayout"
+            },
+            {
+              "firstLine": 53,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "homeRoute"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "HomeRoute"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 74,
+              "name": "callbackRoute"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 79,
+              "name": "CallbackRoute"
+            },
+            {
+              "firstLine": 82,
+              "kind": "class",
+              "lastLine": 87,
+              "name": "cancelOrderFormRoute"
+            },
+            {
+              "firstLine": 90,
+              "kind": "class",
+              "lastLine": 97,
+              "name": "orderDetailRoute"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 103,
+              "name": "OrderDetailPageRoute"
+            },
+            {
+              "firstLine": 106,
+              "kind": "class",
+              "lastLine": 113,
+              "name": "orderListRoute"
+            },
+            {
+              "firstLine": 116,
+              "kind": "class",
+              "lastLine": 121,
+              "name": "placeOrderFormRoute"
+            },
+            {
+              "firstLine": 124,
+              "kind": "class",
+              "lastLine": 131,
+              "name": "routeTree"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/views.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 9,
+              "name": "View"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "VIEWS"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "NAVIGATION"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/order-detail/ui/order-detail-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 6,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 9,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "OrderDetailPageProps"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 23,
+              "name": "OrderDetailPage"
+            }
+          ]
+        },
+        {
+          "path": "src/widgets/order-details/ui/order-details.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "OrderDetailsProps"
+            },
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 28,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "OrderDetails"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderPortal::orderList",
+      "files": [
+        {
+          "path": "src/app/layout/navigation.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "NavigationProps"
+            },
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "Navigation"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/routes.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 31,
+              "name": "RouterContext"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "rootRoute"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "RootLayout"
+            },
+            {
+              "firstLine": 53,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "homeRoute"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "HomeRoute"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 74,
+              "name": "callbackRoute"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 79,
+              "name": "CallbackRoute"
+            },
+            {
+              "firstLine": 82,
+              "kind": "class",
+              "lastLine": 87,
+              "name": "cancelOrderFormRoute"
+            },
+            {
+              "firstLine": 90,
+              "kind": "class",
+              "lastLine": 97,
+              "name": "orderDetailRoute"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 103,
+              "name": "OrderDetailPageRoute"
+            },
+            {
+              "firstLine": 106,
+              "kind": "class",
+              "lastLine": 113,
+              "name": "orderListRoute"
+            },
+            {
+              "firstLine": 116,
+              "kind": "class",
+              "lastLine": 121,
+              "name": "placeOrderFormRoute"
+            },
+            {
+              "firstLine": 124,
+              "kind": "class",
+              "lastLine": 131,
+              "name": "routeTree"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/views.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 9,
+              "name": "View"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "VIEWS"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "NAVIGATION"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/order-list/ui/order-list-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 31,
+              "name": "OrderListPage"
+            }
+          ]
+        },
+        {
+          "path": "src/widgets/order-list/ui/order-table.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "OrderTableProps"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 47,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "pageText"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 141,
+              "name": "OrderTable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderPortal::placeOrderForm",
+      "files": [
+        {
+          "path": "src/app/layout/navigation.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "NavigationProps"
+            },
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "Navigation"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/routes.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "class",
+              "lastLine": 31,
+              "name": "RouterContext"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "rootRoute"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "RootLayout"
+            },
+            {
+              "firstLine": 53,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "homeRoute"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "HomeRoute"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 74,
+              "name": "callbackRoute"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 79,
+              "name": "CallbackRoute"
+            },
+            {
+              "firstLine": 82,
+              "kind": "class",
+              "lastLine": 87,
+              "name": "cancelOrderFormRoute"
+            },
+            {
+              "firstLine": 90,
+              "kind": "class",
+              "lastLine": 97,
+              "name": "orderDetailRoute"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 103,
+              "name": "OrderDetailPageRoute"
+            },
+            {
+              "firstLine": 106,
+              "kind": "class",
+              "lastLine": 113,
+              "name": "orderListRoute"
+            },
+            {
+              "firstLine": 116,
+              "kind": "class",
+              "lastLine": 121,
+              "name": "placeOrderFormRoute"
+            },
+            {
+              "firstLine": 124,
+              "kind": "class",
+              "lastLine": 131,
+              "name": "routeTree"
+            }
+          ]
+        },
+        {
+          "path": "src/app/router/views.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 9,
+              "name": "View"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "VIEWS"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "NAVIGATION"
+            }
+          ]
+        },
+        {
+          "path": "src/pages/place-order-form/ui/place-order-form-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "PlaceOrderFormPage"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}

@@ -1,0 +1,58 @@
+{
+  "baselineCommit": null,
+  "columns": [
+    "category",
+    "item",
+    "location"
+  ],
+  "modelCommit": "none: the folder is not in a Git repository",
+  "report": "orphans",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::CancelOrder",
+      "location": "model/order-portal.sysml:87"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::Order",
+      "location": "model/order-portal.sysml:73"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::PlaceOrder",
+      "location": "model/order-portal.sysml:80"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::network",
+      "location": "model/order-portal.sysml:142"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::networkAws",
+      "location": "model/order-portal.sysml:154"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::orderDb",
+      "location": "model/order-portal.sysml:144"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::orderDbAws",
+      "location": "model/order-portal.sysml:156"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::users",
+      "location": "model/order-portal.sysml:145"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderPortal::usersAws",
+      "location": "model/order-portal.sysml:157"
+    }
+  ]
+}
