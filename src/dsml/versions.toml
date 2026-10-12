@@ -5,8 +5,8 @@
 # exact version that is not here yet. Later releases update this file.
 # "value" is a fixed setting that is not a version.
 #
-# This file holds only the phase 1 items. A new decision record sets the
-# TypeScript items at the start of phase 2.
+# Decision record 03 gives the phase 1 items. Decision record 09 (Q64)
+# gives the items of the React and Next.js targets.
 
 schema = 1
 
@@ -228,3 +228,156 @@ version = "1.7.12"
 
 [actionlint-sha256]
 value = "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+
+# The React and Next.js targets (decision record 09, Q64, story #158).
+# "version": the newest release of the line on 12 October 2026, from the
+# npm registry. docs/notes/typescript-baseline.md gives the license of each
+# item. The name of an item is the npm package name without "@" and with
+# "-" in place of "/".
+
+# The runtime and the package manager. The toolchain uses the same
+# versions in package.json.
+[node]
+line = "26"
+version = "26.11.1"
+
+[pnpm]
+line = "12"
+version = "12.11.2"
+
+# TypeScript 6.0, because typescript-eslint and Steiger do not operate with
+# TypeScript 7.0 (story #190).
+[typescript]
+line = "6.0"
+version = "6.0.3"
+
+[react]
+line = "19"
+version = "19.3.0"
+
+[react-dom]
+line = "19"
+version = "19.3.0"
+
+# React target stack (PRD-APP-201).
+[vite]
+line = "8"
+version = "8.3.4"
+
+[vitejs-plugin-react]
+line = "6"
+version = "6.1.2"
+
+[tanstack-react-router]
+line = "1"
+version = "1.170.42"
+
+[tanstack-react-query]
+line = "5"
+version = "5.104.2"
+
+[tanstack-react-form]
+line = "1"
+version = "1.33.5"
+
+[zod]
+line = "4"
+version = "4.6.6"
+
+[tailwindcss]
+line = "4"
+version = "4.3.3"
+
+[tailwindcss-vite]
+line = "4"
+version = "4.3.3"
+
+# The pinned copy of the shadcn/ui components (Q41). "shadcn-ui": the
+# release of the shadcn CLI that the copy comes from. "shadcn-ui-commit":
+# the full commit SHA of the release tag shadcn@<version> in the
+# repository shadcn-ui/ui. The other items are the dependencies of the
+# components.
+[shadcn-ui]
+line = "4"
+version = "4.21.4"
+
+[shadcn-ui-commit]
+value = "3464245c4513b7998b1d11fa9c67b71cc1534dc7"
+
+[radix-ui-react-slot]
+line = "1"
+version = "1.5.0"
+
+[class-variance-authority]
+line = "0.7"
+version = "0.7.1"
+
+[clsx]
+line = "2"
+version = "2.1.1"
+
+[tailwind-merge]
+line = "3"
+version = "3.7.0"
+
+# Amplify Auth and its Next.js adapter (PRD-APP-201, PRD-APP-301).
+[aws-amplify]
+line = "6"
+version = "6.22.1"
+
+[aws-amplify-adapter-nextjs]
+line = "1"
+version = "1.8.0"
+
+# Next.js target stack (PRD-APP-301).
+[next]
+line = "16"
+version = "16.4.0"
+
+[drizzle-orm]
+line = "0.45"
+version = "0.45.4"
+
+[pg]
+line = "8"
+version = "8.23.1"
+
+[types-pg]
+line = "8"
+version = "8.23.1"
+
+# The linters, the formatter and the test runner of the targets
+# (PRD-CORE-011). The toolchain CI uses the same versions in package.json.
+# The generated projects must also add "steiger-toolkit", because the
+# Steiger plugin does not declare it (story #190).
+[steiger]
+line = "0.7"
+version = "0.7.0"
+
+[feature-sliced-steiger-plugin]
+line = "0.8"
+version = "0.8.0"
+
+[steiger-toolkit]
+line = "0.2"
+version = "0.2.3"
+
+[prettier]
+line = "3"
+version = "3.9.10"
+
+[eslint]
+line = "10"
+version = "10.12.0"
+
+[eslint-js]
+line = "10"
+version = "10.0.1"
+
+[typescript-eslint]
+line = "8"
+version = "8.71.1"
+
+[vitest]
+line = "5"
+version = "5.0.3"
