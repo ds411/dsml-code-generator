@@ -13,7 +13,7 @@ from importlib import metadata
 from pathlib import Path, PurePosixPath
 from typing import NoReturn
 
-from dsml import starter, versions
+from dsml import skills, starter, versions
 from dsml.baseline import (
     Baseline,
     load_baseline,
@@ -41,6 +41,7 @@ from dsml.generate.writer import (
 from dsml.ir.model import IR_VERSION, Ir
 from dsml.ir.writer import write_ir
 from dsml.library import LIBRARY_VERSION
+from dsml.mcp.project import Project
 from dsml.trace.changes import IMPACT, ChangeData, impact_report, suspect_report
 from dsml.trace.comments import hand_written_files, read_trace_comments
 from dsml.trace.commit import model_commit
@@ -254,6 +255,59 @@ def build_parser() -> ArgumentParser:
         "version",
         "write the versions of the toolchain parts",
         "write the versions of the toolchain, the DSML library, OpenSysML and the IR schema",
+    )
+
+    # trace: PRD-AI-004, PRD-AI-008
+    # The subcommands "skills" and "mcp" read no configuration file and write
+    # no report, so they have only the option --verbose of the common options.
+    verbose = ArgumentParser(add_help=False, allow_abbrev=False, color=False)
+    verbose.add_argument(
+        "--verbose",
+        action="store_true",
+        help="write debug messages to standard error",
+    )
+
+    def add_other(name: str, summary: str, parent: Callable[..., ArgumentParser]) -> ArgumentParser:
+        command = parent(
+            name,
+            parents=[verbose],
+            help=summary,
+            description=f"{summary[0].upper()}{summary[1:]}.",
+            allow_abbrev=False,
+            color=False,
+        )
+        command.set_defaults(config=None, output=None)
+        return command
+
+    skills_command = subcommands.add_parser(
+        "skills",
+        help="install the skills for AI agents",
+        description="Install the skills for AI agents.",
+        allow_abbrev=False,
+        color=False,
+    )
+    skills_actions = skills_command.add_subparsers(
+        dest="skills_command", metavar="<action>", required=True
+    )
+    install = add_other(
+        "install", "write the skills for AI agents into the project", skills_actions.add_parser
+    )
+    install.add_argument(
+        "--output",
+        type=Path,
+        metavar="<folder>",
+        help=f"write the skills into this folder (default: {skills.DEFAULT_OUTPUT.as_posix()})",
+    )
+
+    mcp = add_other(
+        "mcp", "start the local MCP server with the stdio transport", subcommands.add_parser
+    )
+    mcp.add_argument(
+        "--project",
+        type=Path,
+        default=Path(),
+        metavar="<folder>",
+        help="the project folder of the server (default: the current folder)",
     )
     return parser
 
@@ -675,11 +729,56 @@ def run_check_output(args: argparse.Namespace) -> Outcome:
     return Outcome.SUCCESS if passed(results) else Outcome.ERROR_FINDING
 
 
+# trace: PRD-AI-004, PRD-AI-005, PRD-AI-006
+def run_skills(args: argparse.Namespace) -> Outcome:
+    """Write the skills of the package into `.claude/skills/` or the folder of `--output`.
+
+    The command replaces only the skill folders that it owns. The report has
+    one line for each skill, sorted by name: `install <folder>`.
+    """
+    output: Path = skills.DEFAULT_OUTPUT if args.output is None else args.output
+    found = skills.package_skills()
+    skills.install(output, found)
+    lines = [f"install {(output / skill.name).as_posix()}\n" for skill in found]
+    write_report("".join(lines), None)
+    return Outcome.SUCCESS
+
+
+MCP_MISSING = (
+    'The command "dsml mcp" needs the optional dependency group "mcp".\n'
+    "Install the toolchain with this group, for example: "
+    'uv tool install --python 3.14 "dsml[mcp] @ <wheel-file>".'
+)
+"""The message of `dsml mcp` if the MCP Python SDK is not installed (PRD-AI-009)."""
+
+
+# trace: PRD-AI-008, PRD-AI-009, PRD-AI-010, PRD-AI-014
+def run_mcp(args: argparse.Namespace) -> Outcome:
+    """Start the local MCP server in the project folder of `--project`.
+
+    Only this subcommand imports the MCP Python SDK. If the SDK is not
+    installed, the command stops with exit code 2 and gives the install
+    command (Q69).
+    """
+    project = Project.open(args.project)
+    try:
+        from dsml.mcp.server import serve
+    except ModuleNotFoundError as error:
+        if error.name is None or error.name.partition(".")[0] != "mcp":
+            raise
+        raise ToolchainError(MCP_MISSING) from error
+    LOG.debug("Start the MCP server in %s.", project.root)
+    serve(project, toolchain_version())
+    return Outcome.SUCCESS
+
+
 HANDLERS: dict[str, Handler] = {
     "check-output": run_check_output,
     "generate": run_generate,
     "init": run_init,
     "ir": run_ir,
+    "mcp": run_mcp,
+    "skills": run_skills,
     "trace": run_trace,
     "validate": run_validate,
     "version": run_version,
