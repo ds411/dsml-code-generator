@@ -134,6 +134,7 @@ def test_project_has_the_files_of_the_target() -> None:
         "app/shared/logs_gen.py",
         "migrations/env.py",
         MIGRATION,
+        "openapi.gen.json",
         "pyproject.toml",
         "tests/http_support_gen.py",
         "tests/test_app_gen.py",

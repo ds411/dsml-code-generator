@@ -41,19 +41,9 @@ router = APIRouter(tags=[{{ operation.tag }}])
 {% for line in operation.signature_lines %}
 {{ line }}
 {% endfor %}
-{% if operation.operation == "create" %}
-    """Add an entity {{ operation.entity_name }}. Return HTTP 201 with the new entity."""
-    return await {{ operation.call }}
-{% elif operation.operation == "read" %}
-    """Return the entity {{ operation.entity_name }} with the key, or HTTP 404."""
-    return await {{ operation.call }}
-{% elif operation.operation == "update" %}
-    """Change the entity {{ operation.entity_name }} with the key, or return HTTP 404."""
-    return await {{ operation.call }}
-{% elif operation.operation == "delete" %}
-    """Delete the entity {{ operation.entity_name }} with the key. Return HTTP 204, or HTTP 404."""
+    """{{ operation.endpoint_doc }}"""
+{% if operation.operation == "delete" %}
     await {{ operation.call }}
 {% else %}
-    """Return one page of the entities {{ operation.entity_name }}, sorted by key."""
     return await {{ operation.call }}
 {% endif %}

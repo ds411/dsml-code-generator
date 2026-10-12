@@ -94,7 +94,10 @@ def test_each_custom_operation_has_a_slice_with_a_create_once_handler() -> None:
 # trace: PRD-APP-116
 def test_endpoint_validates_the_input_checks_the_roles_and_calls_handle() -> None:
     text = (ORDER_API / CANCEL / "endpoint_gen.py").read_text()
-    assert '@router.post("/orders/{orderId}/cancel")\n' in text
+    assert (
+        '@router.post("/orders/{orderId}/cancel", responses=problem_responses(401, 403, 422))\n'
+        in text
+    )
     assert "    orderId: UUID,\n" in text
     assert "    session: Annotated[AsyncSession, Depends(get_session)],\n" in text
     assert "    user: Annotated[User, Depends(require_roles(*ALLOWED_ROLES))],\n" in text
@@ -311,4 +314,7 @@ def test_attribute_value_of_the_method_gives_the_route(example_ir: Ir) -> None:
     )
     files = generate(_replace(example_ir, operation.identity, attributes=attributes))
     endpoint = files[f"services/order-api/{CANCEL}/endpoint_gen.py"]
-    assert '@router.patch("/orders/{orderId}/cancel")\n' in endpoint
+    assert (
+        '@router.patch("/orders/{orderId}/cancel", responses=problem_responses(401, 403, 422))\n'
+        in endpoint
+    )

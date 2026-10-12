@@ -24,6 +24,7 @@ from app.features.count_customers.count_customers.schemas_gen import (
 )
 from app.shared.auth.cognito_gen import User, require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("admin",)
 """The roles that can use the operation (`allowedRoles`)."""
@@ -31,7 +32,7 @@ ALLOWED_ROLES = ("admin",)
 router = APIRouter(tags=["countCustomers"])
 
 
-@router.get("/customer-count")
+@router.get("/customer-count", responses=problem_responses(401, 403))
 async def count_customers(
     session: Annotated[AsyncSession, Depends(get_session)],
     user: Annotated[User, Depends(require_roles(*ALLOWED_ROLES))],

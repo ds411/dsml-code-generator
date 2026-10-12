@@ -25,11 +25,7 @@ this file again at each run.
 
 
 class {{ operation.input_class }}(BaseModel):
-{% if operation.operation == "create" %}
-    """The request body. The key `{{ operation.key.name }}` is not in the body."""
-{% else %}
-    """The request body. Each field is optional. A missing field does not change."""
-{% endif %}
+    """{{ operation.input_doc }}"""
 
     model_config = ConfigDict(extra="forbid")
 {% if operation.input_field_lines %}
@@ -54,7 +50,7 @@ class {{ operation.input_class }}(BaseModel):
 
 
 class {{ operation.output_class }}(BaseModel):
-    """The entity {{ operation.entity_name }} in a response."""
+    """{{ operation.output_doc }}"""
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -65,7 +61,7 @@ class {{ operation.output_class }}(BaseModel):
 
 
 class {{ operation.page_class }}(BaseModel):
-    """One page of the entities, sorted by key, and the number of all entities."""
+    """{{ operation.page_doc }}"""
 
     items: list[{{ operation.output_class }}]
     total: int

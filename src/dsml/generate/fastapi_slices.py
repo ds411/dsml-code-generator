@@ -31,6 +31,7 @@ import keyword
 import re
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field, replace
+from http import HTTPStatus
 from typing import Final
 
 from dsml.database.schema import DECIMAL_PRECISION, DECIMAL_SCALE, FIELD_RULES
@@ -102,6 +103,18 @@ _TYPE_IMPORTS: Final = {
     "datetime": "datetime",
 }
 """The module of each Python type that needs an import."""
+
+PAGE_DOC: Final = "One page of the entities, sorted by key, and the number of all entities."
+"""The docstring of the page schema of a `list` operation."""
+
+_ENDPOINT_DOCS: Final = {
+    "create": "Add an entity {entity}. Return HTTP 201 with the new entity.",
+    "read": "Return the entity {entity} with the key, or HTTP 404.",
+    "update": "Change the entity {entity} with the key, or return HTTP 404.",
+    "delete": "Delete the entity {entity} with the key. Return HTTP 204, or HTTP 404.",
+    "list": "Return one page of the entities {entity}, sorted by key.",
+}
+"""The docstring of the endpoint function of each CRUD operation."""
 
 _PARAMETER: Final = re.compile(r"\{([^{}]*)\}")
 _NUMERIC: Final = re.compile(r"Numeric\((\d+), (\d+)\)")
@@ -386,6 +399,7 @@ class Slice:
             *(schema_lines if schemas else []),
             *([] if self.public else ["from app.shared.auth.cognito_gen import require_roles"]),
             "from app.shared.db.session_gen import get_session",
+            "from app.shared.errors_gen import problem_responses",
         ]
 
     @property
@@ -404,7 +418,47 @@ class Slice:
             arguments.append("status_code=HTTPStatus.NO_CONTENT")
         if not self.public:
             arguments.append("dependencies=[Depends(require_roles(*ALLOWED_ROLES))]")
+        arguments.append(problem_argument(self.problem_statuses))
         return python_call(f"@router.{self.method}", arguments, 0)
+
+    # trace: PRD-APP-004, PRD-APP-008, PRD-APP-113
+    @property
+    def problem_statuses(self) -> tuple[int, ...]:
+        """Give the error statuses of the endpoint, sorted (PRD-APP-113).
+
+        Each CRUD operation has an input, thus it can return HTTP 422. An
+        operation that is not public can return HTTP 401 and HTTP 403.
+        """
+        statuses = {HTTPStatus.UNPROCESSABLE_CONTENT}
+        if not self.public:
+            statuses.update((HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN))
+        if self.parameter:
+            statuses.add(HTTPStatus.NOT_FOUND)
+        if self.operation in ("create", "update", "delete"):
+            statuses.add(HTTPStatus.CONFLICT)
+        return tuple(sorted(int(status) for status in statuses))
+
+    @property
+    def endpoint_doc(self) -> str:
+        """The docstring of the endpoint function: the description in the OpenAPI document."""
+        return _ENDPOINT_DOCS[self.operation].format(entity=self.entity_name)
+
+    @property
+    def input_doc(self) -> str:
+        """The docstring of the input schema."""
+        if self.operation == "create":
+            return f"The request body. The key `{self.key.name}` is not in the body."
+        return "The request body. Each field is optional. A missing field does not change."
+
+    @property
+    def output_doc(self) -> str:
+        """The docstring of the output schema."""
+        return f"The entity {self.entity_name} in a response."
+
+    @property
+    def page_doc(self) -> str:
+        """The docstring of the page schema of a `list` operation."""
+        return PAGE_DOC
 
     @property
     def signature_lines(self) -> list[str]:
@@ -899,6 +953,12 @@ def bracket_lines(
     if not items:
         return [f"{head}{opening}{closing}"]
     return [f"{head}{opening}", *(f"    {item}," for item in items), closing]
+
+
+# trace: PRD-APP-004, PRD-APP-014
+def problem_argument(statuses: Iterable[int]) -> str:
+    """Give the argument of the route decorator for the problem details responses."""
+    return f"responses=problem_responses({', '.join(str(status) for status in statuses)})"
 
 
 def type_imports(types: Iterable[str]) -> dict[str, set[str]]:

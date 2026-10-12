@@ -22,6 +22,7 @@ from app.features.order.cancel_order.handler import handle
 from app.features.order.cancel_order.schemas_gen import CancelOrderInput, CancelOrderOutput
 from app.shared.auth.cognito_gen import User, require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("admin",)
 """The roles that can use the operation (`allowedRoles`)."""
@@ -29,7 +30,7 @@ ALLOWED_ROLES = ("admin",)
 router = APIRouter(tags=["cancelOrder"])
 
 
-@router.post("/orders/{orderId}/cancel")
+@router.post("/orders/{orderId}/cancel", responses=problem_responses(401, 403, 422))
 async def cancel_order(
     orderId: UUID,
     session: Annotated[AsyncSession, Depends(get_session)],

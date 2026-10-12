@@ -61,7 +61,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/count_customers/count_customers/endpoint_gen.py",
-      "sha256": "699236ca241c1fdbee2f9b69ef8b338f8154b40ff006e8259afae00c97f91ffc"
+      "sha256": "5faedd830afcda758d3ee2bccf77dade164298453eaf09173703a6e92fea1a1b"
     },
     {
       "part": "application/shopApi",
@@ -81,7 +81,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/customer/create_customer/endpoint_gen.py",
-      "sha256": "7b8953362260997130d74717f0660ec0d6e0db89dd80fbfb3738f4cf55a8de52"
+      "sha256": "49299c56c05de7bab98bda24723b799b26765f8ca374d4fc94f24df0d6214831"
     },
     {
       "part": "application/shopApi",
@@ -101,7 +101,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/customer/delete_customer/endpoint_gen.py",
-      "sha256": "777797a55af0593ab39400cc4313047e809691808f400320d1c7fd49ea020c5b"
+      "sha256": "2a79884c009cb4cc5462a4889e3582a2e76110ea059b6a017894a3ed62005486"
     },
     {
       "part": "application/shopApi",
@@ -121,7 +121,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/customer/list_customer/endpoint_gen.py",
-      "sha256": "71b2fae849ed230413b20e8e0d71d6b83135e3392259ca64d02c2c9744e15bbb"
+      "sha256": "ed50c96289a65f786db086d302874f3a6d1221bb56386800139b2b7f8c5d6be9"
     },
     {
       "part": "application/shopApi",
@@ -141,7 +141,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/customer/read_customer/endpoint_gen.py",
-      "sha256": "da8608d345b1d7d9aaf4338931086cdd1b26c1385e33aa1bd5fabaed5018c4e6"
+      "sha256": "fff9c922557c6e008c5a91a65e664516eac7a6788995838d18c382ba1249fdc5"
     },
     {
       "part": "application/shopApi",
@@ -161,7 +161,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/customer/update_customer/endpoint_gen.py",
-      "sha256": "a281ca9dcce4c896b9e96bc4c1653a797b5728f42ba99d8fc095d717de1ace1b"
+      "sha256": "b955e3887ac517b84e6adc8b4f8d81255bfbd3dad12985691ba0a8bf0903a1d5"
     },
     {
       "part": "application/shopApi",
@@ -186,7 +186,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/create_product/endpoint_gen.py",
-      "sha256": "a789e2979358e811e47171ddc3ec087bc4579f453a6649f8638c256344ca95d8"
+      "sha256": "ba2e9daece5f3f66310f8da6459256b51b9c1caf7bd0e819a9969f1595da640f"
     },
     {
       "part": "application/shopApi",
@@ -206,7 +206,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/delete_product/endpoint_gen.py",
-      "sha256": "733383cf9a7cea633c9da08c49cbe024a4edc2c213a51eb15348152e0fe21ec9"
+      "sha256": "6cc062a3ce88549a8dc662c026dd3ea9886d3116a6041c12e9598a73c5a1db8d"
     },
     {
       "part": "application/shopApi",
@@ -226,7 +226,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
-      "sha256": "568a475d5f30b1aa270a412f0f39f0518cfede69d2102d34c7cb5cb51eb14e55"
+      "sha256": "e9824db0f863f9f26a4d12ca274f0743dc19244beb8af4faefadc267d3b40033"
     },
     {
       "part": "application/shopApi",
@@ -241,7 +241,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/list_product/endpoint_gen.py",
-      "sha256": "236364a4e3512943ee39ceecc888c6cb02a94d55bd7a42eb04291ca5a732423a"
+      "sha256": "51b24f1a5571ab3292da4f643219f74fde4c3163e03286654acc11a6a7378d52"
     },
     {
       "part": "application/shopApi",
@@ -261,7 +261,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/read_product/endpoint_gen.py",
-      "sha256": "abd0a9772507efc5a80bbe02511e695e36c03b786fb6cd161931cf1b5d4067ad"
+      "sha256": "05e7988de87423d721e10d4349c123878823433752ad51be3b87b0404dec4973"
     },
     {
       "part": "application/shopApi",
@@ -281,7 +281,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
-      "sha256": "bcffa5bebeb7572a4aa265f7be2734ce1765d4b0db989a07c1fee2bb4203b268"
+      "sha256": "29102959e986aff93ee5f08fa796d27b8874e6e2bb902e4d5908170441746923"
     },
     {
       "part": "application/shopApi",
@@ -296,7 +296,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/update_product/endpoint_gen.py",
-      "sha256": "5e7c318716043f4d04caee66d661ad4f03eba4bc6fa9a03a971cd54790723984"
+      "sha256": "1b2cd63061395e2ded8cbd297c06813733c67868f33b4297814088c7b3e23fcb"
     },
     {
       "part": "application/shopApi",
@@ -321,7 +321,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
-      "sha256": "6607c6e6b814cdbca6ee60fbf9bb6693eb672f22de54e0843bf1484b753f8e08"
+      "sha256": "772b9146192fdea3ae632dcce88c0ca0610ee0220f57888612924e4e24fd0977"
     },
     {
       "part": "application/shopApi",
@@ -336,7 +336,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/supplier/create_supplier/endpoint_gen.py",
-      "sha256": "8a897a48c5685e2d0d883c8e8b0c643b01f80acdf6b41bb85fe5a13c1c7312dc"
+      "sha256": "32caa8a8314bdea8b6c2cf5e31abaf9a0e8543d1dfd55e1a55e9f7d1253dd0e7"
     },
     {
       "part": "application/shopApi",
@@ -356,7 +356,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/supplier/list_supplier/endpoint_gen.py",
-      "sha256": "fcaa4012af8aaa7037dec12867d6c4661f72da93ca188bacd47864358b3649d2"
+      "sha256": "01db5dc24cf23fe1e973965e7808edaa5633440456bad887a99abc6091a8e6fc"
     },
     {
       "part": "application/shopApi",
@@ -376,7 +376,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/supplier/read_supplier/endpoint_gen.py",
-      "sha256": "0d91e2f1b49b905cbe97c8c3c4f0999e8b2c5ddff33b553a659479fa8db9e8f3"
+      "sha256": "573dbcc6769e8b4b7ef47f4a6b021c3dd8610bcfddfd873e98be48382595fe1f"
     },
     {
       "part": "application/shopApi",
@@ -461,7 +461,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/shared/errors_gen.py",
-      "sha256": "582c120f8bb316ab243dbbb339ea6363aa6277f613bf9f46c25c61bc2b1c253a"
+      "sha256": "1744a99bcba2a994c68f0a17813e5aa61d0e8ff3b73a5d1a0b5dad10db272513"
     },
     {
       "part": "application/shopApi",
@@ -480,6 +480,11 @@
     },
     {
       "part": "application/shopApi",
+      "path": "services/shop-api/openapi.gen.json",
+      "sha256": "c8efaa0f13ded2418a2a25e3fb045bc8686bb417094323bca1d9613f8c884b27"
+    },
+    {
+      "part": "application/shopApi",
       "path": "services/shop-api/pyproject.toml",
       "sha256": "f492c73d0c7afb2a08dc5c7cd6075ab75ed8174efadabcef95edc98263610a7e"
     },
@@ -491,7 +496,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/tests/test_app_gen.py",
-      "sha256": "7da47a71476914d38c34ff695f0815860161c9304ad927fb33331a62ad09ed6c"
+      "sha256": "72471fbc82e0bed422c1a5f2a4008ad518ff3e50ceb31196d1fbd35d0f8dbcb2"
     },
     {
       "part": "application/shopApi",

@@ -38,6 +38,7 @@ import keyword
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass
+from http import HTTPStatus
 from typing import Final
 
 from dsml.database.schema import ENUMERATION, ENUMERATION_KINDS, SCALAR_TYPES
@@ -52,6 +53,7 @@ from dsml.generate.fastapi_slices import (
     entity_fields,
     from_imports,
     is_public,
+    problem_argument,
     roles_of,
     ruff_order,
     type_imports,
@@ -386,6 +388,11 @@ class CustomSlice:
                 else import_lines("app.shared.auth.cognito_gen", ["User", "require_roles"])
             ),
             "from app.shared.db.session_gen import get_session",
+            *(
+                ["from app.shared.errors_gen import problem_responses"]
+                if self.problem_statuses
+                else []
+            ),
         ]
 
     @property
@@ -400,7 +407,46 @@ class CustomSlice:
         arguments = [literal(self.path)]
         if self.output_class is None:
             arguments.append("status_code=HTTPStatus.NO_CONTENT")
+        if self.problem_statuses:
+            arguments.append(problem_argument(self.problem_statuses))
         return python_call(f"@router.{self.method}", arguments, 0)
+
+    # trace: PRD-APP-004, PRD-APP-008
+    @property
+    def problem_statuses(self) -> tuple[int, ...]:
+        """Give the error statuses of the endpoint, sorted.
+
+        An operation with an `in` parameter can return HTTP 422. An operation
+        that is not public can return HTTP 401 and HTTP 403. The hand-written
+        handler can return other statuses. The model does not give them.
+        """
+        statuses: set[int] = set()
+        if self.inputs:
+            statuses.add(HTTPStatus.UNPROCESSABLE_CONTENT)
+        if not self.public:
+            statuses.update((HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN))
+        return tuple(sorted(int(status) for status in statuses))
+
+    @property
+    def endpoint_doc(self) -> str:
+        """The docstring of the endpoint function: the description in the OpenAPI document."""
+        return "Validate the input and call the hand-written handler."
+
+    @property
+    def request_doc(self) -> str:
+        """The docstring of the schema of the body or of the query parameters."""
+        if self.has_body:
+            return "The request body: the `in` parameters that are not in the path."
+        return "The query parameters: the `in` parameters that are not in the path."
+
+    @property
+    def output_doc(self) -> str:
+        """The docstring of the output schema."""
+        if self.entity_many:
+            return "One entity of the output of the operation. A related entity is its key."
+        if self.entity_output is not None:
+            return "The output of the operation: one entity. A related entity is its key."
+        return "The output of the operation: the `out` parameters."
 
     @property
     def signature_lines(self) -> list[str]:

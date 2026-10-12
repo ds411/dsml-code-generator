@@ -18,11 +18,12 @@ from app.features.supplier.create_supplier.schemas_gen import (
     CreateSupplierOutput,
 )
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 router = APIRouter(tags=["suppliers"])
 
 
-@router.post("/suppliers", status_code=HTTPStatus.CREATED)
+@router.post("/suppliers", status_code=HTTPStatus.CREATED, responses=problem_responses(409, 422))
 async def create_supplier(
     data: CreateSupplierInput, session: Annotated[AsyncSession, Depends(get_session)]
 ) -> CreateSupplierOutput:

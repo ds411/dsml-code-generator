@@ -24,11 +24,16 @@ from app.features.supplier.archive_supplier.schemas_gen import (
     ArchiveSupplierInput,
 )
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 router = APIRouter(tags=["archiveSupplier"])
 
 
-@router.post("/suppliers/{supplier}/archive", status_code=HTTPStatus.NO_CONTENT)
+@router.post(
+    "/suppliers/{supplier}/archive",
+    status_code=HTTPStatus.NO_CONTENT,
+    responses=problem_responses(422),
+)
 async def archive_supplier(
     supplier: UUID,
     body: ArchiveSupplierBody,

@@ -1,4 +1,4 @@
-{#- The error types of the FastAPI target (PRD-APP-014, PRD-APP-117). -#}
+{#- The error types of the FastAPI target (PRD-APP-004, PRD-APP-014, PRD-APP-117). -#}
 {% include "common/header.j2" %}
 """API errors as problem details (RFC 9457).
 
@@ -7,10 +7,15 @@ raises `ProblemError` to return an error. The handlers also change the
 errors of FastAPI and Starlette into problem details. A handler that raises
 `NotImplementedError` gives HTTP 501, for example the stub of a custom
 operation.
+
+The OpenAPI document of the application gives the schema `Problem` and the
+error statuses of each endpoint. It must agree with `openapi.gen.json`.
 """
 
 from collections.abc import Mapping
+from copy import deepcopy
 from http import HTTPStatus
+from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -19,6 +24,32 @@ from starlette.exceptions import HTTPException
 
 PROBLEM_MEDIA_TYPE = "application/problem+json"
 """The media type of problem details (RFC 9457)."""
+
+PROBLEM_SCHEMA: dict[str, Any] = {
+    "description": "An API error as problem details (RFC 9457).",
+    "properties": {
+        "detail": {"type": "string"},
+        "errors": {
+            "items": {
+                "properties": {
+                    "location": {"items": {"type": "string"}, "type": "array"},
+                    "message": {"type": "string"},
+                    "type": {"type": "string"},
+                },
+                "required": ["location", "message", "type"],
+                "type": "object",
+            },
+            "type": "array",
+        },
+        "status": {"type": "integer"},
+        "title": {"type": "string"},
+        "type": {"type": "string"},
+    },
+    "required": ["status", "title", "type"],
+    "title": "Problem",
+    "type": "object",
+}
+"""The JSON schema of problem details in the OpenAPI document."""
 
 
 class ProblemError(Exception):
@@ -49,12 +80,37 @@ def problem_response(
     return JSONResponse(body, status_code=status, headers=headers, media_type=PROBLEM_MEDIA_TYPE)
 
 
+def problem_responses(*statuses: int) -> dict[int | str, dict[str, Any]]:
+    """Give the problem details responses of an endpoint for the OpenAPI document."""
+    return {
+        status: {
+            "content": {PROBLEM_MEDIA_TYPE: {"schema": {"$ref": "#/components/schemas/Problem"}}},
+            "description": HTTPStatus(status).phrase,
+        }
+        for status in statuses
+    }
+
+
 def register_error_handlers(app: FastAPI) -> None:
-    """Add the handlers that change errors into problem details."""
+    """Add the handlers that change errors into problem details.
+
+    The function also adds the schema `Problem` to the OpenAPI document.
+    """
     app.add_exception_handler(ProblemError, _problem)
     app.add_exception_handler(HTTPException, _http)
     app.add_exception_handler(RequestValidationError, _validation)
     app.add_exception_handler(NotImplementedError, _not_implemented)
+    make_document = app.openapi
+
+    def document() -> dict[str, Any]:
+        if app.openapi_schema is not None:
+            return app.openapi_schema
+        result = make_document()
+        schemas = result.setdefault("components", {}).setdefault("schemas", {})
+        schemas["Problem"] = deepcopy(PROBLEM_SCHEMA)
+        return result
+
+    app.openapi = document
 
 
 async def _problem(request: Request, error: Exception) -> Response:

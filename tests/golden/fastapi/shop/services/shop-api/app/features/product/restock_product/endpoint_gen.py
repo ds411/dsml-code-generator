@@ -26,6 +26,7 @@ from app.features.product.restock_product.schemas_gen import (
 )
 from app.shared.auth.cognito_gen import User, require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("admin", "clerk")
 """The roles that can use the operation (`allowedRoles`)."""
@@ -33,7 +34,7 @@ ALLOWED_ROLES = ("admin", "clerk")
 router = APIRouter(tags=["restockProduct"])
 
 
-@router.post("/products/{productId}/restock")
+@router.post("/products/{productId}/restock", responses=problem_responses(401, 403, 422))
 async def restock_product(
     productId: UUID,
     body: RestockProductBody,
