@@ -1,4 +1,4 @@
-"""Tests of `dsml check-output` with fake tools on PATH (story #134).
+"""Tests of `dsml check-output` with fake tools on PATH (stories #134 and #170).
 
 Each fake tool is a shell script. It writes its arguments and its folder to
 a log file. It stops with exit code 1 and a message if the environment
@@ -18,6 +18,7 @@ from dsml.check_output import (
     Result,
     Status,
     check_output,
+    passed,
     root_modules,
     select_applications,
     text_report,
@@ -29,7 +30,7 @@ from dsml.errors import ToolchainError
 from dsml.ir.model import Attribute, Element, EnumValue, Ir, Location
 from dsml.versions import pinned_version
 
-TOOLS = ("pyright", "ruff", "tflint", "tofu")
+TOOLS = ("eslint", "pyright", "ruff", "steiger", "tflint", "tofu", "tsc")
 FAKE_TOOL = """#!/bin/sh
 tool="${0##*/}"
 echo "$tool $* | $PWD" >> "$FAKE_LOG"
@@ -64,6 +65,7 @@ def project(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """Make a project with an application folder and two root modules."""
     root = tmp_path / "project"
     (root / "services" / "orders" / "app").mkdir(parents=True)
+    (root / "apps" / "portal" / "src").mkdir(parents=True)
     for module in ROOT_MODULES:
         (root / module).mkdir(parents=True)
         (root / module / "versions.gen.tf").write_text("terraform {}\n", encoding="utf-8")
@@ -72,6 +74,7 @@ def project(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     (root / "dsml.toml").write_text(
         'schema = 1\n\n[model]\npaths = ["model.sysml"]\n\n'
         '[applications.orders]\noutput = "services/orders"\n\n'
+        '[applications.portal]\noutput = "apps/portal"\n\n'
         '[infrastructure]\noutput = "infra"\n',
         encoding="utf-8",
     )
@@ -82,12 +85,16 @@ def project(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 def configuration(root: Path) -> Configuration:
     return Configuration(
         path=root / "dsml.toml",
-        applications=(Application("orders", PurePosixPath("services/orders")),),
+        applications=(
+            Application("orders", PurePosixPath("services/orders")),
+            Application("portal", PurePosixPath("apps/portal")),
+        ),
         infrastructure=PurePosixPath("infra"),
     )
 
 
 ORDERS = ApplicationCode("orders", "fastapi", PurePosixPath("services/orders"))
+PORTAL = ApplicationCode("portal", "react", PurePosixPath("apps/portal"))
 
 
 def application(name: str, target: str) -> Element:
@@ -225,10 +232,77 @@ def test_tflint_configuration_has_the_pinned_aws_rule_set() -> None:
 
 
 def test_application_of_a_later_phase_is_an_error(project: Path, fake_tools: Path) -> None:
-    web = ApplicationCode("web", "react", None)
+    web = ApplicationCode("web", "nextjs", None)
     results = check_output(configuration(project), [web], infrastructure=False)
-    assert statuses(results) == ["error web: react"]
-    assert 'Its target "react" is not a phase 1 target.' in results[0].output
+    assert statuses(results) == ["error web: nextjs"]
+    assert 'It has no tools for the target "nextjs".' in results[0].output
+
+
+def test_react_tools_pass(project: Path, fake_tools: Path) -> None:
+    results = check_output(configuration(project), [PORTAL], infrastructure=False)
+    assert statuses(results) == [
+        "pass apps/portal: eslint",
+        "pass apps/portal: steiger",
+        "pass apps/portal: tsc",
+    ]
+    lines = fake_tools.read_text(encoding="utf-8").splitlines()
+    calls = {line.split(" | ")[0].strip(): Path(line.split(" | ")[1]) for line in lines}
+    folder = project / "apps" / "portal"
+    assert calls == {"tsc --noEmit": folder, "eslint .": folder, "steiger ./src": folder}
+
+
+def test_react_tools_come_first_from_node_modules(project: Path, fake_tools: Path) -> None:
+    tools = project / "apps" / "portal" / "node_modules" / ".bin"
+    tools.mkdir(parents=True)
+    script = tools / "tsc"
+    script.write_text(
+        '#!/bin/sh\necho "project tsc" >> "$FAKE_LOG"\ncase ":$PATH:" in\n'
+        f'  *":{tools}:"*) exit 0 ;;\nesac\nexit 1\n',
+        encoding="utf-8",
+    )
+    script.chmod(0o755)
+    relative = Configuration(
+        path=Path("dsml.toml"), applications=configuration(project).applications
+    )
+    results = check_output(relative, [PORTAL], infrastructure=False)
+    assert passed(results)
+    calls = fake_tools.read_text(encoding="utf-8").splitlines()
+    assert "project tsc" in calls
+    assert not any(call.startswith("tsc ") for call in calls)
+
+
+@pytest.mark.parametrize("tool", ["tsc", "eslint", "steiger"])
+def test_missing_react_tool_is_an_error_with_the_tool_name(
+    project: Path, fake_tools: Path, tool: str
+) -> None:
+    (Path(os.environ["PATH"]) / tool).unlink()
+    results = check_output(configuration(project), [PORTAL], infrastructure=False)
+    found = {result.tool: result for result in results}
+    assert found[tool].status == Status.ERROR
+    assert found[tool].output == (
+        f'The tool "{tool}" is missing. '
+        f'Run "pnpm install" in "apps/portal", or put "{tool}" on PATH.\n'
+    )
+    assert [result.status for result in results if result.tool != tool] == [Status.PASS] * 2
+
+
+def test_react_tool_error_gives_exit_code_1(
+    project: Path,
+    fake_tools: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    ir = Ir(elements=(application("orders", "fastapi"), application("portal", "react")))
+    monkeypatch.setattr(cli, "read_model", model_of(ir))
+    monkeypatch.setenv("FAKE_FAIL", "steiger-./src")
+    assert main(["check-output", "--application", "portal"]) == 1
+    assert capsys.readouterr().out == (
+        "pass apps/portal: eslint\n"
+        "error apps/portal: steiger\n"
+        "    steiger-./src found an error\n"
+        "pass apps/portal: tsc\n"
+        "The check found errors. 1 step of 3 did not pass.\n"
+    )
 
 
 def test_select_applications_gives_the_target_and_the_folder(project: Path) -> None:

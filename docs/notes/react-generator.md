@@ -101,8 +101,8 @@ The test of the project files compares only the files outside the layer folders 
 The CI job "React golden project" does these steps:
 
 1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035).
-2. It copies the golden project to a temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
-3. It runs `tsc --noEmit`, ESLint and Steiger. While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices yet.
+2. It copies the golden project to `apps/order-portal` in a temporary folder. It also copies the order portal model and its `dsml.toml` to the temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
+3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger (story #170, `docs/notes/check-output.md`). While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices yet.
 4. It copies `tests/react/field-rules/` and `tests/react/shared/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors.
 5. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
 

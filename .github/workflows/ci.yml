@@ -350,13 +350,15 @@ jobs:
           cat "$RUNNER_TEMP/pyright.txt"
           grep --quiet "$slice/handler.py.*order_id" "$RUNNER_TEMP/pyright.txt"
 
-  # trace: PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-211, PRD-APP-233, PRD-APP-234
+  # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-211, PRD-APP-233, PRD-APP-234
   #
   # The golden output of the React generator (story #167) must pass the
   # tools of the generated project. Prettier must find no change in the
   # golden files (PRD-CORE-035). The job copies the golden project to a
   # temporary folder, because "pnpm install" writes pnpm-lock.yaml and the
-  # generator does not write lockfiles (PRD-CORE-036). This job needs the
+  # generator does not write lockfiles (PRD-CORE-036). The temporary folder
+  # also gets the order portal model and its configuration file, because
+  # dsml check-output reads them (story #170). This job needs the
   # network to install the dependencies of the generated project. The
   # generator does not use the network (PRD-TOP-004).
   react-golden:
@@ -364,12 +366,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
-      PROJECT: ${{ github.workspace }}/../order-portal
+      CHECK: ${{ github.workspace }}/../check-output
+      PROJECT: ${{ github.workspace }}/../check-output/apps/order-portal
     steps:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.0"
 
       # The action reads the pnpm version from the "packageManager" field
       # of package.json.
@@ -383,31 +391,33 @@ jobs:
       - name: Check the format of the golden files
         run: pnpm exec prettier --check tests/golden/react tests/react
 
-      - name: Copy the golden project
-        run: cp -r tests/golden/react/order-portal "$PROJECT"
+      # The configuration file gives the output folder apps/order-portal
+      # for the application orderPortal.
+      - name: Copy the golden project and the model
+        run: |
+          mkdir -p "$CHECK/apps"
+          cp docs/model/examples/order-portal/dsml.toml docs/model/examples/order-portal/order-portal.sysml "$CHECK/"
+          cp -r tests/golden/react/order-portal "$PROJECT"
 
       # The project has no lockfile, thus pnpm makes one.
       - name: Install the dependencies
         working-directory: ${{ env.PROJECT }}
         run: pnpm install --no-frozen-lockfile
 
-      - name: Check the types
-        working-directory: ${{ env.PROJECT }}
-        run: pnpm exec tsc --noEmit
-
-      - name: Lint
-        working-directory: ${{ env.PROJECT }}
-        run: pnpm exec eslint .
-
       # Until the pages story (#174) writes src/pages, no page refers to the
       # entity slices. Then the rule fsd/insignificant-slice is off.
-      - name: Check the layers
+      - name: Set the Steiger configuration
         working-directory: ${{ env.PROJECT }}
         run: |
           if [ ! -d src/pages ]; then
             cp "$GITHUB_WORKSPACE/tests/react/steiger-before-pages.config.ts" steiger.config.ts
           fi
-          pnpm exec steiger ./src
+
+      # dsml check-output runs tsc, ESLint and Steiger from node_modules/.bin
+      # of the project (PRD-CORE-011, PRD-APP-234).
+      - name: Check the generated code with dsml check-output
+        working-directory: ${{ env.CHECK }}
+        run: uv run --project "$GITHUB_WORKSPACE" dsml check-output --application orderPortal
 
       # The Zod schemas must accept and refuse the same values as the
       # Pydantic models (PRD-APP-211). tests/test_react_entities.py gives
