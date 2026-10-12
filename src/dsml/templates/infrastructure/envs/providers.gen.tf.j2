@@ -1,4 +1,6 @@
-{#- The AWS provider of an environment root module (PRD-IAC-024, PRD-IAC-035). -#}
+{#- The AWS provider of an environment root module (PRD-IAC-024, PRD-IAC-035).
+    Data: "us_east_1_provider", true if a module call needs the second AWS
+    provider of the Region us-east-1 (PRD-IAC-021). -#}
 {% include "common/header.j2" %}
 
 provider "aws" {
@@ -13,3 +15,21 @@ provider "aws" {
     }
   }
 }
+{% if us_east_1_provider | default(false) %}
+
+# CloudFront accepts only ACM certificates of the Region us-east-1
+# (PRD-IAC-021).
+provider "aws" {
+  alias               = "us_east_1"
+  region              = "us-east-1"
+  allowed_account_ids = [local.aws_account_id]
+
+  default_tags {
+    tags = {
+      "dsml:environment"  = {{ environment_tag | hcl_string }}
+      "dsml:model-commit" = var.model_commit
+      "dsml:product"      = {{ product_tag | hcl_string }}
+    }
+  }
+}
+{% endif %}

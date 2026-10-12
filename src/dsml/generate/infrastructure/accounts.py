@@ -54,6 +54,8 @@ class Account:
     product: str
     account_id: str
     region: str
+    site_buckets: tuple[str, ...] = ()
+    """The S3 buckets of the static sites of an environment account, sorted (PRD-IAC-021)."""
 
     @property
     def is_tooling(self) -> bool:
@@ -246,6 +248,7 @@ def bootstrap_data(
                     account.region,
                     (plan, deploy),
                     encryption,
+                    account.site_buckets,
                 ),
                 "managed": None,
             }

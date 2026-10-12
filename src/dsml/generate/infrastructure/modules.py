@@ -1,4 +1,4 @@
-# trace: PRD-IAC-001, PRD-IAC-007, PRD-IAC-008, PRD-IAC-023, PRD-CORE-026
+# trace: PRD-IAC-001, PRD-IAC-007, PRD-IAC-008, PRD-IAC-021, PRD-IAC-023, PRD-CORE-026
 """The local modules and the module calls of the environment root modules.
 
 Each local module writes the AWS resources of one logical kind (PRD-IAC-001).
@@ -278,6 +278,12 @@ CALLBACK_PATH: Final = "/auth/callback"
 LOGOUT_PATH: Final = "/"
 """The path of the logout URL of each app client (PRD-IAC-019)."""
 
+HOSTS: Final = frozenset({"ContainerService", "StaticSite"})
+"""The logical kinds that an application can be allocated to."""
+
+REACT: Final = "react"
+"""The target of an application that a static site serves (PRD-IAC-021)."""
+
 
 def _element(ir: Ir, identity: str) -> Element:
     """Give the element with an identity."""
@@ -411,13 +417,14 @@ def directory_applications(ir: Ir, directory: Element) -> tuple[Element, ...]:
     """Give the applications that use a user directory, sorted by identity.
 
     An application uses the user directory if it has a `#Uses` link to it,
-    or if it is allocated to a container service with a `#Uses` link to it.
+    or if it is allocated to a container service or to a static site with a
+    `#Uses` link to it.
     """
     found: dict[str, Element] = {}
     for user in _sources(ir, "uses", directory.identity):
         if user.kind == "Application":
             found[user.identity] = user
-        elif user.kind == "ContainerService":
+        elif user.kind in HOSTS:
             for item in _sources(ir, "allocate", user.identity):
                 if item.kind == "Application":
                     found[item.identity] = item
@@ -433,6 +440,16 @@ def _environment_domain(environment: Element) -> str:
     )
 
 
+# trace: PRD-IAC-014, PRD-IAC-021
+def site_domain(application: Element, environment: Element) -> str:
+    """Give the domain of an application in an environment: `<application>.<environment domain>`.
+
+    The API domain of a container service and the site domain of a static
+    site have this form.
+    """
+    return f"{safe_names.kebab_case(application.name)}.{_environment_domain(environment)}"
+
+
 # trace: PRD-IAC-008, PRD-IAC-019, PRD-IAC-035
 def _user_directory_arguments(
     element: Element, attributes: Mapping[str, Attribute], context: CallContext
@@ -441,28 +458,36 @@ def _user_directory_arguments(
 
     The user pool gets one group for each role value, and one app client for
     each application that uses it. The callback URLs are on the domain of
-    the environment (PRD-IAC-019).
+    the environment (PRD-IAC-019). The callback URLs of a `react`
+    application are on its site domain (PRD-IAC-021).
     """
     product, environment = context.product, context.environment_name
     domain = _environment_domain(context.environment)
-    clients = [
-        (
-            names.hcl_address(application.name),
-            hcl_map(
-                [
-                    (
-                        "name",
-                        hcl.string(
-                            names.aws_name(
-                                product, environment, application.name, "cognito_app_client"
-                            )
-                        ),
+
+    def client(application: Element) -> str:
+        host = domain
+        if any(
+            attribute.name == "target"
+            and isinstance(attribute.value, EnumValue)
+            and attribute.value.literal == REACT
+            for attribute in application.attributes
+        ):
+            host = site_domain(application, context.environment)
+        return hcl_map(
+            [
+                (
+                    "name",
+                    hcl.string(
+                        names.aws_name(product, environment, application.name, "cognito_app_client")
                     ),
-                    ("callback_urls", f"[{hcl.string(f'https://{domain}{CALLBACK_PATH}')}]"),
-                    ("logout_urls", f"[{hcl.string(f'https://{domain}{LOGOUT_PATH}')}]"),
-                ]
-            ),
+                ),
+                ("callback_urls", f"[{hcl.string(f'https://{host}{CALLBACK_PATH}')}]"),
+                ("logout_urls", f"[{hcl.string(f'https://{host}{LOGOUT_PATH}')}]"),
+            ]
         )
+
+    clients = [
+        (names.hcl_address(application.name), client(application))
         for application in directory_applications(context.ir, element)
     ]
     groups = ", ".join(hcl.string(value) for value in role_values(context.ir))
@@ -713,7 +738,7 @@ def _container_service_arguments(
         "container_port": str(port),
         "cpu": str(_integer(attributes, "cpu", DEFAULT_CPU)),
         "desired_count": str(desired),
-        "domain_name": hcl.string(f"{safe_names.kebab_case(application.name)}.{domain}"),
+        "domain_name": hcl.string(site_domain(application, context.environment)),
         "ecr_account_id": hcl.string(account),
         "ecr_region": hcl.string(region),
         "ecr_repository": hcl.string(names.ecr_repository(product, application.name)),
@@ -790,6 +815,95 @@ def _container_service_variables(
     )
 
 
+# trace: PRD-IAC-021
+def site_application(ir: Ir, element: Element) -> Element:
+    """Give the one `react` application that is allocated to a static site."""
+    applications = [
+        item for item in _sources(ir, "allocate", element.identity) if item.kind == "Application"
+    ]
+    if len(applications) != 1:
+        raise ToolchainError(
+            f'The static site "{element.identity}" must have one allocated application, '
+            f"not {len(applications)}."
+        )
+    application = applications[0]
+    target = _target(application)
+    if target != REACT:
+        raise ToolchainError(
+            f'The static site "{element.identity}" cannot serve the target "{target}".'
+        )
+    return application
+
+
+def _environment_account(environment: Element) -> str:
+    for attribute in environment.attributes:
+        if attribute.name == "accountId" and isinstance(attribute.value, StringValue):
+            return attribute.value.value
+    raise ToolchainError(
+        f'The environment "{environment.identity}" has no text value for the attribute "accountId".'
+    )
+
+
+US_EAST_1: Final = "aws.us_east_1"
+"""The AWS provider of the Region `us-east-1`. CloudFront accepts only ACM
+certificates of this Region (PRD-IAC-021)."""
+
+
+# trace: PRD-IAC-008, PRD-IAC-021, PRD-IAC-035, PRD-IAC-037
+def _static_site_arguments(
+    element: Element, attributes: Mapping[str, Attribute], context: CallContext
+) -> dict[str, str]:
+    """Give the arguments of a static site call.
+
+    The site domain is `<application>.<environment domain>`. The public
+    Route 53 hosted zone of the environment domain must exist. The call
+    gives the module the AWS provider of `us-east-1` for the certificate.
+    """
+    product, environment = context.product, context.environment_name
+    application = site_application(context.ir, element)
+    account = _environment_account(context.environment)
+    return {
+        "application": hcl.string(names.tag_value(application.identity)),
+        "bucket_name": hcl.string(names.site_bucket(product, environment, element.name, account)),
+        "domain_name": hcl.string(site_domain(application, context.environment)),
+        "element": hcl.string(names.tag_value(element.identity)),
+        "origin_access_control_name": hcl.string(
+            names.aws_name(product, environment, element.name, "cloudfront_origin_access_control")
+        ),
+        "providers": hcl_map([("aws", "aws"), (US_EAST_1, US_EAST_1)]),
+        "zone_name": hcl.string(_environment_domain(context.environment)),
+    }
+
+
+SITE_OUTPUTS: Final = (
+    ("bucket_name", "The name of the S3 bucket"),
+    ("distribution_id", "The ID of the CloudFront distribution"),
+    ("url", "The URL of the site"),
+)
+"""The root module outputs of each static site, without the prefix `<address>_`."""
+
+
+# trace: PRD-IAC-010
+def _static_site_outputs(address: str) -> tuple[RootOutput, ...]:
+    return tuple(
+        RootOutput(
+            f"{address}_{name}",
+            f"{description} of module.{address}.",
+            f"module.{address}.{name}",
+        )
+        for name, description in SITE_OUTPUTS
+    )
+
+
+# trace: PRD-IAC-021, PRD-IAC-034
+def _static_site_template_data() -> Mapping[str, object]:
+    """Give the TLS policy of the version baseline."""
+    pin = load_baseline().get("cloudfront-tls-policy")
+    if pin is None or pin.value is None:
+        raise ToolchainError('The version baseline has no value for "cloudfront-tls-policy".')
+    return {"tls_policy": pin.value}
+
+
 MODULES: Final = (
     LocalModule("Network", "AwsVpc", "network", _network_arguments, _network_outputs),
     LocalModule(
@@ -818,6 +932,14 @@ MODULES: Final = (
         _container_service_outputs,
         _container_service_template_data,
         _container_service_variables,
+    ),
+    LocalModule(
+        "StaticSite",
+        "AwsStaticSite",
+        "static-site",
+        _static_site_arguments,
+        _static_site_outputs,
+        _static_site_template_data,
     ),
 )
 """The local modules of this toolchain version, in the order of their calls."""

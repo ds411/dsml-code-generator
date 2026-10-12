@@ -1,0 +1,220 @@
+{#- The resources of the local module "static-site" (PRD-IAC-021,
+    PRD-IAC-030, PRD-IAC-031, PRD-IAC-033, PRD-IAC-034). -#}
+{% include "common/header.j2" %}
+
+# The caller gives the AWS provider of the Region us-east-1 as
+# aws.us_east_1. CloudFront accepts only ACM certificates of this Region.
+terraform {
+  required_providers {
+    aws = {
+      source                = "hashicorp/aws"
+      configuration_aliases = [aws.us_east_1]
+    }
+  }
+}
+
+locals {
+  origin_id = "s3"
+
+  tags = {
+    "dsml:application" = var.application
+    "dsml:element"     = var.element
+  }
+}
+
+data "aws_route53_zone" "main" {
+  name         = var.zone_name
+  private_zone = false
+}
+
+# The bucket is private. Only the CloudFront distribution can read the
+# objects (PRD-IAC-031).
+resource "aws_s3_bucket" "site" {
+  bucket = var.bucket_name
+  tags   = local.tags
+}
+
+resource "aws_s3_bucket_ownership_controls" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# SSE-S3 is encryption at rest (PRD-IAC-030). CloudFront with origin access
+# control reads SSE-S3 objects with no KMS key policy.
+resource "aws_s3_bucket_server_side_encryption_configuration" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+data "aws_iam_policy_document" "site" {
+  statement {
+    sid       = "CloudFrontRead"
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.site.arn}/*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.site.arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "site" {
+  bucket = aws_s3_bucket.site.id
+  policy = data.aws_iam_policy_document.site.json
+
+  depends_on = [aws_s3_bucket_public_access_block.site]
+}
+
+# The certificate of the site domain, in the Region us-east-1, with DNS
+# validation.
+resource "aws_acm_certificate" "site" {
+  provider = aws.us_east_1
+
+  domain_name       = var.domain_name
+  validation_method = "DNS"
+  tags              = local.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_route53_record" "certificate_validation" {
+  for_each = {
+    for option in aws_acm_certificate.site.domain_validation_options : option.domain_name => option
+  }
+
+  zone_id         = data.aws_route53_zone.main.zone_id
+  name            = each.value.resource_record_name
+  type            = each.value.resource_record_type
+  records         = [each.value.resource_record_value]
+  ttl             = 300
+  allow_overwrite = true
+}
+
+resource "aws_acm_certificate_validation" "site" {
+  provider = aws.us_east_1
+
+  certificate_arn         = aws_acm_certificate.site.arn
+  validation_record_fqdns = [for record in aws_route53_record.certificate_validation : record.fqdn]
+}
+
+resource "aws_cloudfront_origin_access_control" "site" {
+  name                              = var.origin_access_control_name
+  description                       = "The access of the CloudFront distribution to the S3 bucket."
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
+data "aws_cloudfront_response_headers_policy" "security_headers" {
+  name = "Managed-SecurityHeadersPolicy"
+}
+
+# Only CloudFront accepts traffic from the internet (PRD-IAC-031). The viewer
+# connections use the TLS policy of the version baseline (PRD-IAC-034).
+# The bucket gives 403 for an object that does not exist, because the
+# distribution cannot list the bucket. Thus CloudFront returns /index.html
+# with HTTP 200 for 403 and 404. The application then shows the route.
+resource "aws_cloudfront_distribution" "site" {
+  enabled             = true
+  is_ipv6_enabled     = true
+  http_version        = "http2and3"
+  comment             = var.domain_name
+  aliases             = [var.domain_name]
+  default_root_object = "index.html"
+  price_class         = "PriceClass_100"
+  tags                = local.tags
+
+  origin {
+    origin_id                = local.origin_id
+    domain_name              = aws_s3_bucket.site.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.site.id
+  }
+
+  default_cache_behavior {
+    target_origin_id           = local.origin_id
+    viewer_protocol_policy     = "redirect-to-https"
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    compress                   = true
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
+  }
+
+  custom_error_response {
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 0
+  }
+
+  custom_error_response {
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 0
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    acm_certificate_arn      = aws_acm_certificate_validation.site.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = {{ tls_policy | hcl_string }}
+  }
+}
+
+resource "aws_route53_record" "site" {
+  for_each = toset(["A", "AAAA"])
+
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = var.domain_name
+  type    = each.key
+
+  alias {
+    name                   = aws_cloudfront_distribution.site.domain_name
+    zone_id                = aws_cloudfront_distribution.site.hosted_zone_id
+    evaluate_target_health = false
+  }
+}

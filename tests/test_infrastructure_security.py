@@ -1,7 +1,8 @@
 """Tests of the security baseline of the generated infrastructure (story #86).
 
-The tests read the golden HCL of the two reference models in
-`tests/golden/infrastructure/`. The golden-file tests make sure that the
+The tests read the golden HCL of the reference models and of the test model
+in `tests/golden/infrastructure/`. Story #162 added the order portal with the
+static site. The golden-file tests make sure that the
 generator writes the same files. The toolchain CI also runs Checkov on these
 files (PRD-IAC-040).
 """
@@ -12,13 +13,16 @@ from pathlib import Path
 
 import pytest
 
+from dsml.versions import load_baseline
+
 ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "tests" / "golden" / "infrastructure"
-MODELS = ("order-service", "shop")
+MODELS = ("order-portal", "order-service", "shop")
 OPEN_CIDRS = ('"0.0.0.0/0"', '"::/0"')
 
 _START = re.compile(r'^(resource|data) "([a-z0-9_]+)" "([a-z0-9_]+)" \{$')
 _LIST = re.compile(r"^\s*(?:actions|not_actions) = \[\n(.*?)\n\s*\]", re.MULTILINE | re.DOTALL)
+_ONE_LINE_LIST = re.compile(r"^\s*(?:actions|not_actions)\s*= \[(.+)\]$", re.MULTILINE)
 _SETTING = r"^\s*{name}\s*=\s*{value}$"
 
 
@@ -87,6 +91,7 @@ def _for_bucket(blocks: list[Block], kind: str, bucket: Block) -> list[Block]:
 def test_the_golden_output_has_the_resources_that_store_data() -> None:
     kinds = {block.type for model in MODELS for block in _read(model)}
     for kind in (
+        "aws_cloudfront_distribution",
         "aws_db_instance",
         "aws_ecr_repository",
         "aws_s3_bucket",
@@ -197,7 +202,7 @@ def test_no_iam_action_is_a_wildcard(blocks: list[Block]) -> None:
     actions = [
         action
         for document in documents
-        for actions in _LIST.findall(document.body)
+        for actions in (*_LIST.findall(document.body), *_ONE_LINE_LIST.findall(document.body))
         for action in re.findall(r'"([^"]*)"', actions)
     ]
     assert actions
@@ -206,3 +211,24 @@ def test_no_iam_action_is_a_wildcard(blocks: list[Block]) -> None:
         assert action != "*", action
         assert service and name, action
         assert not name.startswith("*"), action
+
+
+# trace: PRD-IAC-031, PRD-IAC-034
+def test_each_distribution_accepts_only_https_with_the_baseline_tls_policy(
+    blocks: list[Block],
+) -> None:
+    policy = load_baseline()["cloudfront-tls-policy"].value
+    for distribution in _of(blocks, "aws_cloudfront_distribution"):
+        assert distribution.has("viewer_protocol_policy", '"redirect-to-https"'), distribution.path
+        assert distribution.has("minimum_protocol_version", f'"{policy}"'), distribution.path
+        assert distribution.has("ssl_support_method", '"sni-only"'), distribution.path
+
+
+# trace: PRD-IAC-031
+def test_each_distribution_reads_its_bucket_with_origin_access_control(
+    blocks: list[Block],
+) -> None:
+    for distribution in _of(blocks, "aws_cloudfront_distribution"):
+        control = distribution.value("origin_access_control_id")
+        assert control is not None, distribution.path
+        assert control.startswith("aws_cloudfront_origin_access_control."), distribution.path

@@ -1,0 +1,38 @@
+{#- The variables of the local module "static-site" (PRD-IAC-021). -#}
+{% include "common/header.j2" %}
+
+variable "element" {
+  description = "The value of the tag dsml:element: the identity of the static site element."
+  type        = string
+  nullable    = false
+}
+
+variable "application" {
+  description = "The value of the tag dsml:application: the identity of the application of the site."
+  type        = string
+  nullable    = false
+}
+
+variable "bucket_name" {
+  description = "The name of the S3 bucket of the static files. The name ends with the account ID."
+  type        = string
+  nullable    = false
+}
+
+variable "origin_access_control_name" {
+  description = "The name of the CloudFront origin access control, in the form <product>-<environment>-<element>."
+  type        = string
+  nullable    = false
+}
+
+variable "domain_name" {
+  description = "The site domain. The certificate, the distribution and the Route 53 records use it."
+  type        = string
+  nullable    = false
+}
+
+variable "zone_name" {
+  description = "The name of the public Route 53 hosted zone of the environment domain. The zone must exist."
+  type        = string
+  nullable    = false
+}

@@ -28,6 +28,7 @@ TAG_VALUE_LIMIT: Final = 256
 
 NAME_LIMITS: Final = {
     "alb": 32,
+    "cloudfront_origin_access_control": 64,
     "cloudwatch_log_group": 512,
     "cognito_app_client": 128,
     "cognito_domain": 63,
@@ -130,6 +131,18 @@ def state_bucket(product: str, environment: str, account_id: str) -> str:
     """
     end = f"-{account_id}"
     start = "-".join(names.kebab_case(part) for part in (product, environment, STATE))
+    return shorten(start, name_limit("s3_bucket") - len(end)) + end
+
+
+# trace: PRD-IAC-008, PRD-IAC-021
+def site_bucket(product: str, environment: str, element: str, account_id: str) -> str:
+    """Give the name of the S3 bucket of a static site.
+
+    S3 bucket names are global, thus the name ends with the account ID. The
+    start of the name gets a hash if the full name is too long.
+    """
+    end = f"-{account_id}"
+    start = "-".join(names.kebab_case(part) for part in (product, environment, element))
     return shorten(start, name_limit("s3_bucket") - len(end)) + end
 
 

@@ -16,6 +16,9 @@ golden files of the test model `tests/models/ir/solution-layers.sysml`
 (story #79). This model is not valid for `dsml generate`, so the script calls
 the generator directly. These golden files have the generated files and the
 trace manifest, but not the manifest `.dsml/generated.json`.
+
+Story #162 added the phase 2 reference model "order portal". Its golden
+files have the static site module.
 """
 
 import os
@@ -34,6 +37,7 @@ ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "tests" / "golden" / "infrastructure"
 REFERENCE_MODELS: dict[str, Path] = {
     "order-service": ROOT / "docs" / "model" / "examples" / "order-service.sysml",
+    "order-portal": ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml",
 }
 """The model file of each reference model."""
 

@@ -16,7 +16,8 @@ For each environment, the folder `envs/<environment>/` gets these files
   file also has the OpenTofu state encryption, and a comment that names
   OpenTofu as the only tool that accepts it (PRD-IAC-004).
 - `providers.gen.tf`: the AWS provider with `allowed_account_ids` and
-  `default_tags` (PRD-IAC-024, PRD-IAC-035).
+  `default_tags` (PRD-IAC-024, PRD-IAC-035). A root module with a static
+  site also gets a second AWS provider for `us-east-1` (PRD-IAC-021).
 - `main.gen.tf`: the values of the environment, and one call of a local
   module for each logical element (PRD-IAC-023).
 - `variables.gen.tf`: the variable `model_commit` (PRD-IAC-036) and the
@@ -61,6 +62,12 @@ CALL_FILES: Final = frozenset({"main", "outputs"})
 
 TEMPLATE_FOLDER: Final = "infrastructure/envs"
 """The folder of the templates of the environment root modules."""
+
+US_EAST_1_FOLDERS: Final = frozenset({"static-site"})
+"""The local modules that need the second AWS provider of the Region `us-east-1`.
+
+CloudFront accepts only ACM certificates of `us-east-1` (PRD-IAC-021).
+"""
 
 
 # trace: PRD-IAC-024, PRD-DSML-041
@@ -172,7 +179,7 @@ class InfrastructureGenerator:
         files.extend(_account_files(self._engine, ir, configuration, PurePosixPath(output)))
         return files
 
-    # trace: PRD-IAC-001, PRD-IAC-023, PRD-TRACE-005, PRD-TRACE-007
+    # trace: PRD-IAC-001, PRD-IAC-021, PRD-IAC-023, PRD-TRACE-005, PRD-TRACE-007
     def _root_files(
         self,
         root: EnvironmentRoot,
@@ -188,6 +195,7 @@ class InfrastructureGenerator:
         """
         data = template_data(root, configuration)
         data["calls"] = calls
+        data["us_east_1_provider"] = any(call.folder in US_EAST_1_FOLDERS for call in calls)
         call_elements = tuple(sorted({item for call in calls for item in call.identities}))
         by_address: dict[str, tuple[str, ...]] = {}
         for call in calls:
@@ -246,13 +254,26 @@ class InfrastructureGenerator:
         return files
 
 
-# trace: PRD-IAC-001, PRD-IAC-022, PRD-IAC-026
+# trace: PRD-IAC-001, PRD-IAC-021, PRD-IAC-022, PRD-IAC-026
 def _account_files(
     engine: TemplateEngine, ir: Ir, configuration: Configuration, output: PurePosixPath
 ) -> list[OutputFile]:
     """Give the files of the tooling root module and of the bootstrap root modules."""
+    sites = [element for element in ir.elements if element.kind == "StaticSite"]
     accounts = [
-        Account(root.element, root.name, root.product, root.account_id, root.region)
+        Account(
+            root.element,
+            root.name,
+            root.product,
+            root.account_id,
+            root.region,
+            tuple(
+                sorted(
+                    names.site_bucket(root.product, root.name, site.name, root.account_id)
+                    for site in sites
+                )
+            ),
+        )
         for root in environment_roots(ir)
     ]
     return account_files(

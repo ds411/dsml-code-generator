@@ -185,6 +185,11 @@ version = "6.57.1"
 [alb-tls-policy]
 value = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 
+# The minimum TLS version of the viewer connections of each CloudFront
+# distribution of a static site (PRD-IAC-034, story #162).
+[cloudfront-tls-policy]
+value = "TLSv1.2_2021"
+
 # The IaC security scanner (PRD-IAC-040). "version": the newest release on
 # 11 October 2026.
 [checkov]

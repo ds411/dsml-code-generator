@@ -364,6 +364,99 @@ _DNS_ACTIONS: Final = ("route53:ChangeResourceRecordSets", "route53:ChangeTagsFo
 """The Route 53 actions of the deploy role on the hosted zones."""
 
 
+SITE_REGION: Final = "us-east-1"
+"""The Region of the certificates of the static sites (PRD-IAC-021)."""
+
+_SITE_READ_ACTIONS: Final = (
+    "cloudfront:GetCachePolicy",
+    "cloudfront:GetResponseHeadersPolicy",
+    "cloudfront:ListCachePolicies",
+    "cloudfront:ListResponseHeadersPolicies",
+)
+"""The read actions of the deploy role on the CloudFront policies of AWS."""
+
+_SITE_CERTIFICATE_ACTIONS: Final = (
+    "acm:AddTagsToCertificate",
+    "acm:DeleteCertificate",
+    "acm:RemoveTagsFromCertificate",
+)
+"""The actions of the deploy role on the certificates of the static sites."""
+
+_SITE_CLOUDFRONT_ACTIONS: Final = (
+    "cloudfront:CreateDistribution",
+    "cloudfront:CreateDistributionWithTags",
+    "cloudfront:CreateInvalidation",
+    "cloudfront:CreateOriginAccessControl",
+    "cloudfront:DeleteDistribution",
+    "cloudfront:DeleteOriginAccessControl",
+    "cloudfront:GetDistribution",
+    "cloudfront:GetDistributionConfig",
+    "cloudfront:GetInvalidation",
+    "cloudfront:GetOriginAccessControl",
+    "cloudfront:GetOriginAccessControlConfig",
+    "cloudfront:ListTagsForResource",
+    "cloudfront:TagResource",
+    "cloudfront:UntagResource",
+    "cloudfront:UpdateDistribution",
+    "cloudfront:UpdateOriginAccessControl",
+)
+"""The actions of the deploy role on the CloudFront resources of the account."""
+
+_SITE_BUCKET_ACTIONS: Final = (
+    "s3:CreateBucket",
+    "s3:DeleteBucket",
+    "s3:DeleteBucketOwnershipControls",
+    "s3:DeleteBucketPolicy",
+    "s3:DeleteObject",
+    "s3:DeleteObjectVersion",
+    "s3:Get*",
+    "s3:List*",
+    "s3:PutBucket*",
+    "s3:PutEncryptionConfiguration",
+    "s3:PutObject",
+)
+"""The actions of the deploy role on the buckets of the static sites and on their objects.
+
+The objects are the static files. They are not secret.
+"""
+
+
+# trace: PRD-IAC-021, PRD-IAC-027, PRD-IAC-033
+def _site_statements(account_id: str, site_buckets: tuple[str, ...]) -> tuple[Statement, ...]:
+    """Give the statements of the deploy role for the static sites, or none with no site.
+
+    The bucket statement applies only to the buckets of the static sites,
+    not to the state bucket.
+    """
+    if not site_buckets:
+        return ()
+    buckets = tuple(f"arn:aws:s3:::{bucket}" for bucket in site_buckets)
+    return (
+        Statement(sid="SiteRead", actions=_SITE_READ_ACTIONS, resources=(literal("*"),)),
+        Statement(
+            sid="SiteCertificateRequest",
+            actions=("acm:RequestCertificate",),
+            resources=(literal("*"),),
+            conditions=(Condition("StringEquals", "aws:RequestedRegion", (literal(SITE_REGION),)),),
+        ),
+        Statement(
+            sid="SiteCertificates",
+            actions=_SITE_CERTIFICATE_ACTIONS,
+            resources=_arns((f"arn:aws:acm:{SITE_REGION}:{account_id}:*",)),
+        ),
+        Statement(
+            sid="SiteDistributions",
+            actions=_SITE_CLOUDFRONT_ACTIONS,
+            resources=_arns((f"arn:aws:cloudfront::{account_id}:*",)),
+        ),
+        Statement(
+            sid="SiteBuckets",
+            actions=_SITE_BUCKET_ACTIONS,
+            resources=_arns(sorted((*buckets, *(f"{bucket}/*" for bucket in buckets)))),
+        ),
+    )
+
+
 # trace: PRD-IAC-027, PRD-IAC-033
 def deploy_policy(
     product: str,
@@ -372,13 +465,16 @@ def deploy_policy(
     region: str,
     ci_roles: Iterable[str],
     state_encryption: bool,
+    site_buckets: Iterable[str] = (),
 ) -> Policy:
     """Give the inline policy of the deploy role of an environment account.
 
     The policy permits the changes of the environment root module. The IAM
     actions apply only to the roles and policies with the name prefix of the
     environment. A deny statement keeps the deploy role from a change of the
-    CI roles.
+    CI roles. With the buckets of one or more static sites, the policy also
+    permits the changes of the static sites and the upload of the static
+    files (PRD-IAC-021).
     """
     prefix = f"{product}-{environment}-"
     roles = (
@@ -435,6 +531,7 @@ def deploy_policy(
                 resources=(f'"${{aws_s3_bucket.state.arn}}/{state}/*"',),
             ),
             *_state_key_statement(state_encryption),
+            *_site_statements(account_id, tuple(sorted(site_buckets))),
         ),
     )
 
