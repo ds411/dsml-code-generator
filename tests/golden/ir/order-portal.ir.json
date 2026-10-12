@@ -1,0 +1,2623 @@
+{
+  "constraintResults": [
+    {
+      "environment": "OrderPortal::dev",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 48
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    },
+    {
+      "environment": "OrderPortal::prod",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 48
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    },
+    {
+      "environment": "OrderPortal::staging",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 48
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    }
+  ],
+  "elements": [
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 16
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 17
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 15
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Track orders"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The shop owner must see the status of each order.",
+      "identity": "N-001",
+      "kind": "Need",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 13
+      },
+      "multiplicity": null,
+      "name": "trackOrders",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::trackOrders",
+      "shortName": "N-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 25
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 26
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 24
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Manage orders in a browser"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "A clerk must see and place orders in a web browser.",
+      "identity": "N-002",
+      "kind": "Need",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 22
+      },
+      "multiplicity": null,
+      "name": "manageOrdersInBrowser",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::manageOrdersInBrowser",
+      "shortName": "N-002",
+      "types": []
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 20,
+                "file": "docs/model/examples/order-portal/order-portal.sysml",
+                "line": 7
+              },
+              "name": "major",
+              "value": {
+                "type": "integer",
+                "value": 1
+              }
+            },
+            {
+              "location": {
+                "column": 31,
+                "file": "docs/model/examples/order-portal/order-portal.sysml",
+                "line": 7
+              },
+              "name": "minor",
+              "value": {
+                "type": "integer",
+                "value": 1
+              }
+            }
+          ],
+          "location": {
+            "column": 5,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 7
+          },
+          "name": "DsmlVersion"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal",
+      "kind": "Package",
+      "location": {
+        "column": 1,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 4
+      },
+      "multiplicity": null,
+      "name": "OrderPortal",
+      "owner": null,
+      "qualifiedName": "OrderPortal",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::AppRoles",
+      "kind": "Roles",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 70
+      },
+      "multiplicity": null,
+      "name": "AppRoles",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::AppRoles",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 90
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "post",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 91
+          },
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders/{orderId}/cancel"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::CancelOrder",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 87
+      },
+      "multiplicity": null,
+      "name": "CancelOrder",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::CancelOrder",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "out",
+      "doc": null,
+      "identity": "OrderPortal::CancelOrder::order",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 89
+      },
+      "multiplicity": null,
+      "name": "order",
+      "owner": "OrderPortal::CancelOrder",
+      "qualifiedName": "OrderPortal::CancelOrder::order",
+      "shortName": null,
+      "types": [
+        "OrderPortal::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "in",
+      "doc": null,
+      "identity": "OrderPortal::CancelOrder::orderId",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 88
+      },
+      "multiplicity": null,
+      "name": "orderId",
+      "owner": "OrderPortal::CancelOrder",
+      "qualifiedName": "OrderPortal::CancelOrder::orderId",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::Clerk",
+      "kind": "Stakeholder",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 11
+      },
+      "multiplicity": null,
+      "name": "Clerk",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::Clerk",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::Order",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 73
+      },
+      "multiplicity": null,
+      "name": "Order",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::Order",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [],
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 74
+          },
+          "name": "Key"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::Order::id",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 74
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OrderPortal::Order",
+      "qualifiedName": "OrderPortal::Order::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 56,
+                "file": "docs/model/examples/order-portal/order-portal.sysml",
+                "line": 77
+              },
+              "name": "maxLength",
+              "value": {
+                "type": "integer",
+                "value": 500
+              }
+            }
+          ],
+          "location": {
+            "column": 42,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 77
+          },
+          "name": "FieldRules"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::Order::note",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 77
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OrderPortal::Order",
+      "qualifiedName": "OrderPortal::Order::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::Order::status",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 75
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OrderPortal::Order",
+      "qualifiedName": "OrderPortal::Order::status",
+      "shortName": null,
+      "types": [
+        "OrderPortal::OrderStatus"
+      ]
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 55,
+                "file": "docs/model/examples/order-portal/order-portal.sysml",
+                "line": 76
+              },
+              "name": "minValue",
+              "value": {
+                "type": "integer",
+                "value": 0
+              }
+            }
+          ],
+          "location": {
+            "column": 41,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 76
+          },
+          "name": "FieldRules"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::Order::total",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 76
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OrderPortal::Order",
+      "qualifiedName": "OrderPortal::Order::total",
+      "shortName": null,
+      "types": [
+        "DSML::Decimal"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::OrderStatus",
+                "literal": "open",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::OrderStatus",
+                "literal": "shipped",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::OrderStatus",
+                "literal": "cancelled",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::OrderStatus",
+      "kind": "Enumeration",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 71
+      },
+      "multiplicity": null,
+      "name": "OrderStatus",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::OrderStatus",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 83
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "post",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 84
+          },
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders/place"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::PlaceOrder",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 80
+      },
+      "multiplicity": null,
+      "name": "PlaceOrder",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::PlaceOrder",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "out",
+      "doc": null,
+      "identity": "OrderPortal::PlaceOrder::order",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 82
+      },
+      "multiplicity": null,
+      "name": "order",
+      "owner": "OrderPortal::PlaceOrder",
+      "qualifiedName": "OrderPortal::PlaceOrder::order",
+      "shortName": null,
+      "types": [
+        "OrderPortal::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "in",
+      "doc": null,
+      "identity": "OrderPortal::PlaceOrder::total",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 81
+      },
+      "multiplicity": null,
+      "name": "total",
+      "owner": "OrderPortal::PlaceOrder",
+      "qualifiedName": "OrderPortal::PlaceOrder::total",
+      "shortName": null,
+      "types": [
+        "DSML::Decimal"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::ShopOwner",
+      "kind": "Stakeholder",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 10
+      },
+      "multiplicity": null,
+      "name": "ShopOwner",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::ShopOwner",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::apiService",
+      "kind": "ContainerService",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 143
+      },
+      "multiplicity": null,
+      "name": "apiService",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::apiService",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 41,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 155
+          },
+          "name": "cpu",
+          "value": {
+            "type": "integer",
+            "value": 512
+          }
+        },
+        {
+          "location": {
+            "column": 91,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 155
+          },
+          "name": "desiredCount",
+          "value": {
+            "type": "integer",
+            "value": 1
+          }
+        },
+        {
+          "location": {
+            "column": 64,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 155
+          },
+          "name": "memory",
+          "value": {
+            "type": "integer",
+            "value": 1024
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::apiServiceAws",
+      "kind": "AwsEcsService",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 155
+      },
+      "multiplicity": null,
+      "name": "apiServiceAws",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::apiServiceAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 29,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 166
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "222222222222"
+          }
+        },
+        {
+          "location": {
+            "column": 87,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 166
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "portal.dev.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 61,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 166
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::dev",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 166
+      },
+      "multiplicity": null,
+      "name": "dev",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::dev",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::network",
+      "kind": "Network",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 142
+      },
+      "multiplicity": null,
+      "name": "network",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::network",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::networkAws",
+      "kind": "AwsVpc",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 154
+      },
+      "multiplicity": null,
+      "name": "networkAws",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::networkAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 95
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "fastapi",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::orderApi",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 94
+      },
+      "multiplicity": null,
+      "name": "orderApi",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::orderApi",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 104
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::orderApi::cancelOrder",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 103
+      },
+      "multiplicity": null,
+      "name": "cancelOrder",
+      "owner": "OrderPortal::orderApi",
+      "qualifiedName": "OrderPortal::orderApi::cancelOrder",
+      "shortName": null,
+      "types": [
+        "OrderPortal::CancelOrder"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 98
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 97
+          },
+          "name": "crud",
+          "value": {
+            "items": [
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "create",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "read",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "list",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "crudDefaults",
+          "value": {
+            "items": [
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "create",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "post",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "read",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}/{id}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "list",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}"
+                  }
+                ],
+                "type": "list"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::orderApi::orders",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 96
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": null
+      },
+      "name": "orders",
+      "owner": "OrderPortal::orderApi",
+      "qualifiedName": "OrderPortal::orderApi::orders",
+      "shortName": null,
+      "types": [
+        "OrderPortal::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 101
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::orderApi::placeOrder",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 100
+      },
+      "multiplicity": null,
+      "name": "placeOrder",
+      "owner": "OrderPortal::orderApi",
+      "qualifiedName": "OrderPortal::orderApi::placeOrder",
+      "shortName": null,
+      "types": [
+        "OrderPortal::PlaceOrder"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::orderDb",
+      "kind": "RelationalDatabase",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 144
+      },
+      "multiplicity": null,
+      "name": "orderDb",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::orderDb",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 39,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 156
+          },
+          "name": "instanceClass",
+          "value": {
+            "type": "string",
+            "value": "db.t4g.micro"
+          }
+        },
+        {
+          "location": {
+            "column": 83,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 156
+          },
+          "name": "multiAz",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::orderDbAws",
+      "kind": "AwsRdsPostgres",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 156
+      },
+      "multiplicity": null,
+      "name": "orderDbAws",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::orderDbAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 135
+          },
+          "name": "navigation",
+          "value": {
+            "items": [
+              {
+                "target": "OrderPortal::orderPortal::orderList",
+                "type": "reference"
+              },
+              {
+                "target": "OrderPortal::orderPortal::placeOrderForm",
+                "type": "reference"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 110
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "react",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::orderPortal",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 109
+      },
+      "multiplicity": null,
+      "name": "orderPortal",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::orderPortal",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 133
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 131
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "form",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 132
+          },
+          "name": "operation",
+          "value": {
+            "target": "OrderPortal::CancelOrder",
+            "type": "reference"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The form that cancels an order.",
+      "identity": "OrderPortal::orderPortal::cancelOrderForm",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 129
+      },
+      "multiplicity": null,
+      "name": "cancelOrderForm",
+      "owner": "OrderPortal::orderPortal",
+      "qualifiedName": "OrderPortal::orderPortal::cancelOrderForm",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 121
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 120
+          },
+          "name": "entity",
+          "value": {
+            "target": "OrderPortal::Order",
+            "type": "reference"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 119
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "detail",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The details of one order.",
+      "identity": "OrderPortal::orderPortal::orderDetail",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 117
+      },
+      "multiplicity": null,
+      "name": "orderDetail",
+      "owner": "OrderPortal::orderPortal",
+      "qualifiedName": "OrderPortal::orderPortal::orderDetail",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 115
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 114
+          },
+          "name": "entity",
+          "value": {
+            "target": "OrderPortal::Order",
+            "type": "reference"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 113
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "list",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The list of the orders.",
+      "identity": "OrderPortal::orderPortal::orderList",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 111
+      },
+      "multiplicity": null,
+      "name": "orderList",
+      "owner": "OrderPortal::orderPortal",
+      "qualifiedName": "OrderPortal::orderPortal::orderList",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 127
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderPortal::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 125
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "form",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 126
+          },
+          "name": "operation",
+          "value": {
+            "target": "OrderPortal::PlaceOrder",
+            "type": "reference"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The form that places an order.",
+      "identity": "OrderPortal::orderPortal::placeOrderForm",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 123
+      },
+      "multiplicity": null,
+      "name": "placeOrderForm",
+      "owner": "OrderPortal::orderPortal",
+      "qualifiedName": "OrderPortal::orderPortal::placeOrderForm",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::portalSite",
+      "kind": "StaticSite",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 146
+      },
+      "multiplicity": null,
+      "name": "portalSite",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::portalSite",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::portalSiteAws",
+      "kind": "AwsStaticSite",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 158
+      },
+      "multiplicity": null,
+      "name": "portalSiteAws",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::portalSiteAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 169
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "444444444444"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 171
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "portal.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 170
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::prod",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 168
+      },
+      "multiplicity": null,
+      "name": "prod",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::prod",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 58,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 172
+          },
+          "name": "desiredCount",
+          "value": {
+            "type": "integer",
+            "value": 3
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::prod::apiServiceProd",
+      "kind": "Override",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 172
+      },
+      "multiplicity": null,
+      "name": "apiServiceProd",
+      "owner": "OrderPortal::prod",
+      "qualifiedName": "OrderPortal::prod::apiServiceProd",
+      "shortName": null,
+      "types": [
+        "OrderPortal::apiServiceAws"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 52,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 173
+          },
+          "name": "multiAz",
+          "value": {
+            "type": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::prod::orderDbProd",
+      "kind": "Override",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 173
+      },
+      "multiplicity": null,
+      "name": "orderDbProd",
+      "owner": "OrderPortal::prod",
+      "qualifiedName": "OrderPortal::prod::orderDbProd",
+      "shortName": null,
+      "types": [
+        "OrderPortal::orderDbAws"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 33,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 167
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "333333333333"
+          }
+        },
+        {
+          "location": {
+            "column": 91,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 167
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "portal.staging.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 65,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 167
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::staging",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 167
+      },
+      "multiplicity": null,
+      "name": "staging",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::staging",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 36,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 165
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "111111111111"
+          }
+        },
+        {
+          "location": {
+            "column": 68,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 165
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::tooling",
+      "kind": "ToolingAccount",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 165
+      },
+      "multiplicity": null,
+      "name": "tooling",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::tooling",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::users",
+      "kind": "UserDirectory",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 145
+      },
+      "multiplicity": null,
+      "name": "users",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::users",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderPortal::usersAws",
+      "kind": "AwsCognito",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 157
+      },
+      "multiplicity": null,
+      "name": "usersAws",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::usersAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 35
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 36
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 37
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 34
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Get order status"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The API must return the status of an order.",
+      "identity": "R-001",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 32
+      },
+      "multiplicity": null,
+      "name": "getOrderStatus",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::getOrderStatus",
+      "shortName": "R-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 44
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 45
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 46
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 43
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order data in two zones"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "In prod, the order database must continue to operate after the loss of one availability zone.",
+      "identity": "R-002",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 41
+      },
+      "multiplicity": null,
+      "name": "orderDataSafe",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::orderDataSafe",
+      "shortName": "R-002",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 54
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 55
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 56
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 53
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Show orders in the portal"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The portal must show the list of the orders and the details of one order.",
+      "identity": "R-003",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 51
+      },
+      "multiplicity": null,
+      "name": "showOrdersInPortal",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::showOrdersInPortal",
+      "shortName": "R-003",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 63
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 64
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 65
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 62
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Place an order in the portal"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The portal must have a form that places an order.",
+      "identity": "R-004",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 60
+      },
+      "multiplicity": null,
+      "name": "placeOrderInPortal",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::placeOrderInPortal",
+      "shortName": "R-004",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 180
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "test",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 181
+          },
+          "name": "testFiles",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "services/order-api/app/features/order/read_order/test_endpoint.py"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 179
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order status API test"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "V-001",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 178
+      },
+      "multiplicity": null,
+      "name": "orderStatusTest",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::orderStatusTest",
+      "shortName": "V-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 187
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "analysis",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 186
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order database in two zones analysis"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Evidence: the IR adapter evaluates the formal constraint of R-002 on the prod override orderDbProd. The result is true.",
+      "identity": "V-002",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 184
+      },
+      "multiplicity": null,
+      "name": "orderDataSafeAnalysis",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::orderDataSafeAnalysis",
+      "shortName": "V-002",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 192
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "test",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 193
+          },
+          "name": "testFiles",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "apps/order-portal/src/pages/order-list/ui/order-list-page.test.tsx"
+              },
+              {
+                "type": "string",
+                "value": "apps/order-portal/src/pages/order-detail/ui/order-detail-page.test.tsx"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 191
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order list and order details test"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "V-003",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 190
+      },
+      "multiplicity": null,
+      "name": "showOrdersTest",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::showOrdersTest",
+      "shortName": "V-003",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 198
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "test",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 199
+          },
+          "name": "testFiles",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "apps/order-portal/src/pages/place-order-form/ui/place-order-form-page.test.tsx"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-portal/order-portal.sysml",
+            "line": 197
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Place order form test"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "V-004",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 196
+      },
+      "multiplicity": null,
+      "name": "placeOrderTest",
+      "owner": "OrderPortal",
+      "qualifiedName": "OrderPortal::placeOrderTest",
+      "shortName": "V-004",
+      "types": []
+    }
+  ],
+  "files": [
+    "docs/model/examples/order-portal/order-portal.sysml"
+  ],
+  "findings": [],
+  "irVersion": "1.1.0",
+  "links": [
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 19
+      },
+      "source": "N-001",
+      "target": "OrderPortal::ShopOwner",
+      "type": "stakeholder"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 28
+      },
+      "source": "N-002",
+      "target": "OrderPortal::Clerk",
+      "type": "stakeholder"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 147
+      },
+      "source": "OrderPortal::apiService",
+      "target": "OrderPortal::orderDb",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 148
+      },
+      "source": "OrderPortal::apiService",
+      "target": "OrderPortal::users",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 160
+      },
+      "source": "OrderPortal::apiServiceAws",
+      "target": "OrderPortal::apiService",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 159
+      },
+      "source": "OrderPortal::networkAws",
+      "target": "OrderPortal::network",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 150
+      },
+      "source": "OrderPortal::orderApi",
+      "target": "OrderPortal::apiService",
+      "type": "allocate"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 107
+      },
+      "source": "OrderPortal::orderApi",
+      "target": "R-001",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 161
+      },
+      "source": "OrderPortal::orderDbAws",
+      "target": "OrderPortal::orderDb",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 151
+      },
+      "source": "OrderPortal::orderPortal",
+      "target": "OrderPortal::portalSite",
+      "type": "allocate"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 137
+      },
+      "source": "OrderPortal::orderPortal",
+      "target": "OrderPortal::orderApi",
+      "type": "calls"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 138
+      },
+      "source": "OrderPortal::orderPortal",
+      "target": "R-003",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 139
+      },
+      "source": "OrderPortal::orderPortal",
+      "target": "R-004",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 149
+      },
+      "source": "OrderPortal::portalSite",
+      "target": "OrderPortal::users",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 163
+      },
+      "source": "OrderPortal::portalSiteAws",
+      "target": "OrderPortal::portalSite",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 175
+      },
+      "source": "OrderPortal::prod::orderDbProd",
+      "target": "R-002",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 162
+      },
+      "source": "OrderPortal::usersAws",
+      "target": "OrderPortal::users",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 38
+      },
+      "source": "R-001",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 47
+      },
+      "source": "R-002",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 57
+      },
+      "source": "R-003",
+      "target": "N-002",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 66
+      },
+      "source": "R-004",
+      "target": "N-002",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 182
+      },
+      "source": "V-001",
+      "target": "R-001",
+      "type": "verify"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 188
+      },
+      "source": "V-002",
+      "target": "R-002",
+      "type": "verify"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 194
+      },
+      "source": "V-003",
+      "target": "R-003",
+      "type": "verify"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-portal/order-portal.sysml",
+        "line": 200
+      },
+      "source": "V-004",
+      "target": "R-004",
+      "type": "verify"
+    }
+  ]
+}

@@ -3,7 +3,8 @@
 
 Story #33 added the golden IR files in tests/golden/ir/. The test
 tests/test_ir_command.py compares the output of `dsml ir` with these files.
-Story #159 added the golden IR file of a test model. The test
+Story #159 added the golden IR file of a test model. Story #160 added the
+order portal, the reference model of phase 2. The test
 tests/test_solution_layers.py compares the IR of the test model with it.
 Run this script from the root of the repository after a change that changes
 the IR, for example a new OpenSysML version (PRD-CORE-027):
@@ -21,6 +22,7 @@ from dsml.cli import main as dsml
 ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "tests" / "golden" / "ir"
 REFERENCE_MODELS: dict[str, tuple[str, ...]] = {
+    "order-portal": ("docs/model/examples/order-portal/order-portal.sysml",),
     "order-service": ("docs/model/examples/order-service.sysml",),
     "prd": tuple(
         sorted(

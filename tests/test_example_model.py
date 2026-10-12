@@ -110,3 +110,71 @@ def test_environment_override_changes_only_its_attribute(
 def test_formal_constraint_of_the_example_holds(example: ParsedModel) -> None:
     result = example.evaluate_requirement(f"{NAMESPACE}::orderDataSafe")
     assert result == ConstraintResult(value="true")
+
+
+# The phase 2 reference model "order portal" (story #160).
+PORTAL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
+PORTAL_NAMESPACE = "OrderPortal"
+
+
+@pytest.fixture(scope="module")
+def portal() -> Iterator[ParsedModel]:
+    document = (PORTAL.relative_to(ROOT).as_posix(), PORTAL.read_text(encoding="utf-8"))
+    with Engine() as engine:
+        yield engine.parse_texts([library_document(), document])
+
+
+# trace: PRD-TOP-011, PRD-DSML-021
+def test_order_portal_parses_and_resolves(portal: ParsedModel) -> None:
+    assert [str(item) for item in portal.diagnostics] == []
+
+
+# trace: PRD-DSML-020, PRD-DSML-030, PRD-DSML-031, PRD-DSML-039, PRD-DSML-040
+@pytest.mark.parametrize(
+    ("element", "keyword"),
+    [
+        ("Clerk", "Stakeholder"),
+        ("manageOrdersInBrowser", "Need"),
+        ("showOrdersInPortal", "Requirement"),
+        ("placeOrderInPortal", "Requirement"),
+        ("PlaceOrder", "Operation"),
+        ("orderApi", "Application"),
+        ("orderPortal", "Application"),
+        ("orderPortal::orderList", "View"),
+        ("orderPortal::orderDetail", "View"),
+        ("orderPortal::placeOrderForm", "View"),
+        ("orderPortal::cancelOrderForm", "View"),
+        ("portalSite", "StaticSite"),
+        ("portalSiteAws", "AwsStaticSite"),
+        ("showOrdersTest", "Verification"),
+        ("placeOrderTest", "Verification"),
+    ],
+)
+def test_order_portal_element_has_its_keyword(
+    portal: ParsedModel, element: str, keyword: str
+) -> None:
+    assert portal.has_metadata(element, f"DSML::{keyword}", PORTAL_NAMESPACE)
+
+
+# trace: PRD-DSML-020, PRD-DSML-031, PRD-DSML-032
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "orderPortal.target == DSML::Target::react",
+        "orderApi.target == DSML::Target::fastapi",
+        "orderPortal.orderList.entity istype Order",
+        "orderPortal.orderDetail.entity istype Order",
+        "orderPortal.placeOrderForm.operation istype PlaceOrder",
+        "orderPortal.cancelOrderForm.operation istype CancelOrder",
+        "orderPortal.navigation#(1) == orderPortal.orderList",
+        "orderPortal.navigation#(2) == orderPortal.placeOrderForm",
+    ],
+)
+def test_order_portal_views_and_navigation(portal: ParsedModel, expression: str) -> None:
+    assert portal.evaluate_bool(expression, PORTAL_NAMESPACE)
+
+
+# trace: PRD-CORE-054
+def test_formal_constraint_of_the_order_portal_holds(portal: ParsedModel) -> None:
+    result = portal.evaluate_requirement(f"{PORTAL_NAMESPACE}::orderDataSafe")
+    assert result == ConstraintResult(value="true")
