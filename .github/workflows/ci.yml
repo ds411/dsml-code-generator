@@ -106,6 +106,30 @@ jobs:
       - name: Validate the example model
         run: uv run dsml validate --config docs/model/examples/dsml.toml
 
+      # trace: PRD-TOP-011, PRD-VAL-015
+      # The PRD model must have no error finding (story #138, M7 exit
+      # criterion).
+      - name: Validate the PRD model
+        run: uv run dsml validate --config docs/model/prd/dsml.toml
+
+      # trace: PRD-TRACE-010, PRD-TRACE-012, PRD-TRACE-013, PRD-TRACE-014
+      # The toolchain traces its own PRD model (story #138). dsml-prd.toml
+      # names the folders src/ and tests/ for the trace comments.
+      # docs/notes/prd-model-trace.md gives the result.
+      - name: Write the trace reports of the PRD model
+        run: |
+          mkdir -p "$RUNNER_TEMP/prd-trace"
+          for report in coverage orphans; do
+            uv run dsml trace "$report" --config dsml-prd.toml --output "$RUNNER_TEMP/prd-trace/$report.html"
+          done
+
+      - name: Keep the trace reports of the PRD model
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: prd-trace-reports
+          path: ${{ runner.temp }}/prd-trace/
+          if-no-files-found: error
+
       # The golden workflows of the pipeline generator must have no
       # actionlint error (story #83). The step downloads the actionlint
       # release of src/dsml/versions.toml and checks its SHA-256 hash.

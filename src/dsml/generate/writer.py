@@ -1,5 +1,5 @@
-# trace: PRD-CORE-004, PRD-CORE-034, PRD-CORE-036, PRD-CORE-039, PRD-CORE-040,
-# PRD-CORE-041, PRD-CORE-042, PRD-CORE-043, PRD-CORE-044, PRD-TRACE-006
+# trace: PRD-CORE-004, PRD-CORE-034, PRD-CORE-036, PRD-CORE-039, PRD-CORE-040
+# trace: PRD-CORE-041, PRD-CORE-042, PRD-CORE-043, PRD-CORE-044, PRD-TRACE-006
 """The file writer of all generators.
 
 The generators do not write files. Each generator gives the full list of its
@@ -250,8 +250,8 @@ def _text_problem(content: bytes) -> str | None:
     return None
 
 
-# trace: PRD-CORE-004, PRD-CORE-005, PRD-CORE-040, PRD-CORE-041, PRD-CORE-042,
-# PRD-CORE-043, PRD-CORE-044, PRD-TRACE-006, PRD-TRACE-008
+# trace: PRD-CORE-004, PRD-CORE-005, PRD-CORE-040, PRD-CORE-041, PRD-CORE-042
+# trace: PRD-CORE-043, PRD-CORE-044, PRD-TRACE-006, PRD-TRACE-008
 def make_plan(root: Path, files: Sequence[OutputFile], parts: Collection[str] | None) -> Plan:
     """Compare the output files with the old manifest and with the files on disk.
 

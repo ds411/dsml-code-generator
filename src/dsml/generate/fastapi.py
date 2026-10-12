@@ -1,5 +1,5 @@
-# trace: PRD-APP-001, PRD-APP-002, PRD-APP-008, PRD-APP-101, PRD-APP-104, PRD-APP-120,
-# PRD-APP-123, PRD-APP-130, PRD-APP-134
+# trace: PRD-APP-001, PRD-APP-002, PRD-APP-008, PRD-APP-101, PRD-APP-104, PRD-APP-120
+# trace: PRD-APP-123, PRD-APP-130, PRD-APP-134
 """The FastAPI generator (phase 1).
 
 The generator reads only the IR and the configuration (PRD-APP-001,
@@ -331,9 +331,9 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
     return value
 
 
-# trace: PRD-APP-002, PRD-APP-004, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104,
-# PRD-APP-105, PRD-APP-116, PRD-APP-120, PRD-APP-124, PRD-APP-128, PRD-APP-130, PRD-APP-131,
-# PRD-APP-133, PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
+# trace: PRD-APP-002, PRD-APP-004, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104
+# trace: PRD-APP-105, PRD-APP-116, PRD-APP-120, PRD-APP-124, PRD-APP-128, PRD-APP-130, PRD-APP-131
+# trace: PRD-APP-133, PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
 def application_files(
     engine: TemplateEngine,
     ir: Ir,
@@ -449,8 +449,8 @@ def model_file(engine: TemplateEngine, model: Model, folder: str, part: str) -> 
     return OutputFile(f"{folder}{model.path}", content, Kind.GENERATED, part, symbols)
 
 
-# trace: PRD-APP-017, PRD-APP-102, PRD-APP-103, PRD-APP-117, PRD-CORE-044, PRD-TRACE-005,
-# PRD-TRACE-006
+# trace: PRD-APP-017, PRD-APP-102, PRD-APP-103, PRD-APP-117, PRD-CORE-044, PRD-TRACE-005
+# trace: PRD-TRACE-006
 def slice_files(
     engine: TemplateEngine,
     items: Sequence[Slice],

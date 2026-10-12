@@ -1,5 +1,5 @@
-# trace: PRD-VAL-015, PRD-DSML-013, PRD-DSML-015, PRD-DSML-036, PRD-DSML-045,
-# PRD-DSML-050, PRD-DSML-051, PRD-DSML-052, PRD-DSML-056
+# trace: PRD-VAL-015, PRD-DSML-013, PRD-DSML-015, PRD-DSML-036, PRD-DSML-045
+# trace: PRD-DSML-050, PRD-DSML-051, PRD-DSML-052, PRD-DSML-056
 """The STR rules for the DSML version, the mandatory attributes and the IDs.
 
 - STR-001: the model states a DSML version that the toolchain supports.

@@ -1,0 +1,24 @@
+# The trace configuration of the PRD model (story #138). CI uses it for the
+# coverage report and the orphans report of the PRD model:
+#
+#     uv run dsml trace coverage --config dsml-prd.toml
+#     uv run dsml trace orphans --config dsml-prd.toml
+#
+# A path in a configuration file cannot contain "..". Thus the file
+# docs/model/prd/dsml.toml cannot name the folders src/ and tests/, and this
+# file is in the root folder of the repository. docs/notes/prd-model-trace.md
+# gives the reason. The model and the ID patterns are the same as in
+# docs/model/prd/dsml.toml. A test in tests/test_prd_model.py makes sure of
+# this.
+schema = 1
+
+[model]
+paths = ["docs/model/prd"]
+
+[ids]
+requirement = '(R|PRD-[A-Z]+)-[0-9]{3,}'
+
+# The toolchain code and its tests have the trace comments. The toolchain
+# reads them as hand-written test files (PRD-TRACE-010).
+[trace]
+tests = ["src", "tests"]
