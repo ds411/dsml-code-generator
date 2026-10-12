@@ -1,0 +1,131 @@
+# Test of the GitHub Action of the DSML toolchain (story #137). This is a
+# hand-written workflow, not a generated pipeline.
+#
+# trace: PRD-CORE-050, PRD-CORE-051, PRD-CORE-009, PRD-CICD-014
+#
+# The workflow uses the action from the local path. Until a release exists,
+# the job builds the wheel of the toolchain and gives it to the action in
+# the input "wheel". CI runs only on Linux x64 (Q62).
+name: Action test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: action-test-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  action:
+    name: Action (linux-x64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      # The SARIF upload to code scanning needs this permission.
+      security-events: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.0"
+
+      - name: Build the wheel of the toolchain
+        id: build
+        run: |
+          version="$(uv version --short)"
+          uv build --wheel --out-dir "$RUNNER_TEMP/dist"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "wheel=$RUNNER_TEMP/dist/dsml-${version}-py3-none-any.whl" >> "$GITHUB_OUTPUT"
+
+      # The example model has no error finding. The action uploads its
+      # findings to code scanning (PRD-CORE-051).
+      - name: Validate the example model through the action
+        id: example
+        uses: ./
+        with:
+          version: ${{ steps.build.outputs.version }}
+          wheel: ${{ steps.build.outputs.wheel }}
+          command: validate
+          config: docs/model/examples/dsml.toml
+          sarif: "true"
+          sarif-category: dsml-action-test
+
+      - name: Check the result of the example model
+        env:
+          EXIT_CODE: ${{ steps.example.outputs.exit-code }}
+          SARIF_FILE: ${{ steps.example.outputs.sarif-file }}
+        run: |
+          test "$EXIT_CODE" = "0"
+          # Each URI must be relative to the root of the repository.
+          jq --exit-status '[.runs[].results[].locations[]?.physicalLocation?.artifactLocation?.uri // empty]
+            | length > 0 and all(startswith("docs/model/examples/"))' "$SARIF_FILE"
+
+      # The model has an error finding. The action step must fail, and dsml
+      # must stop with exit code 1.
+      - name: Validate the error model through the action
+        id: error
+        continue-on-error: true
+        uses: ./
+        with:
+          version: ${{ steps.build.outputs.version }}
+          wheel: ${{ steps.build.outputs.wheel }}
+          command: validate
+          args: --fail-on error
+          config: dsml.toml
+          working-directory: tests/models/action
+
+      - name: Check the result of the error model
+        env:
+          OUTCOME: ${{ steps.error.outcome }}
+          EXIT_CODE: ${{ steps.error.outputs.exit-code }}
+        run: |
+          echo "outcome: $OUTCOME, exit code: $EXIT_CODE"
+          test "$OUTCOME" = "failure"
+          test "$EXIT_CODE" = "1"
+
+      # A wheel of a different version must stop the action before dsml
+      # runs.
+      - name: Install a wheel with a different version
+        id: mismatch
+        continue-on-error: true
+        uses: ./
+        with:
+          version: 0.0.0
+          wheel: ${{ steps.build.outputs.wheel }}
+          command: version
+
+      - name: Check the result of the different version
+        env:
+          OUTCOME: ${{ steps.mismatch.outcome }}
+        run: test "$OUTCOME" = "failure"
+
+      # actionlint also checks the inputs of "uses: ./" against action.yml,
+      # and runs shellcheck on the "run" scripts of this workflow. The step
+      # downloads the actionlint release of src/dsml/versions.toml and checks
+      # its SHA-256 hash.
+      - name: Lint this workflow
+        run: |
+          # pin NAME gives the version, or else the value, of one item of the
+          # version baseline.
+          pin() {
+            python3 -c 'import sys, tomllib; item = tomllib.load(open(sys.argv[1], "rb"))[sys.argv[2]]; print(item.get("version") or item["value"])' \
+              src/dsml/versions.toml "$1"
+          }
+          version="$(pin actionlint)"
+          archive="actionlint_${version}_linux_amd64.tar.gz"
+          curl --fail --silent --show-error --location --output "$RUNNER_TEMP/$archive" \
+            "https://github.com/rhysd/actionlint/releases/download/v${version}/${archive}"
+          echo "$(pin actionlint-sha256)  $RUNNER_TEMP/$archive" | sha256sum --check --strict
+          tar --extract --gzip --file "$RUNNER_TEMP/$archive" --directory "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -color .github/workflows/action-test.yml

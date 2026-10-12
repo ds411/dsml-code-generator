@@ -1,0 +1,201 @@
+# The GitHub Action of the DSML toolchain (story #137). docs/action.md
+# gives the inputs and an example.
+#
+# trace: PRD-CORE-050, PRD-CORE-051, PRD-CORE-009, PRD-CORE-049, PRD-CICD-014
+#
+# The action installs the wheel of the pinned toolchain version from the
+# assets of its GitHub release (Q63). There is no package index. Then it
+# gets sysml-grpc and checks its SHA-256 hash, and runs one dsml
+# subcommand. Each third-party action has the full commit SHA of
+# src/dsml/versions.toml, with its version in a comment.
+name: DSML toolchain
+description: Install a pinned version of the DSML toolchain and run one dsml subcommand.
+author: ds411
+
+inputs:
+  version:
+    description: The version of the toolchain to install, for example "0.1.0". This input is mandatory.
+    required: true
+  command:
+    description: The dsml subcommand to run, for example "validate" or "generate".
+    required: false
+    default: validate
+  args:
+    description: More arguments for the subcommand. A space separates two arguments. Quotes have no effect.
+    required: false
+    default: ""
+  config:
+    description: The configuration file, relative to working-directory. Empty gives the default of dsml, dsml.toml.
+    required: false
+    default: ""
+  sarif:
+    description: When "true", run "dsml validate --format sarif" and upload the findings to GitHub code scanning. The command must be "validate".
+    required: false
+    default: "false"
+  sarif-category:
+    description: The category of the SARIF upload in code scanning.
+    required: false
+    default: dsml
+  working-directory:
+    description: The folder in which dsml runs, relative to the workspace.
+    required: false
+    default: "."
+  wheel:
+    description: A wheel file or a wheel URL to install in place of the wheel of the GitHub release. The tests of the action use it. Its version must be the same as the input version.
+    required: false
+    default: ""
+
+outputs:
+  exit-code:
+    description: The exit code of dsml. 0 is a success, 1 is an error finding, 2 is a usage or toolchain error.
+    value: ${{ steps.run.outputs.exit-code }}
+  sarif-file:
+    description: The SARIF file of the findings, when the input sarif is "true".
+    value: ${{ steps.run.outputs.sarif-file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up uv
+      uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      with:
+        version: "0.13.0"
+        enable-cache: false
+
+    # The action installs the toolchain into its own virtual environment in
+    # the temporary folder of the runner. Thus it does not change the Python
+    # of the other steps of the job.
+    - name: Install the DSML toolchain
+      shell: bash
+      env:
+        DSML_VERSION: ${{ inputs.version }}
+        DSML_WHEEL: ${{ inputs.wheel }}
+        DSML_REPOSITORY: ds411/dsml-code-generator
+      run: |
+        if [ -z "$DSML_VERSION" ]; then
+          echo "::error::The input version is mandatory."
+          exit 2
+        fi
+        wheel="$DSML_WHEEL"
+        if [ -z "$wheel" ]; then
+          wheel="https://github.com/${DSML_REPOSITORY}/releases/download/v${DSML_VERSION}/dsml-${DSML_VERSION}-py3-none-any.whl"
+        elif [[ "$wheel" != *://* && "$wheel" != /* ]]; then
+          wheel="$GITHUB_WORKSPACE/$wheel"
+        fi
+        venv="$RUNNER_TEMP/dsml-toolchain"
+        uv venv --quiet --clear --python 3.14 "$venv"
+        uv pip install --quiet --python "$venv/bin/python" "$wheel"
+        installed="$("$venv/bin/python" -c 'from importlib import metadata; print(metadata.version("dsml"))')"
+        if [ "$installed" != "$DSML_VERSION" ]; then
+          echo "::error::The wheel has the toolchain version ${installed}, not ${DSML_VERSION}."
+          exit 2
+        fi
+        echo "DSML_ACTION_PYTHON=$venv/bin/python" >> "$GITHUB_ENV"
+        echo "DSML_ACTION_BIN=$venv/bin/dsml" >> "$GITHUB_ENV"
+        "$venv/bin/dsml" version < /dev/null
+
+    # Get sysml-grpc of the pinned OpenSysML version and check its SHA-256
+    # hash (PRD-CORE-049). After this step, dsml does not use the network.
+    - name: Get sysml-grpc and check its hash
+      shell: bash
+      run: '"$DSML_ACTION_PYTHON" -m dsml.adapter.binary < /dev/null'
+
+    # The step keeps the exit code of dsml and stops with exit code 0. Thus
+    # the SARIF upload also runs when the model has an error finding. The
+    # step "Give the exit code of dsml" gives the exit code to the job.
+    # Standard input is /dev/null, because dsml must not ask for input from
+    # a terminal (PRD-CORE-009).
+    - name: Run dsml
+      id: run
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        DSML_SUBCOMMAND: ${{ inputs.command }}
+        DSML_ARGS: ${{ inputs.args }}
+        DSML_CONFIG: ${{ inputs.config }}
+        DSML_SARIF: ${{ inputs.sarif }}
+      run: |
+        set -f
+        arguments=("$DSML_SUBCOMMAND")
+        # Word splitting divides the input args at spaces. "set -f" stops
+        # the expansion of "*" and "?".
+        # shellcheck disable=SC2206
+        arguments+=($DSML_ARGS)
+        if [ -n "$DSML_CONFIG" ]; then
+          arguments+=(--config "$DSML_CONFIG")
+        fi
+        case "$DSML_SARIF" in
+          true)
+            if [ "$DSML_SUBCOMMAND" != "validate" ]; then
+              echo "::error::The input sarif can be \"true\" only with the command \"validate\"."
+              echo "exit-code=2" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sarif="$RUNNER_TEMP/dsml-findings.sarif"
+            arguments+=(--format sarif --output "$sarif")
+            ;;
+          false) sarif="" ;;
+          *)
+            echo "::error::The input sarif must be \"true\" or \"false\"."
+            echo "exit-code=2" >> "$GITHUB_OUTPUT"
+            exit 0
+            ;;
+        esac
+        code=0
+        "$DSML_ACTION_BIN" "${arguments[@]}" < /dev/null || code=$?
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        if [ -n "$sarif" ] && [ -f "$sarif" ]; then
+          # The URIs of the SARIF file are relative to the folder of the
+          # configuration file. Code scanning needs URIs relative to the
+          # root of the repository. Thus the step adds the path of that
+          # folder to each URI.
+          config="${DSML_CONFIG:-dsml.toml}"
+          "$DSML_ACTION_PYTHON" - "$sarif" "$config" "$GITHUB_WORKSPACE" <<'PYTHON'
+        import json
+        import os
+        import sys
+        from urllib.parse import quote
+
+        sarif, config, workspace = sys.argv[1:]
+        folder = os.path.relpath(os.path.dirname(os.path.abspath(config)), workspace)
+        prefix = "" if folder == "." else quote(folder.replace(os.sep, "/"), safe="/") + "/"
+
+
+        def rebase(value):
+            if isinstance(value, dict):
+                location = value.get("artifactLocation")
+                if isinstance(location, dict) and "uri" in location:
+                    location["uri"] = prefix + location["uri"]
+                for item in value.values():
+                    rebase(item)
+            elif isinstance(value, list):
+                for item in value:
+                    rebase(item)
+
+
+        with open(sarif, encoding="utf-8") as file:
+            log = json.load(file)
+        rebase(log)
+        with open(sarif, "w", encoding="utf-8", newline="\n") as file:
+            json.dump(log, file, indent=2, sort_keys=True)
+            file.write("\n")
+        PYTHON
+          echo "sarif-file=$sarif" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Upload the findings to code scanning
+      if: steps.run.outputs.sarif-file != ''
+      uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+      with:
+        sarif_file: ${{ steps.run.outputs.sarif-file }}
+        category: ${{ inputs.sarif-category }}
+
+    - name: Give the exit code of dsml
+      shell: bash
+      env:
+        DSML_EXIT_CODE: ${{ steps.run.outputs.exit-code }}
+      run: |
+        if [ "$DSML_EXIT_CODE" != "0" ]; then
+          echo "::error::dsml stopped with exit code ${DSML_EXIT_CODE}."
+        fi
+        exit "$DSML_EXIT_CODE"
