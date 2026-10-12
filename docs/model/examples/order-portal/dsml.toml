@@ -1,0 +1,12 @@
+# The configuration of the phase 2 reference model "order portal" (story
+# #160). The model has a FastAPI application and a React application.
+schema = 1
+
+[model]
+paths = ["order-portal.sysml"]
+
+[applications.orderApi]
+output = "services/order-api"
+
+[applications.orderPortal]
+output = "apps/order-portal"
