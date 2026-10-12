@@ -6,8 +6,6 @@
 locals {
   aws_account_id = {{ account_id | hcl_string }}
   aws_region     = {{ region | hcl_string }}
-  environment    = {{ environment | hcl_string }}
-  product        = {{ product | hcl_string }}
 }
 {% for repository in repositories %}
 

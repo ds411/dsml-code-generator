@@ -1194,37 +1194,37 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 9,
+              "lastLine": 7,
               "name": "locals"
             },
             {
-              "firstLine": 11,
+              "firstLine": 9,
               "kind": "resource",
-              "lastLine": 17,
+              "lastLine": 15,
               "name": "aws_s3_bucket.state"
             },
             {
-              "firstLine": 19,
+              "firstLine": 17,
               "kind": "resource",
-              "lastLine": 25,
+              "lastLine": 23,
               "name": "aws_s3_bucket_versioning.state"
             },
             {
-              "firstLine": 27,
+              "firstLine": 25,
               "kind": "resource",
-              "lastLine": 35,
+              "lastLine": 33,
               "name": "aws_s3_bucket_server_side_encryption_configuration.state"
             },
             {
-              "firstLine": 37,
+              "firstLine": 35,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 42,
               "name": "aws_s3_bucket_public_access_block.state"
             },
             {
-              "firstLine": 46,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 53,
+              "lastLine": 51,
               "name": "aws_iam_openid_connect_provider.github"
             }
           ]
@@ -1922,27 +1922,27 @@
           "path": "infra/tooling/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 11,
+              "firstLine": 9,
               "kind": "resource",
-              "lastLine": 27,
+              "lastLine": 25,
               "name": "aws_ecr_repository.order_api"
             },
             {
-              "firstLine": 29,
+              "firstLine": 27,
               "kind": "resource",
-              "lastLine": 48,
+              "lastLine": 46,
               "name": "aws_ecr_lifecycle_policy.order_api"
             },
             {
-              "firstLine": 50,
+              "firstLine": 48,
               "kind": "resource",
-              "lastLine": 53,
+              "lastLine": 51,
               "name": "aws_ecr_repository_policy.order_api"
             },
             {
-              "firstLine": 55,
+              "firstLine": 53,
               "kind": "resource",
-              "lastLine": 84,
+              "lastLine": 82,
               "name": "data.aws_iam_policy_document.order_api_pull"
             }
           ]
@@ -2411,37 +2411,37 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 9,
+              "lastLine": 7,
               "name": "locals"
             },
             {
-              "firstLine": 11,
+              "firstLine": 9,
               "kind": "resource",
-              "lastLine": 17,
+              "lastLine": 15,
               "name": "aws_s3_bucket.state"
             },
             {
-              "firstLine": 19,
+              "firstLine": 17,
               "kind": "resource",
-              "lastLine": 25,
+              "lastLine": 23,
               "name": "aws_s3_bucket_versioning.state"
             },
             {
-              "firstLine": 27,
+              "firstLine": 25,
               "kind": "resource",
-              "lastLine": 35,
+              "lastLine": 33,
               "name": "aws_s3_bucket_server_side_encryption_configuration.state"
             },
             {
-              "firstLine": 37,
+              "firstLine": 35,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 42,
               "name": "aws_s3_bucket_public_access_block.state"
             },
             {
-              "firstLine": 46,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 53,
+              "lastLine": 51,
               "name": "aws_iam_openid_connect_provider.github"
             }
           ]
@@ -2668,37 +2668,37 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 9,
+              "lastLine": 7,
               "name": "locals"
             },
             {
-              "firstLine": 11,
+              "firstLine": 9,
               "kind": "resource",
-              "lastLine": 17,
+              "lastLine": 15,
               "name": "aws_s3_bucket.state"
             },
             {
-              "firstLine": 19,
+              "firstLine": 17,
               "kind": "resource",
-              "lastLine": 25,
+              "lastLine": 23,
               "name": "aws_s3_bucket_versioning.state"
             },
             {
-              "firstLine": 27,
+              "firstLine": 25,
               "kind": "resource",
-              "lastLine": 35,
+              "lastLine": 33,
               "name": "aws_s3_bucket_server_side_encryption_configuration.state"
             },
             {
-              "firstLine": 37,
+              "firstLine": 35,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 42,
               "name": "aws_s3_bucket_public_access_block.state"
             },
             {
-              "firstLine": 46,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 53,
+              "lastLine": 51,
               "name": "aws_iam_openid_connect_provider.github"
             }
           ]
@@ -2895,37 +2895,37 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 9,
+              "lastLine": 7,
               "name": "locals"
             },
             {
-              "firstLine": 11,
+              "firstLine": 9,
               "kind": "resource",
-              "lastLine": 17,
+              "lastLine": 15,
               "name": "aws_s3_bucket.state"
             },
             {
-              "firstLine": 19,
+              "firstLine": 17,
               "kind": "resource",
-              "lastLine": 25,
+              "lastLine": 23,
               "name": "aws_s3_bucket_versioning.state"
             },
             {
-              "firstLine": 27,
+              "firstLine": 25,
               "kind": "resource",
-              "lastLine": 35,
+              "lastLine": 33,
               "name": "aws_s3_bucket_server_side_encryption_configuration.state"
             },
             {
-              "firstLine": 37,
+              "firstLine": 35,
               "kind": "resource",
-              "lastLine": 44,
+              "lastLine": 42,
               "name": "aws_s3_bucket_public_access_block.state"
             },
             {
-              "firstLine": 46,
+              "firstLine": 44,
               "kind": "resource",
-              "lastLine": 53,
+              "lastLine": 51,
               "name": "aws_iam_openid_connect_provider.github"
             }
           ]
@@ -3009,7 +3009,7 @@
             {
               "firstLine": 4,
               "kind": "resource",
-              "lastLine": 9,
+              "lastLine": 7,
               "name": "locals"
             }
           ]

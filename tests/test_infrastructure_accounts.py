@@ -135,7 +135,8 @@ def test_each_account_root_module_sets_its_account_and_tags(ir: Ir) -> None:
         for folder in folders:
             main = _text(files, f"{folder}/main.gen.tf")
             assert f'  aws_account_id = "{account_id}"\n' in main
-            assert f'  environment    = "{account}"\n' in main
+            # tflint: the root module has no unused local value.
+            assert "  environment    =" not in main
             providers = _text(files, f"{folder}/providers.gen.tf")
             assert "  allowed_account_ids = [local.aws_account_id]\n" in providers
             assert f'      "dsml:environment"  = "{account}"\n' in providers

@@ -1,0 +1,65 @@
+# Checkov settings for the scan of the golden HCL in the toolchain CI
+# (story #86, PRD-IAC-040). This is a hand-written file.
+#
+# trace: PRD-IAC-040
+#
+# PRD-IAC-040 permits no finding with high or critical severity. The open
+# source Checkov gives a severity only with a Prisma Cloud API key, and the
+# CI does not use one. Thus the CI fails on each finding that this file does
+# not skip. Each skipped check below has the reason. Do not skip a check that
+# PRD-IAC-030 to PRD-IAC-033 cover.
+
+framework:
+  - terraform
+compact: true
+quiet: true
+# Do not get the guidelines and the external checks from the network.
+skip-download: true
+
+skip-check:
+  # Logs, monitoring and alerts. The phase 1 PRD does not give them, and
+  # they are not in the security baseline.
+  - CKV2_AWS_11 # VPC flow logs.
+  - CKV2_AWS_30 # Query logs of PostgreSQL.
+  - CKV2_AWS_62 # Event notifications of S3 buckets.
+  - CKV_AWS_18 # Access logs of S3 buckets.
+  - CKV_AWS_91 # Access logs of the ALB.
+  - CKV_AWS_118 # Enhanced monitoring of RDS.
+  - CKV_AWS_129 # Export of the RDS logs to CloudWatch Logs.
+  - CKV_AWS_353 # Performance Insights of RDS.
+
+  # Encryption at rest. The state buckets use SSE-S3 and CloudWatch Logs uses
+  # AWS keys. The two are encryption at rest. PRD-IAC-030 does not require a
+  # customer managed key for them.
+  - CKV_AWS_145 # S3 encryption with KMS.
+  - CKV_AWS_158 # CloudWatch log group encryption with KMS.
+
+  # The default key policy gives access to the AWS account only. IAM
+  # policies then give access to the key.
+  - CKV2_AWS_64 # KMS key policy.
+
+  # PRD-IAC-032 permits ingress on port 80 to the ALB. The HTTP listener only
+  # sends a redirect to HTTPS (PRD-IAC-014).
+  - CKV_AWS_260 # Ingress from 0.0.0.0/0 to port 80.
+
+  # The read statement of the deploy role uses the resource "*" for
+  # Describe, Get and List actions. A plan must read each resource of the
+  # account. The deploy role has no action "*" and no service wildcard
+  # (PRD-IAC-033).
+  - CKV_AWS_356 # Resource "*" in an IAM policy.
+
+  # PRD-IAC-016 gives a log retention of 30 days.
+  - CKV_AWS_338 # Log retention of one year.
+
+  # The phase 1 PRD does not give these items.
+  - CKV2_AWS_28 # WAF on the ALB.
+  - CKV_AWS_150 # Deletion protection of the ALB. PRD-IAC-017 gives it only for RDS.
+  - CKV2_AWS_57 # Automatic rotation of the secrets. The owners of the secrets set the values.
+  - CKV2_AWS_61 # Lifecycle rules of S3 buckets. Versions of the state must stay.
+  - CKV_AWS_144 # Replication of S3 buckets to a second region.
+  - CKV_AWS_161 # IAM authentication of RDS. The application uses the master password secret (PRD-IAC-017).
+  - CKV_AWS_336 # Read-only root file system of the containers.
+
+  # The network module uses the first zones of the region (PRD-IAC-011). The
+  # generator does not know the zone names of each region.
+  - CKV_AWS_394 # Filter of the availability zones on the zone name or ID.

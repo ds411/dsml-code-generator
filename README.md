@@ -73,6 +73,8 @@ The workflow `.github/workflows/ci.yml` runs the checks of step 4 on each pull r
 5. `pnpm typecheck`
 6. `uv run pytest`
 
+The job "Infrastructure golden HCL" checks the golden HCL in `tests/golden/infrastructure/` (PRD-IAC-003, PRD-IAC-039, PRD-IAC-040). On each root module, it runs `tofu fmt -check`, `tofu validate`, `terraform validate` and `tflint` with the AWS rule set. Then Checkov scans the golden HCL. The job gets the tool versions from `src/dsml/versions.toml`. `.tflint.hcl` and `.checkov.yaml` give the settings of tflint and Checkov.
+
 The workflow `.github/workflows/pilot.yml` checks the DSML library with the Jupyter kernel of the OMG pilot implementation (PRD-DSML-005, Q60). It runs on Linux x64 when the library or the check changes. To run the check on your computer, install Java 17 or later and use this command:
 
 ```sh

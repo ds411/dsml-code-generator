@@ -4,8 +4,6 @@
 locals {
   aws_account_id = "111111111111"
   aws_region     = "us-east-1"
-  environment    = "tooling"
-  product        = "shop"
 }
 
 resource "aws_ecr_repository" "shop_api" {
