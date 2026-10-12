@@ -1,10 +1,13 @@
-# Time to make the IR of a model with 1,000 elements
+# Time of the toolchain for a model with 1,000 elements
 
-Story #33 measured the time of `dsml ir` for a generated model with 1,000 elements. This document gives the results.
+Story #33 measured the time of `dsml ir` for a generated model with 1,000 elements. Story #139 added `dsml validate` and `dsml generate` (PRD-TOP-012). This document gives the results.
 
-- Script: `scripts/measure_ir.py`. The CI step "Measure the IR time for 1,000 elements" runs it on Linux x64 (Q62). The other rows come from older CI runs.
-- The script writes a model with 166 units and 3 stakeholders. Each unit has a need, a requirement, an entity with two fields and a verification. The IR has exactly 1,000 elements and 498 links. The model has 4,325 lines.
-- The time is for the full command: the start of Python, the start of `sysml-grpc`, the parse, the conversion and the JSON writer. The value is the median of 5 runs, after one run that starts the cache.
+- Script: `scripts/measure_ir.py`. The CI step "Measure the IR time for 1,000 elements" runs it on Linux x64 (Q62).
+- The script writes a model with 140 units, 5 stakeholders, one FastAPI application and the infrastructure of one container service. Each unit has a need, a requirement, an entity with two fields, an exposed part of the application and a verification. The infrastructure has a network, a container service, a database, a user directory, their AWS parts, a tooling account and three environments.
+- The IR has exactly 1,000 elements and 567 links. The model has 4,378 lines. `dsml validate` gives no finding. `dsml generate` writes 1,638 files: the FastAPI code, the HCL and the workflows.
+- The time is for the full command: the start of Python, the start of `sysml-grpc`, the parse, the conversion, the validation and the writers. The value is the median of 5 runs, after one run that starts the cache.
+- Before each run of `dsml generate`, the script deletes the output of the earlier run. Thus each run writes all files.
+- If `dsml validate` or `dsml generate` takes 10 seconds or more, the script stops with exit code 1. This check applies to models with 1,000 elements or fewer.
 
 ## Limit
 

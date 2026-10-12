@@ -155,7 +155,8 @@ def _load_measure_script() -> ModuleType:
 measure_ir: Any = _load_measure_script()
 
 
-@pytest.mark.parametrize("elements", [8, 20, 25])
+# trace: PRD-TOP-012
+@pytest.mark.parametrize("elements", [23, 29, 36])
 def test_generated_model_has_the_given_number_of_elements(elements: int, tmp_path: Path) -> None:
     (tmp_path / "large-model.sysml").write_text(measure_ir.make_model(elements), encoding="utf-8")
     _, ir = measure_ir.run_ir(tmp_path)
@@ -164,6 +165,38 @@ def test_generated_model_has_the_given_number_of_elements(elements: int, tmp_pat
     assert data["findings"] == []
 
 
-def test_generated_model_needs_eight_or_more_elements() -> None:
-    with pytest.raises(ValueError, match="8 or more elements"):
-        measure_ir.make_model(7)
+def test_generated_model_needs_twenty_three_or_more_elements() -> None:
+    with pytest.raises(ValueError, match="23 or more elements"):
+        measure_ir.make_model(22)
+
+
+# trace: PRD-TOP-012
+def test_generated_model_validates_and_generates_all_parts(tmp_path: Path) -> None:
+    measure_ir.write_project(tmp_path, 30)
+    _, findings = measure_ir.run_validate(tmp_path)
+    assert findings.decode().splitlines()[-1] == "Findings: 0 errors, 0 warnings, 0 info."
+    for _ in range(2):
+        _, output = measure_ir.run_generate(tmp_path)
+        files = [line.removeprefix("add ") for line in output.decode().splitlines()]
+        assert all(line.startswith("add ") for line in output.decode().splitlines())
+        assert "services/items/app/main_gen.py" in files
+        assert "infra/modules/container-service/main.gen.tf" in files
+        assert ".github/workflows/pr.gen.yml" in files
+
+
+# trace: PRD-TOP-012
+@pytest.mark.parametrize(
+    ("validate", "generate", "elements", "failed"),
+    [
+        (9_999.0, 9_999.0, 1000, []),
+        (10_000.0, 9_999.0, 1000, ["dsml validate"]),
+        (9_999.0, 12_000.0, 1000, ["dsml generate"]),
+        (10_000.0, 10_000.0, 500, ["dsml validate", "dsml generate"]),
+        (60_000.0, 60_000.0, 10_000, []),
+    ],
+)
+def test_limit_of_validate_and_generate(
+    validate: float, generate: float, elements: int, failed: list[str]
+) -> None:
+    medians = {"dsml ir": 20_000.0, "dsml validate": validate, "dsml generate": generate}
+    assert measure_ir.over_limit(medians, elements) == failed
