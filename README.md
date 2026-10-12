@@ -1,5 +1,7 @@
 # DSML toolchain: PRD bundle
 
+If you use the toolchain, start with the [user guide](docs/guide/README.md). It tells what the model is and what the toolchain does, with no previous knowledge of SysML v2.
+
 Status date: 10 October 2026. All decisions (Q1 to Q71, AD1 to AD3) are closed. The text uses ASD-STE100 Simplified Technical English, Issue 9.
 
 ## Contents
@@ -7,6 +9,7 @@ Status date: 10 October 2026. All decisions (Q1 to Q71, AD1 to AD3) are closed. 
 ```text
 CLAUDE.md                                  Project brief for Claude Code
 docs/
+├── guide/                                 User guide: concepts, glossary, tutorial, reference
 ├── prd/
 │   ├── 00-top-level-prd.md                Goals, users, architecture, phases, conventions, dictionary
 │   ├── 01-dsml-prd.md                     PRD-DSML
