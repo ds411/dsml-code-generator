@@ -21,6 +21,20 @@ version = "3.14.8"
 line = "0.9"
 version = "0.9.2"
 
+# The SHA-256 hashes of the sysml-grpc release assets of the pinned OpenSysML
+# version, from the release checksums of OpenSysML (PRD-CORE-049, Q50). The
+# name of each item is "sysml-grpc-sha256-" and the platform of the asset
+# sysml-grpc-<os>-<arch>. The toolchain starts only a binary with the hash of
+# its platform. A platform with no item here has no support.
+[sysml-grpc-sha256-darwin-arm64]
+value = "f216818f2b37767d1aa7531a692612c7235e64ae9a21efe6b4de13d6832422f4"
+
+[sysml-grpc-sha256-linux-amd64]
+value = "8577dacafa512416942639a3b2a7e38dc4a0bd89e64abce2e5e4faca581ee7c3"
+
+[sysml-grpc-sha256-linux-arm64]
+value = "289f3fdff259f1a49960abbdead31a9cd7bb4d3789430303d1823beffda1b3cf"
+
 # OMG pilot implementation: the Jupyter kernel (jupyter-sysml-kernel) for
 # the CI check of the DSML library (PRD-DSML-005, Q60). The toolchain does
 # not use the pilot implementation.

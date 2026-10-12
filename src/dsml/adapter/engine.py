@@ -1,4 +1,4 @@
-# trace: PRD-CORE-017, PRD-CORE-018, PRD-CORE-019, PRD-CORE-020
+# trace: PRD-CORE-017, PRD-CORE-018, PRD-CORE-019, PRD-CORE-020, PRD-CORE-049
 """Start OpenSysML, parse SysML v2 files and read the results.
 
 The other modules of the toolchain do not see an OpenSysML object. This module
@@ -17,6 +17,7 @@ import opensysml
 import opensysml.connection
 
 from dsml import versions
+from dsml.adapter.binary import install_hash_check
 from dsml.errors import ToolchainError
 
 ConstraintValue = Literal["true", "false", "unknown"]
@@ -314,13 +315,16 @@ class Engine:
     """A connection to a private `sysml-grpc` child process.
 
     The `opensysml` client starts the child process and stops it (PRD-CORE-017).
-    Use the class in a `with` statement.
+    Before the start, the toolchain checks the SHA-256 hash of the binary
+    (PRD-CORE-049). Use the class in a `with` statement.
     """
 
+    # trace: PRD-CORE-018, PRD-CORE-019, PRD-CORE-049
     def __init__(self) -> None:
         pinned = versions.pinned_version("opensysml")
         check_client_version(opensysml.__version__, pinned)
         _allow_large_messages()
+        install_hash_check()
         try:
             # The client has no type annotations for the arguments of connect().
             client: Any = opensysml
