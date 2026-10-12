@@ -1,0 +1,8 @@
+# The configuration of the error model of the GitHub Action test (story
+# #137). The workflow .github/workflows/action-test.yml runs the action on
+# this model. The model has an error finding, thus dsml validate must stop
+# with exit code 1.
+schema = 1
+
+[model]
+paths = ["error.sysml"]
