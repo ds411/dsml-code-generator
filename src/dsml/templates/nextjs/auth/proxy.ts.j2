@@ -1,0 +1,19 @@
+{#- The request interceptor of Next.js (PRD-APP-323). The pinned Next.js
+    version uses the name proxy.ts. The matcher has the route of each view
+    that needs a session. A request for one of these pages with no session
+    goes to the login page. The page checks the roles (PRD-APP-009). Data:
+    "matcher" (the route patterns, sorted). -#}
+{% include "common/header.j2" %}
+import type { NextRequest, NextResponse } from "next/server";
+
+import { requireSession } from "{{ layout.import_path("shared", "auth") }}/index.server";
+
+/** Send a request for a protected page with no session to the login page. */
+export function proxy(request: NextRequest): Promise<NextResponse> {
+  return requireSession(request);
+}
+
+/** The routes of the pages that need a session. */
+export const config = {
+  matcher: [{% for item in matcher %}"{{ item }}"{{ ", " if not loop.last }}{% endfor %}],
+};

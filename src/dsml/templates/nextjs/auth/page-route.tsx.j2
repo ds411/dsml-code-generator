@@ -1,0 +1,5 @@
+{#- The route file of a page of the authentication (PRD-APP-302). It
+    re-exports the page component of the segment shared/auth. Data:
+    "component" (the name of the component). -#}
+{% include "common/header.j2" %}
+export { {{ component }} as default } from "{{ layout.import_path("shared", "auth") }}";

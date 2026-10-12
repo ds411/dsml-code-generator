@@ -543,7 +543,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check the format of the golden files
-        run: pnpm exec prettier --check tests/golden/nextjs '!**/.dsml/**'
+        run: pnpm exec prettier --check tests/golden/nextjs tests/nextjs '!**/.dsml/**'
 
       - name: Copy the golden project
         run: cp -r tests/golden/nextjs/order-web "$PROJECT"
@@ -564,6 +564,14 @@ jobs:
       - name: Check the FSD rules with Steiger
         working-directory: ${{ env.PROJECT }}
         run: pnpm exec steiger ./src
+
+      # The auth tests examine the role check, the server helper authorize
+      # with test tokens and the redirect of the request interceptor
+      # (PRD-APP-008, PRD-APP-323, PRD-APP-324).
+      - name: Copy the Vitest tests
+        run: |
+          mkdir -p "$PROJECT/tests"
+          cp -r tests/nextjs/auth "$PROJECT/tests/"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}
@@ -597,7 +605,9 @@ jobs:
       # (PRD-APP-012). Its user must not be root (PRD-APP-013). The log
       # line of the request must be JSON with the request ID (PRD-APP-015).
       # The root layout must give the public runtime values of the
-      # environment of the container to the page (PRD-APP-325).
+      # environment of the container to the page (PRD-APP-325). The request
+      # interceptor must send a request for a protected page with no
+      # session to the login (PRD-APP-323).
       - name: Start the container and get GET /healthz
         run: |
           test "$(docker run --rm --entrypoint id order-web:test -u)" != "0"
@@ -608,10 +618,12 @@ jobs:
             if curl --silent --fail --header "X-Request-ID: ci-healthz" http://127.0.0.1:3000/healthz; then
               echo
               curl --silent http://127.0.0.1:3000/ > page.html || true
+              curl --silent --output /dev/null --write-out '%{http_code} %{redirect_url}' http://127.0.0.1:3000/orders > redirect.txt || true
               docker logs order-web > logs.txt
               cat logs.txt
               docker rm --force order-web
               grep --quiet "eu-west-1_runtimeMarker" page.html
+              test "$(cat redirect.txt)" = "307 http://127.0.0.1:3000/auth/login?next=%2Forders"
               grep '"requestId":"ci-healthz"' logs.txt | jq --exit-status '.path == "/healthz" and .status == 200'
               exit 0
             fi
