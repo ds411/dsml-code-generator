@@ -1,0 +1,15 @@
+{#- The start of the auth session. Before the first render, the entry module
+    reads the runtime configuration and configures Amplify Auth
+    (PRD-APP-230, PRD-APP-231). Data: none. -#}
+{% include "common/header.j2" %}
+import { configureAuth } from "@/shared/auth";
+import { loadRuntimeConfig } from "@/shared/config";
+
+/**
+ * Read /config.json and configure Amplify Auth. The entry module must call
+ * this function before the first render.
+ */
+export async function startSession(): Promise<void> {
+  const config = await loadRuntimeConfig();
+  configureAuth(config);
+}

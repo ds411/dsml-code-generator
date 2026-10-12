@@ -1,9 +1,17 @@
-{#- The entry module of the React target. index.html loads it. Story #167
-    renders an empty root. The app layer story adds the providers and the
-    router. -#}
+{#- The entry module of the React target. index.html loads it. Before the
+    first render, it reads /config.json and configures Amplify Auth
+    (PRD-APP-230, PRD-APP-231). Then it renders the providers of TanStack
+    Query and of the router. -#}
 {% include "common/header.j2" %}
+import "@/app/styles/index.css";
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+
+import { AppProviders } from "@/app/providers/app-providers.gen";
+import { createQueryClient } from "@/app/providers/query-client.gen";
+import { startSession } from "@/app/providers/session.gen";
+import { createAppRouter } from "@/app/router/router.gen";
 
 const root = document.getElementById("root");
 
@@ -11,4 +19,22 @@ if (root === null) {
   throw new Error('The page has no element with the ID "root".');
 }
 
-createRoot(root).render(<StrictMode />);
+/** Read the runtime configuration, configure Amplify Auth and render the page. */
+async function start(element: HTMLElement): Promise<void> {
+  await startSession();
+  const queryClient = createQueryClient();
+  const router = createAppRouter(queryClient);
+  createRoot(element).render(
+    <StrictMode>
+      <AppProviders queryClient={queryClient} router={router} />
+    </StrictMode>,
+  );
+}
+
+start(root).catch((error: unknown) => {
+  root.textContent =
+    error instanceof Error
+      ? error.message
+      : "The application cannot start. Examine the console of the browser.";
+  console.error(error);
+});

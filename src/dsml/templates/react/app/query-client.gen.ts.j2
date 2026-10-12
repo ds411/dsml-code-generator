@@ -1,0 +1,21 @@
+{#- The client of TanStack Query. The route loaders and the widgets use the
+    same client, thus a widget gets the data that the loader read
+    (PRD-APP-223). Data: none. -#}
+{% include "common/header.j2" %}
+import { QueryClient } from "@tanstack/react-query";
+
+/** The time in milliseconds that the data of a query stays fresh. */
+export const STALE_TIME = 30_000;
+
+/**
+ * Make the client of TanStack Query. The data that a route loader reads
+ * stays fresh for STALE_TIME, thus the widget of the page does not read
+ * it again.
+ */
+export function createQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: { staleTime: STALE_TIME },
+    },
+  });
+}

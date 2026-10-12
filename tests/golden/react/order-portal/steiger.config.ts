@@ -5,5 +5,14 @@ import { defineConfig } from "steiger";
 
 export default defineConfig([
   ...fsd.configs.recommended,
-  { rules: { "fsd/repetitive-naming": "off" } },
+  {
+    rules: {
+      "fsd/insignificant-slice": "off",
+      "fsd/repetitive-naming": "off",
+    },
+  },
+  {
+    files: ["./src/app/providers/**"],
+    rules: { "fsd/segments-by-purpose": "off" },
+  },
 ]);

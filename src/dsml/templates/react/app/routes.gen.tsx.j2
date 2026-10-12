@@ -1,0 +1,94 @@
+{#- The route tree of the application with code-based routing (PRD-APP-220).
+    Each view has one route (PRD-APP-221). The "beforeLoad" function of
+    each route checks the session and the roles of the view (PRD-APP-222).
+    The loader of a list route and of a detail route fills the query cache
+    with the query options of the entity slice (PRD-APP-223). Data: "app"
+    (a dsml.generate.react_app.AppData). -#}
+{% include "common/header.j2" %}
+{% if app.has_loaders %}
+// PRD-APP-223 gives queryClient.ensureQueryData for the route loaders.
+// TanStack Query marks the method as deprecated, thus the rule is off.
+/* eslint-disable @typescript-eslint/no-deprecated */
+{% endif %}
+import type { QueryClient } from "@tanstack/react-query";
+import {
+  createRootRouteWithContext,
+  createRoute,
+  Navigate,
+  Outlet,
+} from "@tanstack/react-router";
+import type { ReactNode } from "react";
+
+{% for line in app.import_lines() %}
+{{ line }}
+{% endfor %}
+import { currentSession } from "@/shared/auth";
+
+import { AppLayout } from "../layout/app-layout.gen";
+import { HomePage } from "../layout/status-pages.gen";
+{% if app.routes %}
+import { requireView } from "./access.gen";
+import { VIEWS } from "./views.gen";
+{% endif %}
+
+/** The context of the router. The root route adds the session of the user. */
+export interface RouterContext {
+  /** The client of TanStack Query. The route loaders fill its cache. */
+  queryClient: QueryClient;
+}
+
+/**
+ * The root route: the layout of all pages. Before each navigation, it reads
+ * the session of the user. The other routes get the session in their context.
+ */
+export const rootRoute = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async () => ({ session: await currentSession() }),
+  component: RootLayout,
+});
+
+/** The layout of the root route with the page of the route. */
+function RootLayout(): ReactNode {
+  const { session } = rootRoute.useRouteContext();
+  return (
+    <AppLayout session={session}>
+      <Outlet />
+    </AppLayout>
+  );
+}
+
+/** The route of the home page. It needs no session. */
+const homeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/",
+  component: HomeRoute,
+});
+
+/** The home page with the session of the user. */
+function HomeRoute(): ReactNode {
+  const { session } = homeRoute.useRouteContext();
+  return <HomePage session={session} />;
+}
+
+/**
+ * The route of the callback URL of the managed login. Amplify Auth reads
+ * the code of the login while the root route reads the session. Then the
+ * route goes to the home page.
+ */
+const callbackRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: {{ app.callback_path }},
+  component: CallbackRoute,
+});
+
+/** Go to the home page after the login. */
+function CallbackRoute(): ReactNode {
+  return <Navigate to="/" replace />;
+}
+{% for line in app.route_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The route tree of the application (PRD-APP-220). */
+{% for line in app.tree_lines() %}
+{{ line }}
+{% endfor %}

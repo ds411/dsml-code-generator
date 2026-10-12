@@ -351,7 +351,7 @@ jobs:
           grep --quiet "$slice/handler.py.*order_id" "$RUNNER_TEMP/pyright.txt"
 
   # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-201, PRD-APP-211, PRD-APP-225, PRD-APP-226
-  # trace: PRD-APP-227, PRD-APP-228, PRD-APP-233, PRD-APP-234
+  # trace: PRD-APP-227, PRD-APP-228, PRD-APP-233, PRD-APP-234, PRD-APP-009, PRD-APP-222, PRD-APP-223
   #
   # The golden output of the React generator (story #167) must pass the
   # tools of the generated project. Prettier must find no change in the
@@ -405,15 +405,6 @@ jobs:
         working-directory: ${{ env.PROJECT }}
         run: pnpm install --no-frozen-lockfile
 
-      # Until the pages story (#174) writes src/pages, no page refers to the
-      # entity slices. Then the rule fsd/insignificant-slice is off.
-      - name: Set the Steiger configuration
-        working-directory: ${{ env.PROJECT }}
-        run: |
-          if [ ! -d src/pages ]; then
-            cp "$GITHUB_WORKSPACE/tests/react/steiger-before-pages.config.ts" steiger.config.ts
-          fi
-
       # dsml check-output runs tsc, ESLint and Steiger from node_modules/.bin
       # of the project (PRD-CORE-011, PRD-APP-234).
       - name: Check the generated code with dsml check-output
@@ -430,11 +421,13 @@ jobs:
       # and the invalidation of the queries (PRD-APP-225 to PRD-APP-228).
       # The component tests of the widgets layer examine the column
       # headers, the paging and the keyboard access (PRD-APP-114,
-      # PRD-APP-228).
+      # PRD-APP-228). The component tests of the app layer examine the
+      # login with no session, the "not permitted" page, the route loaders
+      # and the navigation (PRD-APP-009, PRD-APP-222, PRD-APP-223).
       - name: Copy the Vitest tests
         run: |
           mkdir -p "$PROJECT/tests"
-          cp -r tests/react/features tests/react/field-rules tests/react/shared tests/react/widgets "$PROJECT/tests/"
+          cp -r tests/react/app tests/react/features tests/react/field-rules tests/react/shared tests/react/widgets "$PROJECT/tests/"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}

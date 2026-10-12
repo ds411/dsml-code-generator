@@ -144,12 +144,14 @@ def test_fixed_names_and_no_lockfile(portal_ir: Ir) -> None:
         "eslint.config.js",
     }
     files = collect([ReactGenerator()], portal_ir, configuration(), None)
-    # Only the public API index.ts of a slice or a segment and the shadcn/ui
-    # copy in src/shared/ are create-once files (PRD-APP-204, PRD-APP-212).
+    # Only the public API index.ts of a slice or a segment, the shadcn/ui
+    # copy in src/shared/ and the theme src/app/styles/index.css are
+    # create-once files (PRD-APP-204, PRD-APP-212).
     assert all(
         file.kind is Kind.GENERATED
         or Path(file.path).name == "index.ts"
         or file.path.startswith(("src/shared/ui/", "src/shared/lib/"))
+        or file.path == "src/app/styles/index.css"
         for file in files
     )
     assert not [file.path for file in files if Path(file.path).name in LOCKFILES]

@@ -1,0 +1,34 @@
+{#- The router of the application (PRD-APP-220). The route tree is in
+    routes.gen.tsx. Data: none. -#}
+{% include "common/header.j2" %}
+import type { QueryClient } from "@tanstack/react-query";
+import { createRouter, type RouterHistory } from "@tanstack/react-router";
+
+import { NotFoundPage, RouteError } from "../layout/status-pages.gen";
+import { routeTree } from "./routes.gen";
+
+/**
+ * Make the router of the application. The route loaders use the query
+ * client. A test can give a memory history.
+ */
+export function createAppRouter(
+  queryClient: QueryClient,
+  history?: RouterHistory,
+) {
+  return createRouter({
+    routeTree,
+    context: { queryClient },
+    ...(history === undefined ? {} : { history }),
+    defaultErrorComponent: RouteError,
+    defaultNotFoundComponent: NotFoundPage,
+  });
+}
+
+/** The type of the router of the application. */
+export type AppRouter = ReturnType<typeof createAppRouter>;
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: AppRouter;
+  }
+}
