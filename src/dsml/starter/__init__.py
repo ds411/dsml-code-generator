@@ -8,13 +8,19 @@ after `dsml init` writes them.
 The starter model imports the DSML library with `private import DSML::*;`
 (PRD-DSML-008) and gives the version of the library with `@DsmlVersion`
 (PRD-DSML-056). It has one stakeholder, one need and one requirement.
+
+The starter model of the target `react` also has a FastAPI application and a
+React application that calls it (PRD-DSML-030, PRD-DSML-031, PRD-DSML-039).
+It also has the infrastructure and the environments, because the validation
+rules need them. The model validates with no finding, and `dsml generate`
+writes the two projects.
 """
 
 from importlib import resources
 from typing import Final
 
-TARGETS: Final = ("fastapi",)
-"""The targets that `dsml init --target` accepts. Phase 1 has only FastAPI."""
+TARGETS: Final = ("fastapi", "react")
+"""The targets that `dsml init --target` accepts. M11 adds Next.js."""
 
 DEFAULT_TARGET: Final = "fastapi"
 """The target of `dsml init` if the command line gives no `--target`."""
@@ -26,7 +32,7 @@ MODEL_FILE: Final = "model/model.sysml"
 """The path of the starter model, relative to the folder of the configuration file."""
 
 
-# trace: PRD-CORE-001
+# trace: PRD-CORE-001, PRD-DSML-030, PRD-DSML-031, PRD-DSML-039
 def starter_files(target: str) -> dict[str, bytes]:
     """Give the bytes of each starter file of a target, by its path in the package data.
 

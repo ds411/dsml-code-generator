@@ -61,7 +61,7 @@ def test_each_subcommand_has_the_common_options(
         ["trace"],
         ["trace", "unknown"],
         ["init", "--target"],
-        ["init", "--target", "react"],
+        ["init", "--target", "nextjs"],
     ],
 )
 def test_usage_error_gives_exit_code_2(argv: list[str], capsys: pytest.CaptureFixture[str]) -> None:

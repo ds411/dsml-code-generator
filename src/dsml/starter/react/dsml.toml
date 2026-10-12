@@ -1,0 +1,14 @@
+# The configuration of the DSML toolchain.
+# docs/configuration.md in the toolchain repository gives all keys.
+schema = 1
+
+[model]
+paths = ["model"]
+
+# One table for each application of the model. The key is the name of the
+# application in the model. "output" is the output folder of the generated code.
+[applications.itemApi]
+output = "services/item-api"
+
+[applications.itemPortal]
+output = "apps/item-portal"
