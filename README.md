@@ -123,14 +123,16 @@ No subcommand reads from a terminal (PRD-CORE-009).
 
 ### Command `dsml init`
 
-`dsml init [--target fastapi]` writes two starter files in the current folder:
+`dsml init [--target fastapi|react]` writes two starter files in the current folder:
 
 - `dsml.toml`: a configuration file that reads the model in the folder `model`.
 - `model/model.sysml`: a model with one stakeholder, one need, one requirement and the `@DsmlVersion` metadata. It parses and resolves with the DSML library.
 
+With `--target react`, the starter model also has a FastAPI application `itemApi` and a React application `itemPortal` that calls it. It also has the infrastructure, the tooling account and the environments `dev`, `staging` and `prod`. Replace the account IDs, the regions and the domains with real values. `dsml.toml` gives the output folders `services/item-api` and `apps/item-portal`. `dsml validate` finds no error, and `dsml generate` writes the two projects.
+
 The files are create-once files (PRD-CORE-044). The command writes a file only if no file exists at its path. For a file that exists, the report gives the line `keep <path>: The file exists. The command did not change it.` The command writes no manifest. `dsml generate` writes the manifest.
 
-- Phase 1 accepts only the target `fastapi`. This is also the default target.
+- The command accepts the targets `fastapi` and `react`. The default target is `fastapi`. M11 adds the target `nextjs`.
 - With `--config <file>`, the command writes the configuration file at this path, and the model in the folder of this file.
 - The starter files are package data in `src/dsml/starter/<target>/`.
 

@@ -1,4 +1,4 @@
-"""Tests of the subcommand `dsml init` (story #38).
+"""Tests of the subcommand `dsml init` (stories #38 and #171).
 
 Some tests start a private `sysml-grpc` child process. If the binary is not
 in the cache, the `opensysml` client downloads it one time.
@@ -54,8 +54,15 @@ def test_init_accepts_the_target_fastapi(folder: Path) -> None:
 
 
 # trace: PRD-CORE-001
-@pytest.mark.parametrize("target", ["react", "nextjs", "unknown"])
-def test_init_refuses_a_target_that_is_not_in_phase_1(
+def test_init_accepts_the_target_react(folder: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["init", "--target", "react"]) == 0
+    assert capsys.readouterr().out == f"add {CONFIG}\nadd {MODEL}\n"
+    assert _files(folder) == starter.starter_files("react")
+
+
+# trace: PRD-CORE-001
+@pytest.mark.parametrize("target", ["nextjs", "unknown"])
+def test_init_refuses_a_target_that_has_no_starter_files(
     target: str, folder: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     assert main(["init", "--target", target]) == 2
@@ -125,16 +132,18 @@ def test_init_with_config_writes_the_files_in_the_folder_of_the_file(
 
 
 # trace: PRD-CORE-013, PRD-CORE-014
-def test_starter_configuration_passes_the_checks(folder: Path) -> None:
-    assert main(["init"]) == 0
+@pytest.mark.parametrize("target", starter.TARGETS)
+def test_starter_configuration_passes_the_checks(target: str, folder: Path) -> None:
+    assert main(["init", "--target", target]) == 0
     configuration = load_configuration(folder / CONFIG)
     assert [path.as_posix() for path in configuration.model] == ["model"]
 
 
 # trace: PRD-CORE-034
+@pytest.mark.parametrize("target", starter.TARGETS)
 @pytest.mark.parametrize("name", [CONFIG, MODEL])
-def test_starter_file_is_utf8_with_lf_line_ends(name: str) -> None:
-    content = starter.starter_files("fastapi")[name]
+def test_starter_file_is_utf8_with_lf_line_ends(target: str, name: str) -> None:
+    content = starter.starter_files(target)[name]
     text = content.decode("utf-8")
     assert "\r" not in text
     assert text.endswith("\n")
@@ -158,9 +167,10 @@ def test_starter_model_parses_and_resolves_with_the_library(folder: Path) -> Non
 
 
 # trace: PRD-DSML-056
-def test_starter_model_gives_the_major_and_minor_version_of_the_library() -> None:
+@pytest.mark.parametrize("target", starter.TARGETS)
+def test_starter_model_gives_the_major_and_minor_version_of_the_library(target: str) -> None:
     major, minor, _ = LIBRARY_VERSION.split(".")
-    text = starter.starter_files("fastapi")[MODEL].decode("utf-8")
+    text = starter.starter_files(target)[MODEL].decode("utf-8")
     assert f"@DsmlVersion {{ major = {major}; minor = {minor}; }}" in text
 
 
@@ -174,6 +184,37 @@ def test_ir_of_the_starter_files_has_no_finding(
     captured = capsys.readouterr()
     assert captured.err == ""
     assert '"findings": []' in captured.out
+
+
+# trace: PRD-CORE-001, PRD-DSML-030, PRD-DSML-031, PRD-DSML-039
+def test_react_starter_model_validates_with_no_finding(
+    folder: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(["init", "--target", "react"]) == 0
+    capsys.readouterr()
+    assert main(["validate"]) == 0
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == "Findings: 0 errors, 0 warnings, 0 info.\n"
+
+
+# trace: PRD-CORE-001, PRD-APP-002
+def test_generate_on_the_react_starter_writes_the_two_projects(
+    folder: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(["init", "--target", "react"]) == 0
+    assert main(["generate"]) == 0
+    capsys.readouterr()
+    for path in [
+        "apps/item-portal/package.json",
+        "apps/item-portal/src/main.gen.tsx",
+        "apps/item-portal/src/entities/item/model/item.gen.ts",
+        "apps/item-portal/src/shared/api/client.gen.ts",
+        "services/item-api/pyproject.toml",
+        "services/item-api/app/features/item/read_item/endpoint_gen.py",
+    ]:
+        assert (folder / path).is_file(), path
+    assert _files(folder / "model") == {"model.sysml": starter.starter_files("react")[MODEL]}
 
 
 # trace: PRD-CORE-044
