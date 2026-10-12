@@ -22,7 +22,7 @@ This repository builds the DSML toolchain, an internal product. The toolchain ha
 ## Source of truth
 
 - Requirements: `docs/prd/`. Start with `docs/prd/00-top-level-prd.md`.
-- Decisions and their reasons: `docs/decisions/` (records 01 to 09, all closed).
+- Decisions and their reasons: `docs/decisions/` (records 01 to 10, all closed).
 - If a PRD and a decision record do not agree, the PRD is correct. Tell the user about the difference.
 - Machine-readable lists: `docs/index/requirements.csv` and `docs/index/decisions.csv`.
 - The PRD requirements as a DSML model: `docs/model/prd/*.sysml`. Example model: `docs/model/examples/order-service.sysml`.
@@ -38,6 +38,7 @@ Do not load all documents at the start. Read the PRD for the part that you work 
 | GitHub Actions generator | `docs/prd/05-cicd-generation-prd.md` |
 | Validator and rule catalog | `docs/prd/06-validation-prd.md` |
 | Trace manifest, trace comments, reports | `docs/prd/07-traceability-prd.md` |
+| Skills, MCP server | `docs/prd/08-ai-assistance-prd.md` |
 | Versions of tools and libraries | `docs/decisions/dr-03-versions-and-prd-details.md` |
 
 ## Phase 1 scope
@@ -88,6 +89,6 @@ The `DSML` library package is in `src/dsml/library/`. The example model and the 
 
 ## Requirement IDs
 
-- PRD requirements: `PRD-<PART>-<NNN>`. Parts: TOP, DSML, CORE, APP, IAC, CICD, VAL, TRACE.
-- Decisions: Q1 to Q67 and AD1 to AD3. The Source column of each requirement gives its decisions.
+- PRD requirements: `PRD-<PART>-<NNN>`. Parts: TOP, DSML, CORE, APP, IAC, CICD, VAL, TRACE, AI.
+- Decisions: Q1 to Q71 and AD1 to AD3. The Source column of each requirement gives its decisions.
 - Validation rules: `<CATEGORY>-<NNN>`, for example `COV-003`.

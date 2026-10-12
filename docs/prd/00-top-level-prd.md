@@ -1,10 +1,10 @@
 # DSML toolchain: top-level PRD
 
-Status date: 10 October 2026
+Status date: 12 October 2026
 
 ## Summary
 
-With the DSML toolchain, a team keeps stakeholder needs, requirements, application structure and AWS infrastructure in one SysML v2 model, and generates deterministic code from that model. The toolchain is an internal product. Phase 1 delivers the model, validation, traceability, FastAPI code, OpenTofu code and GitHub Actions pipelines.
+With the DSML toolchain, a team keeps stakeholder needs, requirements, application structure and AWS infrastructure in one SysML v2 model, and generates deterministic code from that model. The toolchain is an internal product. Phase 1 delivers the model, validation, traceability, FastAPI code, OpenTofu code and GitHub Actions pipelines. Phase 4 adds skills and a local MCP server, so AI agents can help the users. A user guide tells a reader with no knowledge of SysML v2 what the model and the toolchain do.
 
 The toolchain has five functions:
 
@@ -14,7 +14,7 @@ The toolchain has five functions:
 4. It validates the model before it generates code.
 5. It traces each stakeholder need to requirements, code, tests and AWS resources.
 
-This PRD gives the goals, users, architecture, phases and cross-cutting requirements. Seven more PRDs give the requirements for each part (see Document map). [DSML decision record 01: scope and architecture](../decisions/dr-01-scope-and-architecture.md) and [DSML decision record 02: generated code, integration and PRD set](../decisions/dr-02-generated-code-integration-and-prd-set.md) are the decision baseline.
+This PRD gives the goals, users, architecture, phases and cross-cutting requirements. Eight more PRDs give the requirements for each part (see Document map). [DSML decision record 01: scope and architecture](../decisions/dr-01-scope-and-architecture.md) and [DSML decision record 02: generated code, integration and PRD set](../decisions/dr-02-generated-code-integration-and-prd-set.md) are the decision baseline.
 
 ## Goals
 
@@ -67,23 +67,24 @@ OpenSysML parses the model, and the IR adapter writes the IR. Only the IR reache
 
 ## Phases
 
-Phase 1 delivers a full path from model to a running FastAPI service in AWS. Phases 2 and 3 add the two TypeScript targets. Each phase ends when a reference model passes its exit criteria.
+Phase 1 delivers a full path from model to a running FastAPI service in AWS. Phases 2 and 3 add the two TypeScript targets. Phase 4 adds help for AI agents. Each phase ends when a reference model passes its exit criteria.
 
 | Phase | Contents | Exit criteria |
 | --- | --- | --- |
 | 1 | DSML library with all five layers. OpenSysML integration, IR, CLI and GitHub Action. Validation and traceability. FastAPI generator. Infrastructure generator for the network, container service, database, user directory and secrets. GitHub Actions generator. | The reference model "order service" (one FastAPI application, PostgreSQL, Cognito) deploys to the dev account through the generated pipeline. The determinism check passes in CI on Linux x64. The coverage matrix shows each reference requirement as satisfied and verified. |
 | 2 | React generator with FSD. Infrastructure for the static site (S3, CloudFront, ACM, Route 53). Import of an external OpenAPI file. | The reference model with a React application and a FastAPI application deploys to dev. The generated React code passes `tsc` and the FSD linter. |
 | 3 | Next.js generator with FSD. | The reference model with a Next.js application deploys to dev. |
+| 4 | AI assistance: the modeling skill, the CLI skill and a local MCP server. User guide. | `dsml skills install` writes the two skills. Through the stdio transport, the MCP tools give the same results as the CLI for the order service. The user guide is complete. |
 
 These items are out of scope for phases 1 to 3: the VS Code extension with a language server (Q5), import from a Systems Modeling API server (Q9), behavior generation (Q14), test generation (Q13), a second cloud provider (Q20) and validation rules as SysML v2 constraints (Q26).
 
 ## Document map
 
-The PRD set has this top-level PRD and seven PRDs. Nine decision records hold the decisions that the PRDs come from.
+The PRD set has this top-level PRD and eight PRDs. Ten decision records hold the decisions that the PRDs come from.
 
 | Document | ID prefix | Scope | Phase |
 | --- | --- | --- | --- |
-| Top-level PRD (this document) | PRD-TOP | Goals, users, architecture, phases, conventions, cross-cutting requirements, project dictionary, DSML appendix | 1 to 3 |
+| Top-level PRD (this document) | PRD-TOP | Goals, users, architecture, phases, conventions, cross-cutting requirements, project dictionary, DSML appendix | 1 to 4 |
 | [DSML PRD: modeling language](01-dsml-prd.md) | PRD-DSML | DSML library and the five model layers | 1 |
 | [Toolchain core PRD: CLI, IR and determinism](02-toolchain-core-prd.md) | PRD-CORE | CLI, configuration, OpenSysML integration, IR, determinism, generated files, packaging | 1 |
 | [Application generation PRD: FastAPI, React, Next.js](03-application-generation/00-common-rules.md) | PRD-APP | Rules for all targets, then FastAPI, React and Next.js, one file each | 1 to 3 |
@@ -91,6 +92,7 @@ The PRD set has this top-level PRD and seven PRDs. Nine decision records hold th
 | [CI/CD generation PRD: GitHub Actions](05-cicd-generation-prd.md) | PRD-CICD | GitHub Actions workflows, AWS access, deployment steps | 1 |
 | [Validation PRD: rules and findings](06-validation-prd.md) | PRD-VAL | Rule engine, output formats, waivers, rule catalog | 1 |
 | [Traceability PRD: links, manifests and reports](07-traceability-prd.md) | PRD-TRACE | Link types, trace manifest, trace comments, reports | 1 |
+| [AI assistance PRD: skills and MCP server](08-ai-assistance-prd.md) | PRD-AI | Modeling skill, CLI skill, local MCP server | 4 |
 | [DSML decision record 01: scope and architecture](../decisions/dr-01-scope-and-architecture.md) | Q1 to Q33, AD1 to AD3 | Scope and architecture | Closed |
 | [DSML decision record 02: generated code, integration and PRD set](../decisions/dr-02-generated-code-integration-and-prd-set.md) | Q34 to Q48 | Generated code layout, integration, PRD set | Closed |
 | [DSML decision record 03: versions and PRD details](../decisions/dr-03-versions-and-prd-details.md) | Q49 to Q56 | Version baseline and PRD details | Closed |
@@ -100,6 +102,7 @@ The PRD set has this top-level PRD and seven PRDs. Nine decision records hold th
 | [DSML decision record 07: CI platforms](../decisions/dr-07-ci-platforms.md) | Q62 | Operating systems of the toolchain CI | Closed |
 | [DSML decision record 08: release assets](../decisions/dr-08-release-assets.md) | Q63 | The place where a release publishes the toolchain package | Closed |
 | [DSML decision record 09: TypeScript targets and phase 2 and 3 details](../decisions/dr-09-typescript-targets-and-phase-2-and-3-details.md) | Q64 to Q67 | Versions and tools of the TypeScript targets, imported OpenAPI files, calls across domains, Drizzle migration names | Closed |
+| [DSML decision record 10: AI assistance and user guide](../decisions/dr-10-ai-assistance.md) | Q68 to Q71 | Install of the skills, MCP library and transport, files that the MCP server writes, user guide | Closed |
 
 The [DSML appendix](../model/README.md) holds all PRD requirements as a DSML model (Q48).
 
@@ -110,7 +113,7 @@ All documents of the PRD set use the same language, IDs and table form.
 - **Language.** The text uses ASD-STE100 Simplified Technical English, Issue 9. The project dictionary below gives the approved technical nouns and technical verbs.
 - **Modal verbs.** "Must" marks an obligation. "Can" marks a possibility or a permission. The documents do not use "shall", "should" or "may".
 - **Requirement IDs.** Each requirement has the ID `PRD-<PART>-<NNN>`, for example `PRD-CORE-012`. `<PART>` is the prefix of the PRD. `<NNN>` has three digits. A deleted ID is not used again.
-- **Requirement tables.** Each requirement table has four columns: ID, Requirement, Verification and Source. Source gives the decisions (Q1 to Q67, AD1 to AD3) that the requirement comes from.
+- **Requirement tables.** Each requirement table has four columns: ID, Requirement, Verification and Source. Source gives the decisions (Q1 to Q71, AD1 to AD3) that the requirement comes from.
 - **Goals.** The lead of each PRD gives the goals (N-001 to N-005) that its requirements cover.
 - **Phase.** The lead of each PRD gives its phase. A requirement for a different phase states that phase in its text.
 - **Verification methods.**
@@ -126,7 +129,7 @@ These requirements apply to all parts of the toolchain and to all PRDs. They cov
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
 | PRD-TOP-001 | The toolchain must be written in Python, and uv must manage the Python project. | Inspection | Q8 |
-| PRD-TOP-002 | The toolchain must install as one Python package that supplies the command `dsml`. | Demonstration | Q5 |
+| PRD-TOP-002 | The toolchain must install as one Python package that supplies the command `dsml`. | Demonstration | Q5, Q69 |
 | PRD-TOP-003 | The toolchain must run on the operating systems that decision record 03 gives. | Test | Q50 |
 | PRD-TOP-004 | Validation, code generation and traceability must not use an AI model. | Inspection | Q16 |
 | PRD-TOP-005 | Validation, code generation and trace reports must not use the network. Only the local OpenSysML child process is permitted. | Test | Q16, Q38 |
@@ -137,6 +140,7 @@ These requirements apply to all parts of the toolchain and to all PRDs. They cov
 | PRD-TOP-010 | Each PRD requirement must have a unique ID with the prefix of its PRD. | Inspection | Q32 |
 | PRD-TOP-011 | The DSML appendix must contain each PRD requirement. OpenSysML must parse the appendix with no error. | Test | Q48 |
 | PRD-TOP-012 | Validation and code generation of a model with 1,000 elements must finish in the time that decision record 03 gives. | Analysis | Q50 |
+| PRD-TOP-013 | The user documentation must include a user guide in `docs/guide/` for a reader with no knowledge of SysML v2, Jinja or the target tools. The guide must have a concepts page, a glossary, a modeling tutorial, pages for the generated code and the reports, reference pages and a page for AI assistance. | Inspection | Q71, Q1 |
 
 ## Project dictionary
 
@@ -157,6 +161,10 @@ The PRD set can use these words in addition to the STE dictionary. Each term has
 | IR | Technical noun | Intermediate representation: the versioned JSON form of the model that validators and generators read. |
 | layer | Technical noun | (1) One of the five parts of the model: need, requirement, application, infrastructure, verification. (2) An FSD layer. The text always states which. |
 | manifest | Technical noun | A JSON file that lists generated files or trace data. |
+| MCP prompt | Technical noun | A prompt template that an MCP server gives to an AI agent. |
+| MCP resource | Technical noun | A read-only text that an MCP server gives to an AI agent, for example the rule catalog. |
+| MCP server | Technical noun | A program that gives MCP tools, MCP resources and MCP prompts to an AI agent through the Model Context Protocol. |
+| MCP tool | Technical noun | A function of an MCP server that an AI agent can call, for example `validate`. |
 | need | Technical noun | A stakeholder concern in the model, with an ID such as `N-001`. |
 | operation | Technical noun | An API action of an application: a CRUD action or a custom action. |
 | pipeline | Technical noun | A GitHub Actions workflow that the generator writes. |
@@ -164,11 +172,13 @@ The PRD set can use these words in addition to the STE dictionary. Each term has
 | requirement | Technical noun | A requirement element in the model, with an ID such as `R-001`, or a PRD requirement. |
 | role | Technical noun | A named set of permissions in the application layer. |
 | rule | Technical noun | One validation check with an ID, a severity and a message. |
+| skill | Technical noun | A folder with instructions and reference files that tells an AI agent how to do a task. |
 | slice | Technical noun | An FSD slice, or a vertical slice of a FastAPI application. |
 | stakeholder | Technical noun | A person or group that has needs. |
 | suspect link | Technical noun | A trace link with an end that changed after the baseline. |
 | target | Technical noun | The framework that the generator writes code for: React, Next.js or FastAPI. |
 | trace link | Technical noun | A relationship from one element to a different element or to a file. |
+| user guide | Technical noun | The documentation in `docs/guide/` for users of the toolchain. |
 | verification | Technical noun | A verification element with an ID such as `V-001`, which shows how a requirement is verified. |
 | view | Technical noun | A UI page in the application layer: list, detail or form. |
 | waiver | Technical noun | An annotation that stops one rule for one element, with a reason and an owner. |

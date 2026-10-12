@@ -296,6 +296,1284 @@
       "attributes": [
         {
           "location": {
+            "column": 50,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 7
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 90,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 7
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 121,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 7
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 7
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Two skills in the package"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The toolchain package must contain two skills in the Agent Skills format: the modeling skill dsml-modeling and the CLI skill dsml-cli.",
+      "identity": "PRD-AI-001",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 5
+      },
+      "multiplicity": null,
+      "name": "ai001",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai001",
+      "shortName": "PRD-AI-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 39,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 12
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 79,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 12
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 110,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 12
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 12
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Modeling skill"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The modeling skill must tell an AI agent how to write a model in the five layers with the DSML keywords. It must contain the rule catalog and example models.",
+      "identity": "PRD-AI-002",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 10
+      },
+      "multiplicity": null,
+      "name": "ai002",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai002",
+      "shortName": "PRD-AI-002",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 34,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 17
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 74,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 17
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 105,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 17
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 17
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "CLI skill"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The CLI skill must tell an AI agent how to use dsml init, validate, generate, check-output and trace. It must give a loop that corrects the findings until dsml validate finds no error.",
+      "identity": "PRD-AI-003",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 15
+      },
+      "multiplicity": null,
+      "name": "ai003",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai003",
+      "shortName": "PRD-AI-003",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 47,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 22
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "interface",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 88,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 22
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 119,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 22
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 22
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Skills install command"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The command dsml skills install must write the two skills into the folder .claude/skills/ of the project. The option --output must select a different folder.",
+      "identity": "PRD-AI-004",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 20
+      },
+      "multiplicity": null,
+      "name": "ai004",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai004",
+      "shortName": "PRD-AI-004",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 59,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 27
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 101,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 27
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 132,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 27
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 27
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Install changes only skill folders"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "dsml skills install must replace only the skill folders that it owns. It must not change a different file or folder in the destination folder.",
+      "identity": "PRD-AI-005",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 25
+      },
+      "multiplicity": null,
+      "name": "ai005",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai005",
+      "shortName": "PRD-AI-005",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 53,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 32
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 95,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 32
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 126,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 32
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 32
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Deterministic skills install"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Two runs of dsml skills install with the same toolchain version must write byte-identical files.",
+      "identity": "PRD-AI-006",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 30
+      },
+      "multiplicity": null,
+      "name": "ai006",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai006",
+      "shortName": "PRD-AI-006",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 49,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 37
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 89,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 37
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 120,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 37
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 37
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Current skill references"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The reference files of the skills must agree with the DSML library, the rule catalog and the CLI of the same toolchain version. A CI test must find a reference file that is not current.",
+      "identity": "PRD-AI-007",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 35
+      },
+      "multiplicity": null,
+      "name": "ai007",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai007",
+      "shortName": "PRD-AI-007",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 41,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 42
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "interface",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 82,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 42
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 113,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 42
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 42
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Local MCP server"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The command dsml mcp must start a local MCP server with the official MCP Python SDK. The server must use only the stdio transport.",
+      "identity": "PRD-AI-008",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 40
+      },
+      "multiplicity": null,
+      "name": "ai008",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai008",
+      "shortName": "PRD-AI-008",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 54,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 47
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 96,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 47
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 127,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 47
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 47
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Optional MCP dependency group"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The MCP Python SDK must be in the optional dependency group mcp of the toolchain package. Without the group, dsml mcp must stop with exit code 2 and a message that gives the install command.",
+      "identity": "PRD-AI-009",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 45
+      },
+      "multiplicity": null,
+      "name": "ai009",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai009",
+      "shortName": "PRD-AI-009",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 47,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 52
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 89,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 52
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 120,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 52
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 52
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Core without MCP group"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "All other subcommands must operate without the optional dependency group mcp.",
+      "identity": "PRD-AI-010",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 50
+      },
+      "multiplicity": null,
+      "name": "ai010",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai010",
+      "shortName": "PRD-AI-010",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 34,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 57
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "interface",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 75,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 57
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 106,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 57
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 57
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "MCP tools"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The MCP server must have the MCP tools init, validate, ir, generate, check_output, trace and version. Each tool must accept the options of its subcommand, except --output and --overwrite.",
+      "identity": "PRD-AI-011",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 55
+      },
+      "multiplicity": null,
+      "name": "ai011",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai011",
+      "shortName": "PRD-AI-011",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 48,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 62
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 88,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 62
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 119,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 62
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 62
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Same results as the CLI"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "For the same model, configuration and toolchain version, each MCP tool must give the same result as its subcommand.",
+      "identity": "PRD-AI-012",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 60
+      },
+      "multiplicity": null,
+      "name": "ai012",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai012",
+      "shortName": "PRD-AI-012",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 51,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 67
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "security",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 89,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 67
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 120,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 67
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 67
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Files that MCP tools write"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Only the MCP tools init and generate can write files. The tool generate must obey PRD-CORE-042 and PRD-CORE-043, and it must stop on a changed generated file.",
+      "identity": "PRD-AI-013",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 65
+      },
+      "multiplicity": null,
+      "name": "ai013",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai013",
+      "shortName": "PRD-AI-013",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 44,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 72
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "security",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 82,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 72
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 113,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 72
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 72
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Project folder only"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The MCP server must operate only in the project folder that the user gives when the server starts. It must refuse a path outside that folder and must not write a file outside it.",
+      "identity": "PRD-AI-014",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 70
+      },
+      "multiplicity": null,
+      "name": "ai014",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai014",
+      "shortName": "PRD-AI-014",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 38,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 77
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "interface",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 79,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 77
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 110,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 77
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 77
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "MCP resources"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The MCP server must have MCP resources that give the DSML reference, the rule catalog and the example models. The resources must use the same reference files as the skills.",
+      "identity": "PRD-AI-015",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 75
+      },
+      "multiplicity": null,
+      "name": "ai015",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai015",
+      "shortName": "PRD-AI-015",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 36,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 82
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "interface",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 77,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 82
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 108,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 82
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 82
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "MCP prompts"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The MCP server must have MCP prompts for these tasks: write a model from a product description, correct the findings of validation, and generate code.",
+      "identity": "PRD-AI-016",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 80
+      },
+      "multiplicity": null,
+      "name": "ai016",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai016",
+      "shortName": "PRD-AI-016",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 49,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 87
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "security",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 87,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 87
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 118,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 87
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 87
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "No network in MCP server"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The MCP server must not use the network and must not send the model to a different computer. It must not open a network socket.",
+      "identity": "PRD-AI-017",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 85
+      },
+      "multiplicity": null,
+      "name": "ai017",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai017",
+      "shortName": "PRD-AI-017",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 44,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 92
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 86,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 92
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 117,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 92
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-ai.sysml",
+            "line": 92
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "STE text for agents"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The text of the skills, the MCP tools, the MCP resources and the MCP prompts must use ASD-STE100 Issue 9.",
+      "identity": "PRD-AI-018",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 90
+      },
+      "multiplicity": null,
+      "name": "ai018",
+      "owner": "PrdAi",
+      "qualifiedName": "PrdAi::ai018",
+      "shortName": "PRD-AI-018",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
             "column": 32,
             "file": "docs/model/prd/prd-app-common-fastapi.sysml",
             "line": 8
@@ -20248,6 +21526,77 @@
         {
           "location": {
             "column": 35,
+            "file": "docs/model/prd/prd-top.sysml",
+            "line": 67
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 77,
+            "file": "docs/model/prd/prd-top.sysml",
+            "line": 67
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 108,
+            "file": "docs/model/prd/prd-top.sysml",
+            "line": 67
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-top.sysml",
+            "line": 67
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "User guide"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The user documentation must include a user guide in docs/guide/ for a reader with no knowledge of SysML v2, Jinja or the target tools. The guide must have a concepts page, a glossary, a modeling tutorial, pages for the generated code and the reports, reference pages and a page for AI assistance.",
+      "identity": "PRD-TOP-013",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-top.sysml",
+        "line": 65
+      },
+      "multiplicity": null,
+      "name": "top013",
+      "owner": "PrdTop",
+      "qualifiedName": "PrdTop::top013",
+      "shortName": "PRD-TOP-013",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 35,
             "file": "docs/model/prd/prd-trace.sysml",
             "line": 7
           },
@@ -22661,6 +24010,25 @@
       "attributes": [],
       "direction": null,
       "doc": null,
+      "identity": "PrdAi",
+      "kind": "Package",
+      "location": {
+        "column": 1,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 1
+      },
+      "multiplicity": null,
+      "name": "PrdAi",
+      "owner": null,
+      "qualifiedName": "PrdAi",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
       "identity": "PrdAppCommonFastApi",
       "kind": "Package",
       "location": {
@@ -22940,6 +24308,7 @@
     }
   ],
   "files": [
+    "docs/model/prd/prd-ai.sysml",
     "docs/model/prd/prd-app-common-fastapi.sysml",
     "docs/model/prd/prd-app-web.sysml",
     "docs/model/prd/prd-cicd.sysml",
@@ -23053,6 +24422,186 @@
       "source": "N-005",
       "target": "PrdNeeds::PlatformEngineer",
       "type": "stakeholder"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 8
+      },
+      "source": "PRD-AI-001",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 13
+      },
+      "source": "PRD-AI-002",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 18
+      },
+      "source": "PRD-AI-003",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 23
+      },
+      "source": "PRD-AI-004",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 28
+      },
+      "source": "PRD-AI-005",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 33
+      },
+      "source": "PRD-AI-006",
+      "target": "N-002",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 38
+      },
+      "source": "PRD-AI-007",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 43
+      },
+      "source": "PRD-AI-008",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 48
+      },
+      "source": "PRD-AI-009",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 53
+      },
+      "source": "PRD-AI-010",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 58
+      },
+      "source": "PRD-AI-011",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 63
+      },
+      "source": "PRD-AI-012",
+      "target": "N-002",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 68
+      },
+      "source": "PRD-AI-013",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 73
+      },
+      "source": "PRD-AI-014",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 78
+      },
+      "source": "PRD-AI-015",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 83
+      },
+      "source": "PRD-AI-016",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 88
+      },
+      "source": "PRD-AI-017",
+      "target": "N-002",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-ai.sysml",
+        "line": 93
+      },
+      "source": "PRD-AI-018",
+      "target": "N-001",
+      "type": "frame"
     },
     {
       "location": {
@@ -25862,6 +27411,16 @@
       },
       "source": "PRD-TOP-012",
       "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-top.sysml",
+        "line": 68
+      },
+      "source": "PRD-TOP-013",
+      "target": "N-001",
       "type": "frame"
     },
     {
