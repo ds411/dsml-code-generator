@@ -144,8 +144,14 @@ def test_fixed_names_and_no_lockfile(portal_ir: Ir) -> None:
         "eslint.config.js",
     }
     files = collect([ReactGenerator()], portal_ir, configuration(), None)
-    # Only the public API index.ts of a slice is a create-once file (PRD-APP-204).
-    assert all(file.kind is Kind.GENERATED or Path(file.path).name == "index.ts" for file in files)
+    # Only the public API index.ts of a slice or a segment and the shadcn/ui
+    # copy in src/shared/ are create-once files (PRD-APP-204, PRD-APP-212).
+    assert all(
+        file.kind is Kind.GENERATED
+        or Path(file.path).name == "index.ts"
+        or file.path.startswith(("src/shared/ui/", "src/shared/lib/"))
+        for file in files
+    )
     assert not [file.path for file in files if Path(file.path).name in LOCKFILES]
     assert not [file.path for file in files if file.path.startswith(".dsml/")]
 
@@ -254,7 +260,11 @@ def test_generator_writes_into_the_output_folder_of_each_application() -> None:
     ir = small_ir(application("orderApi", "fastapi"), application())
     settings = configuration('[applications.orderPortal]\noutput = "apps/portal"\n')
     files = ReactGenerator().generate(ir, settings, None)
-    assert sorted(file.path for file in files) == [f"apps/portal/{path}" for path in PROJECT_FILES]
+    paths = sorted(file.path for file in files)
+    assert all(path.startswith("apps/portal/") for path in paths)
+    assert [path for path in paths if not layer_folder(path.removeprefix("apps/portal/"))] == [
+        f"apps/portal/{path}" for path in PROJECT_FILES
+    ]
     assert {file.part for file in files} == {application_part("orderPortal")}
 
 
@@ -288,9 +298,12 @@ def test_generator_calls_each_layer_module(monkeypatch: pytest.MonkeyPatch) -> N
 
 
 # trace: PRD-APP-202
-def test_layer_modules_give_no_files_yet() -> None:
+def test_each_layer_module_writes_only_into_its_layer() -> None:
     item = context()
-    assert [function(item) for function in react.LAYER_FUNCTIONS] == [[]] * len(LAYERS)
+    for layer, function in zip(reversed(LAYERS), react.LAYER_FUNCTIONS, strict=True):
+        assert function.__module__ == f"dsml.generate.react_{layer}"
+        for file in function(item):
+            assert file.path.startswith(f"web/src/{layer}/"), file.path
     assert LAYERS == ("app", "pages", "widgets", "features", "entities", "shared")
 
 

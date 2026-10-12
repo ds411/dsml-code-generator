@@ -73,9 +73,24 @@ The rules of the schemas:
 
 Each query key is an array `[<entity>, <operation>, <parameters>]` (PRD-APP-224), for example `["order", "read", { id }]` and `["order", "list", { limit, offset }]`. The key of all queries of an entity is `["order"]`. The features story (#172) uses it to invalidate the queries after a mutation (PRD-APP-225). The list key gives the default values of `limit` (50) and `offset` (0), so the two forms of one request have one key.
 
-The query functions call `apiRequest` from `@/shared/api`. The function takes an object with `method`, `path`, `query`, `body` and `signal`, and gives the JSON body of the response as `unknown`. The query function parses the body with the Zod schema. The shared layer story (#169) must write `apiRequest` with these types. Until then, the CI job uses the stand-in `tests/react/stubs/src/shared/api/index.ts`.
+The query functions call `apiRequest` from `@/shared/api`. The function takes an object with `method`, `path`, `query`, `body` and `signal`, and gives the JSON body of the response as `unknown`. The query function parses the body with the Zod schema. The shared layer (story #169) writes `apiRequest`.
 
 The model files and the query files have trace symbols (PRD-TRACE-006). `src/dsml/generate/typescript_symbols.py` finds the top-level declarations of a generated TypeScript file. A function gives a symbol of the kind `function`. A constant, a type or an interface gives a symbol of the kind `class`.
+
+## Shared layer
+
+Story #169 added the shared layer: `src/dsml/generate/react_shared.py`, the templates in `src/dsml/templates/react/shared/` and the pinned copy of shadcn/ui in `src/dsml/templates/react/shadcn-ui/`. The layer `shared` has no slices. Each segment has a public API: a generated `index.gen.ts` and a create-once `index.ts`, as a slice has. Thus other layers import `@/shared/api`, `@/shared/auth`, `@/shared/config`, `@/shared/lib` and `@/shared/ui`.
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `config/runtime-config.gen.ts` | `loadRuntimeConfig` reads `/config.json` and parses it with `runtimeConfigSchema`. `runtimeConfig` gives the loaded values. The keys are `apiBaseUrl`, `region`, `userPoolId`, `appClientId` and `loginDomain`: the constant `CONFIGURATION_KEYS` of the pipeline generator. | PRD-APP-010, PRD-APP-230 |
+| `auth/amplify.gen.ts` | `configureAuth` configures Amplify Auth with Cognito managed login and the authorization code flow (`responseType: "code"`). Amplify uses PKCE with this flow. The callback path `/auth/callback`, the logout path `/` and the scopes are the values of the app client of the user directory (PRD-IAC-019). `currentSession` gives the access token and the groups (`cognito:groups`). `startLogin` and `logout` start the login and the logout. | PRD-APP-007, PRD-APP-231 |
+| `api/client.gen.ts` | `apiRequest` adds the access token as a bearer token. An error response gives an `ApiError`. For a problem details response, the error has the `title` and the `detail`, and the message is `<title>: <detail>`. | PRD-APP-014, PRD-APP-227, PRD-APP-232 |
+| `ui/*.tsx`, `lib/utils.ts` | The shadcn/ui components and the function `cn`. These are create-once files from the pinned copy. | PRD-APP-212, PRD-CORE-048 |
+
+The copy has the components `alert`, `button`, `card`, `input`, `table` and `textarea`. They use only the packages of the version baseline. `src/dsml/templates/react/shadcn-ui/README.md` gives the source commit, the changes to the source files and the steps to update the copy. The features story (#172) and the widgets story (#173) can add components. A component such as `label`, `dialog` or `alert-dialog` needs a Radix UI package. Add that package to the version baseline and to `RUNTIME_PACKAGES` first.
+
+No generated file contains an environment value (PRD-APP-233). The application reads the values from `/config.json` at run time.
 
 ## Golden files and tests
 
@@ -86,10 +101,10 @@ The test of the project files compares only the files outside the layer folders 
 The CI job "React golden project" does these steps:
 
 1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035).
-2. It copies the golden project to a temporary folder. It adds the stand-in files of `tests/react/stubs/` that the golden project does not have. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
+2. It copies the golden project to a temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
 3. It runs `tsc --noEmit`, ESLint and Steiger. While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices yet.
-4. It copies `tests/react/field-rules/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211).
-5. It runs `pnpm build` and makes sure that `dist/index.html` exists (PRD-APP-233).
+4. It copies `tests/react/field-rules/` and `tests/react/shared/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors.
+5. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
 
 ## Differences from the story text
 
@@ -98,7 +113,7 @@ The CI job "React golden project" does these steps:
 ## Items for the next stories
 
 - `components.json` gives `src/app/styles/index.css` as the Tailwind CSS file. The story that writes the app layer must write this file and import it in the entry module.
-- The shared layer story (#169) must write `apiRequest` in `src/shared/api/` with the types of the stand-in `tests/react/stubs/src/shared/api/index.ts`. Then it can delete the stand-in.
 - The pages story (#174) makes the pages refer to the entity slices. Then the CI job uses the generated `steiger.config.ts`, and `tests/react/steiger-before-pages.config.ts` can go.
-- The shared layer story (#169) reads `/config.json`. The keys are `apiBaseUrl`, `region`, `userPoolId`, `appClientId` and `loginDomain` (story #165).
+- The pages story (#174) writes the entry module and the app layer. Before the first render, the entry module must call `loadRuntimeConfig` and then `configureAuth` (PRD-APP-230, PRD-APP-231). The router must have the route `/auth/callback`. `beforeLoad` can use `currentSession` and `startLogin` (PRD-APP-222).
+- The app layer must write the Tailwind CSS theme variables of shadcn/ui (for example `--primary`) in `src/app/styles/index.css`, because the components use them.
 - With pnpm 12, `pnpm install` can write `pnpm-workspace.yaml` in the project (the setting `minimumReleaseAgeExclude`). `pnpm-lock.yaml` and this file do not have the Prettier format. Thus `prettier --check .` in the generated pipeline finds them. The project has no `.prettierignore`, because the file is not on the fixed-name list of PRD-APP-235.
