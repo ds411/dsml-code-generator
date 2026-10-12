@@ -1,0 +1,33 @@
+{#- The ui segment of the page slice of a detail view (PRD-APP-210). The page
+    shows the details of one entity. The route gives the key from the path
+    parameter "$id". Data: "page" (a dsml.generate.react_pages.PageSlice). -#}
+{% include "common/header.j2" %}
+{% for line in page.import_lines() %}
+{{ line }}
+{% endfor %}
+{% if page.description is not none %}
+
+/** The description of the view {{ page.name }} in the model. */
+{% for line in page.description_lines() %}
+{{ line }}
+{% endfor %}
+{% endif %}
+
+/** The properties of the page of the view {{ page.name }}. */
+export interface {{ page.component }}Props {
+  /** The key of the entity: the path parameter "$id" of the route. */
+  id: {{ page.key_type }};
+}
+
+/** The page of the view {{ page.name }}: the details of one entity {{ page.entity.name }}. */
+export function {{ page.component }}({ id }: {{ page.component }}Props) {
+  return (
+    <section className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">{{ page.title }}</h1>
+{% if page.description is not none %}
+      <p className="text-muted-foreground">{DESCRIPTION}</p>
+{% endif %}
+      <{{ page.widget.component }} {{ page.detail_key }}={id} />
+    </section>
+  );
+}

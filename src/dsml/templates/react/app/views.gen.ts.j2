@@ -1,0 +1,21 @@
+{#- The views of the application: the route path, the title and the access
+    rule of each view (PRD-APP-221, PRD-DSML-033), and the navigation of the
+    model (PRD-DSML-032). Data: "app" (a dsml.generate.react_app.AppData). -#}
+{% include "common/header.j2" %}
+import type { ViewAccess } from "./access.gen";
+
+/** A view of the application: its route path, its title and its access rule. */
+export interface View extends ViewAccess {
+  readonly path: string;
+  readonly title: string;
+}
+
+/** The views of the application, by the view name. */
+{% for line in app.views_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The views of the navigation, in the order of the model (PRD-DSML-032). */
+{% for line in app.navigation_lines() %}
+{{ line }}
+{% endfor %}

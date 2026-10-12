@@ -1,0 +1,40 @@
+{#- The ui segment of the page slice of a list view (PRD-APP-210). The page
+    shows the table of the entity. Each row has a link to the detail view of
+    the entity and the delete button, if the application has them. Data:
+    "page" (a dsml.generate.react_pages.PageSlice). -#}
+{% include "common/header.j2" %}
+{% for line in page.import_lines() %}
+{{ line }}
+{% endfor %}
+{% if page.description is not none %}
+
+/** The description of the view {{ page.name }} in the model. */
+{% for line in page.description_lines() %}
+{{ line }}
+{% endfor %}
+{% endif %}
+
+/** The page of the view {{ page.name }}: the list of the entities {{ page.entity.name }}. */
+export function {{ page.component }}() {
+  return (
+    <section className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">{{ page.title }}</h1>
+{% if page.description is not none %}
+      <p className="text-muted-foreground">{DESCRIPTION}</p>
+{% endif %}
+{% if page.has_actions %}
+      <{{ page.widget.component }}
+        actions={(item) => (
+          <div className="flex flex-wrap items-center gap-2">
+{% for line in page.actions_lines("            ") %}
+{{ line }}
+{% endfor %}
+          </div>
+        )}
+      />
+{% else %}
+      <{{ page.widget.component }} />
+{% endif %}
+    </section>
+  );
+}

@@ -1,0 +1,22 @@
+{#- The providers of the application: TanStack Query and the router. The
+    root route reads the auth session before each navigation. Data: none. -#}
+{% include "common/header.j2" %}
+import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
+
+import type { AppRouter } from "../router/router.gen";
+
+/** The properties of the providers. */
+export interface AppProvidersProps {
+  queryClient: QueryClient;
+  router: AppRouter;
+}
+
+/** The providers of TanStack Query and of the router. */
+export function AppProviders({ queryClient, router }: AppProvidersProps) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
+}

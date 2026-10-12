@@ -1,0 +1,41 @@
+{#- The navigation of the application (PRD-APP-009, PRD-DSML-032). The list
+    of the views is in views.gen.ts. Data: none. -#}
+{% include "common/header.j2" %}
+import { Link } from "@tanstack/react-router";
+
+import type { Session } from "@/shared/auth";
+
+import { isPermitted } from "../router/access.gen";
+import { NAVIGATION } from "../router/views.gen";
+
+/** The properties of the navigation. */
+export interface NavigationProps {
+  /** The session of the user, or undefined if the user is not logged in. */
+  session: Session | undefined;
+}
+
+/**
+ * The navigation of the application: the views of the navigation of the
+ * model, in the order of the model (PRD-DSML-032). It shows only the views
+ * that the roles of the user permit (PRD-APP-009).
+ */
+export function Navigation({ session }: NavigationProps) {
+  const views = NAVIGATION.filter((view) => isPermitted(session, view));
+  return (
+    <nav aria-label="Main">
+      <ul className="flex flex-wrap gap-4">
+        {views.map((view) => (
+          <li key={view.path}>
+            <Link
+              to={view.path}
+              className="text-muted-foreground hover:text-foreground"
+              activeProps={{ "{{" }} className: "text-foreground font-medium" {{ "}}" }}
+            >
+              {view.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}

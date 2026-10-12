@@ -1,0 +1,36 @@
+{#- The ui segment of the page slice of a form view (PRD-APP-210). The page
+    shows the form of the operation of the view. After a success, the page
+    shows a status message. Data: "page" (a
+    dsml.generate.react_pages.PageSlice). -#}
+{% include "common/header.j2" %}
+{% for line in page.import_lines() %}
+{{ line }}
+{% endfor %}
+{% if page.description is not none %}
+
+/** The description of the view {{ page.name }} in the model. */
+{% for line in page.description_lines() %}
+{{ line }}
+{% endfor %}
+{% endif %}
+
+/** The page of the view {{ page.name }}: the form of the operation {{ page.feature.name }}. */
+export function {{ page.component }}() {
+  const [complete, setComplete] = useState(false);
+  return (
+    <section className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">{{ page.title }}</h1>
+{% if page.description is not none %}
+      <p className="text-muted-foreground">{DESCRIPTION}</p>
+{% endif %}
+      <p role="status" className="text-sm">
+        {complete ? "The operation is complete." : ""}
+      </p>
+      <{{ page.feature.component }}
+        onSuccess={() => {
+          setComplete(true);
+        }}
+      />
+    </section>
+  );
+}

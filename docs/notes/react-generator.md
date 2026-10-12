@@ -29,9 +29,9 @@ All files are generated files. The generator writes them again at each run. It d
 | `vite.config.ts` | The React and Tailwind CSS plugins. The alias `@/` to `/src/`. The output folder `dist/`. The Vitest settings. | PRD-APP-205, PRD-APP-233, Q64 |
 | `index.html` | The page. It loads `src/main.gen.tsx`. | PRD-APP-233 |
 | `components.json` | The settings of shadcn/ui: the components are in `@/shared/ui`. | PRD-APP-201, Q41 |
-| `steiger.config.ts` | The recommended rules of the FSD plugin of Steiger, with the rule `fsd/repetitive-naming` off (story #172). | PRD-APP-234 |
+| `steiger.config.ts` | The recommended rules of the FSD plugin of Steiger, with the rules `fsd/repetitive-naming` (story #172) and `fsd/insignificant-slice` off, and the rule `fsd/segments-by-purpose` off for `src/app/providers` (story #174). | PRD-APP-234 |
 | `eslint.config.js` | The type-aware rules of `typescript-eslint` (`strictTypeChecked`). | PRD-APP-201, Q64 |
-| `src/main.gen.tsx` | The entry module. It renders an empty root. | PRD-APP-202 |
+| `src/main.gen.tsx` | The entry module. It reads `/config.json`, configures Amplify Auth and then renders the providers (story #174). | PRD-APP-202, PRD-APP-230, PRD-APP-231 |
 
 The seven fixed-name files are the list of PRD-APP-235. Each other generated file has a name that ends with `.gen.ts` or `.gen.tsx` (PRD-CORE-039).
 
@@ -148,6 +148,50 @@ The rules of the widgets:
 - An error of the query shows in an `Alert`. For a problem details response, the alert shows the `title` and the `detail` (PRD-APP-227).
 - The column headers are `th` elements with `scope="col"`. The paging controls are native buttons, thus the user can reach each control with the Tab key (PRD-APP-228).
 
+## Pages layer
+
+Story #174 added the pages layer: `src/dsml/generate/react_pages.py` and the templates in `src/dsml/templates/react/pages/`.
+
+The React application gets one slice in `src/pages/<view>/` for each view (PRD-APP-210). The page combines the widgets and the features of the view.
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `ui/<view>-page.gen.tsx` | The page of the view, for example `OrderListPage`. The title is the view name in words. The documentation of the view is the description. | PRD-APP-210 |
+| `index.gen.ts`, `index.ts` | The public API of the slice. `index.ts` is a create-once file. | PRD-APP-204 |
+
+The rules of the pages:
+
+- A list view shows the table of its entity. The property `actions` of the table gives a link "Details" to the detail view of the entity, if the application has one. It also gives the delete button, if the entity has the operation `delete`.
+- A detail view shows the details widget. The page gets the key `id` from the route.
+- A form view shows the form of its operation. The operation must be a custom operation of a called application with a method other than GET. After a success, the page shows a status message.
+- Each view has one route path (PRD-APP-221): `/<entities>` for a list view, `/<entities>/$id` for a detail view and `/<operation>` for a form view. `<entities>` is the kebab case of the exposed entity, for example `/orders`. `<operation>` is the feature slice name, for example `/place-order`. Two views with one path give an error.
+
+## App layer
+
+Story #174 added the app layer: `src/dsml/generate/react_app.py` and the templates in `src/dsml/templates/react/app/`. The layer `app` has no slices.
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `router/routes.gen.tsx` | The route tree with code-based routing. The root route reads the session before each navigation. The routes are the home page `/`, the callback URL `/auth/callback` and one route for each view. | PRD-APP-220, PRD-APP-221, PRD-APP-222, PRD-APP-223 |
+| `router/views.gen.ts` | `VIEWS`: the path, the title and the access rule (`public` and `roles`) of each view. `NAVIGATION`: the views of the navigation, in the order of the model. | PRD-APP-221, PRD-DSML-032, PRD-DSML-033 |
+| `router/access.gen.ts` | `checkAccess` and `requireView`: the check of the session and the roles. `isPermitted` tells if the session permits a view. | PRD-APP-009, PRD-APP-222 |
+| `router/router.gen.ts` | `createAppRouter`: the router with the query client in its context. A test can give a memory history. | PRD-APP-220 |
+| `layout/navigation.gen.tsx` | `Navigation`: the views of `NAVIGATION` that the roles of the user permit. | PRD-APP-009 |
+| `layout/app-layout.gen.tsx` | `AppLayout`: the title, the navigation, the button "Log in" or "Log out", and the page. | PRD-APP-009 |
+| `layout/status-pages.gen.tsx` | The home page, the "not permitted" page, the "not found" page and `RouteError`, the error component of the routes. | PRD-APP-222 |
+| `providers/query-client.gen.ts` | `createQueryClient`. The data of a query stays fresh for 30 seconds, thus a widget does not read the data of the loader again. | PRD-APP-223 |
+| `providers/app-providers.gen.tsx` | `AppProviders`: the providers of TanStack Query and of the router. | PRD-APP-201 |
+| `providers/session.gen.ts` | `startSession`: read `/config.json` and configure Amplify Auth. The entry module calls it before the first render. | PRD-APP-230, PRD-APP-231 |
+| `styles/index.css` | The Tailwind CSS file with the theme variables of shadcn/ui. It is a create-once file, thus a developer can change the theme. | PRD-APP-212 |
+
+The rules of the routes:
+
+- The `beforeLoad` function of each view route is `requireView(VIEWS.<view>)`. A public view needs no session. With no session, the function starts the login and gives a `LoginStartedError`. The page shows "Wait for the login page.". With no permitted role, the function gives a `NotPermittedError`, and `RouteError` shows the "not permitted" page (PRD-APP-222). The roles are the user pool groups of the session.
+- `beforeLoad` runs before the loader. Thus a route loads no data with no session or with no permitted role.
+- The loader of a list route calls `queryClient.ensureQueryData(list<Entity>QueryOptions())`. The loader of a detail route calls `queryClient.ensureQueryData(read<Entity>QueryOptions(params.id))` (PRD-APP-223). The query key of the loader of a list route is the key of the first page of the table.
+- The route `/auth/callback` goes to the home page. Amplify Auth reads the code of the login while the root route reads the session.
+- A detail view in the navigation gives an error, because it needs the key of an entity.
+
 ## Golden files and tests
 
 The golden folder is the project folder of the application `orderPortal` of the order portal model. It has no manifests in `.dsml/`. The phase 2 exit story (#177) adds them.
@@ -158,19 +202,17 @@ The CI job "React golden project" does these steps:
 
 1. It runs Prettier in check mode on `tests/golden/react/` and `tests/react/` (PRD-CORE-035).
 2. It copies the golden project to `apps/order-portal` in a temporary folder. It also copies the order portal model and its `dsml.toml` to the temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
-3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger (story #170, `docs/notes/check-output.md`). While the golden project has no folder `src/pages`, Steiger uses `tests/react/steiger-before-pages.config.ts`. This configuration sets the rule `fsd/insignificant-slice` off, because no page refers to the entity slices and the feature slices yet. It also sets the rule `fsd/repetitive-naming` off, as the generated configuration does.
-4. It copies `tests/react/features/`, `tests/react/field-rules/`, `tests/react/shared/` and `tests/react/widgets/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation. The widgets test renders the table and the details. It examines the column headers, the change to the next page, the keyboard access and a problem details error.
+3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger with the generated `steiger.config.ts` (story #170, `docs/notes/check-output.md`).
+4. It copies `tests/react/app/`, `tests/react/features/`, `tests/react/field-rules/`, `tests/react/shared/` and `tests/react/widgets/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation. The widgets test renders the table and the details. It examines the column headers, the change to the next page, the keyboard access and a problem details error. The app test renders the application with a memory history. It examines the start of the login with no session, the "not permitted" page, the route loaders, the link to the details and the navigation for each set of roles.
 5. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
 
 ## Differences from the story text
 
 - The story gives `src/main.tsx` as a generated file. PRD-CORE-039 and PRD-APP-235 permit only names that end with `.gen.<ext>` and the fixed-name list. `main.tsx` is not on that list. Thus the entry module is `src/main.gen.tsx`.
+- Story #174: the Steiger rule `fsd/insignificant-slice` stays off in the generated configuration. Each model element has its own slice (PRD-APP-210). Thus only the page of a form view uses the feature slice of its operation, and no page uses the feature slice of an operation with no form view. The rule finds these slices.
+- Story #174: the Steiger rule `fsd/segments-by-purpose` refuses the segment name `providers`. PRD-APP-210 gives this name, thus the rule is off for `src/app/providers`.
+- Story #174: TanStack Query 5.104 marks `queryClient.ensureQueryData` as deprecated. PRD-APP-223 gives this method. Thus `routes.gen.tsx` sets the ESLint rule `@typescript-eslint/no-deprecated` off. A change to PRD-APP-223 can replace the method with `queryClient.query` and `staleTime: "static"`.
 
 ## Items for the next stories
 
-- `components.json` gives `src/app/styles/index.css` as the Tailwind CSS file. The story that writes the app layer must write this file and import it in the entry module.
-- The pages story (#174) makes the pages refer to the entity slices. Then the CI job uses the generated `steiger.config.ts`, and `tests/react/steiger-before-pages.config.ts` can go.
-- The pages story (#174) writes the entry module and the app layer. Before the first render, the entry module must call `loadRuntimeConfig` and then `configureAuth` (PRD-APP-230, PRD-APP-231). The router must have the route `/auth/callback`. `beforeLoad` can use `currentSession` and `startLogin` (PRD-APP-222).
-- The pages story (#174) gives the property `actions` of each table: a link to the detail route, and the delete button if the entity has `delete`. The detail page gives the key from the path parameter `$id` to the details widget.
-- The app layer must write the Tailwind CSS theme variables of shadcn/ui (for example `--primary`) in `src/app/styles/index.css`, because the components use them.
 - With pnpm 12, `pnpm install` can write `pnpm-workspace.yaml` in the project (the setting `minimumReleaseAgeExclude`). `pnpm-lock.yaml` and this file do not have the Prettier format. Thus `prettier --check .` in the generated pipeline finds them. The project has no `.prettierignore`, because the file is not on the fixed-name list of PRD-APP-235.
