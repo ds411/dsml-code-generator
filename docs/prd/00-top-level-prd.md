@@ -79,7 +79,7 @@ These items are out of scope for phases 1 to 3: the VS Code extension with a lan
 
 ## Document map
 
-The PRD set has this top-level PRD and seven PRDs. Four decision records hold the decisions that the PRDs come from.
+The PRD set has this top-level PRD and seven PRDs. Eight decision records hold the decisions that the PRDs come from.
 
 | Document | ID prefix | Scope | Phase |
 | --- | --- | --- | --- |
@@ -98,6 +98,7 @@ The PRD set has this top-level PRD and seven PRDs. Four decision records hold th
 | [DSML decision record 05: DSML library keywords and the pilot check](../decisions/dr-05-dsml-library-keywords-and-pilot-check.md) | Q59 to Q60 | Keywords that specialize `SemanticMetadata`, check of the library with the OMG pilot implementation | Closed |
 | [DSML decision record 06: self-contained requirement text](../decisions/dr-06-self-contained-requirement-text.md) | Q61 | References from a requirement to a table, a tree or a catalog of its PRD | Closed |
 | [DSML decision record 07: CI platforms](../decisions/dr-07-ci-platforms.md) | Q62 | Operating systems of the toolchain CI | Closed |
+| [DSML decision record 08: release assets](../decisions/dr-08-release-assets.md) | Q63 | The place where a release publishes the toolchain package | Closed |
 
 The [DSML appendix](../model/README.md) holds all PRD requirements as a DSML model (Q48).
 

@@ -105,11 +105,11 @@ The generator owns generated files and writes them again at each run. Developers
 
 ## Packaging, GitHub Action and releases
 
-The toolchain is one Python package on the internal package index, plus one GitHub Action that the generated workflows use.
+The toolchain is one Python package in the assets of each GitHub release, plus one GitHub Action that the generated workflows use.
 
 | ID | Requirement | Verification | Source |
 | --- | --- | --- | --- |
-| PRD-CORE-047 | The toolchain must be a Python package that uv builds. The release process must publish it to the internal package index. A user must be able to install it with `uv tool install`. | Demonstration | Q4, Q5 |
+| PRD-CORE-047 | The toolchain must be a Python package that uv builds. The release process must attach it to the GitHub release of the toolchain. A user must be able to install it with `uv tool install`. | Demonstration | Q4, Q5, Q63 |
 | PRD-CORE-048 | The package must contain the DSML library, the IR schema, the templates and the pinned copy of the shadcn/ui components. | Test | Q41, PRD-DSML-006 |
 | PRD-CORE-049 | The installation must supply the `sysml-grpc` binary of the pinned OpenSysML version and check its SHA-256 hash against the release checksums of OpenSysML. | Test | Q38 |
 | PRD-CORE-050 | The toolchain must supply a GitHub Action that installs a pinned toolchain version and runs one subcommand. | Test | Q5, Q25 |

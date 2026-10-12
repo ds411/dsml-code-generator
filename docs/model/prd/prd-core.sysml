@@ -233,7 +233,7 @@ package PrdCore {
         frame deterministicGeneration;
     }
     #Requirement requirement <'PRD-CORE-047'> core047 {
-        doc /* The toolchain must be a Python package that uv builds. The release process must publish it to the internal package index. A user must be able to install it with uv tool install. */
+        doc /* The toolchain must be a Python package that uv builds. The release process must attach it to the GitHub release of the toolchain. A user must be able to install it with uv tool install. */
         :>> title = "Python package"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame oneModel;
     }

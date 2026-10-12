@@ -16,7 +16,7 @@ docs/
 │   ├── 05-cicd-generation-prd.md          PRD-CICD
 │   ├── 06-validation-prd.md               PRD-VAL
 │   └── 07-traceability-prd.md             PRD-TRACE
-├── decisions/                             Decision records 01 to 06
+├── decisions/                             Decision records 01 to 08
 ├── model/
 │   ├── README.md
 │   ├── prd/*.sysml                        All PRD requirements as a DSML model
