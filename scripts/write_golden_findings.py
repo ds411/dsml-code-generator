@@ -24,6 +24,7 @@ from dsml.cli import main as dsml
 ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "tests" / "golden" / "validate"
 REFERENCE_MODELS: dict[str, str] = {
+    "order-portal": "docs/model/examples/order-portal/dsml.toml",
     "order-service": "docs/model/examples/dsml.toml",
     "prd": "docs/model/prd/dsml.toml",
 }
