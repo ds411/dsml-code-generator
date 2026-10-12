@@ -1,0 +1,5 @@
+# The parts of the DSML reference that the modeling skill contains.
+# The script scripts/write_skill_references.py writes one file <part>.md for each part.
+keywords
+rules
+examples
