@@ -75,6 +75,48 @@ The server of the `standalone` output writes some start lines that are not JSON,
 
 A server-only module imports `server-only` and has a name that ends with `.server.gen.ts`. The public API `index.server.ts` of its segment exports it, and `index.ts` does not (PRD-APP-305). For example, the root layout imports `readPublicConfig` from `@/shared/config/index.server`.
 
+## Authentication
+
+Story #183 added the auth part: `src/dsml/generate/nextjs_auth.py` and the templates in `src/dsml/templates/nextjs/auth/`. Authentication uses Amplify Auth with its Next.js adapter (PRD-APP-322, Q42, Q64). The tests are in `tests/test_nextjs_auth.py` and `tests/nextjs/auth/`.
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `src/shared/auth/amplify.gen.ts` | The function `configureAuth`: Amplify Auth in the browser with Cognito managed login, the authorization code flow and PKCE. The option `ssr` of Amplify keeps the tokens in cookies. The paths of the login page, the callback URL and the logout URL, and the scopes of the app client. The functions `loginUrl` and `returnPath`. | PRD-APP-007, PRD-APP-322 |
+| `src/shared/auth/access.gen.ts` | The types `Access` and `Session`, the function `sessionOf` and the role check `checkAccess`. | PRD-APP-008 |
+| `src/shared/auth/login-page.gen.tsx` | The client component `LoginPage`. It keeps the path after the login in the session storage and starts the managed login. | PRD-APP-007, PRD-APP-323 |
+| `src/shared/auth/callback-page.gen.tsx` | The client component `CallbackPage`. Amplify changes the code into tokens. Then the page goes to the path after the login. | PRD-APP-007, PRD-APP-322 |
+| `src/shared/auth/session.server.gen.ts` | `getSession`, `requireSession`, `authorize` and `accessProblem`. | PRD-APP-008, PRD-APP-323, PRD-APP-324 |
+| `app/auth/login/page.tsx`, `app/auth/callback/page.tsx` | The route files of the two pages. | PRD-APP-302 |
+| `proxy.ts` | The request interceptor. | PRD-APP-323 |
+
+The pages of the authentication use these paths:
+
+| Path | Page |
+| --- | --- |
+| `/auth/login?next=<path>` | The login page. Only a path on this site is permitted as `next`. |
+| `/auth/callback` | The callback URL of the app client. This is `CALLBACK_PATH` of the infrastructure generator, thus the infrastructure did not change. |
+| `/` | The logout URL of the app client (`LOGOUT_PATH`). |
+
+### Session on the server
+
+The first call of `getSession` reads the user pool ID and the app client ID with `readPublicConfig` and calls `createServerRunner` of the adapter. Thus the values come from the environment at run time, not from the build (PRD-APP-010, PRD-APP-011). The adapter reads the tokens from the cookies and examines them with the keys of the user pool. A token that is not valid gives no session.
+
+- A server component or a route handler calls `getSession()` with no argument. The adapter reads the cookies of the request.
+- `authorize(access)` applies the role check of PRD-APP-008. It gives `{ ok: true, session }`, or `{ ok: false, response }` with problem details: HTTP 401 if there is no valid token, and HTTP 403 if no group in `cognito:groups` is in the roles. A public item needs no token, thus `authorize` does not read the session. The texts are the texts of the FastAPI target.
+- The route handlers (#186) and the pages (#188) use these functions. A page with no permitted role must show a "not permitted" page (PRD-APP-009).
+
+### Request interceptor
+
+The pinned Next.js 16 uses the name `proxy.ts`, not `middleware.ts` (PRD-APP-323). The matcher has the route of each view that is not public, sorted: `/<entities>` for a list view, `/<entities>/:id` for a detail view and `/<operation>` for a form view (PRD-APP-221). The name comes from the `#Exposed` element of the application that exposes the entity or the operation. If the application does not expose it, `dsml generate` stops with an error. If each view is public, the generator does not write `proxy.ts`.
+
+The interceptor calls `requireSession`. With no session, it sends HTTP 307 to `/auth/login` with the requested path and query in `next`. It does not check the roles. `GET /healthz`, the route handlers in `app/api/` and the auth pages are not in the matcher. The `.dockerignore` lists `proxy.ts`, thus the image contains the interceptor.
+
+### Tests
+
+- `tests/test_nextjs_auth.py` compares the auth files of the order web with the golden files. It also examines the matcher with public views, and the error for a view with no exposed element.
+- `tests/nextjs/auth/auth.test.ts` is a Vitest test. The CI job copies it into the golden project. It replaces the Amplify adapter and gives test tokens. It examines the 401 and 403 results of `authorize`, the redirect of the interceptor and the path after the login.
+- The CI job gets `/orders` from the container with no session. The response must be HTTP 307 to `/auth/login?next=%2Forders`.
+
 ## Notes for the next stories
 
 - The golden test of each part story compares only the files of its part. `PART_FOLDERS` in `tests/test_nextjs_generator.py` gives these folders. `src/_app/api-routes/healthz.gen.ts` belongs to the project files.
@@ -82,5 +124,5 @@ A server-only module imports `server-only` and has a name that ends with `.serve
 - Story #182 added the database part: `src/shared/db/`, `migrations/`, `migrate.gen.mjs` and `standalone-migrate.gen.mjs`. `docs/notes/schema-snapshot.md` ("Drizzle migrations of the Next.js target") gives the files. A server function gets the database with `getDatabase()` from `@/shared/db/index.server`, and the tables from `@/shared/db`.
 - The `standalone` output has only the files that the server needs. After `next build`, the Dockerfile runs `node standalone-migrate.gen.mjs`. The script copies `migrate.gen.mjs` and the files that it needs into the `standalone` output, with the file trace of Next.js (`next/dist/compiled/@vercel/nft`). The trace is a part of Next.js that has no public API. The CI job runs `node migrate.gen.mjs` in the image, thus a change of Next.js that breaks the script makes the job fail.
 - ESLint does not examine the scripts `*.gen.mjs`, because the type-aware rules need the TypeScript project.
-- The root layout has no providers and no style sheet yet. Story #188 adds the providers, the navigation and the style sheet `src/_app/styles/index.css` of `components.json`.
+- The root layout has no providers and no style sheet yet. Story #188 adds the providers, the navigation and the style sheet `src/_app/styles/index.css` of `components.json`. A client component that calls Amplify Auth, for example a logout button, must first call `configureAuth` of `@/shared/auth` with `usePublicConfig()` and `window.location.origin`.
 - The CI job runs Vitest with no tests. The part stories add their tests.

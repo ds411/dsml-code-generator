@@ -88,8 +88,27 @@ DATABASE_FILES = [
 ]
 """The files of the database part (story #182) for an application with no entity."""
 
+AUTH_FILES = [
+    "app/auth/callback/page.tsx",
+    "app/auth/login/page.tsx",
+    "src/shared/auth/access.gen.ts",
+    "src/shared/auth/amplify.gen.ts",
+    "src/shared/auth/callback-page.gen.tsx",
+    "src/shared/auth/index.gen.ts",
+    "src/shared/auth/index.server.gen.ts",
+    "src/shared/auth/index.server.ts",
+    "src/shared/auth/index.ts",
+    "src/shared/auth/login-page.gen.tsx",
+    "src/shared/auth/session.server.gen.ts",
+]
+"""The files of the auth part (story #183) for an application with no view.
+
+With no view that needs a session, the generator writes no `proxy.ts`.
+"""
+
 PART_FOLDERS = (
     "app/api/",
+    "app/auth/",
     "migrate.gen.mjs",
     "migrations/",
     "proxy.ts",
@@ -427,7 +446,9 @@ def test_generator_writes_into_the_output_folder_of_each_application() -> None:
     settings = configuration('[applications.orderWeb]\noutput = "apps/web"\n')
     files = NextjsGenerator().generate(ir, settings, None)
     paths = sorted(file.path for file in files)
-    assert paths == sorted(f"apps/web/{path}" for path in [*PROJECT_FILES, *DATABASE_FILES])
+    assert paths == sorted(
+        f"apps/web/{path}" for path in [*PROJECT_FILES, *DATABASE_FILES, *AUTH_FILES]
+    )
     assert {file.part for file in files} == {application_part("orderWeb")}
 
 
@@ -461,7 +482,7 @@ def test_generator_calls_each_part_module(monkeypatch: pytest.MonkeyPatch) -> No
     assert {f"src/{name}.gen.ts" for name in names} <= set(output_files(files))
 
 
-def test_part_modules_after_the_database_give_no_file_yet() -> None:
+def test_part_modules_after_the_auth_give_no_file_yet() -> None:
     item = application()
     context = ReactContext(
         TemplateEngine(),
@@ -480,5 +501,5 @@ def test_part_modules_after_the_database_give_no_file_yet() -> None:
         "dsml.generate.nextjs_routes",
         "dsml.generate.nextjs_pages",
     ]
-    for function in PART_FUNCTIONS[1:]:
+    for function in PART_FUNCTIONS[2:]:
         assert function(context) == [], function.__module__

@@ -1,0 +1,69 @@
+{#- The role check of PRD-APP-008 (Q14, Q42). The function checkAccess gives
+    HTTP 401 if there is no session, HTTP 403 if no group in the claim
+    cognito:groups is in the roles of the item, else HTTP 200. A public item
+    needs no session. Data: none. -#}
+{% include "common/header.j2" %}
+/** The access rule of an operation or a view (PRD-DSML-033). */
+export interface Access {
+  /** Tell if the item needs no session: the attribute "public" of the item. */
+  readonly public: boolean;
+  /** The roles that can use the item: the user pool groups of the users. */
+  readonly roles: readonly string[];
+}
+
+/** The session of the user. */
+export interface Session {
+  /** The access token. */
+  readonly accessToken: string;
+  /** The user pool groups of the user: the roles of the model. */
+  readonly groups: readonly string[];
+}
+
+/** The access token that Amplify gives: the text and the claims. */
+export interface AccessToken {
+  readonly payload: Readonly<Record<string, unknown>>;
+  toString(): string;
+}
+
+/** The result of a role check: the HTTP status. */
+export type AccessStatus = 200 | 401 | 403;
+
+/**
+ * Give the session of the tokens that Amplify gives, or undefined if there
+ * is no access token.
+ */
+export function sessionOf(
+  tokens: { readonly accessToken?: AccessToken } | undefined,
+): Session | undefined {
+  const token = tokens?.accessToken;
+  if (token === undefined) {
+    return undefined;
+  }
+  const groups = token.payload["cognito:groups"];
+  return {
+    accessToken: token.toString(),
+    groups: Array.isArray(groups)
+      ? groups.filter((group) => typeof group === "string")
+      : [],
+  };
+}
+
+/**
+ * Check the session against the access rule of an item. A public item
+ * needs no session. Each other item needs a session (else 401) with one of
+ * the roles of the item (else 403).
+ */
+export function checkAccess(
+  session: Session | undefined,
+  access: Access,
+): AccessStatus {
+  if (access.public) {
+    return 200;
+  }
+  if (session === undefined) {
+    return 401;
+  }
+  return session.groups.some((group) => access.roles.includes(group))
+    ? 200
+    : 403;
+}

@@ -1,0 +1,131 @@
+{#- The session on the server (PRD-APP-008, PRD-APP-322, PRD-APP-324).
+    Server components, route handlers and the request interceptor get the
+    session through the Amplify adapter. The adapter reads the tokens from
+    the cookies and examines them. The function requireSession is the check
+    of the request interceptor (PRD-APP-323). The function authorize applies the role
+    check of PRD-APP-008 and gives a problem details response for HTTP 401
+    and HTTP 403 (PRD-APP-014). Data: "problem_media_type". -#}
+{% include "common/header.j2" %}
+import "server-only";
+
+import { createServerRunner } from "@aws-amplify/adapter-nextjs";
+import { fetchAuthSession } from "aws-amplify/auth/server";
+import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+
+import { readPublicConfig } from "{{ layout.import_path("shared", "config") }}/index.server";
+
+import {
+  type Access,
+  type AccessStatus,
+  checkAccess,
+  type Session,
+  sessionOf,
+} from "./access.gen";
+import { loginUrl } from "./amplify.gen";
+
+type ServerRunner = ReturnType<typeof createServerRunner>;
+
+let runner: ServerRunner | undefined;
+
+/**
+ * Give the server runner of the Amplify adapter. The first call reads the
+ * public runtime values from the environment, not the build.
+ */
+function serverRunner(): ServerRunner {
+  if (runner === undefined) {
+    const config = readPublicConfig();
+    runner = createServerRunner({
+      config: {
+        Auth: {
+          Cognito: {
+            userPoolId: config.userPoolId,
+            userPoolClientId: config.appClientId,
+          },
+        },
+      },
+    });
+  }
+  return runner;
+}
+
+/** The request and the response of the request interceptor. */
+export interface ProxyContext {
+  request: NextRequest;
+  response: NextResponse;
+}
+
+/**
+ * Give the session of the request, or undefined if the request has no
+ * valid access token. Server components and route handlers give no
+ * context: the adapter reads the cookies of the request. The request
+ * interceptor gives its request and its response.
+ */
+export async function getSession(
+  context?: ProxyContext,
+): Promise<Session | undefined> {
+  const session = await serverRunner().runWithAmplifyServerContext({
+    nextServerContext: context ?? { cookies },
+    operation: (contextSpec) => fetchAuthSession(contextSpec),
+  });
+  return sessionOf(session.tokens);
+}
+
+/**
+ * The check of the request interceptor (PRD-APP-323). Send a request with
+ * no session to the login page. The login page goes back to the requested
+ * path after the login. The page checks the roles.
+ */
+export async function requireSession(
+  request: NextRequest,
+): Promise<NextResponse> {
+  const response = NextResponse.next();
+  const session = await getSession({ request, response });
+  if (session === undefined) {
+    const { pathname, search } = request.nextUrl;
+    return NextResponse.redirect(loginUrl(`${pathname}${search}`, request.url));
+  }
+  return response;
+}
+
+/** The result of the role check of a request. */
+export type Authorization =
+  | { readonly ok: true; readonly session: Session | undefined }
+  | { readonly ok: false; readonly response: Response };
+
+const PROBLEMS = {
+  401: {
+    title: "Unauthorized",
+    detail: "The request has no valid access token.",
+  },
+  403: {
+    title: "Forbidden",
+    detail: "The user has no role that the operation permits.",
+  },
+} as const;
+
+/** Give the problem details response of HTTP 401 or HTTP 403. */
+export function accessProblem(status: Exclude<AccessStatus, 200>): Response {
+  return Response.json(
+    { type: "about:blank", status, ...PROBLEMS[status] },
+    { status, headers: { "Content-Type": "{{ problem_media_type }}" } },
+  );
+}
+
+/**
+ * Apply the role check of PRD-APP-008 to the request of a route handler. A
+ * public item needs no token, thus the function does not read the session.
+ * Each other item needs a valid access token (else HTTP 401) with a group
+ * in the claim cognito:groups that is in the roles of the item (else HTTP
+ * 403).
+ */
+export async function authorize(access: Access): Promise<Authorization> {
+  if (access.public) {
+    return { ok: true, session: undefined };
+  }
+  const session = await getSession();
+  const status = checkAccess(session, access);
+  return status === 200
+    ? { ok: true, session }
+    : { ok: false, response: accessProblem(status) };
+}

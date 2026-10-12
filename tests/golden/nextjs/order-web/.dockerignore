@@ -8,6 +8,7 @@
 !package.json
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
+!proxy.ts
 !public/
 !src/
 !standalone-migrate.gen.mjs
