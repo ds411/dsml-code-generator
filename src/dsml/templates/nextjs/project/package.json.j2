@@ -3,8 +3,10 @@
     developer where to add a dependency. The key "postcss" gives the PostCSS
     plugin of Tailwind CSS to Next.js, thus the project needs no PostCSS
     configuration file. The generator does not write pnpm-lock.yaml
-    (PRD-CORE-036). Prettier formats package.json in the form of
-    JSON.stringify with two spaces. -#}
+    (PRD-CORE-036). The script "format" does not examine the folder .dsml/:
+    the schema snapshot in it is canonical JSON (Q16), not the Prettier
+    format. Prettier formats package.json in the form of JSON.stringify with
+    two spaces. -#}
 {% include "common/header.j2" %}
 {
   "name": "{{ project }}",
@@ -16,7 +18,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "format": "prettier --check .",
+    "format": "prettier --check . '!.dsml/**'",
     "lint": "eslint .",
     "start": "node .next/standalone/server.js",
     "steiger": "steiger ./src",

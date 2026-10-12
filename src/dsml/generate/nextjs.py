@@ -34,6 +34,7 @@ from collections.abc import Callable, Collection, Sequence
 from typing import Final
 
 from dsml.config import Configuration
+from dsml.database.snapshot import SNAPSHOT_PATH
 from dsml.generate.fastapi import output_folder
 from dsml.generate.names import kebab_case
 from dsml.generate.nextjs_auth import auth_files
@@ -72,6 +73,13 @@ FIXED_NAMES: Final = (
 The item `app/` is the full Next.js `app/` folder (PRD-APP-302). The list
 has `middleware.ts` and `proxy.ts`, because PRD-APP-334 gives the two names.
 The pinned Next.js version uses `proxy.ts` (PRD-APP-323).
+"""
+
+STATE_FILES: Final = (SNAPSHOT_PATH,)
+"""The generated files of the toolchain state that have a fixed path (PRD-APP-124).
+
+The name of the schema snapshot does not end with `.gen.json`, because
+PRD-APP-124 gives its path. The generator owns the file.
 """
 
 PROJECT_VERSION: Final = "0.1.0"
@@ -194,7 +202,7 @@ class NextjsGenerator:
     """The generator of the target `nextjs`."""
 
     name = "nextjs"
-    fixed_names: Collection[str] = FIXED_NAMES
+    fixed_names: Collection[str] = (*FIXED_NAMES, *STATE_FILES)
 
     def generate(
         self, ir: Ir, configuration: Configuration, parts: Collection[str] | None

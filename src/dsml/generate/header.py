@@ -35,6 +35,8 @@ class FileType(enum.StrEnum):
     JAVASCRIPT = "javascript"
     JSON = "json"
     PYTHON = "python"
+    SQL = "sql"
+    """An SQL file, for example a Drizzle migration `0001_create_order.gen.sql`."""
     TOML = "toml"
     TYPESCRIPT = "typescript"
     YAML = "yaml"
@@ -51,6 +53,7 @@ _COMMENT: dict[FileType, str | None] = {
     FileType.JAVASCRIPT: "//",
     FileType.JSON: None,
     FileType.PYTHON: "#",
+    FileType.SQL: "--",
     FileType.TOML: "#",
     FileType.TYPESCRIPT: "//",
     FileType.YAML: "#",
@@ -62,7 +65,9 @@ _SUFFIXES: dict[str, FileType] = {
     ".ini": FileType.INI,
     ".js": FileType.JAVASCRIPT,
     ".json": FileType.JSON,
+    ".mjs": FileType.JAVASCRIPT,
     ".py": FileType.PYTHON,
+    ".sql": FileType.SQL,
     ".tf": FileType.HCL,
     ".toml": FileType.TOML,
     ".ts": FileType.TYPESCRIPT,

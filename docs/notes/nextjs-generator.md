@@ -6,7 +6,7 @@ Story #180 added the first part of the Next.js generator (phase 3). The generato
 - Part modules: `nextjs_database.py` (#182), `nextjs_auth.py` (#183), `nextjs_slices.py` (#184), `nextjs_routes.py` (#186) and `nextjs_pages.py` (#188) in `src/dsml/generate/`. In story #180, each function gives no file.
 - Templates: `src/dsml/templates/nextjs/project/`.
 - Tests: `tests/test_nextjs_generator.py`.
-- Golden files: `tests/golden/nextjs/order-web/`, with no manifests in `.dsml/`. Write them again with `uv run python scripts/write_golden_nextjs.py`.
+- Golden files: `tests/golden/nextjs/order-web/`, with the schema snapshot but no manifests in `.dsml/`. Write them again with `uv run python scripts/write_golden_nextjs.py`. The configuration of the script is in the parent folder, with the output folder `order-web`, because a generator must not write into the folder `.dsml/` of the configuration file.
 - CI: the job "Next.js golden project" in `.github/workflows/ci.yml`.
 
 ## Inputs
@@ -38,7 +38,7 @@ All files are generated files, except the create-once public API files `index.ts
 | `eslint.config.js` | The type-aware rules of `typescript-eslint` (`strictTypeChecked`). ESLint does not examine `.next/` and `next-env.d.ts`. | PRD-APP-301, Q64 |
 | `vitest.config.ts` | The Vitest settings and the alias `@/` to `/src/`. | PRD-APP-301, Q64 |
 | `drizzle.config.ts` | The schema, the migration folder and the database settings for a developer tool. The project does not install `drizzle-kit`, thus the file does not import it. | PRD-APP-331, PRD-APP-334 |
-| `Dockerfile` | A multi-stage build on the pinned Node.js image. The runtime stage has the `standalone` output only, runs as the user `node` and listens on port 3000. | PRD-APP-013, PRD-APP-333 |
+| `Dockerfile` | A multi-stage build on the pinned Node.js image. The runtime stage has the `standalone` output, the migration command and the migrations only. It runs as the user `node` and listens on port 3000. | PRD-APP-013, PRD-APP-332, PRD-APP-333 |
 | `.dockerignore` | Only the listed files go into the build context. | PRD-APP-013 |
 | `app/layout.tsx` | Re-exports the root layout of `src/_app/layout/`. | PRD-APP-302 |
 | `app/healthz/route.ts` | Re-exports the handler of `GET /healthz`. | PRD-APP-012, PRD-APP-302 |
@@ -47,7 +47,7 @@ All files are generated files, except the create-once public API files `index.ts
 | `src/shared/config/` | `public-config.gen.tsx`: the client component `PublicConfigProvider` and the hook `usePublicConfig`. `public-config.server.gen.ts`: the function `readPublicConfig`. | PRD-APP-325 |
 | `src/shared/log/` | `request-id.gen.ts`: the request ID. `logger.server.gen.ts`: the function `log` and the wrapper `withRequestLog` of a route handler. | PRD-APP-015 |
 
-The fixed-name list is the list of PRD-APP-334. It also has `proxy.ts`, `middleware.ts` and `migrations/meta/_journal.json` for the next stories. Each other generated file has a name that ends with `.gen.ts` or `.gen.tsx` (PRD-CORE-039).
+The fixed-name list is the list of PRD-APP-334. It also has `proxy.ts` and `middleware.ts` for the next stories. Each other generated file has a name that ends with `.gen.<ext>` (PRD-CORE-039), or is the schema snapshot `.dsml/schema-snapshot.json` (PRD-APP-124) of the list `STATE_FILES`.
 
 ## Public runtime values
 
@@ -79,6 +79,8 @@ A server-only module imports `server-only` and has a name that ends with `.serve
 
 - The golden test of each part story compares only the files of its part. `PART_FOLDERS` in `tests/test_nextjs_generator.py` gives these folders. `src/_app/api-routes/healthz.gen.ts` belongs to the project files.
 - The generator writes the segments `config` and `log` of `src/shared/`. If a part story uses the shared layer writer of the React target, it must not write these segments again.
-- The Dockerfile does not copy the migrations yet. Story #182 adds `migrate.gen.mjs` and the migration files to the image.
+- Story #182 added the database part: `src/shared/db/`, `migrations/`, `migrate.gen.mjs` and `standalone-migrate.gen.mjs`. `docs/notes/schema-snapshot.md` ("Drizzle migrations of the Next.js target") gives the files. A server function gets the database with `getDatabase()` from `@/shared/db/index.server`, and the tables from `@/shared/db`.
+- The `standalone` output has only the files that the server needs. After `next build`, the Dockerfile runs `node standalone-migrate.gen.mjs`. The script copies `migrate.gen.mjs` and the files that it needs into the `standalone` output, with the file trace of Next.js (`next/dist/compiled/@vercel/nft`). The trace is a part of Next.js that has no public API. The CI job runs `node migrate.gen.mjs` in the image, thus a change of Next.js that breaks the script makes the job fail.
+- ESLint does not examine the scripts `*.gen.mjs`, because the type-aware rules need the TypeScript project.
 - The root layout has no providers and no style sheet yet. Story #188 adds the providers, the navigation and the style sheet `src/_app/styles/index.css` of `components.json`.
 - The CI job runs Vitest with no tests. The part stories add their tests.

@@ -1,8 +1,8 @@
 # trace: PRD-VAL-015, PRD-APP-127, PRD-DSML-034
 """The rule STR-013: a destructive database change with no `#Destructive` metadata.
 
-STR-013 compares the schema of each FastAPI application in the IR with the
-schema snapshot `.dsml/schema-snapshot.json` in the output folder of the
+STR-013 compares the schema of each FastAPI and Next.js application in the
+IR with the schema snapshot `.dsml/schema-snapshot.json` in the output folder of the
 application. Thus this rule also reads a file, as its catalog row tells.
 
 These changes need the `#Destructive` metadata (PRD-DSML-034, Q19):
@@ -22,6 +22,7 @@ rule gives no finding.
 """
 
 from collections.abc import Iterator, Mapping
+from typing import Final
 
 from dsml.config import Configuration
 from dsml.database.schema import (
@@ -50,8 +51,13 @@ STR_013 = Rule(
 )
 
 
-def _fastapi_applications(ir: Ir) -> list[Element]:
-    """Give the applications with the target `fastapi`, sorted by identity."""
+DATABASE_TARGETS: Final = frozenset({"fastapi", "nextjs"})
+"""The targets that write migrations from the schema snapshot (PRD-APP-124, PRD-APP-332)."""
+
+
+# trace: PRD-APP-127, PRD-APP-332
+def database_applications(ir: Ir) -> list[Element]:
+    """Give the applications with a target of `DATABASE_TARGETS`, sorted by identity."""
     found: list[Element] = []
     for element in ir.elements:
         if element.kind != "Application":
@@ -61,7 +67,7 @@ def _fastapi_applications(ir: Ir) -> list[Element]:
             if (
                 attribute.name == "target"
                 and isinstance(value, EnumValue)
-                and value.literal == "fastapi"
+                and value.literal in DATABASE_TARGETS
             ):
                 found.append(element)
     return sorted(found, key=lambda element: element.identity)
@@ -71,7 +77,7 @@ def _fastapi_applications(ir: Ir) -> list[Element]:
 @implements(STR_013)
 def str_013(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
     elements = {element.identity: element for element in ir.elements}
-    for application in _fastapi_applications(ir):
+    for application in database_applications(ir):
         settings = configuration.application(application.name)
         if settings is None or settings.output is None:
             continue

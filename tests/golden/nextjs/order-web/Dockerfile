@@ -12,10 +12,13 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 # The build reads no environment value of an environment (PRD-APP-010).
-RUN mkdir -p public && pnpm build
+# standalone-migrate.gen.mjs copies the migration command and the files
+# that it needs into the "standalone" output (PRD-APP-332).
+RUN mkdir -p public && pnpm build && node standalone-migrate.gen.mjs
 
-# The "standalone" output holds the server and its dependencies only
-# (PRD-APP-333).
+# The "standalone" output holds the server, the migration command and their
+# dependencies only (PRD-APP-332, PRD-APP-333). The deployment runs
+# "node migrate.gen.mjs" in this image before the services change (Q53).
 FROM node:26.11.1-trixie-slim@sha256:193fe51b64e77981119c98c2002c9e32a70e2f006fb4d25068ce0558998917f0 AS runtime
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
@@ -25,6 +28,7 @@ WORKDIR /srv
 COPY --from=build /srv/.next/standalone ./
 COPY --from=build /srv/.next/static ./.next/static
 COPY --from=build /srv/public ./public
+COPY --from=build /srv/migrations ./migrations
 USER node
 EXPOSE 3000
 CMD ["node", "server.js"]
