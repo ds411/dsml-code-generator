@@ -2261,11 +2261,15 @@
             "items": [
               {
                 "type": "string",
-                "value": "apps/order-portal/src/pages/order-list/ui/order-list-page.test.tsx"
+                "value": "apps/order-portal/tests/app/app.test.tsx"
               },
               {
                 "type": "string",
-                "value": "apps/order-portal/src/pages/order-detail/ui/order-detail-page.test.tsx"
+                "value": "apps/order-portal/tests/shared/shared.test.ts"
+              },
+              {
+                "type": "string",
+                "value": "apps/order-portal/tests/widgets/widgets.test.tsx"
               }
             ],
             "type": "list"
@@ -2327,7 +2331,11 @@
             "items": [
               {
                 "type": "string",
-                "value": "apps/order-portal/src/pages/place-order-form/ui/place-order-form-page.test.tsx"
+                "value": "apps/order-portal/tests/features/features.test.tsx"
+              },
+              {
+                "type": "string",
+                "value": "apps/order-portal/tests/field-rules/field-rules.test.ts"
               }
             ],
             "type": "list"

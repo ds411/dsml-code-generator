@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSML trace report: impact</title>
+<style>
+:root { color-scheme: light dark; }
+body { margin: 1rem; font-family: system-ui, sans-serif; font-size: 0.9rem; }
+h1 { font-size: 1.3rem; }
+dl { display: grid; grid-template-columns: max-content auto; gap: 0.2rem 1rem; }
+dt { font-weight: bold; }
+dd { margin: 0; font-family: monospace; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #8888; padding: 0.3rem 0.5rem; text-align: left; vertical-align: top; }
+th { background: #8882; }
+td { font-family: monospace; }
+ul { margin: 0; padding-left: 1rem; }
+.status-missing { color: #c62828; font-weight: bold; }
+.status-satisfied { color: #b26a00; }
+.status-verified { color: #2e7d32; }
+</style>
+</head>
+<body>
+<h1>DSML trace report: impact</h1>
+<dl>
+<dt>Model commit</dt>
+<dd>50b2642847a86e7a8dfd15f9348067d648b5fffa</dd>
+<dt>Baseline commit</dt>
+<dd>a676eff611e18029805c5d208e8f4ddd9c110280</dd>
+<dt>Rows</dt>
+<dd>2</dd>
+</dl>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th scope="col">element</th>
+<th scope="col">change</th>
+<th scope="col">needs</th>
+<th scope="col">requirements</th>
+<th scope="col">verifications</th>
+<th scope="col">generatedFiles</th>
+<th scope="col">hclAddresses</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OrderPortal::Order::note</td>
+<td>changed</td>
+<td><ul><li>N-001</li></ul></td>
+<td><ul><li>R-001</li></ul></td>
+<td><ul><li>V-001</li></ul></td>
+<td><ul><li>.github/workflows/main.gen.yml</li><li>.github/workflows/pr.gen.yml</li><li>.github/workflows/promote.gen.yml</li><li>apps/order-portal/src/entities/order/api/order-queries.gen.ts</li><li>apps/order-portal/src/entities/order/model/order.gen.ts</li><li>apps/order-portal/src/features/cancel-order/api/cancel-order.gen.ts</li><li>apps/order-portal/src/features/cancel-order/ui/cancel-order-form.gen.tsx</li><li>apps/order-portal/src/features/create-order/api/create-order.gen.ts</li><li>apps/order-portal/src/features/create-order/ui/create-order-form.gen.tsx</li><li>apps/order-portal/src/features/place-order/api/place-order.gen.ts</li><li>apps/order-portal/src/features/place-order/ui/place-order-form.gen.tsx</li><li>apps/order-portal/src/pages/cancel-order-form/ui/cancel-order-form-page.gen.tsx</li><li>apps/order-portal/src/pages/order-detail/ui/order-detail-page.gen.tsx</li><li>apps/order-portal/src/pages/order-list/ui/order-list-page.gen.tsx</li><li>apps/order-portal/src/pages/place-order-form/ui/place-order-form-page.gen.tsx</li><li>apps/order-portal/src/widgets/order-details/ui/order-details.gen.tsx</li><li>apps/order-portal/src/widgets/order-list/ui/order-table.gen.tsx</li><li>infra/envs/dev/main.gen.tf</li><li>infra/envs/dev/outputs.gen.tf</li><li>infra/envs/dev/variables.gen.tf</li><li>infra/envs/prod/main.gen.tf</li><li>infra/envs/prod/outputs.gen.tf</li><li>infra/envs/prod/variables.gen.tf</li><li>infra/envs/staging/main.gen.tf</li><li>infra/envs/staging/outputs.gen.tf</li><li>infra/envs/staging/variables.gen.tf</li><li>infra/modules/container-service/main.gen.tf</li><li>infra/modules/container-service/outputs.gen.tf</li><li>infra/modules/container-service/variables.gen.tf</li><li>infra/tooling/main.gen.tf</li><li>services/order-api/app/features/order/cancel_order/endpoint_gen.py</li><li>services/order-api/app/features/order/cancel_order/schemas_gen.py</li><li>services/order-api/app/features/order/create_order/endpoint_gen.py</li><li>services/order-api/app/features/order/create_order/handler_gen.py</li><li>services/order-api/app/features/order/create_order/schemas_gen.py</li><li>services/order-api/app/features/order/list_order/endpoint_gen.py</li><li>services/order-api/app/features/order/list_order/handler_gen.py</li><li>services/order-api/app/features/order/list_order/schemas_gen.py</li><li>services/order-api/app/features/order/place_order/endpoint_gen.py</li><li>services/order-api/app/features/order/place_order/schemas_gen.py</li><li>services/order-api/app/features/order/read_order/endpoint_gen.py</li><li>services/order-api/app/features/order/read_order/handler_gen.py</li><li>services/order-api/app/features/order/read_order/schemas_gen.py</li><li>services/order-api/app/main_gen.py</li><li>services/order-api/app/migrate_gen.py</li><li>services/order-api/app/shared/auth/cognito_gen.py</li><li>services/order-api/app/shared/config_gen.py</li><li>services/order-api/app/shared/db/base_gen.py</li><li>services/order-api/app/shared/db/commit_gen.py</li><li>services/order-api/app/shared/db/models/order_gen.py</li><li>services/order-api/app/shared/db/session_gen.py</li><li>services/order-api/app/shared/errors_gen.py</li><li>services/order-api/app/shared/logs_gen.py</li><li>services/order-api/migrations/env.py</li><li>services/order-api/migrations/versions/0001_create_order_gen.py</li><li>services/order-api/tests/http_support_gen.py</li><li>services/order-api/tests/test_app_gen.py</li><li>services/order-api/tests/test_auth_gen.py</li><li>services/order-api/tests/test_cancel_order_http_gen.py</li><li>services/order-api/tests/test_db_gen.py</li><li>services/order-api/tests/test_migrations_gen.py</li><li>services/order-api/tests/test_orders_http_gen.py</li><li>services/order-api/tests/test_place_order_http_gen.py</li></ul></td>
+<td><ul><li>aws_acm_certificate.main</li><li>aws_acm_certificate_validation.main</li><li>aws_appautoscaling_policy.cpu</li><li>aws_appautoscaling_target.main</li><li>aws_cloudwatch_log_group.main</li><li>aws_ecr_lifecycle_policy.order_api</li><li>aws_ecr_repository.order_api</li><li>aws_ecr_repository_policy.order_api</li><li>aws_ecs_cluster.main</li><li>aws_ecs_service.main</li><li>aws_ecs_task_definition.migration</li><li>aws_ecs_task_definition.service</li><li>aws_iam_role.execution</li><li>aws_iam_role.task</li><li>aws_iam_role_policy.execution</li><li>aws_lb.main</li><li>aws_lb_listener.http</li><li>aws_lb_listener.https</li><li>aws_lb_target_group.main</li><li>aws_route53_record.api</li><li>aws_route53_record.certificate_validation</li><li>aws_security_group.alb</li><li>aws_security_group.service</li><li>aws_vpc_security_group_egress_rule.alb_to_service</li><li>aws_vpc_security_group_egress_rule.service_https</li><li>aws_vpc_security_group_ingress_rule.alb</li><li>aws_vpc_security_group_ingress_rule.service_from_alb</li><li>data.aws_iam_policy_document.ecs_tasks_trust</li><li>data.aws_iam_policy_document.execution</li><li>data.aws_iam_policy_document.order_api_pull</li><li>data.aws_route53_zone.main</li><li>locals</li><li>module.api_service</li><li>output.api_service_api_url</li><li>output.api_service_cluster_name</li><li>output.api_service_migration_task_definition</li><li>output.api_service_private_subnet_ids</li><li>output.api_service_security_group_id</li><li>output.api_service_service_name</li><li>output.api_url</li><li>output.cluster_name</li><li>output.execution_role_arn</li><li>output.migration_task_definition</li><li>output.private_subnet_ids</li><li>output.security_group_id</li><li>output.service_name</li><li>output.task_role_arn</li><li>var.application</li><li>var.container_port</li><li>var.cpu</li><li>var.desired_count</li><li>var.domain_name</li><li>var.ecr_account_id</li><li>var.ecr_region</li><li>var.ecr_repository</li><li>var.element</li><li>var.environment_variables</li><li>var.image_digest</li><li>var.kms_key_arns</li><li>var.max_count</li><li>var.memory</li><li>var.migration_command</li><li>var.min_count</li><li>var.names</li><li>var.order_api_image_digest</li><li>var.private_subnet_ids</li><li>var.public_subnet_ids</li><li>var.secret_arns</li><li>var.secrets</li><li>var.vpc_id</li><li>var.zone_name</li></ul></td>
+</tr>
+<tr>
+<td>R-004</td>
+<td>changed</td>
+<td><ul><li>N-002</li></ul></td>
+<td><ul><li>R-004</li></ul></td>
+<td><ul><li>V-004</li></ul></td>
+<td><ul><li>.github/workflows/main.gen.yml</li><li>.github/workflows/pr.gen.yml</li><li>.github/workflows/promote.gen.yml</li><li>apps/order-portal/src/app/layout/app-layout.gen.tsx</li><li>apps/order-portal/src/app/layout/navigation.gen.tsx</li><li>apps/order-portal/src/app/layout/status-pages.gen.tsx</li><li>apps/order-portal/src/app/providers/app-providers.gen.tsx</li><li>apps/order-portal/src/app/providers/query-client.gen.ts</li><li>apps/order-portal/src/app/providers/session.gen.ts</li><li>apps/order-portal/src/app/router/access.gen.ts</li><li>apps/order-portal/src/app/router/router.gen.ts</li><li>apps/order-portal/src/app/router/routes.gen.tsx</li><li>apps/order-portal/src/app/router/views.gen.ts</li><li>apps/order-portal/src/shared/api/client.gen.ts</li><li>apps/order-portal/src/shared/auth/amplify.gen.ts</li><li>apps/order-portal/src/shared/config/runtime-config.gen.ts</li><li>infra/envs/dev/main.gen.tf</li><li>infra/envs/dev/outputs.gen.tf</li><li>infra/envs/prod/main.gen.tf</li><li>infra/envs/prod/outputs.gen.tf</li><li>infra/envs/staging/main.gen.tf</li><li>infra/envs/staging/outputs.gen.tf</li><li>infra/modules/static-site/main.gen.tf</li><li>infra/modules/static-site/outputs.gen.tf</li><li>infra/modules/static-site/variables.gen.tf</li></ul></td>
+<td><ul><li>aws_acm_certificate.site</li><li>aws_acm_certificate_validation.site</li><li>aws_cloudfront_distribution.site</li><li>aws_cloudfront_origin_access_control.site</li><li>aws_route53_record.certificate_validation</li><li>aws_route53_record.site</li><li>aws_s3_bucket.site</li><li>aws_s3_bucket_ownership_controls.site</li><li>aws_s3_bucket_policy.site</li><li>aws_s3_bucket_public_access_block.site</li><li>aws_s3_bucket_server_side_encryption_configuration.site</li><li>aws_s3_bucket_versioning.site</li><li>data.aws_cloudfront_cache_policy.caching_optimized</li><li>data.aws_cloudfront_response_headers_policy.security_headers</li><li>data.aws_iam_policy_document.site</li><li>data.aws_route53_zone.main</li><li>locals</li><li>module.portal_site</li><li>output.bucket_name</li><li>output.distribution_id</li><li>output.portal_site_bucket_name</li><li>output.portal_site_distribution_id</li><li>output.portal_site_url</li><li>output.url</li><li>terraform</li><li>var.application</li><li>var.bucket_name</li><li>var.domain_name</li><li>var.element</li><li>var.origin_access_control_name</li><li>var.zone_name</li></ul></td>
+</tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

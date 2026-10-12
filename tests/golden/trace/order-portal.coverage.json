@@ -1,0 +1,162 @@
+{
+  "baselineCommit": null,
+  "columns": [
+    "requirement",
+    "needs",
+    "satisfiedBy",
+    "generatedFiles",
+    "traceComments",
+    "verifications",
+    "status"
+  ],
+  "modelCommit": "none: the folder is not in a Git repository",
+  "report": "coverage",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "generatedFiles": [
+        ".github/workflows/main.gen.yml",
+        ".github/workflows/pr.gen.yml",
+        ".github/workflows/promote.gen.yml",
+        "infra/envs/dev/main.gen.tf",
+        "infra/envs/dev/outputs.gen.tf",
+        "infra/envs/dev/variables.gen.tf",
+        "infra/envs/prod/main.gen.tf",
+        "infra/envs/prod/outputs.gen.tf",
+        "infra/envs/prod/variables.gen.tf",
+        "infra/envs/staging/main.gen.tf",
+        "infra/envs/staging/outputs.gen.tf",
+        "infra/envs/staging/variables.gen.tf",
+        "infra/modules/container-service/main.gen.tf",
+        "infra/modules/container-service/outputs.gen.tf",
+        "infra/modules/container-service/variables.gen.tf",
+        "infra/tooling/main.gen.tf",
+        "services/order-api/app/main_gen.py",
+        "services/order-api/app/migrate_gen.py",
+        "services/order-api/app/shared/auth/cognito_gen.py",
+        "services/order-api/app/shared/config_gen.py",
+        "services/order-api/app/shared/db/base_gen.py",
+        "services/order-api/app/shared/db/commit_gen.py",
+        "services/order-api/app/shared/db/session_gen.py",
+        "services/order-api/app/shared/errors_gen.py",
+        "services/order-api/app/shared/logs_gen.py",
+        "services/order-api/migrations/env.py",
+        "services/order-api/migrations/versions/0001_create_order_gen.py",
+        "services/order-api/tests/http_support_gen.py",
+        "services/order-api/tests/test_app_gen.py",
+        "services/order-api/tests/test_auth_gen.py",
+        "services/order-api/tests/test_db_gen.py",
+        "services/order-api/tests/test_migrations_gen.py"
+      ],
+      "needs": [
+        "N-001"
+      ],
+      "requirement": "R-001",
+      "satisfiedBy": [
+        "OrderPortal::orderApi"
+      ],
+      "status": "verified",
+      "traceComments": [],
+      "verifications": [
+        "V-001"
+      ]
+    },
+    {
+      "generatedFiles": [],
+      "needs": [
+        "N-001"
+      ],
+      "requirement": "R-002",
+      "satisfiedBy": [
+        "OrderPortal::prod::orderDbProd"
+      ],
+      "status": "verified",
+      "traceComments": [],
+      "verifications": [
+        "V-002"
+      ]
+    },
+    {
+      "generatedFiles": [
+        ".github/workflows/main.gen.yml",
+        ".github/workflows/pr.gen.yml",
+        ".github/workflows/promote.gen.yml",
+        "apps/order-portal/src/app/layout/app-layout.gen.tsx",
+        "apps/order-portal/src/app/layout/navigation.gen.tsx",
+        "apps/order-portal/src/app/layout/status-pages.gen.tsx",
+        "apps/order-portal/src/app/providers/app-providers.gen.tsx",
+        "apps/order-portal/src/app/providers/query-client.gen.ts",
+        "apps/order-portal/src/app/providers/session.gen.ts",
+        "apps/order-portal/src/app/router/access.gen.ts",
+        "apps/order-portal/src/app/router/router.gen.ts",
+        "apps/order-portal/src/app/router/routes.gen.tsx",
+        "apps/order-portal/src/app/router/views.gen.ts",
+        "apps/order-portal/src/shared/api/client.gen.ts",
+        "apps/order-portal/src/shared/auth/amplify.gen.ts",
+        "apps/order-portal/src/shared/config/runtime-config.gen.ts",
+        "infra/envs/dev/main.gen.tf",
+        "infra/envs/dev/outputs.gen.tf",
+        "infra/envs/prod/main.gen.tf",
+        "infra/envs/prod/outputs.gen.tf",
+        "infra/envs/staging/main.gen.tf",
+        "infra/envs/staging/outputs.gen.tf",
+        "infra/modules/static-site/main.gen.tf",
+        "infra/modules/static-site/outputs.gen.tf",
+        "infra/modules/static-site/variables.gen.tf"
+      ],
+      "needs": [
+        "N-002"
+      ],
+      "requirement": "R-003",
+      "satisfiedBy": [
+        "OrderPortal::orderPortal"
+      ],
+      "status": "verified",
+      "traceComments": [],
+      "verifications": [
+        "V-003"
+      ]
+    },
+    {
+      "generatedFiles": [
+        ".github/workflows/main.gen.yml",
+        ".github/workflows/pr.gen.yml",
+        ".github/workflows/promote.gen.yml",
+        "apps/order-portal/src/app/layout/app-layout.gen.tsx",
+        "apps/order-portal/src/app/layout/navigation.gen.tsx",
+        "apps/order-portal/src/app/layout/status-pages.gen.tsx",
+        "apps/order-portal/src/app/providers/app-providers.gen.tsx",
+        "apps/order-portal/src/app/providers/query-client.gen.ts",
+        "apps/order-portal/src/app/providers/session.gen.ts",
+        "apps/order-portal/src/app/router/access.gen.ts",
+        "apps/order-portal/src/app/router/router.gen.ts",
+        "apps/order-portal/src/app/router/routes.gen.tsx",
+        "apps/order-portal/src/app/router/views.gen.ts",
+        "apps/order-portal/src/shared/api/client.gen.ts",
+        "apps/order-portal/src/shared/auth/amplify.gen.ts",
+        "apps/order-portal/src/shared/config/runtime-config.gen.ts",
+        "infra/envs/dev/main.gen.tf",
+        "infra/envs/dev/outputs.gen.tf",
+        "infra/envs/prod/main.gen.tf",
+        "infra/envs/prod/outputs.gen.tf",
+        "infra/envs/staging/main.gen.tf",
+        "infra/envs/staging/outputs.gen.tf",
+        "infra/modules/static-site/main.gen.tf",
+        "infra/modules/static-site/outputs.gen.tf",
+        "infra/modules/static-site/variables.gen.tf"
+      ],
+      "needs": [
+        "N-002"
+      ],
+      "requirement": "R-004",
+      "satisfiedBy": [
+        "OrderPortal::orderPortal"
+      ],
+      "status": "verified",
+      "traceComments": [],
+      "verifications": [
+        "V-004"
+      ]
+    }
+  ]
+}

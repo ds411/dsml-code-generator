@@ -9,6 +9,10 @@ and each file in the project folder.
 
 CI runs these tests on Linux x64 (Q62).
 
+The tests of the order portal (story #177) run the generators of the
+toolchain on the phase 2 reference model. The output has the FastAPI
+application, the React application, the infrastructure and the workflows.
+
 The tests do not change `HOME`, because the `opensysml` client keeps the
 `sysml-grpc` binary in a cache below the home folder.
 """
@@ -28,6 +32,27 @@ ROOT = Path(__file__).resolve().parent.parent
 COMMAND = ROOT / "tests" / "dsml_test_command.py"
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 PRD_MODEL = ROOT / "docs" / "model" / "prd"
+PORTAL_MODEL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
+REACT_GOLDEN = ROOT / "tests" / "golden" / "react" / "order-portal"
+PORTAL_CONFIGURATION = """\
+schema = 1
+
+[model]
+paths = ["model"]
+
+[applications.orderApi]
+output = "services/order-api"
+
+[applications.orderPortal]
+output = "apps/order-portal"
+
+[infrastructure]
+output = "infra"
+
+[pipelines]
+output = ".github/workflows"
+"""
+"""The configuration file of the order portal: all generators write output."""
 # The requirement IDs of the example model and of the PRD model, for example
 # "R-001" and "PRD-CORE-012" (PRD-DSML-051).
 PRD_IDS = "'(R|PRD-[A-Z]+)-[0-9]{3,}'"
@@ -229,6 +254,73 @@ def test_environment_does_not_change_the_output(
     assert differences(reference, output) == []
 
 
+def portal_project(folder: Path, old_files: bool = False) -> Path:
+    """Write a project folder with the order portal model and all output folders."""
+    folder.mkdir(parents=True)
+    model = folder / "model" / PORTAL_MODEL.name
+    model.parent.mkdir()
+    model.write_bytes(PORTAL_MODEL.read_bytes())
+    if old_files:
+        os.utime(model, (OLD_FILE_TIME, OLD_FILE_TIME))
+    (folder / "dsml.toml").write_text(PORTAL_CONFIGURATION, encoding="utf-8", newline="\n")
+    return folder
+
+
+def portal_environment(variant: Mapping[str, str] | None = None) -> dict[str, str]:
+    """Give the environment of a run of the order portal with the generators of the toolchain."""
+    environment = base_environment()
+    environment.update(variant or {})
+    environment["DSML_TEST_GENERATORS"] = "toolchain"
+    return environment
+
+
+@pytest.fixture(scope="module")
+def portal_reference(tmp_path_factory: pytest.TempPathFactory) -> dict[str, bytes]:
+    """The full output of the order portal in the reference environment."""
+    project = portal_project(tmp_path_factory.mktemp("portal-reference") / "project")
+    output = run_dsml(project, portal_environment())
+    assert output["dsml generate: exit code"] == b"0", output[
+        "dsml generate: standard error"
+    ].decode()
+    return output
+
+
+# trace: PRD-CORE-028, PRD-CORE-029
+def test_reference_run_of_order_portal_writes_the_full_output(
+    portal_reference: Mapping[str, bytes],
+) -> None:
+    """The run writes the output of each generator.
+
+    The React output agrees with the golden files.
+    """
+    assert portal_reference["dsml ir: standard error"] == b""
+    assert portal_reference["dsml generate: standard error"] == b""
+    folders = {name.split("/")[0] for name in portal_reference if "/" in name}
+    assert folders == {".dsml", ".github", "apps", "infra", "model", "services"}
+    prefix = "apps/order-portal/"
+    react = {
+        name.removeprefix(prefix): content
+        for name, content in portal_reference.items()
+        if name.startswith(prefix)
+    }
+    golden = {
+        path.relative_to(REACT_GOLDEN).as_posix(): path.read_bytes()
+        for path in sorted(REACT_GOLDEN.rglob("*"))
+        if path.is_file() and not path.relative_to(REACT_GOLDEN).as_posix().startswith(".dsml/")
+    }
+    assert react == golden
+
+
+# trace: PRD-CORE-015, PRD-CORE-028
+@pytest.mark.parametrize("variant", VARIANTS, ids=[variant.name for variant in VARIANTS])
+def test_environment_does_not_change_the_output_of_order_portal(
+    variant: Variant, portal_reference: Mapping[str, bytes], tmp_path: Path
+) -> None:
+    project = portal_project(tmp_path / "project", old_files=variant.old_files)
+    output = run_dsml(project, portal_environment(variant.environment))
+    assert differences(portal_reference, output) == []
+
+
 @pytest.fixture(scope="module")
 def prd_reference(tmp_path_factory: pytest.TempPathFactory) -> dict[str, bytes]:
     """The output of the PRD model, with the files in sorted order and the folder in `dsml.toml`."""
@@ -273,21 +365,32 @@ def test_order_of_the_model_files_does_not_change_the_output(
 
 
 # trace: PRD-CORE-033
-def test_output_has_no_absolute_path_no_user_name_and_no_host_name(tmp_path: Path) -> None:
-    project = make_project(tmp_path / "project", example_model())
-    environment = base_environment()
-    environment.update(
-        {
-            "USER": FAKE_USER,
-            "LOGNAME": FAKE_USER,
-            "USERNAME": FAKE_USER,
-            "HOSTNAME": FAKE_HOST,
-            "DSML_TEST_HOST_NAME": FAKE_HOST,
-        }
-    )
+@pytest.mark.parametrize("model", ["order-service", "order-portal"])
+def test_output_has_no_absolute_path_no_user_name_and_no_host_name(
+    model: str, tmp_path: Path
+) -> None:
+    names = {
+        "USER": FAKE_USER,
+        "LOGNAME": FAKE_USER,
+        "USERNAME": FAKE_USER,
+        "HOSTNAME": FAKE_HOST,
+        "DSML_TEST_HOST_NAME": FAKE_HOST,
+    }
+    if model == "order-portal":
+        project = portal_project(tmp_path / "project")
+        environment = portal_environment(names)
+        # The generated code also has fixed words, for example "root" in
+        # the entry module of the React application.
+        model_text = PORTAL_MODEL.read_text(encoding="utf-8") + "".join(
+            path.read_text(encoding="utf-8") for path in REACT_GOLDEN.rglob("*") if path.is_file()
+        )
+    else:
+        project = make_project(tmp_path / "project", example_model())
+        environment = base_environment()
+        environment.update(names)
+        model_text = EXAMPLE_MODEL.read_text(encoding="utf-8")
     output = run_dsml(project, environment)
     assert output["dsml generate: exit code"] == b"0"
-    model_text = EXAMPLE_MODEL.read_text(encoding="utf-8")
     forbidden = {
         str(project),
         str(project.resolve()),

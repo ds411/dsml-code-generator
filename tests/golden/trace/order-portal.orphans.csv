@@ -1,0 +1,13 @@
+# report: orphans
+# model commit: none: the folder is not in a Git repository
+# baseline commit: none
+category,item,location
+element-without-requirement,OrderPortal::CancelOrder,model/order-portal.sysml:87
+element-without-requirement,OrderPortal::Order,model/order-portal.sysml:73
+element-without-requirement,OrderPortal::PlaceOrder,model/order-portal.sysml:80
+element-without-requirement,OrderPortal::network,model/order-portal.sysml:142
+element-without-requirement,OrderPortal::networkAws,model/order-portal.sysml:154
+element-without-requirement,OrderPortal::orderDb,model/order-portal.sysml:144
+element-without-requirement,OrderPortal::orderDbAws,model/order-portal.sysml:156
+element-without-requirement,OrderPortal::users,model/order-portal.sysml:145
+element-without-requirement,OrderPortal::usersAws,model/order-portal.sysml:157

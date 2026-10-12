@@ -1,0 +1,369 @@
+{
+  "createOnce": [
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/styles/index.css"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/entities/order/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/cancel-order/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/create-order/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/place-order/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/cancel-order-form/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/order-detail/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/order-list/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/place-order-form/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/api/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/auth/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/config/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/lib/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/lib/utils.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/alert-dialog.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/alert.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/button.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/card.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/field.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/input.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/label.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/native-select.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/separator.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/table.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/textarea.tsx"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/widgets/order-details/index.ts"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/widgets/order-list/index.ts"
+    }
+  ],
+  "generated": [
+    {
+      "part": "application/orderPortal",
+      "path": "components.json",
+      "sha256": "232d79964cfd9f14db21d0352897d6066a7ea575afd3a4630a820d7a874bd456"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "eslint.config.js",
+      "sha256": "a7f21ae1d66aed6d61870e00b0dd13b6961c1a03a4211dd5a26cc0a54370f38f"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "index.html",
+      "sha256": "a0f2b3f8fdd8750c2b64eb3d646bf51601c499e543d3efe0990077ceb5b977fe"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "package.json",
+      "sha256": "c7460c49fbda61dab7fa67fd5ec3461a72555bcf1e260637f1a7750c1ed83878"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/layout/app-layout.gen.tsx",
+      "sha256": "b9665287a86b63d1e1824000a66881cb51528c8df341cd41f7228c457ccd2e8e"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/layout/navigation.gen.tsx",
+      "sha256": "12df012c578ce494e8786c82b730e9e5bce020678a6fd1a44cbc6adaae5ffe2c"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/layout/status-pages.gen.tsx",
+      "sha256": "f6a76d9d9b11edb00d55956f32617c392d46588c5f32e0ef6260ff9875de8c5f"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/providers/app-providers.gen.tsx",
+      "sha256": "75f0f2151d2b699d8aa6d39a7f7475e7825f51d93d0a7a6635a8449838037630"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/providers/query-client.gen.ts",
+      "sha256": "b0c9d5ca9af7c37397cf30f7caed30394f09341ea89f199acc3044f0154244f9"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/providers/session.gen.ts",
+      "sha256": "8a14e08e9644adb1b624a5e3d9c668870dab7eeecb2a36b9f7446f08e333ac49"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/router/access.gen.ts",
+      "sha256": "a7e43ac738f0b95f0006b238b42ed6ba5561a0560c713c40a98bb166191b5cee"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/router/router.gen.ts",
+      "sha256": "ce9ed908980414cba07e3b5ea9c7e1d297e5ff491c65b677fac73dd437de40b9"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/router/routes.gen.tsx",
+      "sha256": "ac6899abe9cebed829aa8e70626c66aa4a4225ecd13dfe93bb67ec196868fdc2"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/app/router/views.gen.ts",
+      "sha256": "b16e6df2d8d6a910205b6a6588d5bf0e53030e9f41f879e5c3fc63139040e64a"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/entities/order/api/order-queries.gen.ts",
+      "sha256": "0f8d39fa670f518ae436c53826883e64cf3d6d3fa48e9e89205f33d45bff61de"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/entities/order/index.gen.ts",
+      "sha256": "a713c92375be9f5b9b8eba9a20b04bb23a7d7a2207e2e236fec4d71777a7b9e1"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/entities/order/model/order.gen.ts",
+      "sha256": "36b8e203ad7db243eae4e969d3187e36d99c4e6a5e4c3564a01c906222a984f8"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/cancel-order/api/cancel-order.gen.ts",
+      "sha256": "5f6c51a1d81bbddeb45d6e2e67d9c9d508545f698a47a273d56104257863b292"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/cancel-order/index.gen.ts",
+      "sha256": "8d5bdb9af6c54157620a24f486b55943429fdc41a114fe2bcb4197e7e86d58d8"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+      "sha256": "7c73f97ceebf301b0e04421998f624343d71a0bbb24d5b9ff43b8f1de5cde137"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/create-order/api/create-order.gen.ts",
+      "sha256": "23c129a6b0c71193dcc182f15abc3ab1461669c11da61aa3d4bb84034646e65a"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/create-order/index.gen.ts",
+      "sha256": "1bd2bb6f13bfbeb0180e888c063916bfc7087862cf63e0fa901c4b78d9a63778"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/create-order/ui/create-order-form.gen.tsx",
+      "sha256": "27a3cd3c113d75938548f8978f7d50aad77bd14b7914b24bdd195d0bacefcfd1"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/place-order/api/place-order.gen.ts",
+      "sha256": "a91176f9a0b3a498820ac72dcff00ee7028351e263b86ecd1cf824711a4d32dc"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/place-order/index.gen.ts",
+      "sha256": "3e45485b31898d1aa51fa3ca7e6f71c32e3ae8db6769aacc0f02b698703a534f"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/features/place-order/ui/place-order-form.gen.tsx",
+      "sha256": "5149462e36c8c6488f0d25634672d6c362a2ab637183aa22d1b179c38c41c63b"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/main.gen.tsx",
+      "sha256": "391b97f11e21e9a655d35d65facb53539382fb3718dfffd3d930ac5f8edb6b44"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/cancel-order-form/index.gen.ts",
+      "sha256": "3e38a59bf96304a96634b3383eeba43adc006ba2a94f81822c1fd8b38d51284f"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/cancel-order-form/ui/cancel-order-form-page.gen.tsx",
+      "sha256": "0b6da9e0407ed02522380221eb49cb6d7b3a3656fa6d3d3984b1d4c81e68fd90"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/order-detail/index.gen.ts",
+      "sha256": "9533192ae468b0b0cf137f64341daa12d84884e63f82314b5da4f42634d4e198"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/order-detail/ui/order-detail-page.gen.tsx",
+      "sha256": "c4f3186dfc2d6fc474493ce981f32a471deeb7386d050199e881b72e870acb33"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/order-list/index.gen.ts",
+      "sha256": "2b54c0ace947b5ddbae79188d48c117c248902c0dd9dfebc2ae3ad44ab65bbac"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/order-list/ui/order-list-page.gen.tsx",
+      "sha256": "b1ebeee5024503b38177503b7601f11e46e0d0e42e106e8bba8f656c1a635600"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/place-order-form/index.gen.ts",
+      "sha256": "6a6aac78b77902aa232939bd9a2ddd55b9e39720ed35d3dfbfe45829dc93186b"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/pages/place-order-form/ui/place-order-form-page.gen.tsx",
+      "sha256": "49f908b7235b71cef0a855db6c7a752761e7191410001f83236c5ba34a211e72"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/api/client.gen.ts",
+      "sha256": "1414e75d04ab932ccf63bea02f6097b529569275cbb42f6200b984e30074a9d6"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/api/index.gen.ts",
+      "sha256": "6009ffac4e417de8a6de12bd081ad7711e69e5c46530df285a94913083494776"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/auth/amplify.gen.ts",
+      "sha256": "b2af87aabfa28b00b53b0bfae1193e6c229c46b53de80b7f8359e4225bf825ff"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/auth/index.gen.ts",
+      "sha256": "d6937347e4f40ceb9c1707e90dedf08d0fe3949be137a47568ac7a630827045a"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/config/index.gen.ts",
+      "sha256": "11752ae3e80db6d1df888bf3192c96d1e9ac85f624c7aba4a61c42aea4eed767"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/config/runtime-config.gen.ts",
+      "sha256": "91b1ddffc9c5e8fefb285b6197b164fc3590c034efcd9899041a414a2f7a103b"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/lib/index.gen.ts",
+      "sha256": "74268ecade360f3ff09fe849360339d5516fe710f6411eb75fb778b219382b2b"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/shared/ui/index.gen.ts",
+      "sha256": "7cc0df9769ae15b92a056f7a799539f0f419b9ba54e7e20bab1da89244957a89"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/widgets/order-details/index.gen.ts",
+      "sha256": "f758944345ac9531896829b4a2e5ccb3812d124664788e5745e4ce7dfc6bdf3a"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/widgets/order-details/ui/order-details.gen.tsx",
+      "sha256": "0a09361568ad200c777ea5bc0600964a12d5abb2e56f222a8d2cc08112293540"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/widgets/order-list/index.gen.ts",
+      "sha256": "1c1a2713cb2d0b3a881107b531845e111e69077270e632696fbb51c4b8ae1dab"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "src/widgets/order-list/ui/order-table.gen.tsx",
+      "sha256": "35a9db78ae0f02a0b6bf8b30f1296065784b7c51ce8d610ae05db9e2e03e9eac"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "steiger.config.ts",
+      "sha256": "2d5539226ca55ad0f85654c84005abcf495f8543a22796c7677c8e337737edf6"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "tsconfig.json",
+      "sha256": "47621dcb3c28cb7699f9428d448c223f34de3b1340fa53983a9d97a8b964cec7"
+    },
+    {
+      "part": "application/orderPortal",
+      "path": "vite.config.ts",
+      "sha256": "728ba3032f35daa6b53cac01c9c7c72f13496d031a99e5288e2d685f4ec8741d"
+    }
+  ],
+  "manifestVersion": 1
+}

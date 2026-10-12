@@ -4,6 +4,7 @@ Each test with Git makes a temporary Git repository. The tests use only the
 local `git` command and no network (PRD-TOP-004).
 """
 
+import contextlib
 import json
 import re
 from collections.abc import Iterator
@@ -191,13 +192,51 @@ def test_baseline_that_does_not_exist_gives_exit_code_2(
     )
 
 
+@pytest.fixture(scope="module")
+def portal_repository(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """The Git repository of the changed order portal model, with the output of `dsml generate`."""
+    folder = tmp_path_factory.mktemp("order-portal") / "repository"
+    folder.mkdir()
+    with script.outside_git():
+        script.write_portal_change_project(folder)
+    return folder
+
+
+# trace: PRD-CORE-030, PRD-TRACE-013, PRD-TRACE-015, PRD-TRACE-016, PRD-TRACE-017
+@pytest.mark.parametrize("report_format", script.FORMATS)
+@pytest.mark.parametrize("report", script.CHANGE_REPORTS)
+def test_report_of_changed_order_portal_agrees_with_golden_file(
+    report: str, report_format: str, portal_repository: Path, tmp_path: Path
+) -> None:
+    output = tmp_path / f"report.{report_format}"
+    with script.outside_git(), contextlib.chdir(portal_repository):
+        assert main(["trace", report, "--format", report_format, "--output", str(output)]) == 0
+    golden: Path = script.golden_file(report, report_format, script.PORTAL)
+    assert output.read_bytes() == golden.read_bytes(), (
+        f"The {report} report is not the same as {golden.relative_to(script.ROOT)}. "
+        "If the change is correct, run scripts/write_golden_reports.py."
+    )
+
+
+# trace: PRD-TRACE-015, PRD-TRACE-016
+def test_impact_report_of_order_portal_gives_the_react_files() -> None:
+    data = json.loads(script.golden_file("impact", "json", script.PORTAL).read_bytes())
+    rows = _rows(data, "element")
+    assert sorted(rows) == ["OrderPortal::Order::note", "R-004"]
+    assert rows["R-004"]["verifications"] == ["V-004"]
+    note = rows["OrderPortal::Order::note"]["generatedFiles"]
+    assert "apps/order-portal/src/entities/order/model/order.gen.ts" in note
+    assert "services/order-api/app/shared/db/models/order_gen.py" in note
+
+
 # trace: PRD-TRACE-018
+@pytest.mark.parametrize("name", [script.EXAMPLE, script.PORTAL])
 @pytest.mark.parametrize("report_format", script.FORMATS)
 @pytest.mark.parametrize("report", script.CHANGE_REPORTS)
 def test_golden_report_gives_both_commits_and_no_date_or_time(
-    report: str, report_format: str
+    report: str, report_format: str, name: str
 ) -> None:
-    text = script.golden_file(report, report_format).read_text("utf-8")
+    text = script.golden_file(report, report_format, name).read_text("utf-8")
     commits = re.findall(r"\b[0-9a-f]{40}\b", text)
     assert len(set(commits)) == 2
     assert not re.search(r"\d{4}-\d{2}-\d{2}|\d{2}:\d{2}", text)

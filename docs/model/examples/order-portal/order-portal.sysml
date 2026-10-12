@@ -190,13 +190,13 @@ package OrderPortal {
     #Verification verification <'V-003'> showOrdersTest {
         :>> title = "Order list and order details test";
         :>> method = VerificationMethod::test;
-        :>> testFiles = ("apps/order-portal/src/pages/order-list/ui/order-list-page.test.tsx", "apps/order-portal/src/pages/order-detail/ui/order-detail-page.test.tsx");
+        :>> testFiles = ("apps/order-portal/tests/app/app.test.tsx", "apps/order-portal/tests/shared/shared.test.ts", "apps/order-portal/tests/widgets/widgets.test.tsx");
         objective { verify showOrdersInPortal; }
     }
     #Verification verification <'V-004'> placeOrderTest {
         :>> title = "Place order form test";
         :>> method = VerificationMethod::test;
-        :>> testFiles = ("apps/order-portal/src/pages/place-order-form/ui/place-order-form-page.test.tsx");
+        :>> testFiles = ("apps/order-portal/tests/features/features.test.tsx", "apps/order-portal/tests/field-rules/field-rules.test.ts");
         objective { verify placeOrderInPortal; }
     }
 }

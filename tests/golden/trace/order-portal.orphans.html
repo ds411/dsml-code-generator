@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSML trace report: orphans</title>
+<style>
+:root { color-scheme: light dark; }
+body { margin: 1rem; font-family: system-ui, sans-serif; font-size: 0.9rem; }
+h1 { font-size: 1.3rem; }
+dl { display: grid; grid-template-columns: max-content auto; gap: 0.2rem 1rem; }
+dt { font-weight: bold; }
+dd { margin: 0; font-family: monospace; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #8888; padding: 0.3rem 0.5rem; text-align: left; vertical-align: top; }
+th { background: #8882; }
+td { font-family: monospace; }
+ul { margin: 0; padding-left: 1rem; }
+.status-missing { color: #c62828; font-weight: bold; }
+.status-satisfied { color: #b26a00; }
+.status-verified { color: #2e7d32; }
+</style>
+</head>
+<body>
+<h1>DSML trace report: orphans</h1>
+<dl>
+<dt>Model commit</dt>
+<dd>none: the folder is not in a Git repository</dd>
+<dt>Baseline commit</dt>
+<dd>none</dd>
+<dt>Rows</dt>
+<dd>9</dd>
+</dl>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th scope="col">category</th>
+<th scope="col">item</th>
+<th scope="col">location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::CancelOrder</td>
+<td>model/order-portal.sysml:87</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::Order</td>
+<td>model/order-portal.sysml:73</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::PlaceOrder</td>
+<td>model/order-portal.sysml:80</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::network</td>
+<td>model/order-portal.sysml:142</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::networkAws</td>
+<td>model/order-portal.sysml:154</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::orderDb</td>
+<td>model/order-portal.sysml:144</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::orderDbAws</td>
+<td>model/order-portal.sysml:156</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::users</td>
+<td>model/order-portal.sysml:145</td>
+</tr>
+<tr>
+<td>element-without-requirement</td>
+<td>OrderPortal::usersAws</td>
+<td>model/order-portal.sysml:157</td>
+</tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

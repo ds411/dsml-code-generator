@@ -8,9 +8,11 @@ project" runs Prettier, tsc, ESLint, Steiger, Vitest and `pnpm build` on
 the golden project.
 
 The test of the golden files compares only the project files. The test of
-each layer story compares the folder of its layer in `src/`.
+each layer story compares the folder of its layer in `src/`. The test of the
+full output (story #177) compares all files and the manifests in `.dsml/`.
 """
 
+import hashlib
 import json
 from collections.abc import Callable
 from pathlib import Path
@@ -22,6 +24,7 @@ from dsml.errors import ToolchainError
 from dsml.generate import generators, react
 from dsml.generate.generators import collect
 from dsml.generate.header import FileType, file_type_of, header
+from dsml.generate.manifest import MANIFEST_PATH
 from dsml.generate.react import FIXED_NAMES, ReactGenerator, dependencies
 from dsml.generate.react_common import (
     LAYERS,
@@ -32,7 +35,15 @@ from dsml.generate.react_common import (
     slice_name,
 )
 from dsml.generate.templates import TemplateEngine
-from dsml.generate.writer import LOCKFILES, Kind, OutputFile, application_part
+from dsml.generate.trace import TRACE_PATH
+from dsml.generate.writer import (
+    LOCKFILES,
+    Kind,
+    OutputFile,
+    application_part,
+    apply_plan,
+    make_plan,
+)
 from dsml.ir.model import Attribute, Element, EnumValue, Ir, Location
 from dsml.versions import load_baseline, pinned_version
 
@@ -62,16 +73,29 @@ def layer_folder(path: str) -> bool:
     return any(path.startswith(f"src/{layer}/") for layer in LAYERS)
 
 
+def manifest_file(path: str) -> bool:
+    """Tell if a path is a manifest in `.dsml/`. The test of the full output tests these files."""
+    return path.startswith(".dsml/")
+
+
 def project_files(files: dict[str, bytes]) -> dict[str, bytes]:
-    return {path: content for path, content in files.items() if not layer_folder(path)}
+    return {
+        path: content
+        for path, content in files.items()
+        if not layer_folder(path) and not manifest_file(path)
+    }
+
+
+def folder_files(folder: Path) -> dict[str, bytes]:
+    return {
+        path.relative_to(folder).as_posix(): path.read_bytes()
+        for path in sorted(folder.rglob("*"))
+        if path.is_file()
+    }
 
 
 def golden_files() -> dict[str, bytes]:
-    return {
-        path.relative_to(GOLDEN).as_posix(): path.read_bytes()
-        for path in sorted(GOLDEN.rglob("*"))
-        if path.is_file()
-    }
+    return folder_files(GOLDEN)
 
 
 def application(name: str = "orderPortal", target: str = "react") -> Element:
@@ -119,6 +143,68 @@ def test_project_files_of_the_order_portal_agree_with_the_golden_files(portal_ir
         "uv run python scripts/write_golden_react.py and examine the differences."
     )
     assert sorted(output) == PROJECT_FILES
+
+
+# trace: PRD-CORE-029, PRD-CORE-030, PRD-CORE-040, PRD-TRACE-006
+def test_full_output_of_the_order_portal_agrees_with_the_golden_files(
+    portal_ir: Ir, tmp_path: Path
+) -> None:
+    """Write the output with the manifests, as `dsml generate` does, and compare all bytes."""
+    files = collect([ReactGenerator()], portal_ir, configuration(), None)
+    apply_plan(tmp_path, make_plan(tmp_path, files, None))
+    output = folder_files(tmp_path)
+    golden = golden_files()
+    assert sorted(output) == sorted(golden)
+    different = sorted(path for path in output if output[path] != golden[path])
+    assert different == [], (
+        "The output is different from the golden files. If the change is correct, run "
+        "uv run python scripts/write_golden_react.py and examine the differences."
+    )
+    assert MANIFEST_PATH in output
+    assert TRACE_PATH in output
+
+
+# trace: PRD-CORE-040, PRD-TRACE-006, PRD-TRACE-008
+def test_manifests_of_the_order_portal_give_each_file_and_its_symbols() -> None:
+    """Each generated file is in `generated.json` with its hash. Each symbol has a line range."""
+    golden = golden_files()
+    manifest = json.loads(golden[MANIFEST_PATH])
+    generated = {item["path"]: item["sha256"] for item in manifest["generated"]}
+    create_once = {item["path"] for item in manifest["createOnce"]}
+    on_disk = {path for path in golden if not manifest_file(path)}
+    assert generated.keys() | create_once == on_disk
+    assert not generated.keys() & create_once
+    for path, sha256 in generated.items():
+        assert hashlib.sha256(golden[path]).hexdigest() == sha256, path
+    trace = json.loads(golden[TRACE_PATH])
+    elements = [item["element"] for item in trace["elements"]]
+    assert elements == sorted(elements)
+    traced: set[str] = set()
+    for item in trace["elements"]:
+        paths = [file["path"] for file in item["files"]]
+        assert paths == sorted(paths)
+        for file in item["files"]:
+            assert file["path"] in generated
+            assert file["symbols"]
+            lines = golden[file["path"]].count(b"\n")
+            for symbol in file["symbols"]:
+                assert 1 <= symbol["firstLine"] <= symbol["lastLine"] <= lines, symbol
+            traced.add(file["path"])
+    # Each TypeScript module with a top-level declaration has symbols. A public
+    # API file only re-exports other modules, and the entry module and the
+    # tool configurations export no declaration.
+    no_symbols = sorted(
+        path for path in generated if path.endswith((".ts", ".tsx")) and path not in traced
+    )
+    assert no_symbols == sorted(
+        [
+            *(path for path in generated if path.endswith("/index.gen.ts")),
+            "src/main.gen.tsx",
+            "steiger.config.ts",
+            "vite.config.ts",
+        ]
+    )
+    assert "OrderPortal::orderPortal" in elements
 
 
 # trace: PRD-CORE-028

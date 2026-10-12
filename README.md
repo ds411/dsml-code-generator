@@ -201,7 +201,7 @@ uv run dsml trace coverage --format csv --output coverage.csv
 - The reports `coverage` and `orphans` use no baseline. With `--baseline`, they stop the command with exit code 2.
 - The HTML format is the default. It gives one HTML file with its styles in the file, and no script and no external resource (PRD-TRACE-017). The file shows the model commit, the baseline commit and the table of the report.
 
-The golden reports of the example model are in `tests/golden/trace/`. After a change of the reports, run `uv run python scripts/write_golden_reports.py` and examine the differences before you commit them.
+The golden reports of the example model and of the order portal model are in `tests/golden/trace/`. After a change of the reports, run `uv run python scripts/write_golden_reports.py` and examine the differences before you commit them.
 
 ## Use with Claude Code
 
