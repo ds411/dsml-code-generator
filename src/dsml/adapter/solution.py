@@ -11,6 +11,10 @@ The links are `satisfy`, `allocate`, `realizes`, `uses`, `calls` and `verify`
 (PRD-TRACE-001, PRD-DSML-030, PRD-DSML-040). `docs/notes/ir-solution-layers.md`
 gives the source and the target of each link.
 
+A view gives the entity or the operation that it refers to as a `reference`
+value, and an application gives its navigation as a `list` of `reference`
+values in the order of the model (story #159).
+
 The needs and requirements layers are in `dsml.adapter.needs`. The formal
 constraints are not in this module (story #32).
 """
@@ -29,6 +33,7 @@ from dsml.ir.model import (
     Element,
     ElementKind,
     EnumValue,
+    Finding,
     IntegerValue,
     Link,
     LinkType,
@@ -36,29 +41,35 @@ from dsml.ir.model import (
     Location,
     Multiplicity,
     RealValue,
+    ReferenceValue,
     StringValue,
     Value,
 )
 from dsml.ir.operations import CRUD_DEFAULTS
+from dsml.validate.rules.syn import SYN_001
 
 # trace: PRD-DSML-020, PRD-DSML-022, PRD-DSML-027, PRD-DSML-028, PRD-DSML-033
-# trace: PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-042, PRD-DSML-043, PRD-DSML-045
+# trace: PRD-DSML-031, PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-042, PRD-DSML-043
+# trace: PRD-DSML-045
 KEYWORDS: dict[str, ElementKind] = {
     "Application": "Application",
     "Entity": "Entity",
     "Exposed": "Exposed",
     "Operation": "Operation",
     "Roles": "Roles",
+    "View": "View",
     "Network": "Network",
     "ContainerService": "ContainerService",
     "RelationalDatabase": "RelationalDatabase",
     "UserDirectory": "UserDirectory",
     "SecretStore": "SecretStore",
+    "StaticSite": "StaticSite",
     "AwsVpc": "AwsVpc",
     "AwsEcsService": "AwsEcsService",
     "AwsRdsPostgres": "AwsRdsPostgres",
     "AwsCognito": "AwsCognito",
     "AwsSecrets": "AwsSecrets",
+    "AwsStaticSite": "AwsStaticSite",
     "Environment": "Environment",
     "Override": "Override",
     "ToolingAccount": "ToolingAccount",
@@ -71,11 +82,13 @@ _BASE_TYPES: dict[ElementKind, str] = {
     "Application": "DSML::BaseTypes::Application",
     "Exposed": "DSML::BaseTypes::exposures",
     "Operation": "DSML::BaseTypes::Operation",
+    "View": "DSML::BaseTypes::View",
     "AwsVpc": "DSML::BaseTypes::AwsVpc",
     "AwsEcsService": "DSML::BaseTypes::AwsEcsService",
     "AwsRdsPostgres": "DSML::BaseTypes::AwsRdsPostgres",
     "AwsCognito": "DSML::BaseTypes::AwsCognito",
     "AwsSecrets": "DSML::BaseTypes::AwsSecrets",
+    "AwsStaticSite": "DSML::BaseTypes::AwsStaticSite",
     "Environment": "DSML::BaseTypes::Environment",
     "ToolingAccount": "DSML::BaseTypes::ToolingAccount",
     "Verification": "DSML::BaseTypes::Verification",
@@ -86,7 +99,14 @@ _BASE_TYPES: dict[ElementKind, str] = {
 # the model declares on a logical element, thus rule STR-016 can find an AWS
 # attribute on it.
 _LOGICAL_KINDS: frozenset[ElementKind] = frozenset(
-    {"Network", "ContainerService", "RelationalDatabase", "UserDirectory", "SecretStore"}
+    {
+        "Network",
+        "ContainerService",
+        "RelationalDatabase",
+        "UserDirectory",
+        "SecretStore",
+        "StaticSite",
+    }
 )
 
 # The metadata on a dependency and the link type that it gives.
@@ -98,6 +118,24 @@ _DEPENDENCY_LINKS: dict[str, LinkType] = {
 
 LITERALS = "literals"
 """The IR attribute that gives the literals of an enumeration."""
+
+NAVIGATION = "navigation"
+"""The IR attribute that gives the navigation of an application (PRD-DSML-032)."""
+
+ENTITY = "entity"
+"""The IR attribute that gives the entity of a list or detail view (PRD-DSML-031)."""
+
+OPERATION = "operation"
+"""The IR attribute that gives the operation of a form view (PRD-DSML-031)."""
+
+# trace: PRD-DSML-031
+# The reference that each view kind needs: the IR attribute and the IR kind of
+# its target.
+_VIEW_REFERENCES: dict[str, tuple[str, ElementKind]] = {
+    "list": (ENTITY, "Entity"),
+    "detail": (ENTITY, "Entity"),
+    "form": (OPERATION, "Operation"),
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,6 +150,49 @@ class _AttributeSpec:
 def convert_elements(graph: SourceGraph, model: ParsedModel) -> Iterator[Element]:
     """Give the elements of the application, infrastructure and verification layers."""
     yield from _Converter(graph, model).elements()
+
+
+# trace: PRD-CORE-021, PRD-DSML-031
+def view_findings(elements: Sequence[Element]) -> Iterator[Finding]:
+    """Give a SYN-001 finding for each view with a wrong reference.
+
+    A list or detail view must refer to an entity, and a form view must refer
+    to an operation (PRD-DSML-031). OpenSysML gives SYN-001 for a reference
+    that it cannot resolve. It gives no error for a missing reference, or for
+    a reference to an element of the wrong kind. Thus the adapter gives the
+    same finding for these references. A view with no `kind` gets no finding.
+    """
+    kinds = {element.identity: element.kind for element in elements}
+    for view in elements:
+        if view.kind != "View":
+            continue
+        values = {attribute.name: attribute for attribute in view.attributes}
+        kind = values.get("kind")
+        if kind is None or not isinstance(kind.value, EnumValue):
+            continue
+        needed = _VIEW_REFERENCES.get(kind.value.literal)
+        if needed is None:
+            continue
+        name, target_kind = needed
+        reference = values.get(name)
+        if (
+            reference is not None
+            and isinstance(reference.value, ReferenceValue)
+            and kinds.get(reference.value.target) == target_kind
+        ):
+            continue
+        noun = target_kind.lower()
+        yield Finding(
+            rule=SYN_001.id,
+            severity=SYN_001.severity,
+            message=(
+                f'The {kind.value.literal} view "{view.qualified_name}" must refer to one '
+                f'{noun} with the keyword #{target_kind}. Give it with "ref :>> {name} : '
+                f'<{target_kind}>;".'
+            ),
+            location=view.location if reference is None else reference.location,
+            element=view.identity,
+        )
 
 
 # trace: PRD-TRACE-001, PRD-TRACE-002, PRD-TRACE-003
@@ -155,6 +236,10 @@ class _Converter:
                 attributes = self._attributes(source, kind)
         if kind == "Exposed":
             attributes = (*attributes, *self._crud_defaults(source, attributes))
+        elif kind == "View":
+            attributes = (*attributes, *_view_references(source))
+        elif kind == "Application":
+            attributes = (*attributes, *_navigation(source))
         owner = source.owner
         keyword = kind if kind in KEYWORDS else None
         return Element(
@@ -331,6 +416,53 @@ def _literals(source: SourceElement) -> Attribute:
         if member.metaclass == "EnumerationUsage" and member.name
     )
     return Attribute(LITERALS, ListValue(items))
+
+
+# trace: PRD-DSML-031
+def _view_references(source: SourceElement) -> Iterator[Attribute]:
+    """Give the entity and the operation that a view refers to.
+
+    The model gives the target as the type of the redefined reference, for
+    example `ref :>> entity : Order;`. The IR gives a `reference` value with
+    the identity of the target. A reference with no type in the model is not
+    in the IR.
+    """
+    for name, member in _redefinitions(source, (ENTITY, OPERATION)):
+        targets = [item for item in member.types() if item.qualified_name and item.in_model]
+        if len(targets) == 1:
+            yield Attribute(name, ReferenceValue(targets[0].identity), member.location)
+
+
+# trace: PRD-DSML-032
+def _navigation(source: SourceElement) -> Iterator[Attribute]:
+    """Give the navigation of an application as a list of view identities.
+
+    The list keeps the order of the model, because the order is data: it is
+    the order of the views in the navigation. One view gives a list with one
+    item. A navigation with a value that is not a reference is not in the IR.
+    """
+    for name, member in _redefinitions(source, (NAVIGATION,)):
+        value = member.value()
+        if isinstance(value, ReferenceValue):
+            value = ListValue((value,))
+        if isinstance(value, ListValue) and all(
+            isinstance(item, ReferenceValue) for item in value.items
+        ):
+            yield Attribute(name, value, member.location)
+
+
+def _redefinitions(
+    source: SourceElement, names: Sequence[str]
+) -> Iterator[tuple[str, SourceElement]]:
+    """Give the first redefinition of each name in the body of the element, with the name."""
+    found: set[str] = set()
+    for membership, member in source.members():
+        if membership != "FeatureMembership" or not member.references("redefines"):
+            continue
+        name = member.redefined_name()
+        if name in names and name not in found:
+            found.add(name)
+            yield name, member
 
 
 def _declared(source: SourceElement) -> dict[str, Location | None]:

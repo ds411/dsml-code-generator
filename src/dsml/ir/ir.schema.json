@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:dsml:ir:1.0.0",
-  "title": "DSML IR 1.0.0",
+  "$id": "urn:dsml:ir:1.1.0",
+  "title": "DSML IR 1.1.0",
   "description": "The intermediate representation (IR) of a DSML model. Validators and generators read only the IR. docs/notes/ir.md gives the structure and the version rules.",
   "type": "object",
   "additionalProperties": false,
@@ -9,7 +9,7 @@
   "properties": {
     "irVersion": {
       "description": "The semantic version of the IR (PRD-CORE-023).",
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "files": {
       "description": "The model files, relative to the repository root, in sorted order.",
@@ -198,6 +198,7 @@
             "AwsEcsService",
             "AwsRdsPostgres",
             "AwsSecrets",
+            "AwsStaticSite",
             "AwsVpc",
             "ContainerService",
             "Entity",
@@ -217,9 +218,11 @@
             "Roles",
             "SecretStore",
             "Stakeholder",
+            "StaticSite",
             "ToolingAccount",
             "UserDirectory",
-            "Verification"
+            "Verification",
+            "View"
           ]
         },
         "name": { "type": "string" },

@@ -18,7 +18,7 @@ VERSION_TEXT = (
     f"toolchain: {metadata.version('dsml')}\n"
     "DSML library: 1.1.0\n"
     "OpenSysML: 0.9.2\n"
-    "IR schema: 1.0.0\n"
+    "IR schema: 1.1.0\n"
 )
 
 

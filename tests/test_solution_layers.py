@@ -2,7 +2,10 @@
 
 These tests start a private `sysml-grpc` child process. They use the example
 model of the DSML PRD and the test model `tests/models/ir/solution-layers.sysml`,
-which uses the forms that the example model does not use.
+which uses the forms that the example model does not use. Story #159 added the
+test models `tests/models/ir/views.sysml` and
+`tests/models/ir/view-references.sysml` for the views, the navigation and the
+static sites.
 """
 
 import re
@@ -15,7 +18,7 @@ from jsonschema.protocols import Validator
 
 from dsml.adapter.convert import build_ir
 from dsml.adapter.engine import Engine
-from dsml.adapter.solution import LITERALS
+from dsml.adapter.solution import ENTITY, LITERALS, NAVIGATION, OPERATION
 from dsml.ir.environments import environments, realization_attributes
 from dsml.ir.model import (
     Annotation,
@@ -23,12 +26,14 @@ from dsml.ir.model import (
     BooleanValue,
     Element,
     EnumValue,
+    Finding,
     IntegerValue,
     Ir,
     Link,
     ListValue,
     Location,
     Multiplicity,
+    ReferenceValue,
     StringValue,
     Value,
 )
@@ -40,6 +45,10 @@ from dsml.library import library_document
 ROOT = Path(__file__).resolve().parent.parent
 EXAMPLE = "docs/model/examples/order-service.sysml"
 TEST_MODEL = "tests/models/ir/solution-layers.sysml"
+VIEWS_MODEL = "tests/models/ir/views.sysml"
+VIEW_REFERENCES_MODEL = "tests/models/ir/view-references.sysml"
+VIEWS_GOLDEN = ROOT / "tests/golden/ir/views.ir.json"
+_FILES = {"example": EXAMPLE, "test_model": TEST_MODEL, "views": VIEWS_MODEL}
 
 
 def _convert(engine: Engine, file: str) -> Ir:
@@ -64,6 +73,11 @@ def example(engine: Engine) -> Ir:
 @pytest.fixture(scope="module")
 def test_model(engine: Engine) -> Ir:
     return _convert(engine, TEST_MODEL)
+
+
+@pytest.fixture(scope="module")
+def views(engine: Engine) -> Ir:
+    return _convert(engine, VIEWS_MODEL)
 
 
 # The kinds of the needs and requirements layers (story #30).
@@ -178,12 +192,12 @@ def test_test_model_links(test_model: Ir) -> None:
 
 
 # trace: PRD-CORE-024, PRD-CORE-033
-@pytest.mark.parametrize("model", ["example", "test_model"])
+@pytest.mark.parametrize("model", sorted(_FILES))
 def test_each_element_and_link_has_a_source_location(
     model: str, request: pytest.FixtureRequest
 ) -> None:
     ir: Ir = request.getfixturevalue(model)
-    file = EXAMPLE if model == "example" else TEST_MODEL
+    file = _FILES[model]
     lines = (ROOT / file).read_text(encoding="utf-8").splitlines()
     for item in (*ir.elements, *ir.links):
         assert item.location.file == file
@@ -469,7 +483,7 @@ def test_unknown_environment_is_an_error(example: Ir) -> None:
 
 
 # trace: PRD-CORE-022, PRD-CORE-025
-@pytest.mark.parametrize("model", ["example", "test_model"])
+@pytest.mark.parametrize("model", sorted(_FILES))
 def test_ir_passes_the_schema_and_has_no_internal_id(
     model: str, request: pytest.FixtureRequest
 ) -> None:
@@ -485,3 +499,144 @@ def test_ir_passes_the_schema_and_has_no_internal_id(
 # trace: PRD-CORE-028
 def test_two_conversions_give_the_same_bytes(engine: Engine, example: Ir) -> None:
     assert write_ir(_convert(engine, EXAMPLE)) == write_ir(example)
+
+
+# Views, navigation and static sites (story #159) ------------------------------
+
+
+# trace: PRD-CORE-024, PRD-DSML-031, PRD-DSML-035, PRD-DSML-037
+def test_views_and_static_sites_are_elements(views: Ir) -> None:
+    kinds = {
+        element.identity: (element.kind, element.owner)
+        for element in views.elements
+        if element.kind in ("View", "StaticSite", "AwsStaticSite")
+    }
+    assert kinds == {
+        "Portal::orderPortal::orderList": ("View", "Portal::orderPortal"),
+        "Portal::orderPortal::orderDetail": ("View", "Portal::orderPortal"),
+        "Portal::orderPortal::placeOrderForm": ("View", "Portal::orderPortal"),
+        "Portal::adminPortal::orderAdmin": ("View", "Portal::adminPortal"),
+        "Portal::portalSite": ("StaticSite", "Portal"),
+        "Portal::adminSite": ("StaticSite", "Portal"),
+        "Portal::portalSiteAws": ("AwsStaticSite", "Portal"),
+        "Portal::adminSiteAws": ("AwsStaticSite", "Portal"),
+    }
+    assert views.findings == ()
+
+
+# trace: PRD-CORE-024, PRD-DSML-031, PRD-DSML-033
+def test_views_have_kind_reference_roles_and_public(views: Ir) -> None:
+    roles = "Portal::PortalRoles"
+    order_list = _element(views, "Portal::orderPortal::orderList")
+    assert order_list.doc == "The list of the orders."
+    assert sorted(order_list.attributes, key=Attribute.sort_key) == [
+        Attribute(ENTITY, ReferenceValue("Portal::Order"), at(VIEWS_MODEL, 40, 13)),
+        Attribute("kind", EnumValue("DSML::ViewKind", "list"), at(VIEWS_MODEL, 39, 13)),
+        Attribute("public", BooleanValue(True), at(VIEWS_MODEL, 41, 13)),
+    ]
+    assert _values(_element(views, "Portal::orderPortal::orderDetail")) == {
+        "kind": EnumValue("DSML::ViewKind", "detail"),
+        ENTITY: ReferenceValue("Portal::Order"),
+        "allowedRoles": _enum(roles, "clerk", "admin"),
+        "public": BooleanValue(False),
+    }
+    # One role gives a list with one item.
+    assert _values(_element(views, "Portal::orderPortal::placeOrderForm")) == {
+        "kind": EnumValue("DSML::ViewKind", "form"),
+        OPERATION: ReferenceValue("Portal::PlaceOrder"),
+        "allowedRoles": _enum(roles, "clerk"),
+        "public": BooleanValue(False),
+    }
+
+
+# trace: PRD-CORE-024, PRD-CORE-031, PRD-DSML-032
+def test_navigation_keeps_the_order_of_the_model(views: Ir) -> None:
+    portal = _element(views, "Portal::orderPortal")
+    navigation = {item.name: item for item in portal.attributes}[NAVIGATION]
+    assert navigation == Attribute(
+        NAVIGATION,
+        ListValue(
+            (
+                ReferenceValue("Portal::orderPortal::placeOrderForm"),
+                ReferenceValue("Portal::orderPortal::orderList"),
+                ReferenceValue("Portal::orderPortal::orderDetail"),
+            )
+        ),
+        at(VIEWS_MODEL, 53, 9),
+    )
+    # The canonical JSON also keeps the order of the model.
+    text = write_ir(views).decode()
+    first = text.index('"target": "Portal::orderPortal::placeOrderForm"')
+    assert first < text.index('"target": "Portal::orderPortal::orderList"')
+    # One view gives a list with one item.
+    admin = _values(_element(views, "Portal::adminPortal"))
+    assert admin[NAVIGATION] == ListValue((ReferenceValue("Portal::adminPortal::orderAdmin"),))
+    # An application with no navigation has no navigation attribute.
+    assert NAVIGATION not in _values(_element(views, "Portal::orderApi"))
+
+
+# trace: PRD-TRACE-001, PRD-DSML-037, PRD-DSML-039, PRD-DSML-040
+def test_static_site_links(views: Ir) -> None:
+    file = VIEWS_MODEL
+    assert {link for link in _links(views) if "Site" in link.source + link.target} == {
+        Link("uses", "Portal::portalSite", "Portal::users", at(file, 72, 5)),
+        Link("uses", "Portal::adminSite", "Portal::users", at(file, 73, 5)),
+        Link("allocate", "Portal::orderPortal", "Portal::portalSite", at(file, 75, 5)),
+        Link("allocate", "Portal::adminPortal", "Portal::adminSite", at(file, 76, 5)),
+        Link("realizes", "Portal::portalSiteAws", "Portal::portalSite", at(file, 83, 5)),
+        Link("realizes", "Portal::adminSiteAws", "Portal::adminSite", at(file, 84, 5)),
+    }
+
+
+# trace: PRD-CORE-027, PRD-CORE-028, PRD-CORE-031
+def test_views_ir_agrees_with_its_golden_file(views: Ir) -> None:
+    assert write_ir(views) == VIEWS_GOLDEN.read_bytes(), (
+        f"The IR of {VIEWS_MODEL} is not the same as {VIEWS_GOLDEN.relative_to(ROOT)}. "
+        "If the change is correct, run scripts/write_golden_ir.py."
+    )
+
+
+# trace: PRD-CORE-021, PRD-DSML-031
+def test_view_with_a_wrong_reference_gives_syn_001(engine: Engine) -> None:
+    file = VIEW_REFERENCES_MODEL
+    parsed = engine.parse_texts(
+        [library_document(), (file, (ROOT / file).read_text(encoding="utf-8"))]
+    )
+    ir = build_ir(parsed, [file])
+    hint = 'Give it with "ref :>> {0} : <{1}>;".'
+    # OpenSysML gives only a warning for the reference to a part definition
+    # that is not an entity.
+    assert [(item.rule, item.location) for item in ir.findings if item.rule == "SYN-002"] == [
+        ("SYN-002", at(file, 30, 21))
+    ]
+    assert sorted(
+        (item for item in ir.findings if item.rule == "SYN-001"), key=Finding.sort_key
+    ) == [
+        Finding(
+            "SYN-001",
+            "error",
+            'The list view "Wrong::web::noEntity" must refer to one entity with the keyword '
+            "#Entity. " + hint.format("entity", "Entity"),
+            at(file, 24, 9),
+            "Wrong::web::noEntity",
+        ),
+        Finding(
+            "SYN-001",
+            "error",
+            'The detail view "Wrong::web::wrongTarget" must refer to one entity with the '
+            "keyword #Entity. " + hint.format("entity", "Entity"),
+            at(file, 30, 13),
+            "Wrong::web::wrongTarget",
+        ),
+        Finding(
+            "SYN-001",
+            "error",
+            'The form view "Wrong::web::noOperation" must refer to one operation with the '
+            "keyword #Operation. " + hint.format("operation", "Operation"),
+            at(file, 33, 9),
+            "Wrong::web::noOperation",
+        ),
+    ]
+    # The IR keeps the elements, because the parse gave no error.
+    assert _values(_element(ir, "Wrong::web::wrongTarget"))[ENTITY] == ReferenceValue("Wrong::Note")
+    _validator().validate(to_data(ir))

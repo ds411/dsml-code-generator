@@ -3,6 +3,8 @@
 
 Story #33 added the golden IR files in tests/golden/ir/. The test
 tests/test_ir_command.py compares the output of `dsml ir` with these files.
+Story #159 added the golden IR file of a test model. The test
+tests/test_solution_layers.py compares the IR of the test model with it.
 Run this script from the root of the repository after a change that changes
 the IR, for example a new OpenSysML version (PRD-CORE-027):
 
@@ -28,6 +30,11 @@ REFERENCE_MODELS: dict[str, tuple[str, ...]] = {
 }
 """The model files of each reference model, relative to the repository root."""
 
+TEST_MODELS: dict[str, tuple[str, ...]] = {
+    "views": ("tests/models/ir/views.sysml",),
+}
+"""The model files of each test model with a golden IR file (story #159)."""
+
 
 def golden_file(name: str) -> Path:
     """Give the golden IR file of a reference model."""
@@ -40,7 +47,7 @@ def main() -> int:
         print(f"Run this script from the folder {ROOT}.", file=sys.stderr)
         return 2
     GOLDEN.mkdir(parents=True, exist_ok=True)
-    for name, files in REFERENCE_MODELS.items():
+    for name, files in (REFERENCE_MODELS | TEST_MODELS).items():
         output = golden_file(name)
         code = dsml(["ir", *files, "--output", str(output.relative_to(ROOT))])
         if code != 0:
