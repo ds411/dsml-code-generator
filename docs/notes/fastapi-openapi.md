@@ -47,3 +47,18 @@ The file is canonical JSON: sorted keys, two spaces of indent, UTF-8, LF line en
 
 - `tests/test_fastapi_openapi.py` validates the golden documents against the OpenAPI 3.1 schema in `tests/schemas/`. It also examines the paths, the schemas, the security scheme and the error responses.
 - The golden files `tests/golden/fastapi/*/services/*/openapi.gen.json` are the output for the example model and for the shop model.
+
+## Next.js target
+
+Story #187 added `openapi.gen.json` to the Next.js generator (PRD-APP-004, PRD-APP-311). The function `openapi_output` of `src/dsml/generate/nextjs.py` calls `openapi_document` of this module with the path prefix `/api`. The file is at the root of the Next.js project.
+
+- The path of each operation starts with `/api`, for example `/api/orders/{id}`. The route files in `app/api/` have the same paths.
+- The path `/healthz` has no prefix, because the health route is `app/healthz/route.ts`.
+- The operation ID contains the full path, for example `cancel_order_api_orders__orderId__cancel_post`. FastAPI gives this ID for a router with the prefix `/api`.
+- The schemas, the security scheme and the error responses are the same as for the FastAPI target.
+
+The FastAPI target uses no prefix, thus its output does not change.
+
+The CI job "Next.js golden project" runs `prettier --check` on the golden files. Thus the Next.js generator writes the document with `src/dsml/generate/prettier_json.py`, not with the canonical JSON writer. The keys are in sorted order. The Prettier format puts a short list of scalar values on one line.
+
+The Next.js project does not supply an OpenAPI document at run time. PRD-APP-004 requires the agreement only for a supplied document. The test `test_each_operation_has_one_route_file_with_the_same_method_and_path` in `tests/test_nextjs_openapi.py` compares each method and path of the golden document with the exports of the golden route files. A path parameter agrees with each dynamic segment at its place, because the route tree gives one name to all the dynamic segments at one place.
