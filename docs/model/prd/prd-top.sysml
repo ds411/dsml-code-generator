@@ -62,4 +62,9 @@ package PrdTop {
         :>> title = "Run time"; :>> kind = RequirementKind::performance; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
+    #Requirement requirement <'PRD-TOP-013'> top013 {
+        doc /* The user documentation must include a user guide in docs/guide/ for a reader with no knowledge of SysML v2, Jinja or the target tools. The guide must have a concepts page, a glossary, a modeling tutorial, pages for the generated code and the reports, reference pages and a page for AI assistance. */
+        :>> title = "User guide"; :>> kind = RequirementKind::'constraint'; :>> priority = Priority::must; :>> status = Status::draft;
+        frame oneModel;
+    }
 }

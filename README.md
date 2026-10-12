@@ -1,6 +1,6 @@
 # DSML toolchain: PRD bundle
 
-Status date: 10 October 2026. All decisions (Q1 to Q61, AD1 to AD3) are closed. The text uses ASD-STE100 Simplified Technical English, Issue 9.
+Status date: 10 October 2026. All decisions (Q1 to Q71, AD1 to AD3) are closed. The text uses ASD-STE100 Simplified Technical English, Issue 9.
 
 ## Contents
 
@@ -15,8 +15,9 @@ docs/
 │   ├── 04-infrastructure-generation-prd.md  PRD-IAC
 │   ├── 05-cicd-generation-prd.md          PRD-CICD
 │   ├── 06-validation-prd.md               PRD-VAL
-│   └── 07-traceability-prd.md             PRD-TRACE
-├── decisions/                             Decision records 01 to 09
+│   ├── 07-traceability-prd.md             PRD-TRACE
+│   └── 08-ai-assistance-prd.md            PRD-AI
+├── decisions/                             Decision records 01 to 10
 ├── model/
 │   ├── README.md
 │   ├── prd/*.sysml                        All PRD requirements as a DSML model

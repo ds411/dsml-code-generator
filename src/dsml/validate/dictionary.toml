@@ -57,6 +57,22 @@ word = "manifest"
 type = "noun"
 
 [[term]]
+word = "MCP prompt"
+type = "noun"
+
+[[term]]
+word = "MCP resource"
+type = "noun"
+
+[[term]]
+word = "MCP server"
+type = "noun"
+
+[[term]]
+word = "MCP tool"
+type = "noun"
+
+[[term]]
 word = "need"
 type = "noun"
 
@@ -85,6 +101,10 @@ word = "rule"
 type = "noun"
 
 [[term]]
+word = "skill"
+type = "noun"
+
+[[term]]
 word = "slice"
 type = "noun"
 
@@ -102,6 +122,10 @@ type = "noun"
 
 [[term]]
 word = "trace link"
+type = "noun"
+
+[[term]]
+word = "user guide"
 type = "noun"
 
 [[term]]

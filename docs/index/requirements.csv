@@ -1,6 +1,6 @@
 id,document,section,requirement,verification,source
 PRD-TOP-001,docs/prd/00-top-level-prd.md,Cross-cutting requirements,"The toolchain must be written in Python, and uv must manage the Python project.",Inspection,Q8
-PRD-TOP-002,docs/prd/00-top-level-prd.md,Cross-cutting requirements,The toolchain must install as one Python package that supplies the command `dsml`.,Demonstration,Q5
+PRD-TOP-002,docs/prd/00-top-level-prd.md,Cross-cutting requirements,The toolchain must install as one Python package that supplies the command `dsml`.,Demonstration,"Q5, Q69"
 PRD-TOP-003,docs/prd/00-top-level-prd.md,Cross-cutting requirements,The toolchain must run on the operating systems that decision record 03 gives.,Test,Q50
 PRD-TOP-004,docs/prd/00-top-level-prd.md,Cross-cutting requirements,"Validation, code generation and traceability must not use an AI model.",Inspection,Q16
 PRD-TOP-005,docs/prd/00-top-level-prd.md,Cross-cutting requirements,"Validation, code generation and trace reports must not use the network. Only the local OpenSysML child process is permitted.",Test,"Q16, Q38"
@@ -11,6 +11,7 @@ PRD-TOP-009,docs/prd/00-top-level-prd.md,Cross-cutting requirements,The PRD set 
 PRD-TOP-010,docs/prd/00-top-level-prd.md,Cross-cutting requirements,Each PRD requirement must have a unique ID with the prefix of its PRD.,Inspection,Q32
 PRD-TOP-011,docs/prd/00-top-level-prd.md,Cross-cutting requirements,The DSML appendix must contain each PRD requirement. OpenSysML must parse the appendix with no error.,Test,Q48
 PRD-TOP-012,docs/prd/00-top-level-prd.md,Cross-cutting requirements,"Validation and code generation of a model with 1,000 elements must finish in the time that decision record 03 gives.",Analysis,Q50
+PRD-TOP-013,docs/prd/00-top-level-prd.md,Cross-cutting requirements,"The user documentation must include a user guide in `docs/guide/` for a reader with no knowledge of SysML v2, Jinja or the target tools. The guide must have a concepts page, a glossary, a modeling tutorial, pages for the generated code and the reports, reference pages and a page for AI assistance.",Inspection,"Q71, Q1"
 PRD-DSML-001,docs/prd/01-dsml-prd.md,Library and model files,The DSML must be a SysML v2 model library package with the name `DSML`.,Inspection,"Q7, AD1"
 PRD-DSML-002,docs/prd/01-dsml-prd.md,Library and model files,"The DSML must extend SysML v2 only with metadata definitions, attribute definitions and enumeration definitions. It must not add a concrete syntax.",Inspection,Q7
 PRD-DSML-003,docs/prd/01-dsml-prd.md,Library and model files,"Each DSML element kind must be available as a user-defined keyword, for example `#Need`, `#Entity` and `#ContainerService`.",Test,Q7
@@ -314,3 +315,21 @@ PRD-TRACE-015,docs/prd/07-traceability-prd.md,Reports,"An element must count as 
 PRD-TRACE-016,docs/prd/07-traceability-prd.md,Reports,"The `impact` and `suspect` reports must use the baseline that `--baseline` gives, or the default baseline that decision record 03 gives.",Test,"Q31, Q54"
 PRD-TRACE-017,docs/prd/07-traceability-prd.md,Reports,"Each report must be available as HTML, CSV and JSON. The HTML report must be one file with no external resources.",Test,Q31
 PRD-TRACE-018,docs/prd/07-traceability-prd.md,Reports,"Each report must give the model commit and the baseline commit, and no date or time.",Test,"Q16, Q31"
+PRD-AI-001,docs/prd/08-ai-assistance-prd.md,Skills,The toolchain package must contain two skills in the Agent Skills format: the modeling skill `dsml-modeling` and the CLI skill `dsml-cli`.,Inspection,Q68
+PRD-AI-002,docs/prd/08-ai-assistance-prd.md,Skills,The modeling skill must tell an AI agent how to write a model in the five layers with the DSML keywords. It must contain the rule catalog and example models.,Inspection,Q68
+PRD-AI-003,docs/prd/08-ai-assistance-prd.md,Skills,"The CLI skill must tell an AI agent how to use `dsml init`, `validate`, `generate`, `check-output` and `trace`. It must give a loop that corrects the findings until `dsml validate` finds no error.",Inspection,Q68
+PRD-AI-004,docs/prd/08-ai-assistance-prd.md,Skills,The command `dsml skills install` must write the two skills into the folder `.claude/skills/` of the project. The option `--output` must select a different folder.,Test,Q68
+PRD-AI-005,docs/prd/08-ai-assistance-prd.md,Skills,`dsml skills install` must replace only the skill folders that it owns. It must not change a different file or folder in the destination folder.,Test,"Q68, Q15"
+PRD-AI-006,docs/prd/08-ai-assistance-prd.md,Skills,Two runs of `dsml skills install` with the same toolchain version must write byte-identical files.,Test,"Q68, Q16"
+PRD-AI-007,docs/prd/08-ai-assistance-prd.md,Skills,"The reference files of the skills must agree with the DSML library, the rule catalog and the CLI of the same toolchain version. A CI test must find a reference file that is not current.",Test,Q68
+PRD-AI-008,docs/prd/08-ai-assistance-prd.md,MCP server,The command `dsml mcp` must start a local MCP server with the official MCP Python SDK. The server must use only the stdio transport.,Test,Q69
+PRD-AI-009,docs/prd/08-ai-assistance-prd.md,MCP server,"The MCP Python SDK must be in the optional dependency group `mcp` of the toolchain package. Without the group, `dsml mcp` must stop with exit code 2 and a message that gives the install command.",Test,Q69
+PRD-AI-010,docs/prd/08-ai-assistance-prd.md,MCP server,All other subcommands must operate without the optional dependency group `mcp`.,Test,Q69
+PRD-AI-011,docs/prd/08-ai-assistance-prd.md,MCP server,"The MCP server must have the MCP tools `init`, `validate`, `ir`, `generate`, `check_output`, `trace` and `version`. Each tool must accept the options of its subcommand, except `--output` and `--overwrite`.",Test,"Q69, Q70"
+PRD-AI-012,docs/prd/08-ai-assistance-prd.md,MCP server,"For the same model, configuration and toolchain version, each MCP tool must give the same result as its subcommand.",Test,"Q70, Q16"
+PRD-AI-013,docs/prd/08-ai-assistance-prd.md,MCP server,"Only the MCP tools `init` and `generate` can write files. The tool `generate` must obey PRD-CORE-042 and PRD-CORE-043, and it must stop on a changed generated file.",Test,"Q70, Q15"
+PRD-AI-014,docs/prd/08-ai-assistance-prd.md,MCP server,The MCP server must operate only in the project folder that the user gives when the server starts. It must refuse a path outside that folder and must not write a file outside it.,Test,Q70
+PRD-AI-015,docs/prd/08-ai-assistance-prd.md,MCP server,"The MCP server must have MCP resources that give the DSML reference, the rule catalog and the example models. The resources must use the same reference files as the skills.",Test,"Q69, Q68"
+PRD-AI-016,docs/prd/08-ai-assistance-prd.md,MCP server,"The MCP server must have MCP prompts for these tasks: write a model from a product description, correct the findings of validation, and generate code.",Test,Q69
+PRD-AI-017,docs/prd/08-ai-assistance-prd.md,MCP server,The MCP server must not use the network and must not send the model to a different computer. It must not open a network socket.,Test,"Q69, Q16"
+PRD-AI-018,docs/prd/08-ai-assistance-prd.md,MCP server,"The text of the skills, the MCP tools, the MCP resources and the MCP prompts must use ASD-STE100 Issue 9.",Inspection,"Q1, Q68, Q69"
