@@ -17,9 +17,9 @@ workflows need (PRD-CICD-013). The trigger of `pr.gen.yml` is
 - `generate-check`: `dsml generate --check` (PRD-CICD-003).
 - `check-output`: `dsml check-output` (PRD-CICD-005).
 - `test-<application>`: for each FastAPI application, the lockfile check,
-  `uv sync --frozen`, ruff, pyright and pytest. For each `react`
-  application, `pnpm install --frozen-lockfile`, the type checker, the
-  linters, the format check and the tests (PRD-CICD-004).
+  `uv sync --frozen`, ruff, pyright and pytest. For each `react` and
+  each `nextjs` application, `pnpm install --frozen-lockfile`, the type
+  checker, the linters, the format check and the tests (PRD-CICD-004).
 - `plan-dev`: `tofu plan` of the root module of the environment `dev` with
   the plan role, and the plan text in the job summary (PRD-CICD-006). The
   job is only in the workflow if the model has the environment `dev` and the
@@ -101,8 +101,8 @@ RELEASE_TAGS: Final = "v*"
 FIND_BUILD_JOB: Final = "find-build"
 """The job of `promote.gen.yml` that finds the image digests and the static files of a build."""
 
-REACT: Final = "react"
-"""The target of the applications that pnpm builds and tests (PRD-CICD-004)."""
+PNPM_TARGETS: Final = frozenset({"nextjs", "react"})
+"""The targets of the applications that pnpm builds and tests (PRD-CICD-004)."""
 
 PLAN_ENVIRONMENT: Final = "dev"
 """The environment that the pull request workflow plans (PRD-CICD-006)."""
@@ -196,11 +196,11 @@ def root_packages(ir: Ir) -> tuple[str, ...]:
     )
 
 
-def _is_react(element: Element) -> bool:
+def _uses_pnpm(element: Element) -> bool:
     return any(
         attribute.name == "target"
         and isinstance(attribute.value, EnumValue)
-        and attribute.value.literal == REACT
+        and attribute.value.literal in PNPM_TARGETS
         for attribute in element.attributes
     )
 
@@ -217,15 +217,15 @@ def _jobs(ir: Ir, configuration: Configuration, elements: list[Element]) -> list
 def application_jobs(ir: Ir, configuration: Configuration) -> tuple[ApplicationJob, ...]:
     """Give the test job of each FastAPI application, sorted by identity."""
     jobs = _jobs(ir, configuration, fastapi.applications(ir))
-    check_job_ids(job.job for job in (*jobs, *react_jobs(ir, configuration)))
+    check_job_ids(job.job for job in (*jobs, *pnpm_jobs(ir, configuration)))
     return tuple(jobs)
 
 
 # trace: PRD-CICD-004
-def react_jobs(ir: Ir, configuration: Configuration) -> tuple[ApplicationJob, ...]:
-    """Give the test job of each `react` application, sorted by identity."""
+def pnpm_jobs(ir: Ir, configuration: Configuration) -> tuple[ApplicationJob, ...]:
+    """Give the test job of each `react` and each `nextjs` application, sorted by identity."""
     elements = sorted(
-        (item for item in ir.elements if item.kind == "Application" and _is_react(item)),
+        (item for item in ir.elements if item.kind == "Application" and _uses_pnpm(item)),
         key=Element.sort_key,
     )
     return tuple(_jobs(ir, configuration, elements))
@@ -291,7 +291,7 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
     baseline = load_baseline()
     toolchain_version = metadata.version(PROG) if version is None else version
     apps = application_jobs(ir, configuration)
-    web = react_jobs(ir, configuration)
+    web = pnpm_jobs(ir, configuration)
     plan = plan_job(ir, configuration)
     elements = [*root_packages(ir), *(app.element.identity for app in (*apps, *web))]
     if plan is not None:
@@ -301,7 +301,7 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
         "elements": elements,
         "actions": actions(baseline),
         "applications": apps,
-        "react_applications": web,
+        "pnpm_applications": web,
         "node_version": pinned_version("node", baseline),
         "pnpm_version": pinned_version("pnpm", baseline),
         "check_infrastructure": configuration.infrastructure is not None,
@@ -557,7 +557,7 @@ class PipelineGenerator:
         data = pr_data(ir, configuration, self._version)
         content = engine.render_bytes(f"pipelines/{PR_WORKFLOW}.j2", data)
         job_elements: dict[str, tuple[str, ...]] = dict.fromkeys(MODEL_JOBS, root_packages(ir))
-        for app in (*data["applications"], *data["react_applications"]):
+        for app in (*data["applications"], *data["pnpm_applications"]):
             job_elements[app.job] = (app.element.identity,)
         if data["plan"] is not None:
             job_elements[data["plan"].job] = (data["plan"].root.element.identity,)

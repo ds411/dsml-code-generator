@@ -1,6 +1,6 @@
 # Pipeline generator
 
-Story #83 added the pipeline generator and the pull request workflow `pr.gen.yml`. Story #87 added the main workflow `main.gen.yml` and the promote workflow `promote.gen.yml`. Story #89 added the README `README.gen.md` with the repository settings. Story #140 changed the jobs to use the toolchain GitHub Action. Story #165 added the jobs of the React applications: the checks, the build of the static files, and their deployment.
+Story #83 added the pipeline generator and the pull request workflow `pr.gen.yml`. Story #87 added the main workflow `main.gen.yml` and the promote workflow `promote.gen.yml`. Story #89 added the README `README.gen.md` with the repository settings. Story #140 changed the jobs to use the toolchain GitHub Action. Story #165 added the jobs of the React applications: the checks, the build of the static files, and their deployment. Story #181 added the Next.js applications: the checks in `pr.gen.yml`, and the image build and the migration task, as for a FastAPI application.
 
 ## Output
 
@@ -22,14 +22,14 @@ The trigger is `pull_request`. The workflow sets `permissions: {}`. Each job the
 | `generate-check` | The toolchain action with `command: generate` and `args: --check` | `contents: read` | PRD-CICD-003 |
 | `check-output` | The setup of the language tools, then the toolchain action with `command: check-output` | `contents: read` | PRD-CICD-005 |
 | `test-<application>` | For each FastAPI application: `uv lock --check`, `uv sync --frozen`, ruff, the format check, pyright and pytest | `contents: read` | PRD-CICD-004 |
-| `test-<application>` | For each `react` application: the setup of pnpm and Node.js, `pnpm install --frozen-lockfile`, `tsc --noEmit`, ESLint, Steiger, the Prettier check and Vitest | `contents: read` | PRD-CICD-004 |
+| `test-<application>` | For each `react` and each `nextjs` application: the setup of pnpm and Node.js, `pnpm install --frozen-lockfile`, `tsc --noEmit`, ESLint, Steiger, the Prettier check and Vitest | `contents: read` | PRD-CICD-004 |
 | `plan-dev` | `tofu init`, `tofu plan` with the plan role, and the plan text in the job summary | `contents: read`, `id-token: write` | PRD-CICD-006, PRD-CICD-010 |
 
 Notes:
 
 - `uv sync --frozen` does not compare the lockfile with `pyproject.toml`. Thus the step `uv lock --check` comes first. A lockfile that does not agree makes the job fail (PRD-CICD-004).
 - `pnpm install --frozen-lockfile` fails if `pnpm-lock.yaml` does not agree with `package.json` (PRD-CICD-004).
-- The job of a `react` application runs the tools of decision record 09 (Q64) with `pnpm exec`: `tsc --noEmit`, `eslint .`, `steiger ./src`, `prettier --check .` and `vitest run`. Thus the job does not need scripts in `package.json`. The React generator (M10) must write the configuration files of these tools.
+- The job of a `react` or a `nextjs` application runs the tools of decision record 09 (Q64) with `pnpm exec`: `tsc --noEmit`, `eslint .`, `steiger ./src`, `prettier --check .` and `vitest run`. Thus the job does not need scripts in `package.json`. The React generator (M10) and the Next.js generator (M11) must write the configuration files of these tools. `PNPM_TARGETS` in `src/dsml/generate/pipelines/generator.py` gives the targets of these jobs.
 - The action uploads the findings also when `dsml validate` finds an error. Then the step fails.
 - `dsml check-output` needs the language tools on `PATH` (`docs/notes/check-output.md`). The section "Tools of the job `check-output`" gives the steps that install them.
 - The plan job is only in the workflow if the model has the environment `dev` and the configuration has the key `infrastructure.output`. It uses the root module `<infrastructure.output>/envs/dev`.
@@ -194,7 +194,7 @@ A value from the model or the configuration goes into the workflow through the t
 
 ## Trace
 
-The header of `pr.gen.yml` gives the root packages, each FastAPI application, each `react` application and the environment `dev`. The headers of `main.gen.yml` and `promote.gen.yml` give the tooling account, each container application and its container service, each `react` application on a static site and its static site, and the environments of the deploy jobs. Each job is a symbol of the kind `job` in the trace manifest:
+The header of `pr.gen.yml` gives the root packages, each FastAPI application, each `react` application, each `nextjs` application and the environment `dev`. The headers of `main.gen.yml` and `promote.gen.yml` give the tooling account, each container application and its container service, each `react` application on a static site and its static site, and the environments of the deploy jobs. Each job is a symbol of the kind `job` in the trace manifest:
 
 | Job | Elements |
 | --- | --- |
@@ -209,5 +209,5 @@ The header of `pr.gen.yml` gives the root packages, each FastAPI application, ea
 
 - `tests/test_pipeline_deploy.py` tests the jobs of `main.gen.yml` and `promote.gen.yml`: the job order, the permissions, the concurrency groups and the environments. For the order portal, it tests the build of the static files, the deploy steps of the sites, and that `promote.gen.yml` does not build again. A test compares the outputs that the deploy steps read with the golden outputs of the infrastructure generator.
 - `tests/test_pipeline_readme.py` tests `README.gen.md`. A test compares the environments and the repository variables of the golden workflows with the tables of the golden README.
-- `tests/test_pipeline_generator.py` compares the output of the example model with `tests/golden/pipelines/order-service/`, and the output of the order portal with `tests/golden/pipelines/order-portal/`. If a change of the output is correct, run `uv run python scripts/write_golden_pipelines.py`.
+- `tests/test_pipeline_generator.py` compares the output of the example model with `tests/golden/pipelines/order-service/`, and the output of the order portal with `tests/golden/pipelines/order-portal/`. `tests/test_pipeline_deploy.py` compares the output of the order web with `tests/golden/pipelines/order-web/`. If a change of the output is correct, run `uv run python scripts/write_golden_pipelines.py`.
 - The CI step "Lint the golden workflows" runs actionlint on the golden workflows. The items `actionlint` and `actionlint-sha256` of `src/dsml/versions.toml` give the release and the SHA-256 hash of its archive. actionlint also runs shellcheck on the `run` scripts.

@@ -1,4 +1,4 @@
-"""Tests of the main workflow and the promote workflow (stories #87 and #165).
+"""Tests of the main workflow and the promote workflow (stories #87, #165 and #181).
 
 The golden files are in `tests/golden/pipelines/order-service/`. The test
 `test_output_of_the_example_model_agrees_with_the_golden_files` of
@@ -579,3 +579,83 @@ def test_site_builds_need_the_infrastructure_folder(portal: Ir) -> None:
     assert [(build.job, build.files, build.artifact) for build in builds] == [
         ("build-order-portal", "apps/order-portal/dist", "static-files-order-portal")
     ]
+
+
+# The phase 3 reference model "order web" (story #181) has one `nextjs`
+# application on a container service. The golden files are in
+# tests/golden/pipelines/order-web/.
+
+WEB = ROOT / "docs" / "model" / "examples" / "order-web" / "order-web.sysml"
+WEB_GOLDEN = ROOT / "tests/golden/pipelines/order-web"
+PR_PATH = ".github/workflows/pr.gen.yml"
+WEB_CONFIGURATION = Configuration(
+    applications=(Application("orderWeb", PurePosixPath("apps/order-web")),),
+    infrastructure=PurePosixPath("infra"),
+    pipelines=WORKFLOWS,
+)
+
+
+@pytest.fixture(scope="module")
+def web_workflows() -> dict[str, str]:
+    ir = make_ir([WEB], ROOT)
+    files = PipelineGenerator(version="0.1.0").generate(ir, WEB_CONFIGURATION, None)
+    return {file.path: file.content.decode("utf-8") for file in files}
+
+
+# trace: PRD-CICD-001, PRD-CORE-030
+def test_golden_workflows_of_the_order_web_agree_with_the_output(
+    web_workflows: dict[str, str],
+) -> None:
+    for path in (PR_PATH, MAIN_PATH, PROMOTE_PATH):
+        assert web_workflows[path] == (WEB_GOLDEN / path).read_text(encoding="utf-8"), path
+
+
+# trace: PRD-CICD-004
+def test_pr_workflow_tests_a_nextjs_application_with_pnpm(web_workflows: dict[str, str]) -> None:
+    job = _jobs(web_workflows[PR_PATH])["test-order-web"] + "\n"
+    assert 'working-directory: "apps/order-web"' in job
+    assert _steps(job)[-6:] == [
+        "Install the dependencies from the lockfile",
+        "Check the types",
+        "Lint",
+        "Check the layers",
+        "Check the format",
+        "Test",
+    ]
+    for command in (
+        "pnpm install --frozen-lockfile",
+        "pnpm exec tsc --noEmit",
+        "pnpm exec eslint .",
+        "pnpm exec steiger ./src",
+        "pnpm exec prettier --check .",
+        "pnpm exec vitest run",
+    ):
+        assert f"run: {command}\n" in job, command
+    assert "uv sync" not in job
+
+
+# trace: PRD-CICD-007
+def test_main_workflow_builds_the_image_of_a_nextjs_application(
+    web_workflows: dict[str, str],
+) -> None:
+    jobs = _jobs(web_workflows[MAIN_PATH])
+    assert list(jobs) == ["build-order-web", "deploy-dev"]
+    build = jobs["build-order-web"]
+    assert 'working-directory: "apps/order-web"' in build
+    assert 'docker build --platform linux/amd64 --tag "$image" .' in build
+    assert "build-order-web" in _needs(jobs["deploy-dev"])
+
+
+# trace: PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-APP-332
+@pytest.mark.parametrize("job", sorted(DEPLOY_JOBS))
+def test_deploy_job_migrates_a_nextjs_application_before_the_rollout(
+    web_workflows: dict[str, str], job: str
+) -> None:
+    text = _jobs(web_workflows[DEPLOY_JOBS[job]])[job]
+    steps = _steps(text)
+    environment = job.removeprefix("deploy-")
+    apply = steps.index(f"Apply the infrastructure of {environment}")
+    assert steps.index("Run the migrations of orderWeb") == apply + 1
+    assert steps.index("Roll out orderWeb") == apply + 2
+    assert '-var "order_web_image_digest=$ORDER_WEB_IMAGE_DIGEST"' in text
+    assert "web_service_migration_task_definition" in text

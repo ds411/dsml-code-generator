@@ -63,7 +63,7 @@ The build reads no environment value and uses no `NEXT_PUBLIC_` variable (PRD-AP
 | `appClientId` | `COGNITO_APP_CLIENT_ID` |
 | `loginDomain` | `COGNITO_LOGIN_DOMAIN` |
 
-The infrastructure generator must set these variables in the container service of a `nextjs` application (#181). `GET /healthz` does not read them, thus the health check operates with no configuration.
+The infrastructure generator sets these variables in the container service of a `nextjs` application (story #181). `GET /healthz` does not read them, thus the health check operates with no configuration.
 
 ## Logs
 

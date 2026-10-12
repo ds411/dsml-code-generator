@@ -1,0 +1,26 @@
+{
+  "createOnce": [],
+  "generated": [
+    {
+      "part": "pipelines",
+      "path": ".github/workflows/README.gen.md",
+      "sha256": "0a922a1c963bdabbe728d5b8bd266f71e51e81a08a8354583846703ef5b8f7a5"
+    },
+    {
+      "part": "pipelines",
+      "path": ".github/workflows/main.gen.yml",
+      "sha256": "fe62f118e6ff0bb10d45bb1e81e77036aa622eb1d9f3c215a2bf6da0728f61ea"
+    },
+    {
+      "part": "pipelines",
+      "path": ".github/workflows/pr.gen.yml",
+      "sha256": "de154e861af168ea9a390225559e4d4ccbb50aa91df732719e0b78822b6f6001"
+    },
+    {
+      "part": "pipelines",
+      "path": ".github/workflows/promote.gen.yml",
+      "sha256": "6f461e3d07f9a1d49119d9eb74e675c64e07a1ba20e627aa1b353144c4f5eb47"
+    }
+  ],
+  "manifestVersion": 1
+}

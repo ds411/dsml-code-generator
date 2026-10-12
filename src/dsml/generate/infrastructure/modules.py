@@ -285,6 +285,12 @@ HOSTS: Final = frozenset({"ContainerService", "StaticSite"})
 REACT: Final = "react"
 """The target of an application that a static site serves (PRD-IAC-021)."""
 
+NEXTJS: Final = "nextjs"
+"""The target of a full-stack application that a container service runs (PRD-APP-333)."""
+
+SITE_TARGETS: Final = frozenset({NEXTJS, REACT})
+"""The targets of the applications with the app client URLs on their own domain."""
+
 
 def _element(ir: Ir, identity: str) -> Element:
     """Give the element with an identity."""
@@ -460,7 +466,9 @@ def _user_directory_arguments(
     The user pool gets one group for each role value, and one app client for
     each application that uses it. The callback URLs are on the domain of
     the environment (PRD-IAC-019). The callback URLs of a `react`
-    application are on its site domain (PRD-IAC-021).
+    application are on its site domain (PRD-IAC-021). The callback URLs of
+    a `nextjs` application are on its application domain, the domain of its
+    container service (PRD-IAC-014).
     """
     product, environment = context.product, context.environment_name
     domain = _environment_domain(context.environment)
@@ -470,7 +478,7 @@ def _user_directory_arguments(
         if any(
             attribute.name == "target"
             and isinstance(attribute.value, EnumValue)
-            and attribute.value.literal == REACT
+            and attribute.value.literal in SITE_TARGETS
             for attribute in application.attributes
         ):
             host = site_domain(application, context.environment)
@@ -547,8 +555,13 @@ CONTAINER_NAME: Final = "app"
 
 TARGETS: Final[Mapping[str, tuple[int, tuple[str, ...]]]] = {
     "fastapi": (8000, ("python", "-m", "app.migrate_gen")),
+    NEXTJS: (3000, ("node", "migrate.gen.mjs")),
 }
-"""The container port and the migration command of each target (PRD-APP-128, PRD-APP-133)."""
+"""The container port and the migration command of each target.
+
+PRD-APP-128 and PRD-APP-133 give the values of `fastapi`. PRD-APP-332 and
+PRD-APP-333 give the values of `nextjs`.
+"""
 
 DATABASE_SSL_MODE: Final = "require"
 """The PostgreSQL SSL mode of the application. RDS for PostgreSQL requires SSL."""
@@ -637,7 +650,7 @@ def service_counts(element: Element, attributes: Mapping[str, Attribute]) -> tup
     return desired, minimum, maximum
 
 
-# trace: PRD-IAC-015, PRD-APP-010, PRD-APP-132, PRD-APP-136
+# trace: PRD-IAC-015, PRD-APP-010, PRD-APP-132, PRD-APP-136, PRD-APP-325
 def _service_environment(
     ir: Ir, element: Element, application: Element, environment: Element
 ) -> tuple[list[tuple[str, str]], list[tuple[str, str]], list[str], list[str]]:
@@ -649,7 +662,9 @@ def _service_environment(
     secret store. The secrets give
     the `valueFrom` of each secret environment variable. If `react`
     applications call the application, `CORS_ALLOWED_ORIGINS` gets their
-    site origins in the environment (PRD-APP-136).
+    site origins in the environment (PRD-APP-136). A `nextjs` application
+    also gets `COGNITO_LOGIN_DOMAIN`, because its root layout gives the
+    login domain to the client components (PRD-APP-325).
     """
     variables: list[tuple[str, str]] = [
         ("APP_ENVIRONMENT", "local.environment"),
@@ -688,6 +703,8 @@ def _service_environment(
             ("COGNITO_APP_CLIENT_ID", f"{directory}.app_client_ids[{client}]"),
             ("COGNITO_USER_POOL_ID", f"{directory}.user_pool_id"),
         ]
+        if _target(application) == NEXTJS:
+            variables.append(("COGNITO_LOGIN_DOMAIN", f"{directory}.login_domain"))
     for store in _used(ir, element, "SecretStore"):
         call = f"module.{names.hcl_address(store.name)}"
         secrets.append((names.hcl_address(store.name).upper(), f"{call}.secret_arn"))
@@ -701,7 +718,7 @@ def _hcl_list(values: Sequence[str]) -> str:
 
 
 # trace: PRD-IAC-008, PRD-IAC-009, PRD-IAC-012, PRD-IAC-013, PRD-IAC-014, PRD-IAC-015
-# trace: PRD-IAC-016, PRD-IAC-035, PRD-IAC-037, PRD-APP-136
+# trace: PRD-IAC-016, PRD-IAC-035, PRD-IAC-037, PRD-APP-136, PRD-APP-332, PRD-APP-333
 def _container_service_arguments(
     element: Element, attributes: Mapping[str, Attribute], context: CallContext
 ) -> dict[str, str]:
