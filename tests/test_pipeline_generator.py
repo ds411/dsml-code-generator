@@ -100,13 +100,14 @@ def test_generator_is_in_the_list_of_generators() -> None:
     assert any(isinstance(generator, PipelineGenerator) for generator in GENERATORS)
 
 
-# trace: PRD-CICD-001, PRD-CORE-005
-def test_generator_writes_three_workflows_in_the_pipelines_part(ir: Ir) -> None:
+# trace: PRD-CICD-001, PRD-CICD-013, PRD-CORE-005
+def test_generator_writes_three_workflows_and_the_readme_in_the_pipelines_part(ir: Ir) -> None:
     files = PipelineGenerator().generate(ir, CONFIGURATION, None)
     assert [file.path for file in files] == [
         PR_PATH,
         ".github/workflows/main.gen.yml",
         ".github/workflows/promote.gen.yml",
+        ".github/workflows/README.gen.md",
     ]
     for file in files:
         assert file.kind is Kind.GENERATED
@@ -118,7 +119,7 @@ def test_no_output_folder_or_other_part_gives_no_file(ir: Ir) -> None:
     generator = PipelineGenerator()
     assert generator.generate(ir, Configuration(), None) == []
     assert generator.generate(ir, CONFIGURATION, {application_part("orderApi")}) == []
-    assert len(generator.generate(ir, CONFIGURATION, {PIPELINES})) == 3
+    assert len(generator.generate(ir, CONFIGURATION, {PIPELINES})) == 4
 
 
 # trace: PRD-CICD-001

@@ -268,13 +268,17 @@ def test_each_job_is_a_symbol_of_its_elements(ir: Ir) -> None:
 def test_no_infrastructure_folder_gives_only_the_pull_request_workflow(ir: Ir) -> None:
     configuration = Configuration(applications=CONFIGURATION.applications, pipelines=WORKFLOWS)
     files = PipelineGenerator(version="0.1.0").generate(ir, configuration, None)
-    assert [file.path for file in files] == [".github/workflows/pr.gen.yml"]
+    assert [file.path for file in files if file.path.endswith(".yml")] == [
+        ".github/workflows/pr.gen.yml"
+    ]
 
 
 # trace: PRD-CICD-001
 def test_model_with_no_container_application_gives_only_the_pull_request_workflow() -> None:
     files = PipelineGenerator(version="0.1.0").generate(Ir(), CONFIGURATION, None)
-    assert [file.path for file in files] == [".github/workflows/pr.gen.yml"]
+    assert [file.path for file in files if file.path.endswith(".yml")] == [
+        ".github/workflows/pr.gen.yml"
+    ]
 
 
 # trace: PRD-CICD-008, PRD-CICD-017

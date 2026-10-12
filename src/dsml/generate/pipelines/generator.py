@@ -8,8 +8,9 @@ run their commands in the folder of the configuration file. Thus the
 configuration file must be in the root of the repository.
 
 This module writes `pr.gen.yml`, `main.gen.yml` and `promote.gen.yml`
-(PRD-CICD-001). The trigger of `pr.gen.yml` is `pull_request`. These are
-its jobs:
+(PRD-CICD-001), and `README.gen.md` with the repository settings that the
+workflows need (PRD-CICD-013). The trigger of `pr.gen.yml` is
+`pull_request`. These are its jobs:
 
 - `validate`: `dsml validate`, and the upload of the SARIF findings to
   GitHub code scanning (PRD-CICD-002).
@@ -34,6 +35,8 @@ install the toolchain with `uv tool install`. The package index is the
 URL in the repository variable `DSML_INDEX_URL`.
 """
 
+import json
+import re
 from collections.abc import Collection, Sequence
 from dataclasses import dataclass
 from importlib import metadata
@@ -73,6 +76,12 @@ MAIN_WORKFLOW: Final = "main.gen.yml"
 PROMOTE_WORKFLOW: Final = "promote.gen.yml"
 """The file name of the promote workflow."""
 
+README: Final = "README.gen.md"
+"""The file name of the README with the repository settings (PRD-CICD-013)."""
+
+REVIEWED_ENVIRONMENT: Final = "prod"
+"""The GitHub environment that must have required reviewers (PRD-CICD-013, PRD-CICD-020)."""
+
 MAIN_BRANCH: Final = "main"
 """The main branch. The trust policy of the push role permits only this branch (PRD-IAC-028)."""
 
@@ -96,6 +105,8 @@ ACTIONS: Final = {
     "upload_sarif": "action-upload-sarif",
 }
 """The template name and the baseline item of each third-party action."""
+
+_JOB_NAME = re.compile(r"^  [A-Za-z_][A-Za-z0-9_-]*:\n    name: (.+)$", re.MULTILINE)
 
 MODEL_JOBS: Final = ("check-output", "generate-check", "validate")
 """The jobs that examine the full model. Their elements are the root packages."""
@@ -354,7 +365,93 @@ def _deploy_symbols(content: bytes, data: dict[str, Any]) -> tuple[Symbol, ...]:
     return job_symbols(content.decode("utf-8"), lambda job: job_elements.get(job, ()))
 
 
-# trace: PRD-CICD-001, PRD-CORE-005, PRD-CORE-026, PRD-TRACE-006
+# trace: PRD-CICD-013
+def job_names(content: str) -> tuple[str, ...]:
+    """Give the value of the key `name:` of each job of a workflow, in the order of the jobs.
+
+    GitHub gives this name to the check of the job.
+    """
+    return tuple(
+        json.loads(value) if value.startswith('"') else value
+        for value in _JOB_NAME.findall(content)
+    )
+
+
+# trace: PRD-CICD-013
+@dataclass(frozen=True, slots=True)
+class GitHubEnvironment:
+    """A GitHub environment that a deploy job uses."""
+
+    name: str
+    workflow: str
+    """The file name of the workflow with the deploy job."""
+    refs: tuple[str, ...]
+    """The branches and the tags that can deploy to the environment."""
+
+    @property
+    def reviewed(self) -> bool:
+        """Tell if the environment must have required reviewers."""
+        return self.name == REVIEWED_ENVIRONMENT
+
+
+# trace: PRD-CICD-013
+@dataclass(frozen=True, slots=True)
+class RepositoryVariable:
+    """A repository variable that a workflow reads."""
+
+    name: str
+    value: str
+    """The text that tells what the value is."""
+    workflow: str
+    """The file name of the workflow that reads the variable."""
+
+
+# trace: PRD-CICD-013, PRD-CICD-012, PRD-CICD-020
+def readme_data(
+    configuration: Configuration,
+    pr: dict[str, Any],
+    pr_content: bytes,
+    main: dict[str, Any] | None,
+    promote: dict[str, Any] | None,
+) -> dict[str, Any]:
+    """Give the template data of `README.gen.md`.
+
+    The README gives the GitHub environments of the deploy jobs, the
+    required status checks of the main branch (the jobs of `pr.gen.yml`) and
+    the repository variables. The deploy jobs can start only from the main
+    branch and from the release tags. The trust policy of the push role
+    permits only these (PRD-IAC-028).
+    """
+    environments: list[GitHubEnvironment] = []
+    for workflow, data, refs in (
+        (MAIN_WORKFLOW, main, (f"Branch `{MAIN_BRANCH}`",)),
+        (PROMOTE_WORKFLOW, promote, (f"Branch `{MAIN_BRANCH}`", f"tags `{RELEASE_TAGS}`")),
+    ):
+        if data is not None:
+            environments.extend(
+                GitHubEnvironment(deploy.environment, workflow, refs) for deploy in data["deploys"]
+            )
+    return {
+        "checks": job_names(pr_content.decode("utf-8")),
+        "environments": environments,
+        "infrastructure": (
+            None
+            if configuration.infrastructure is None
+            else configuration.infrastructure.as_posix()
+        ),
+        "plan": pr["plan"] is not None,
+        "main_branch": MAIN_BRANCH,
+        "pr_workflow": PR_WORKFLOW,
+        "tooling": main is not None,
+        "variables": (
+            RepositoryVariable(
+                INDEX_VARIABLE, "The URL of the package index of the toolchain", PR_WORKFLOW
+            ),
+        ),
+    }
+
+
+# trace: PRD-CICD-001, PRD-CICD-013, PRD-CORE-005, PRD-CORE-026, PRD-TRACE-006
 class PipelineGenerator:
     """The generator of the GitHub Actions workflows."""
 
@@ -368,7 +465,7 @@ class PipelineGenerator:
     def generate(
         self, ir: Ir, configuration: Configuration, parts: Collection[str] | None
     ) -> Sequence[OutputFile]:
-        """Give the workflow files."""
+        """Give the workflow files and the README."""
         output = configuration.pipelines
         if output is None or (parts is not None and PIPELINES not in parts):
             return []
@@ -390,10 +487,10 @@ class PipelineGenerator:
                 symbols,
             )
         ]
-        for name, workflow_data in (
-            (MAIN_WORKFLOW, main_data(ir, configuration)),
-            (PROMOTE_WORKFLOW, promote_data(ir, configuration)),
-        ):
+        main = main_data(ir, configuration)
+        promote = promote_data(ir, configuration)
+        readme = readme_data(configuration, data, content, main, promote)
+        for name, workflow_data in ((MAIN_WORKFLOW, main), (PROMOTE_WORKFLOW, promote)):
             if workflow_data is None:
                 continue
             content = engine.render_bytes(f"pipelines/{name}.j2", workflow_data)
@@ -406,4 +503,12 @@ class PipelineGenerator:
                     _deploy_symbols(content, workflow_data),
                 )
             )
+        files.append(
+            OutputFile(
+                PurePosixPath(output, README).as_posix(),
+                engine.render_bytes(f"pipelines/{README}.j2", readme),
+                Kind.GENERATED,
+                PIPELINES,
+            )
+        )
         return files
