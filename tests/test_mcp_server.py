@@ -27,6 +27,9 @@ needs_sdk = pytest.mark.skipif(
 def test_mcp_stops_with_exit_code_2_without_the_sdk(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    # An earlier test can import the SDK. Hide each module of the SDK.
+    for name in [name for name in sys.modules if name == "mcp" or name.startswith("mcp.")]:
+        monkeypatch.setitem(sys.modules, name, None)  # type: ignore[arg-type]
     monkeypatch.setitem(sys.modules, "mcp", None)  # type: ignore[arg-type]
     monkeypatch.delitem(sys.modules, "dsml.mcp.server", raising=False)
     assert main(["mcp", "--project", str(tmp_path)]) == 2
