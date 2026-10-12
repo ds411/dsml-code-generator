@@ -7,7 +7,7 @@ Write the subcommand after `dsml`, then its arguments and options, for example `
 
 ## Common options
 
-Each subcommand accepts these options.
+Each subcommand accepts these options, except `dsml mcp` and `dsml skills`.
 
 | Argument | Value | Description |
 | --- | --- | --- |
@@ -52,6 +52,28 @@ Write the IR as JSON.
 | Argument | Value | Description |
 | --- | --- | --- |
 | `<model-file>` | (zero or more) | a SysML v2 file of the model, in the current folder or below it |
+
+## `dsml mcp`
+
+Start the local MCP server with the stdio transport.
+
+| Argument | Value | Description |
+| --- | --- | --- |
+| `--project` | `<folder>` | the project folder of the server (default: the current folder) |
+| `--verbose` | No value | write debug messages to standard error |
+
+## `dsml skills`
+
+Install the skills for AI agents.
+
+### `dsml skills install`
+
+Write the skills for AI agents into the project.
+
+| Argument | Value | Description |
+| --- | --- | --- |
+| `--output` | `<folder>` | write the skills into this folder (default: .claude/skills) |
+| `--verbose` | No value | write debug messages to standard error |
 
 ## `dsml trace`
 
