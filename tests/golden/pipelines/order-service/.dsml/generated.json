@@ -4,7 +4,7 @@
     {
       "part": "pipelines",
       "path": ".github/workflows/README.gen.md",
-      "sha256": "371c4d430052c6ca2229084750f63712c99583c38ee8ec6e16d6941c6fb02855"
+      "sha256": "d9118a513cb0f3eb40c49e4320bb040ee3762f95823f26378e69f73e8efd21e0"
     },
     {
       "part": "pipelines",
@@ -14,7 +14,7 @@
     {
       "part": "pipelines",
       "path": ".github/workflows/pr.gen.yml",
-      "sha256": "cd158e629ec3ee81e35ef9f0746abdf148179e14f1b599c49ef5381fd8ad7dd2"
+      "sha256": "01a38cb0e36876ab85039c9f12afa5372dabb1717aa1fbac08dc5a3d8bc9e9f3"
     },
     {
       "part": "pipelines",

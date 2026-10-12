@@ -7,21 +7,21 @@
           "path": ".github/workflows/pr.gen.yml",
           "symbols": [
             {
-              "firstLine": 22,
+              "firstLine": 19,
               "kind": "job",
-              "lastLine": 55,
+              "lastLine": 39,
               "name": "validate"
             },
             {
-              "firstLine": 59,
+              "firstLine": 43,
               "kind": "job",
-              "lastLine": 83,
+              "lastLine": 60,
               "name": "generate-check"
             },
             {
-              "firstLine": 86,
+              "firstLine": 65,
               "kind": "job",
-              "lastLine": 110,
+              "lastLine": 133,
               "name": "check-output"
             }
           ]
@@ -46,9 +46,9 @@
           "path": ".github/workflows/pr.gen.yml",
           "symbols": [
             {
-              "firstLine": 158,
+              "firstLine": 181,
               "kind": "job",
-              "lastLine": 202,
+              "lastLine": 225,
               "name": "plan-dev"
             }
           ]
@@ -73,9 +73,9 @@
           "path": ".github/workflows/pr.gen.yml",
           "symbols": [
             {
-              "firstLine": 114,
+              "firstLine": 137,
               "kind": "job",
-              "lastLine": 151,
+              "lastLine": 174,
               "name": "test-order-api"
             }
           ]

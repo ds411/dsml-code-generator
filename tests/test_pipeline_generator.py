@@ -21,7 +21,12 @@ from dsml.config import Application, Configuration
 from dsml.errors import ToolchainError
 from dsml.generate.generators import GENERATORS
 from dsml.generate.infrastructure import names
-from dsml.generate.pipelines.generator import ACTIONS, PipelineGenerator
+from dsml.generate.pipelines.generator import (
+    ACTIONS,
+    TOOLCHAIN_ACTION,
+    PipelineGenerator,
+    toolchain_action,
+)
 from dsml.generate.pipelines.workflow import job_symbols, pinned_action, yaml_string
 from dsml.generate.trace import SymbolKind
 from dsml.generate.writer import PIPELINES, Kind, application_part, check_files
@@ -133,18 +138,57 @@ def test_workflow_runs_on_pull_requests_with_the_jobs_of_the_table(ir: Ir) -> No
     assert tuple(_jobs(text)) == JOBS
 
 
-# trace: PRD-CICD-002, PRD-CICD-003, PRD-CICD-005
-def test_model_jobs_validate_check_and_upload_the_findings(ir: Ir) -> None:
+# trace: PRD-CICD-002, PRD-CICD-003, PRD-CICD-005, PRD-CORE-050
+def test_model_jobs_run_dsml_through_the_toolchain_action(ir: Ir) -> None:
     jobs = _jobs(_workflow(ir))
-    assert "run: dsml validate --format sarif --output dsml.sarif\n" in jobs["validate"]
-    assert "uses: github/codeql-action/upload-sarif@" in jobs["validate"]
-    assert "sarif_file: dsml.sarif\n" in jobs["validate"]
+    action = (
+        "        uses: ds411/dsml-code-generator@v0.1.0\n"
+        '        with:\n          version: "0.1.0"\n'
+    )
+    assert jobs["validate"].endswith(
+        action
+        + '          command: validate\n          sarif: "true"\n          sarif-category: dsml'
+    )
     assert "security-events: write\n" in jobs["validate"]
-    assert jobs["generate-check"].endswith("run: dsml generate --check")
-    assert jobs["check-output"].endswith("run: dsml check-output")
-    for job in ("validate", "generate-check", "check-output"):
-        assert '"dsml==$DSML_VERSION"' in jobs[job]
-        assert "INDEX_URL: ${{ vars.DSML_INDEX_URL }}\n" in jobs[job]
+    assert jobs["generate-check"].endswith(
+        action + "          command: generate\n          args: --check"
+    )
+    assert jobs["check-output"].endswith(action + "          command: check-output")
+    text = _workflow(ir)
+    assert "vars." not in text
+    assert "uv tool install --python" not in jobs["validate"] + jobs["generate-check"]
+    assert "DSML_INDEX_URL" not in text
+
+
+# trace: PRD-CICD-005, PRD-CORE-011, PRD-IAC-038
+def test_check_output_job_installs_the_tools_of_the_baseline(ir: Ir) -> None:
+    job = _jobs(_workflow(ir))["check-output"]
+    baseline = load_baseline()
+    assert f'RUFF_VERSION: "{pinned_version("ruff")}"\n' in job
+    assert f'PYRIGHT_VERSION: "{pinned_version("pyright")}"\n' in job
+    assert '"ruff==$RUFF_VERSION"' in job and '"pyright==$PYRIGHT_VERSION"' in job
+    assert 'working-directory: "services/order-api"\n        run: uv sync --frozen\n' in job
+    assert f'tofu_version: "{pinned_version("opentofu")}"\n' in job
+    assert f'TFLINT_VERSION: "{pinned_version("tflint")}"\n' in job
+    assert f'TFLINT_SHA256: "{baseline["tflint-sha256"].value}"\n' in job
+    assert f'RULESET_VERSION: "{pinned_version("tflint-ruleset-aws")}"\n' in job
+    assert f'RULESET_SHA256: "{baseline["tflint-ruleset-aws-sha256"].value}"\n' in job
+    assert job.count("sha256sum --check --strict") == 2
+    # The action runs dsml check-output after the setup of the tools.
+    assert job.index("command: check-output") > job.index("Install tflint and the AWS rule set")
+
+
+# trace: PRD-CICD-005
+def test_check_output_job_installs_only_the_tools_of_the_targets(ir: Ir) -> None:
+    no_infrastructure = Configuration(applications=CONFIGURATION.applications, pipelines=WORKFLOWS)
+    job = _jobs(_workflow(ir, no_infrastructure))["check-output"]
+    assert "ruff==" in job
+    assert "tofu" not in job and "tflint" not in job
+    job = _jobs(
+        _workflow(Ir(), Configuration(infrastructure=PurePosixPath("infra"), pipelines=WORKFLOWS))
+    )["check-output"]
+    assert "tflint" in job
+    assert "ruff" not in job and "Set up uv" not in job
 
 
 # trace: PRD-CICD-004
@@ -208,24 +252,31 @@ def test_model_with_no_application_gives_only_the_model_jobs() -> None:
     assert tuple(_jobs(text)) == ("validate", "generate-check", "check-output")
 
 
-# trace: PRD-CICD-014
-def test_each_action_has_a_full_commit_sha_and_a_version_comment() -> None:
+# trace: PRD-CICD-014, PRD-CORE-050
+def test_each_third_party_action_has_a_full_commit_sha_and_a_version_comment() -> None:
     text = GOLDEN_PR.read_text(encoding="utf-8")
     uses = re.findall(r"^ +(?:- )?uses: (.+)$", text, flags=re.MULTILINE)
-    assert uses
+    toolchain = [value for value in uses if value.startswith(f"{TOOLCHAIN_ACTION}@")]
+    third_party = [value for value in uses if value not in toolchain]
+    assert toolchain == [toolchain_action("0.1.0")] * 3
+    assert third_party
     baseline = load_baseline()
     pinned = {pinned_action(item, baseline).uses for item in ACTIONS.values()}
     form = re.compile(r"[\w.-]+/[\w./-]+@[0-9a-f]{40} # v[0-9]+\.[0-9]+\.[0-9]+")
-    for value in uses:
+    for value in third_party:
         assert form.fullmatch(value), value
         assert value in pinned, value
-    assert {value.split("@")[0] for value in uses} == {
+    assert {value.split("@")[0] for value in third_party} == {
         "actions/checkout",
         "astral-sh/setup-uv",
         "aws-actions/configure-aws-credentials",
-        "github/codeql-action/upload-sarif",
         "opentofu/setup-opentofu",
     }
+
+
+# trace: PRD-CORE-050
+def test_toolchain_action_is_the_release_tag_of_the_version() -> None:
+    assert toolchain_action("1.2.3") == "ds411/dsml-code-generator@v1.2.3"
 
 
 @pytest.mark.parametrize(

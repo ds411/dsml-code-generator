@@ -62,4 +62,4 @@ The check found errors. 2 steps of 4 did not pass.
 
 The job "Infrastructure golden HCL" of `.github/workflows/ci.yml` runs `dsml check-output --infrastructure` on the golden output of the order service. The step copies the output and writes a configuration file in a temporary folder, because a path in the configuration file cannot contain "..".
 
-The generated workflow `pr.gen.yml` runs `dsml check-output` (PRD-CICD-005). Story #140 installs the tools in that job.
+The generated workflow `pr.gen.yml` runs `dsml check-output` through the toolchain action (PRD-CICD-005). The job installs the tools first (story #140, `docs/notes/pipeline-generator.md`).

@@ -51,15 +51,9 @@ Add a branch ruleset for the branch `main` with these rules:
 4. "Block force pushes".
 5. "Restrict deletions".
 
-## Repository variables
+## Variables and secrets
 
-Add these variables in the settings of the repository, on the tab "Variables" of "Secrets and variables" > "Actions".
-
-| Variable | Value | Workflows |
-| --- | --- | --- |
-| `DSML_INDEX_URL` | The URL of the package index of the toolchain | `pr.gen.yml` |
-
-The workflows use no repository secret.
+The workflows use no repository variable and no repository secret.
 The jobs get AWS credentials only through GitHub OIDC.
 
 ## Code scanning
