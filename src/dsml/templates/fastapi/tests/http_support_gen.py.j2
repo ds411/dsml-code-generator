@@ -40,7 +40,7 @@ from app.shared.db.session_gen import database_url
 
 ENVIRON = {
 {% for variable in variables if variable.mandatory and not variable.name.startswith("DATABASE_") %}
-    "{{ variable.name }}": "test",
+    "{{ variable.name }}": "{{ variable.test_value }}",
 {% endfor %}
 }
 """A value for each mandatory environment variable that is not a database value."""

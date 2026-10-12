@@ -32,7 +32,7 @@ from app.shared.errors_gen import PROBLEM_MEDIA_TYPE
 
 ENVIRON = {
 {% for variable in variables if variable.mandatory %}
-    "{{ variable.name }}": "test",
+    "{{ variable.name }}": "{{ variable.test_value }}",
 {% endfor %}
 }
 """A value for each mandatory environment variable."""

@@ -26,7 +26,7 @@ ENVIRON = {
     "DATABASE_NAME": "test",
     "DATABASE_USER": "test",
     "DATABASE_PASSWORD": "test",
-    "CORS_ALLOWED_ORIGINS": "test",
+    "CORS_ALLOWED_ORIGINS": "https://site.test",
 }
 """A value for each mandatory environment variable."""
 

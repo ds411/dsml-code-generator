@@ -29,7 +29,7 @@ from app.shared.db.session_gen import DRIVER, database_url
 
 ENVIRON = {
 {% for variable in variables if variable.mandatory %}
-    "{{ variable.name }}": "test",
+    "{{ variable.name }}": "{{ variable.test_value }}",
 {% endfor %}
 }
 """A value for each mandatory environment variable."""

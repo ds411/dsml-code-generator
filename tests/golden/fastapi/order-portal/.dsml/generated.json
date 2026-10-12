@@ -228,7 +228,7 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/tests/http_support_gen.py",
-      "sha256": "91222d8f9be48a912b0f485a7a4c5b405ff7fd781a2df65862c4087f7009a15c"
+      "sha256": "54d4984d6ffbba24642ff2f83358bd6c5366fd1b73f5f215f1b192e747a8020b"
     },
     {
       "part": "application/orderApi",
@@ -238,7 +238,7 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/tests/test_auth_gen.py",
-      "sha256": "2b589ad9d1f2975cdbcee8cab89409bec87ba8f043f1b052d4dcef95a3cba6a9"
+      "sha256": "4e1dd3773fee6487ab088cca00e24929bee2686060e50abc43ecc2aeccc9017c"
     },
     {
       "part": "application/orderApi",
@@ -248,7 +248,7 @@
     {
       "part": "application/orderApi",
       "path": "services/order-api/tests/test_db_gen.py",
-      "sha256": "a3a0f3ee2d418371dc372b7a6f3a4d34002b0ba1cb94393d9a7912f51d440b9f"
+      "sha256": "790d37d0b38c5d0ea06c67411a9b84a68689d5b4b0f8fdce3fe7f86906d92d9b"
     },
     {
       "part": "application/orderApi",

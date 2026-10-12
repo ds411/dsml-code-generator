@@ -41,7 +41,7 @@ ENVIRON = {
     "AWS_REGION": "test",
     "COGNITO_USER_POOL_ID": "test",
     "COGNITO_APP_CLIENT_ID": "test",
-    "CORS_ALLOWED_ORIGINS": "test",
+    "CORS_ALLOWED_ORIGINS": "https://site.test",
 }
 """A value for each mandatory environment variable that is not a database value."""
 
