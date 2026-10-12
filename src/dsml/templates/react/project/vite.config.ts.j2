@@ -1,0 +1,22 @@
+{#- The vite.config.ts of the React target (PRD-APP-201, PRD-APP-205,
+    PRD-APP-233). It also holds the Vitest settings (Q64). "pnpm build"
+    writes the static files to dist/. The build reads no environment value:
+    the application reads /config.json at run time (PRD-APP-010). -#}
+{% include "common/header.j2" %}
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: [{ find: /^@\//, replacement: "/src/" }],
+  },
+  build: {
+    outDir: "dist",
+  },
+  test: {
+    environment: "node",
+    passWithNoTests: true,
+  },
+});

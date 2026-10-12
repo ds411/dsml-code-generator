@@ -1,6 +1,6 @@
 # Version baseline of the TypeScript targets
 
-Story #158 added the items of the React and Next.js targets to the version baseline `src/dsml/versions.toml`. Decision record 09 (Q64) gives the line of each item. This note gives the source and the license of each exact version.
+Story #158 added the items of the React and Next.js targets to the version baseline `src/dsml/versions.toml`. Decision record 09 (Q64) gives the line of each item. This note gives the source and the license of each exact version. Story #167 added the items `types-react` and `types-react-dom`, because React does not include its type declarations.
 
 ## Rules
 
@@ -20,6 +20,8 @@ Story #158 added the items of the React and Next.js targets to the version basel
 | `typescript` | `typescript` | 6.0 | 6.0.3 | Apache-2.0 |
 | `react` | `react` | 19 | 19.3.0 | MIT |
 | `react-dom` | `react-dom` | 19 | 19.3.0 | MIT |
+| `types-react` | `@types/react` | 19 | 19.3.0 | MIT |
+| `types-react-dom` | `@types/react-dom` | 19 | 19.3.0 | MIT |
 | `vite` | `vite` | 8 | 8.3.4 | MIT |
 | `vitejs-plugin-react` | `@vitejs/plugin-react` | 6 | 6.1.2 | MIT |
 | `tanstack-react-router` | `@tanstack/react-router` | 1 | 1.170.42 | MIT |

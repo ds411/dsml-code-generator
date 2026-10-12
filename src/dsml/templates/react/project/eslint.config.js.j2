@@ -1,0 +1,20 @@
+{#- The ESLint configuration of the React target (PRD-APP-201, Q64): the
+    type-aware rules of typescript-eslint. The type-aware rules need the
+    TypeScript project, thus ESLint does not examine this JavaScript file. -#}
+{% include "common/header.j2" %}
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config(
+  { ignores: ["dist/", "eslint.config.js"] },
+  js.configs.recommended,
+  ...tseslint.configs.strictTypeChecked,
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+);

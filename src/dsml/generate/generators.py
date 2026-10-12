@@ -3,8 +3,9 @@
 
 Each generator reads only the IR and the configuration (PRD-CORE-026). It
 gives its output files to the file writer and writes no file itself. The
-list `GENERATORS` holds the generators of phase 1. The M6 stories add them
-one by one. Some tests use a test generator in place of the list.
+list `GENERATORS` holds the generators of phase 1 and the React generator of
+phase 2 (story #167). The M6 stories added the generators of phase 1 one by
+one. Some tests use a test generator in place of the list.
 """
 
 from collections import Counter
@@ -16,6 +17,7 @@ from dsml.errors import ToolchainError
 from dsml.generate.fastapi import FastApiGenerator
 from dsml.generate.infrastructure.generator import InfrastructureGenerator
 from dsml.generate.pipelines.generator import PipelineGenerator
+from dsml.generate.react import ReactGenerator
 from dsml.generate.writer import OutputFile, check_files
 from dsml.ir.model import Ir
 
@@ -43,6 +45,7 @@ class Generator(Protocol):
 
 GENERATORS: list[Generator] = [
     FastApiGenerator(),
+    ReactGenerator(),
     InfrastructureGenerator(),
     PipelineGenerator(),
 ]

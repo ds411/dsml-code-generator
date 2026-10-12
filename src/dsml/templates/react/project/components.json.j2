@@ -1,0 +1,24 @@
+{#- The components.json of shadcn/ui (PRD-APP-201, Q41). The generator writes
+    the components from the pinned copy in the toolchain package, not with the
+    shadcn CLI. The file tells a developer where the components are. -#}
+{% include "common/header.j2" %}
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/app/styles/index.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@/shared/ui",
+    "utils": "@/shared/lib/utils",
+    "ui": "@/shared/ui",
+    "lib": "@/shared/lib",
+    "hooks": "@/shared/lib/hooks"
+  }
+}

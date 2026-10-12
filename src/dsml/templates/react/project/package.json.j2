@@ -1,0 +1,39 @@
+{#- The package.json of the React target (PRD-APP-201, PRD-CORE-046, PRD-TOP-008).
+    JSON has no comments, thus the field "description" tells the developer where
+    to add a dependency. The generator does not write pnpm-lock.yaml
+    (PRD-CORE-036). Prettier formats package.json in the form of
+    JSON.stringify with two spaces. -#}
+{% include "common/header.j2" %}
+{
+  "name": "{{ project }}",
+  "version": "{{ version }}",
+  "private": true,
+  "description": "The application {{ application }}. dsml generates this file. Add a dependency to the key applications.{{ application }}.dependencies of the configuration file, not to this file.",
+  "type": "module",
+  "packageManager": "pnpm@{{ pnpm_version }}",
+  "scripts": {
+    "build": "vite build",
+    "format": "prettier --check .",
+    "lint": "eslint .",
+    "steiger": "steiger ./src",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+{% for name, version in dependencies.items() %}
+    "{{ name }}": "{{ version }}"{{ "," if not loop.last }}
+{% endfor %}
+  },
+  "devDependencies": {
+{% for name, version in dev_dependencies.items() %}
+    "{{ name }}": "{{ version }}"{{ "," if not loop.last }}
+{% endfor %}
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "{{ node_version }}",
+      "onFail": "download"
+    }
+  }
+}
