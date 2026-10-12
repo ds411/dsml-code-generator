@@ -235,4 +235,9 @@ package PrdAppCommonFastApi {
         :>> title = "Empty test run"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
+    #Requirement requirement <'PRD-APP-136'> app136 {
+        doc /* Phase 2: a FastAPI application that react applications call must send CORS headers only for the site domains of those applications. The application reads these domains from an environment variable at start. */
+        :>> title = "CORS for React sites"; :>> kind = RequirementKind::'interface'; :>> priority = Priority::must; :>> status = Status::draft;
+        frame correctModel;
+    }
 }

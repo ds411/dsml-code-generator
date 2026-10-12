@@ -53,7 +53,7 @@ package PrdCore {
         frame correctModel;
     }
     #Requirement requirement <'PRD-CORE-011'> core011 {
-        doc /* dsml check-output must run tsc, ruff, tofu validate, tflint and the FSD linter Steiger on the generated code of the selected targets. It must report a missing tool as an error with the tool name. */
+        doc /* dsml check-output must run tsc, ESLint, ruff, tofu validate, tflint and the FSD linter Steiger on the generated code of the selected targets. It must report a missing tool as an error with the tool name. */
         :>> title = "Output checks"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
     }
@@ -271,5 +271,10 @@ package PrdCore {
         doc /* The adapter must evaluate each formal constraint of a requirement through OpenSysML, one time for each environment, and write each result into the IR. The evaluation uses the attribute values of that environment. A result is true, false or unknown. An unknown result gives the features that have no value. */
         :>> title = "Constraint results in the IR"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
         frame correctModel;
+    }
+    #Requirement requirement <'PRD-CORE-055'> core055 {
+        doc /* Phase 2: the adapter must convert the OpenAPI file of each external API into IR entities and IR operations of that API. It reads only object schemas with scalar and enumeration properties, and operations with an operationId, a JSON request body and a JSON response. */
+        :>> title = "OpenAPI import"; :>> kind = RequirementKind::functional; :>> priority = Priority::must; :>> status = Status::draft;
+        frame oneModel;
     }
 }

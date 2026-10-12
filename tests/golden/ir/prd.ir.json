@@ -3562,6 +3562,77 @@
       "attributes": [
         {
           "location": {
+            "column": 45,
+            "file": "docs/model/prd/prd-app-common-fastapi.sysml",
+            "line": 240
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "interface",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 86,
+            "file": "docs/model/prd/prd-app-common-fastapi.sysml",
+            "line": 240
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 117,
+            "file": "docs/model/prd/prd-app-common-fastapi.sysml",
+            "line": 240
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-app-common-fastapi.sysml",
+            "line": 240
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "CORS for React sites"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Phase 2: a FastAPI application that react applications call must send CORS headers only for the site domains of those applications. The application reads these domains from an environment variable at start.",
+      "identity": "PRD-APP-136",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-app-common-fastapi.sysml",
+        "line": 238
+      },
+      "multiplicity": null,
+      "name": "app136",
+      "owner": "PrdAppCommonFastApi",
+      "qualifiedName": "PrdAppCommonFastApi::app136",
+      "shortName": "PRD-APP-136",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
             "column": 36,
             "file": "docs/model/prd/prd-app-web.sysml",
             "line": 8
@@ -3613,7 +3684,7 @@
         }
       ],
       "direction": null,
-      "doc": "The React target must use strict TypeScript, pnpm, Vite, React, TanStack Router, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui and Amplify Auth. The versions must come from the version baseline.",
+      "doc": "The React target must use strict TypeScript, pnpm, Vite, React, TanStack Router, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Amplify Auth, ESLint with typescript-eslint and Vitest. The versions must come from the version baseline.",
       "identity": "PRD-APP-201",
       "kind": "Requirement",
       "location": {
@@ -5246,7 +5317,7 @@
         }
       ],
       "direction": null,
-      "doc": "The fixed-name generated files of the React target must be: package.json, tsconfig.json, vite.config.ts, index.html, components.json and steiger.config.ts.",
+      "doc": "The fixed-name generated files of the React target must be: package.json, tsconfig.json, vite.config.ts, index.html, components.json, steiger.config.ts and eslint.config.js.",
       "identity": "PRD-APP-235",
       "kind": "Requirement",
       "location": {
@@ -5317,7 +5388,7 @@
         }
       ],
       "direction": null,
-      "doc": "The Next.js target must use strict TypeScript, pnpm, Next.js with the App Router, React, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Drizzle ORM and Amplify Auth with its Next.js adapter. The versions must come from the version baseline.",
+      "doc": "The Next.js target must use strict TypeScript, pnpm, Next.js with the App Router, React, TanStack Query, TanStack Form, Zod, Tailwind CSS, shadcn/ui, Drizzle ORM with the PostgreSQL driver pg, Amplify Auth with its Next.js adapter, ESLint with typescript-eslint and Vitest. The versions must come from the version baseline.",
       "identity": "PRD-APP-301",
       "kind": "Requirement",
       "location": {
@@ -6666,7 +6737,7 @@
         }
       ],
       "direction": null,
-      "doc": "PRD-APP-125 to PRD-APP-128 must also apply to the Next.js target. The migration command must be node migrate.gen.mjs.",
+      "doc": "PRD-APP-125 to PRD-APP-128 must also apply to the Next.js target, with the SQL file name migrations/<NNNN>_<slug>.gen.sql. The migration command must be node migrate.gen.mjs.",
       "identity": "PRD-APP-332",
       "kind": "Requirement",
       "location": {
@@ -6808,7 +6879,7 @@
         }
       ],
       "direction": null,
-      "doc": "The fixed-name generated files of the Next.js target must be: package.json, tsconfig.json, next.config.ts, the full app/ folder, middleware.ts or proxy.ts, drizzle.config.ts, components.json, steiger.config.ts, Dockerfile and .dockerignore.",
+      "doc": "The fixed-name generated files of the Next.js target must be: package.json, tsconfig.json, next.config.ts, the full app/ folder, middleware.ts or proxy.ts, drizzle.config.ts, components.json, steiger.config.ts, eslint.config.js, vitest.config.ts, migrations/meta/_journal.json, Dockerfile and .dockerignore.",
       "identity": "PRD-APP-334",
       "kind": "Requirement",
       "location": {
@@ -9080,7 +9151,7 @@
         }
       ],
       "direction": null,
-      "doc": "dsml check-output must run tsc, ruff, tofu validate, tflint and the FSD linter Steiger on the generated code of the selected targets. It must report a missing tool as an error with the tool name.",
+      "doc": "dsml check-output must run tsc, ESLint, ruff, tofu validate, tflint and the FSD linter Steiger on the generated code of the selected targets. It must report a missing tool as an error with the tool name.",
       "identity": "PRD-CORE-011",
       "kind": "Requirement",
       "location": {
@@ -12153,6 +12224,77 @@
       "attributes": [
         {
           "location": {
+            "column": 39,
+            "file": "docs/model/prd/prd-core.sysml",
+            "line": 277
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 79,
+            "file": "docs/model/prd/prd-core.sysml",
+            "line": 277
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 110,
+            "file": "docs/model/prd/prd-core.sysml",
+            "line": 277
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-core.sysml",
+            "line": 277
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "OpenAPI import"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Phase 2: the adapter must convert the OpenAPI file of each external API into IR entities and IR operations of that API. It reads only object schemas with scalar and enumeration properties, and operations with an operationId, a JSON request body and a JSON response.",
+      "identity": "PRD-CORE-055",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-core.sysml",
+        "line": 275
+      },
+      "multiplicity": null,
+      "name": "core055",
+      "owner": "PrdCore",
+      "qualifiedName": "PrdCore::core055",
+      "shortName": "PRD-CORE-055",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
             "column": 40,
             "file": "docs/model/prd/prd-dsml.sysml",
             "line": 7
@@ -14285,7 +14427,7 @@
           "location": {
             "column": 29,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 157
+            "line": 162
           },
           "name": "kind",
           "value": {
@@ -14298,7 +14440,7 @@
           "location": {
             "column": 69,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 157
+            "line": 162
           },
           "name": "priority",
           "value": {
@@ -14311,7 +14453,7 @@
           "location": {
             "column": 100,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 157
+            "line": 162
           },
           "name": "status",
           "value": {
@@ -14324,7 +14466,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 157
+            "line": 162
           },
           "name": "title",
           "value": {
@@ -14340,7 +14482,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 155
+        "line": 160
       },
       "multiplicity": null,
       "name": "dsml031",
@@ -14356,7 +14498,7 @@
           "location": {
             "column": 35,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 162
+            "line": 167
           },
           "name": "kind",
           "value": {
@@ -14369,7 +14511,7 @@
           "location": {
             "column": 75,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 162
+            "line": 167
           },
           "name": "priority",
           "value": {
@@ -14382,7 +14524,7 @@
           "location": {
             "column": 106,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 162
+            "line": 167
           },
           "name": "status",
           "value": {
@@ -14395,7 +14537,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 162
+            "line": 167
           },
           "name": "title",
           "value": {
@@ -14411,7 +14553,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 160
+        "line": 165
       },
       "multiplicity": null,
       "name": "dsml032",
@@ -14427,7 +14569,7 @@
           "location": {
             "column": 30,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 167
+            "line": 172
           },
           "name": "kind",
           "value": {
@@ -14440,7 +14582,7 @@
           "location": {
             "column": 68,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 167
+            "line": 172
           },
           "name": "priority",
           "value": {
@@ -14453,7 +14595,7 @@
           "location": {
             "column": 99,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 167
+            "line": 172
           },
           "name": "status",
           "value": {
@@ -14466,7 +14608,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 167
+            "line": 172
           },
           "name": "title",
           "value": {
@@ -14482,7 +14624,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 165
+        "line": 170
       },
       "multiplicity": null,
       "name": "dsml033",
@@ -14498,7 +14640,7 @@
           "location": {
             "column": 44,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 172
+            "line": 177
           },
           "name": "kind",
           "value": {
@@ -14511,7 +14653,7 @@
           "location": {
             "column": 84,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 172
+            "line": 177
           },
           "name": "priority",
           "value": {
@@ -14524,7 +14666,7 @@
           "location": {
             "column": 115,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 172
+            "line": 177
           },
           "name": "status",
           "value": {
@@ -14537,7 +14679,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 172
+            "line": 177
           },
           "name": "title",
           "value": {
@@ -14553,7 +14695,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 170
+        "line": 175
       },
       "multiplicity": null,
       "name": "dsml034",
@@ -14569,7 +14711,7 @@
           "location": {
             "column": 38,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 177
+            "line": 182
           },
           "name": "kind",
           "value": {
@@ -14582,7 +14724,7 @@
           "location": {
             "column": 78,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 177
+            "line": 182
           },
           "name": "priority",
           "value": {
@@ -14595,7 +14737,7 @@
           "location": {
             "column": 109,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 177
+            "line": 182
           },
           "name": "status",
           "value": {
@@ -14608,7 +14750,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 177
+            "line": 182
           },
           "name": "title",
           "value": {
@@ -14624,7 +14766,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 175
+        "line": 180
       },
       "multiplicity": null,
       "name": "dsml035",
@@ -14640,7 +14782,7 @@
           "location": {
             "column": 54,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 182
+            "line": 187
           },
           "name": "kind",
           "value": {
@@ -14653,7 +14795,7 @@
           "location": {
             "column": 96,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 182
+            "line": 187
           },
           "name": "priority",
           "value": {
@@ -14666,7 +14808,7 @@
           "location": {
             "column": 127,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 182
+            "line": 187
           },
           "name": "status",
           "value": {
@@ -14679,7 +14821,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 182
+            "line": 187
           },
           "name": "title",
           "value": {
@@ -14695,7 +14837,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 180
+        "line": 185
       },
       "multiplicity": null,
       "name": "dsml036",
@@ -14711,7 +14853,7 @@
           "location": {
             "column": 40,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 187
+            "line": 192
           },
           "name": "kind",
           "value": {
@@ -14724,7 +14866,7 @@
           "location": {
             "column": 80,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 187
+            "line": 192
           },
           "name": "priority",
           "value": {
@@ -14737,7 +14879,7 @@
           "location": {
             "column": 111,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 187
+            "line": 192
           },
           "name": "status",
           "value": {
@@ -14750,7 +14892,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 187
+            "line": 192
           },
           "name": "title",
           "value": {
@@ -14766,7 +14908,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 185
+        "line": 190
       },
       "multiplicity": null,
       "name": "dsml037",
@@ -14782,7 +14924,7 @@
           "location": {
             "column": 39,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 192
+            "line": 197
           },
           "name": "kind",
           "value": {
@@ -14795,7 +14937,7 @@
           "location": {
             "column": 79,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 192
+            "line": 197
           },
           "name": "priority",
           "value": {
@@ -14808,7 +14950,7 @@
           "location": {
             "column": 110,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 192
+            "line": 197
           },
           "name": "status",
           "value": {
@@ -14821,7 +14963,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 192
+            "line": 197
           },
           "name": "title",
           "value": {
@@ -14837,7 +14979,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 190
+        "line": 195
       },
       "multiplicity": null,
       "name": "dsml038",
@@ -14853,7 +14995,7 @@
           "location": {
             "column": 35,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 197
+            "line": 202
           },
           "name": "kind",
           "value": {
@@ -14866,7 +15008,7 @@
           "location": {
             "column": 75,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 197
+            "line": 202
           },
           "name": "priority",
           "value": {
@@ -14879,7 +15021,7 @@
           "location": {
             "column": 106,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 197
+            "line": 202
           },
           "name": "status",
           "value": {
@@ -14892,7 +15034,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 197
+            "line": 202
           },
           "name": "title",
           "value": {
@@ -14908,7 +15050,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 195
+        "line": 200
       },
       "multiplicity": null,
       "name": "dsml039",
@@ -14924,7 +15066,7 @@
           "location": {
             "column": 40,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 202
+            "line": 207
           },
           "name": "kind",
           "value": {
@@ -14937,7 +15079,7 @@
           "location": {
             "column": 80,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 202
+            "line": 207
           },
           "name": "priority",
           "value": {
@@ -14950,7 +15092,7 @@
           "location": {
             "column": 111,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 202
+            "line": 207
           },
           "name": "status",
           "value": {
@@ -14963,7 +15105,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 202
+            "line": 207
           },
           "name": "title",
           "value": {
@@ -14979,7 +15121,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 200
+        "line": 205
       },
       "multiplicity": null,
       "name": "dsml040",
@@ -14995,7 +15137,7 @@
           "location": {
             "column": 37,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 207
+            "line": 212
           },
           "name": "kind",
           "value": {
@@ -15008,7 +15150,7 @@
           "location": {
             "column": 77,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 207
+            "line": 212
           },
           "name": "priority",
           "value": {
@@ -15021,7 +15163,7 @@
           "location": {
             "column": 108,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 207
+            "line": 212
           },
           "name": "status",
           "value": {
@@ -15034,7 +15176,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 207
+            "line": 212
           },
           "name": "title",
           "value": {
@@ -15050,7 +15192,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 205
+        "line": 210
       },
       "multiplicity": null,
       "name": "dsml041",
@@ -15066,7 +15208,7 @@
           "location": {
             "column": 47,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 212
+            "line": 217
           },
           "name": "kind",
           "value": {
@@ -15079,7 +15221,7 @@
           "location": {
             "column": 89,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 212
+            "line": 217
           },
           "name": "priority",
           "value": {
@@ -15092,7 +15234,7 @@
           "location": {
             "column": 120,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 212
+            "line": 217
           },
           "name": "status",
           "value": {
@@ -15105,7 +15247,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 212
+            "line": 217
           },
           "name": "title",
           "value": {
@@ -15121,7 +15263,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 210
+        "line": 215
       },
       "multiplicity": null,
       "name": "dsml042",
@@ -15137,7 +15279,7 @@
           "location": {
             "column": 40,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 217
+            "line": 222
           },
           "name": "kind",
           "value": {
@@ -15150,7 +15292,7 @@
           "location": {
             "column": 80,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 217
+            "line": 222
           },
           "name": "priority",
           "value": {
@@ -15163,7 +15305,7 @@
           "location": {
             "column": 111,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 217
+            "line": 222
           },
           "name": "status",
           "value": {
@@ -15176,7 +15318,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 217
+            "line": 222
           },
           "name": "title",
           "value": {
@@ -15192,7 +15334,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 215
+        "line": 220
       },
       "multiplicity": null,
       "name": "dsml043",
@@ -15208,7 +15350,7 @@
           "location": {
             "column": 41,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 222
+            "line": 227
           },
           "name": "kind",
           "value": {
@@ -15221,7 +15363,7 @@
           "location": {
             "column": 83,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 222
+            "line": 227
           },
           "name": "priority",
           "value": {
@@ -15234,7 +15376,7 @@
           "location": {
             "column": 114,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 222
+            "line": 227
           },
           "name": "status",
           "value": {
@@ -15247,7 +15389,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 222
+            "line": 227
           },
           "name": "title",
           "value": {
@@ -15263,7 +15405,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 220
+        "line": 225
       },
       "multiplicity": null,
       "name": "dsml044",
@@ -15279,7 +15421,7 @@
           "location": {
             "column": 37,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 227
+            "line": 232
           },
           "name": "kind",
           "value": {
@@ -15292,7 +15434,7 @@
           "location": {
             "column": 77,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 227
+            "line": 232
           },
           "name": "priority",
           "value": {
@@ -15305,7 +15447,7 @@
           "location": {
             "column": 108,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 227
+            "line": 232
           },
           "name": "status",
           "value": {
@@ -15318,7 +15460,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 227
+            "line": 232
           },
           "name": "title",
           "value": {
@@ -15334,7 +15476,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 225
+        "line": 230
       },
       "multiplicity": null,
       "name": "dsml045",
@@ -15350,7 +15492,7 @@
           "location": {
             "column": 45,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 232
+            "line": 237
           },
           "name": "kind",
           "value": {
@@ -15363,7 +15505,7 @@
           "location": {
             "column": 85,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 232
+            "line": 237
           },
           "name": "priority",
           "value": {
@@ -15376,7 +15518,7 @@
           "location": {
             "column": 116,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 232
+            "line": 237
           },
           "name": "status",
           "value": {
@@ -15389,7 +15531,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 232
+            "line": 237
           },
           "name": "title",
           "value": {
@@ -15405,7 +15547,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 230
+        "line": 235
       },
       "multiplicity": null,
       "name": "dsml046",
@@ -15421,7 +15563,7 @@
           "location": {
             "column": 36,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 237
+            "line": 242
           },
           "name": "kind",
           "value": {
@@ -15434,7 +15576,7 @@
           "location": {
             "column": 76,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 237
+            "line": 242
           },
           "name": "priority",
           "value": {
@@ -15447,7 +15589,7 @@
           "location": {
             "column": 107,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 237
+            "line": 242
           },
           "name": "status",
           "value": {
@@ -15460,7 +15602,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 237
+            "line": 242
           },
           "name": "title",
           "value": {
@@ -15476,7 +15618,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 235
+        "line": 240
       },
       "multiplicity": null,
       "name": "dsml047",
@@ -15492,7 +15634,7 @@
           "location": {
             "column": 35,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 242
+            "line": 247
           },
           "name": "kind",
           "value": {
@@ -15505,7 +15647,7 @@
           "location": {
             "column": 75,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 242
+            "line": 247
           },
           "name": "priority",
           "value": {
@@ -15518,7 +15660,7 @@
           "location": {
             "column": 106,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 242
+            "line": 247
           },
           "name": "status",
           "value": {
@@ -15531,7 +15673,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 242
+            "line": 247
           },
           "name": "title",
           "value": {
@@ -15547,7 +15689,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 240
+        "line": 245
       },
       "multiplicity": null,
       "name": "dsml048",
@@ -15563,7 +15705,7 @@
           "location": {
             "column": 35,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 247
+            "line": 252
           },
           "name": "kind",
           "value": {
@@ -15576,7 +15718,7 @@
           "location": {
             "column": 75,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 247
+            "line": 252
           },
           "name": "priority",
           "value": {
@@ -15589,7 +15731,7 @@
           "location": {
             "column": 106,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 247
+            "line": 252
           },
           "name": "status",
           "value": {
@@ -15602,7 +15744,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 247
+            "line": 252
           },
           "name": "title",
           "value": {
@@ -15618,7 +15760,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 245
+        "line": 250
       },
       "multiplicity": null,
       "name": "dsml049",
@@ -15634,7 +15776,7 @@
           "location": {
             "column": 36,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 252
+            "line": 257
           },
           "name": "kind",
           "value": {
@@ -15647,7 +15789,7 @@
           "location": {
             "column": 76,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 252
+            "line": 257
           },
           "name": "priority",
           "value": {
@@ -15660,7 +15802,7 @@
           "location": {
             "column": 107,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 252
+            "line": 257
           },
           "name": "status",
           "value": {
@@ -15673,7 +15815,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 252
+            "line": 257
           },
           "name": "title",
           "value": {
@@ -15689,7 +15831,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 250
+        "line": 255
       },
       "multiplicity": null,
       "name": "dsml050",
@@ -15705,7 +15847,7 @@
           "location": {
             "column": 44,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 257
+            "line": 262
           },
           "name": "kind",
           "value": {
@@ -15718,7 +15860,7 @@
           "location": {
             "column": 84,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 257
+            "line": 262
           },
           "name": "priority",
           "value": {
@@ -15731,7 +15873,7 @@
           "location": {
             "column": 115,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 257
+            "line": 262
           },
           "name": "status",
           "value": {
@@ -15744,7 +15886,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 257
+            "line": 262
           },
           "name": "title",
           "value": {
@@ -15760,7 +15902,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 255
+        "line": 260
       },
       "multiplicity": null,
       "name": "dsml051",
@@ -15776,7 +15918,7 @@
           "location": {
             "column": 35,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 262
+            "line": 267
           },
           "name": "kind",
           "value": {
@@ -15789,7 +15931,7 @@
           "location": {
             "column": 77,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 262
+            "line": 267
           },
           "name": "priority",
           "value": {
@@ -15802,7 +15944,7 @@
           "location": {
             "column": 108,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 262
+            "line": 267
           },
           "name": "status",
           "value": {
@@ -15815,7 +15957,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 262
+            "line": 267
           },
           "name": "title",
           "value": {
@@ -15831,7 +15973,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 260
+        "line": 265
       },
       "multiplicity": null,
       "name": "dsml052",
@@ -15847,7 +15989,7 @@
           "location": {
             "column": 48,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 267
+            "line": 272
           },
           "name": "kind",
           "value": {
@@ -15860,7 +16002,7 @@
           "location": {
             "column": 88,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 267
+            "line": 272
           },
           "name": "priority",
           "value": {
@@ -15873,7 +16015,7 @@
           "location": {
             "column": 119,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 267
+            "line": 272
           },
           "name": "status",
           "value": {
@@ -15886,7 +16028,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 267
+            "line": 272
           },
           "name": "title",
           "value": {
@@ -15902,7 +16044,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 265
+        "line": 270
       },
       "multiplicity": null,
       "name": "dsml053",
@@ -15918,7 +16060,7 @@
           "location": {
             "column": 43,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 272
+            "line": 277
           },
           "name": "kind",
           "value": {
@@ -15931,7 +16073,7 @@
           "location": {
             "column": 83,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 272
+            "line": 277
           },
           "name": "priority",
           "value": {
@@ -15944,7 +16086,7 @@
           "location": {
             "column": 114,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 272
+            "line": 277
           },
           "name": "status",
           "value": {
@@ -15957,7 +16099,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 272
+            "line": 277
           },
           "name": "title",
           "value": {
@@ -15973,7 +16115,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 270
+        "line": 275
       },
       "multiplicity": null,
       "name": "dsml054",
@@ -15989,7 +16131,7 @@
           "location": {
             "column": 31,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 277
+            "line": 282
           },
           "name": "kind",
           "value": {
@@ -16002,7 +16144,7 @@
           "location": {
             "column": 71,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 277
+            "line": 282
           },
           "name": "priority",
           "value": {
@@ -16015,7 +16157,7 @@
           "location": {
             "column": 102,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 277
+            "line": 282
           },
           "name": "status",
           "value": {
@@ -16028,7 +16170,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 277
+            "line": 282
           },
           "name": "title",
           "value": {
@@ -16044,7 +16186,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 275
+        "line": 280
       },
       "multiplicity": null,
       "name": "dsml055",
@@ -16060,7 +16202,7 @@
           "location": {
             "column": 40,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 282
+            "line": 287
           },
           "name": "kind",
           "value": {
@@ -16073,7 +16215,7 @@
           "location": {
             "column": 80,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 282
+            "line": 287
           },
           "name": "priority",
           "value": {
@@ -16086,7 +16228,7 @@
           "location": {
             "column": 111,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 282
+            "line": 287
           },
           "name": "status",
           "value": {
@@ -16099,7 +16241,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 282
+            "line": 287
           },
           "name": "title",
           "value": {
@@ -16115,7 +16257,7 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 280
+        "line": 285
       },
       "multiplicity": null,
       "name": "dsml056",
@@ -16131,7 +16273,7 @@
           "location": {
             "column": 50,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 287
+            "line": 292
           },
           "name": "kind",
           "value": {
@@ -16144,7 +16286,7 @@
           "location": {
             "column": 92,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 287
+            "line": 292
           },
           "name": "priority",
           "value": {
@@ -16157,7 +16299,7 @@
           "location": {
             "column": 123,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 287
+            "line": 292
           },
           "name": "status",
           "value": {
@@ -16170,7 +16312,7 @@
           "location": {
             "column": 9,
             "file": "docs/model/prd/prd-dsml.sysml",
-            "line": 287
+            "line": 292
           },
           "name": "title",
           "value": {
@@ -16186,13 +16328,84 @@
       "location": {
         "column": 5,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 285
+        "line": 290
       },
       "multiplicity": null,
       "name": "dsml057",
       "owner": "PrdDsml",
       "qualifiedName": "PrdDsml::dsml057",
       "shortName": "PRD-DSML-057",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 37,
+            "file": "docs/model/prd/prd-dsml.sysml",
+            "line": 157
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "interface",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 78,
+            "file": "docs/model/prd/prd-dsml.sysml",
+            "line": 157
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 109,
+            "file": "docs/model/prd/prd-dsml.sysml",
+            "line": 157
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-dsml.sysml",
+            "line": 157
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "External API"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Phase 2: an external API must be a part usage with the keyword #ExternalApi. Its attribute openApiFile must give the path of an OpenAPI 3.1 JSON file, relative to the repository root. A react application can call it with a #Calls dependency.",
+      "identity": "PRD-DSML-058",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-dsml.sysml",
+        "line": 155
+      },
+      "multiplicity": null,
+      "name": "dsml058",
+      "owner": "PrdDsml",
+      "qualifiedName": "PrdDsml::dsml058",
+      "shortName": "PRD-DSML-058",
       "types": []
     },
     {
@@ -22374,6 +22587,77 @@
     },
     {
       "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 45,
+            "file": "docs/model/prd/prd-val.sysml",
+            "line": 82
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 85,
+            "file": "docs/model/prd/prd-val.sysml",
+            "line": 82
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 116,
+            "file": "docs/model/prd/prd-val.sysml",
+            "line": 82
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "draft",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/prd/prd-val.sysml",
+            "line": 82
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Phase 2 rule catalog"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Phase 2: the validator must contain each rule in the catalog of the section \"Rule catalog additions for phase 2\", with its default severity.",
+      "identity": "PRD-VAL-016",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/prd/prd-val.sysml",
+        "line": 80
+      },
+      "multiplicity": null,
+      "name": "val016",
+      "owner": "PrdVal",
+      "qualifiedName": "PrdVal::val016",
+      "shortName": "PRD-VAL-016",
+      "types": []
+    },
+    {
+      "annotations": [],
       "attributes": [],
       "direction": null,
       "doc": null,
@@ -23227,6 +23511,16 @@
         "line": 236
       },
       "source": "PRD-APP-135",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-app-common-fastapi.sysml",
+        "line": 241
+      },
+      "source": "PRD-APP-136",
       "target": "N-003",
       "type": "frame"
     },
@@ -24443,6 +24737,16 @@
     {
       "location": {
         "column": 9,
+        "file": "docs/model/prd/prd-core.sysml",
+        "line": 278
+      },
+      "source": "PRD-CORE-055",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
         "line": 8
       },
@@ -24744,7 +25048,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 158
+        "line": 163
       },
       "source": "PRD-DSML-031",
       "target": "N-001",
@@ -24754,7 +25058,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 163
+        "line": 168
       },
       "source": "PRD-DSML-032",
       "target": "N-001",
@@ -24764,7 +25068,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 168
+        "line": 173
       },
       "source": "PRD-DSML-033",
       "target": "N-001",
@@ -24774,7 +25078,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 173
+        "line": 178
       },
       "source": "PRD-DSML-034",
       "target": "N-003",
@@ -24784,7 +25088,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 178
+        "line": 183
       },
       "source": "PRD-DSML-035",
       "target": "N-005",
@@ -24794,7 +25098,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 183
+        "line": 188
       },
       "source": "PRD-DSML-036",
       "target": "N-005",
@@ -24804,7 +25108,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 188
+        "line": 193
       },
       "source": "PRD-DSML-037",
       "target": "N-005",
@@ -24814,7 +25118,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 193
+        "line": 198
       },
       "source": "PRD-DSML-038",
       "target": "N-005",
@@ -24824,7 +25128,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 198
+        "line": 203
       },
       "source": "PRD-DSML-039",
       "target": "N-001",
@@ -24834,7 +25138,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 203
+        "line": 208
       },
       "source": "PRD-DSML-040",
       "target": "N-001",
@@ -24844,7 +25148,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 208
+        "line": 213
       },
       "source": "PRD-DSML-041",
       "target": "N-001",
@@ -24854,7 +25158,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 213
+        "line": 218
       },
       "source": "PRD-DSML-042",
       "target": "N-001",
@@ -24864,7 +25168,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 218
+        "line": 223
       },
       "source": "PRD-DSML-043",
       "target": "N-001",
@@ -24874,7 +25178,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 223
+        "line": 228
       },
       "source": "PRD-DSML-044",
       "target": "N-005",
@@ -24884,7 +25188,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 228
+        "line": 233
       },
       "source": "PRD-DSML-045",
       "target": "N-004",
@@ -24894,7 +25198,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 233
+        "line": 238
       },
       "source": "PRD-DSML-046",
       "target": "N-004",
@@ -24904,7 +25208,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 238
+        "line": 243
       },
       "source": "PRD-DSML-047",
       "target": "N-004",
@@ -24914,7 +25218,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 243
+        "line": 248
       },
       "source": "PRD-DSML-048",
       "target": "N-004",
@@ -24924,7 +25228,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 248
+        "line": 253
       },
       "source": "PRD-DSML-049",
       "target": "N-004",
@@ -24934,7 +25238,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 253
+        "line": 258
       },
       "source": "PRD-DSML-050",
       "target": "N-004",
@@ -24944,7 +25248,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 258
+        "line": 263
       },
       "source": "PRD-DSML-051",
       "target": "N-004",
@@ -24954,7 +25258,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 263
+        "line": 268
       },
       "source": "PRD-DSML-052",
       "target": "N-004",
@@ -24964,7 +25268,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 268
+        "line": 273
       },
       "source": "PRD-DSML-053",
       "target": "N-004",
@@ -24974,7 +25278,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 273
+        "line": 278
       },
       "source": "PRD-DSML-054",
       "target": "N-004",
@@ -24984,7 +25288,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 278
+        "line": 283
       },
       "source": "PRD-DSML-055",
       "target": "N-003",
@@ -24994,7 +25298,7 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 283
+        "line": 288
       },
       "source": "PRD-DSML-056",
       "target": "N-003",
@@ -25004,10 +25308,20 @@
       "location": {
         "column": 9,
         "file": "docs/model/prd/prd-dsml.sysml",
-        "line": 288
+        "line": 293
       },
       "source": "PRD-DSML-057",
       "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-dsml.sysml",
+        "line": 158
+      },
+      "source": "PRD-DSML-058",
+      "target": "N-001",
       "type": "frame"
     },
     {
@@ -25877,6 +26191,16 @@
         "line": 78
       },
       "source": "PRD-VAL-015",
+      "target": "N-003",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/prd/prd-val.sysml",
+        "line": 83
+      },
+      "source": "PRD-VAL-016",
       "target": "N-003",
       "type": "frame"
     }

@@ -37,7 +37,7 @@ One command, `dsml`, has seven subcommands. All subcommands work in CI with no p
 | PRD-CORE-008 | Messages to the user must use ASD-STE100 Issue 9. | Inspection | Q1 |
 | PRD-CORE-009 | A subcommand must not ask for input from a terminal. | Test | Q25 |
 | PRD-CORE-010 | The option `--verbose` must write debug messages to standard error. | Test | PRD-TOP-006 |
-| PRD-CORE-011 | `dsml check-output` must run `tsc`, `ruff`, `tofu validate`, `tflint` and the FSD linter Steiger on the generated code of the selected targets. It must report a missing tool as an error with the tool name. | Test | Q28 |
+| PRD-CORE-011 | `dsml check-output` must run `tsc`, ESLint, `ruff`, `tofu validate`, `tflint` and the FSD linter Steiger on the generated code of the selected targets. It must report a missing tool as an error with the tool name. | Test | Q28, Q64 |
 
 ## Configuration file
 
@@ -69,6 +69,7 @@ OpenSysML stays behind one adapter module. The adapter writes the IR, and only t
 | PRD-CORE-026 | Validators and generators must read only the IR. They get the results of formal constraints from the IR (PRD-CORE-054), not from OpenSysML. | Inspection | Q8, Q57 |
 | PRD-CORE-027 | The toolchain CI must compare the IR of each reference model with a stored golden IR file. A change of the OpenSysML version must pass this comparison before a release. | Test | Q38 |
 | PRD-CORE-054 | The adapter must evaluate each formal constraint of a requirement through OpenSysML, one time for each environment, and write each result into the IR. The evaluation uses the attribute values of that environment. A result is `true`, `false` or `unknown`. An `unknown` result gives the features that have no value. | Test | Q12, Q57 |
+| PRD-CORE-055 | Phase 2: the adapter must convert the OpenAPI file of each external API into IR entities and IR operations of that API. It reads only object schemas with scalar and enumeration properties, and operations with an `operationId`, a JSON request body and a JSON response. | Test | Q65, PRD-TOP-005 |
 
 ## Determinism
 
