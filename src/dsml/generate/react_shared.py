@@ -33,15 +33,12 @@ from typing import Final
 from dsml.generate.fastapi_openapi import PROBLEM_MEDIA_TYPE
 from dsml.generate.infrastructure.modules import CALLBACK_PATH, LOGOUT_PATH
 from dsml.generate.pipelines.deploy import CONFIGURATION_KEYS, RUNTIME_CONFIGURATION
-from dsml.generate.react_common import SOURCE_FOLDER, ReactContext, public_api_files
+from dsml.generate.react_common import ReactContext, public_api_files
 from dsml.generate.typescript_symbols import typescript_symbols
 from dsml.generate.writer import Kind, OutputFile
 
 LAYER: Final = "shared"
 """The FSD layer of this module."""
-
-FOLDER: Final = f"{SOURCE_FOLDER}/{LAYER}"
-"""The folder of the layer in the project."""
 
 SCOPES: Final = ("email", "openid", "profile")
 """The OAuth scopes of each app client of a user directory (PRD-IAC-019), sorted."""
@@ -73,19 +70,20 @@ def shared_files(context: ReactContext) -> list[OutputFile]:
         "problem_media_type": PROBLEM_MEDIA_TYPE,
     }
     elements = context.elements
+    folder = context.layout.layer_folder(LAYER)
     files: list[OutputFile] = []
     for segment, (module, template) in sorted(_MODULES.items()):
-        file = context.generated_file(f"{FOLDER}/{segment}/{module}.ts", template, data, elements)
+        file = context.generated_file(f"{folder}/{segment}/{module}.ts", template, data, elements)
         symbols = typescript_symbols(file.content, elements)
         files.append(OutputFile(file.path, file.content, file.kind, file.part, symbols))
-        files.extend(public_api_files(context, f"{FOLDER}/{segment}", [module], elements))
+        files.extend(public_api_files(context, f"{folder}/{segment}", [module], elements))
     for segment in SHADCN_SEGMENTS:
         components = shadcn_files(segment)
         for name, content in components.items():
-            path = f"{context.folder}{FOLDER}/{segment}/{name}"
+            path = f"{context.folder}{folder}/{segment}/{name}"
             files.append(OutputFile(path, content, Kind.CREATE_ONCE, context.part))
         modules = [name.rsplit(".", 1)[0] for name in components]
-        files.extend(public_api_files(context, f"{FOLDER}/{segment}", modules, elements))
+        files.extend(public_api_files(context, f"{folder}/{segment}", modules, elements))
     return files
 
 

@@ -19,10 +19,10 @@ import {
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
-{% for line in app.import_lines() %}
+{% for line in app.import_lines(layout) %}
 {{ line }}
 {% endfor %}
-import { currentSession } from "@/shared/auth";
+import { currentSession } from "{{ layout.import_path("shared", "auth") }}";
 
 import { AppLayout } from "../layout/app-layout.gen";
 import { HomePage } from "../layout/status-pages.gen";

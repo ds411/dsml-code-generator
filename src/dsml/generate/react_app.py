@@ -3,7 +3,8 @@
 """The app layer of the React generator.
 
 The generator calls `app_files` for each `react` application. The function
-gives the files in `src/app/`. The layer `app` has no slices.
+gives the files in the folder of the layer `app`: `src/app/` in the React
+layout. The layer `app` has no slices.
 
 - `router/routes.gen.tsx`: the TanStack Router route tree with code-based
   routing (PRD-APP-220). Each view has one route (PRD-APP-221). The
@@ -37,7 +38,7 @@ from typing import Final
 from dsml.errors import ToolchainError
 from dsml.generate.infrastructure.modules import CALLBACK_PATH
 from dsml.generate.names import camel_case
-from dsml.generate.react_common import SOURCE_FOLDER, ReactContext
+from dsml.generate.react_common import REACT_LAYOUT, FsdLayout, ReactContext
 from dsml.generate.react_entities import INDENT, PRINT_WIDTH, string_literal
 from dsml.generate.react_features import field_label, import_lines
 from dsml.generate.react_pages import PageSlice, page_slices
@@ -48,11 +49,8 @@ from dsml.ir.model import Element, ListValue, ReferenceValue
 LAYER: Final = "app"
 """The FSD layer of this module."""
 
-FOLDER: Final = f"{SOURCE_FOLDER}/{LAYER}"
-"""The folder of the layer in the project."""
-
-STYLES: Final = f"{FOLDER}/styles/index.css"
-"""The create-once Tailwind CSS file. `components.json` refers to it."""
+STYLES: Final = "styles/index.css"
+"""The create-once Tailwind CSS file in the layer folder. `components.json` refers to it."""
 
 # The template of each generated file that has the same text for each
 # application, by the path in the layer folder.
@@ -263,7 +261,7 @@ class AppData:
             return ["export const NAVIGATION: readonly View[] = [];"]
         return _list_lines("export const NAVIGATION = ", items, " as const;")
 
-    def import_lines(self) -> list[str]:
+    def import_lines(self, layout: FsdLayout = REACT_LAYOUT) -> list[str]:
         """Give the imports of the entity slices and of the page slices."""
         by_entity: dict[str, set[str]] = {}
         for route in self.routes:
@@ -274,10 +272,11 @@ class AppData:
         lines = [
             line
             for name in sorted(by_entity)
-            for line in import_lines(sorted(by_entity[name]), f"@/entities/{name}")
+            for line in import_lines(sorted(by_entity[name]), layout.import_path("entities", name))
         ]
         for route in sorted(self.routes, key=lambda item: item.page.slice):
-            lines.extend(import_lines([route.page.component], f"@/pages/{route.page.slice}"))
+            source = layout.import_path("pages", route.page.slice)
+            lines.extend(import_lines([route.page.component], source))
         return lines
 
     def route_lines(self) -> list[str]:
@@ -312,6 +311,7 @@ def app_files(context: ReactContext) -> list[OutputFile]:
     """Give the files of the layer `app` of one application."""
     data = app_data(context)
     application = context.elements
+    folder = context.layout.layer_folder(LAYER)
     templates: list[tuple[str, str, list[str]]] = [
         (path, template, list(application)) for path, template in _STATIC.items()
     ]
@@ -330,7 +330,7 @@ def app_files(context: ReactContext) -> list[OutputFile]:
     files: list[OutputFile] = []
     for path, template, elements in sorted(templates):
         file = context.generated_file(
-            f"{FOLDER}/{path}",
+            f"{folder}/{path}",
             template,
             {"app": data, "title_lines": data.title_lines},
             elements,
@@ -338,5 +338,6 @@ def app_files(context: ReactContext) -> list[OutputFile]:
         symbols = typescript_symbols(file.content, tuple(elements))
         files.append(OutputFile(file.path, file.content, file.kind, file.part, symbols))
     content = context.engine.render_bytes("react/app/index.css.j2", {})
-    files.append(OutputFile(f"{context.folder}{STYLES}", content, Kind.CREATE_ONCE, context.part))
+    path = f"{context.folder}{folder}/{STYLES}"
+    files.append(OutputFile(path, content, Kind.CREATE_ONCE, context.part))
     return files

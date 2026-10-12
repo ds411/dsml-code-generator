@@ -5,7 +5,7 @@
 {% include "common/header.j2" %}
 import { queryOptions } from "@tanstack/react-query";
 
-import { apiRequest } from "@/shared/api";
+import { apiRequest } from "{{ layout.import_path("shared", "api") }}";
 
 {% for line in entity.model_import_lines() %}
 {{ line }}

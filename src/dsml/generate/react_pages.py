@@ -30,10 +30,11 @@ from dsml.errors import ToolchainError
 from dsml.generate.fastapi_slices import is_public, roles_of
 from dsml.generate.names import kebab_case, pascal_case
 from dsml.generate.react_common import (
+    REACT_LAYOUT,
+    FsdLayout,
     ReactContext,
     file_name,
     public_api_files,
-    slice_folder,
     slice_name,
 )
 from dsml.generate.react_entities import INDENT, PRINT_WIDTH, EntitySlice, string_literal
@@ -98,9 +99,9 @@ class PageSlice:
         """The name of the slice folder, for example `order-list`."""
         return slice_name(self.name)
 
-    @property
-    def folder(self) -> str:
-        return slice_folder(LAYER, self.name)
+    def folder(self, layout: FsdLayout = REACT_LAYOUT) -> str:
+        """Give the folder of the slice in the project, with the layer name of the layout."""
+        return layout.slice_folder(LAYER, self.name)
 
     @property
     def ui_module(self) -> str:
@@ -158,7 +159,7 @@ class PageSlice:
 
     # The lines of the ui file.
 
-    def import_lines(self) -> list[str]:
+    def import_lines(self, layout: FsdLayout = REACT_LAYOUT) -> list[str]:
         """Give the import statements of the ui file, in groups with an empty line between."""
         external: list[str] = []
         if self.kind == "list" and self.detail_path is not None:
@@ -170,9 +171,12 @@ class PageSlice:
             (item for item in (self.feature, self.delete) if item is not None),
             key=lambda item: item.slice,
         ):
-            internal.extend(import_lines([feature.component], f"@/features/{feature.slice}"))
+            internal.extend(
+                import_lines([feature.component], layout.import_path("features", feature.slice))
+            )
         if self.widget is not None:
-            internal.extend(import_lines([self.widget.component], f"@/widgets/{self.widget.slice}"))
+            source = layout.import_path("widgets", self.widget.slice)
+            internal.extend(import_lines([self.widget.component], source))
         return [*external, *([""] if external else []), *internal]
 
     def description_lines(self) -> list[str]:
@@ -326,12 +330,14 @@ def pages_files(context: ReactContext) -> list[OutputFile]:
     files: list[OutputFile] = []
     for page in page_slices(context.ir, context.application):
         file = context.generated_file(
-            f"{page.folder}/{page.ui_module}.tsx",
+            f"{page.folder(context.layout)}/{page.ui_module}.tsx",
             f"react/pages/{page.kind}-page.gen.tsx.j2",
             {"page": page},
             page.elements,
         )
         symbols = typescript_symbols(file.content, tuple(page.elements))
         files.append(OutputFile(file.path, file.content, file.kind, file.part, symbols))
-        files.extend(public_api_files(context, page.folder, [page.ui_module], page.elements))
+        files.extend(
+            public_api_files(context, page.folder(context.layout), [page.ui_module], page.elements)
+        )
     return files

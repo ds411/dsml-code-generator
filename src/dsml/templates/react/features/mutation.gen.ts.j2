@@ -6,7 +6,7 @@
     "feature" (a dsml.generate.react_features.FeatureSlice). -#}
 {% include "common/header.j2" %}
 import { {{ feature.react_query_names | join(", ") }} } from "@tanstack/react-query";
-{% for line in feature.api_import_lines() %}
+{% for line in feature.api_import_lines(layout) %}
 {% if loop.first and feature.uses_zod %}
 {{ line }}
 {% elif loop.first %}

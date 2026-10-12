@@ -1,4 +1,11 @@
 {#- The create-once public API of a slice (PRD-APP-204, PRD-CORE-044). It has
-    no generated header, because a developer owns the file. -#}
+    no generated header, because a developer owns the file. Data: "generated"
+    (the generated public API with no extension, for example "index.gen") and
+    "server" (true for the server-only public API "index.server.ts" of
+    PRD-APP-305). -#}
+{% if server %}
+// The server-only public API of this slice. Add the exports of your own server-only modules here.
+{% else %}
 // The public API of this slice. Add the exports of your own modules here.
-export * from "./index.gen";
+{% endif %}
+export * from "./{{ generated }}";

@@ -8,7 +8,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 {% endif %}
 
-import { apiRequest } from "@/shared/api";
+import { apiRequest } from "{{ layout.import_path("shared", "api") }}";
 
 import { {{ entity.schema }} } from "../{{ entity.model_module }}";
 

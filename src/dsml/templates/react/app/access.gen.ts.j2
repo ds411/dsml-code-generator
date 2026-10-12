@@ -2,7 +2,7 @@
     "requireView" gives the "beforeLoad" function of the route of a view.
     It checks the session and the roles of the view. Data: none. -#}
 {% include "common/header.j2" %}
-import { type Session, startLogin } from "@/shared/auth";
+import { type Session, startLogin } from "{{ layout.import_path("shared", "auth") }}";
 
 /** The access rule of a view (PRD-DSML-033). */
 export interface ViewAccess {
