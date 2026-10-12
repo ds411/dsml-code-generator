@@ -192,6 +192,36 @@ The rules of the routes:
 - The route `/auth/callback` goes to the home page. Amplify Auth reads the code of the login while the root route reads the session.
 - A detail view in the navigation gives an error, because it needs the key of an entity.
 
+## External API
+
+Story #175 added the client of an external API. A `react` application can call an external API from an imported OpenAPI file in place of an application of the model (PRD-APP-006). The IR adapter converts the file into IR entities and operations (story #163, `docs/notes/openapi-import.md`). The module `src/dsml/generate/react_external.py` reads these IR elements. The entities layer and the features layer write the client from them. The generator does not read the OpenAPI file.
+
+The names in the client are the names of the OpenAPI file: the schemas, the properties, the operations (`operationId`) and the parameters. Thus the client sends and reads the JSON names of the file.
+
+| Item of the external API | Output | Requirements |
+| --- | --- | --- |
+| An object schema of a success response | One entity slice, for example `src/entities/pet/`. `model/<schema>.gen.ts` has the Zod schema and its type. It also has the schemas that the schema refers to, before it. These schemas are not exported. | PRD-APP-006, PRD-APP-210 |
+| An operation with the method GET | The query key and the query options in `api/<schema>-queries.gen.ts` of the slice of its response, for example `readPetQueryOptions`. | PRD-APP-006, PRD-APP-224 |
+| An operation with an other method | One feature slice, as a custom operation, for example `src/features/create-pet/`. The input schema has the path parameters, the query parameters and the properties of the request body. The output schema is the schema of the entity slice of the response. | PRD-APP-006, PRD-APP-225, PRD-APP-226 |
+
+The rules of the external API:
+
+- An object schema of a request body gives no entity slice. Its properties are the fields of the form.
+- The query key of an operation is `[<slice>, <operation>, <parameters>]`, for example `["pet", "readPet", { petId }]`. An operation with no parameters has the key `[<slice>, <operation>]`. If all parameters are optional, the parameters have the default `{}`.
+- An optional query parameter with no value is not in the query. An optional property can be missing or `null`.
+- A decimal property in a response is a number or a text, because the OpenAPI file gives `anyOf` with `number` and `string`. A decimal value in a request uses the function `decimalValue`.
+- An array property in a request is a list field with one value on each line. The form sends an empty array if the list is empty.
+- After a success, a mutation invalidates the queries of each entity slice of the external API with queries. The OpenAPI file does not tell which schemas an operation changes.
+- The operations of each method get a form. Thus an operation with the method DELETE gets a form with its path parameters, not a button.
+
+These items give an error, because the target has no code for them: an operation with the method GET and no JSON response, a property of a request body that refers to an object schema, an array of numbers or Boolean values in a request, a parameter and a property of the request body with one name, a schema that refers to itself, and a property or a parameter with a name that is not a TypeScript identifier.
+
+An entity slice of an external API and an entity slice of a called application with one slice name give an error.
+
+The test model is `tests/models/react/external-api/external-api.sysml` with the OpenAPI file `pet-store.openapi.json`. Its golden output is the full project in `tests/golden/react/external-api/`. The tests are in `tests/test_react_external_api.py`.
+
+The model has no views. An application with no views has an empty navigation. Thus `views.gen.ts` gives the type `readonly View[]` to the empty constant `NAVIGATION`. Without the type, `tsc` refuses the navigation component.
+
 ## Golden files and tests
 
 The golden folder is the project folder of the application `orderPortal` of the order portal model. It has no manifests in `.dsml/`. The phase 2 exit story (#177) adds them.
@@ -204,7 +234,8 @@ The CI job "React golden project" does these steps:
 2. It copies the golden project to `apps/order-portal` in a temporary folder. It also copies the order portal model and its `dsml.toml` to the temporary folder. Then it runs `pnpm install`. The install makes `pnpm-lock.yaml` in the copy.
 3. It runs `dsml check-output --application orderPortal`. The command runs `tsc --noEmit`, ESLint and Steiger with the generated `steiger.config.ts` (story #170, `docs/notes/check-output.md`).
 4. It copies `tests/react/app/`, `tests/react/features/`, `tests/react/field-rules/`, `tests/react/shared/` and `tests/react/widgets/` into the copy and runs Vitest. The field rule test gives the values of `order-portal.json` to the Zod schemas. `tests/test_react_entities.py` gives the same values to the Pydantic models of the golden FastAPI output. Both must accept and refuse the same values (PRD-APP-211). The shared layer test replaces `fetch` and the Amplify modules. It examines the runtime configuration, the configuration of Amplify Auth, the bearer token and the problem details errors. The features test renders the forms with Testing Library in jsdom. It examines a field error, a problem details error, the keyboard access, the requests and the invalidation of the entity queries after a mutation. The widgets test renders the table and the details. It examines the column headers, the change to the next page, the keyboard access and a problem details error. The app test renders the application with a memory history. It examines the start of the login with no session, the "not permitted" page, the route loaders, the link to the details and the navigation for each set of roles.
-5. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
+5. It copies the golden project of the external API model to `apps/pet-portal` in a second temporary folder, with the model, its `dsml.toml` and the OpenAPI file. It runs `pnpm install` and `dsml check-output --application petPortal` (story #175).
+6. It runs `pnpm build` with marker values in `VITE_` environment variables. It makes sure that `dist/index.html` exists, that `dist/` has no `config.json`, and that `dist/` contains no marker value and no Cognito domain (PRD-APP-233).
 
 ## Differences from the story text
 
@@ -214,5 +245,7 @@ The CI job "React golden project" does these steps:
 - Story #174: TanStack Query 5.104 marks `queryClient.ensureQueryData` as deprecated. PRD-APP-223 gives this method. Thus `routes.gen.tsx` sets the ESLint rule `@typescript-eslint/no-deprecated` off. A change to PRD-APP-223 can replace the method with `queryClient.query` and `staleTime: "static"`.
 
 ## Items for the next stories
+
+- The application reads one API base URL, `apiBaseUrl` in `/config.json`. Thus an application that calls an application of the model and an external API sends the requests of both to one URL.
 
 - With pnpm 12, `pnpm install` can write `pnpm-workspace.yaml` in the project (the setting `minimumReleaseAgeExclude`). `pnpm-lock.yaml` and this file do not have the Prettier format. Thus `prettier --check .` in the generated pipeline finds them. The project has no `.prettierignore`, because the file is not on the fixed-name list of PRD-APP-235.

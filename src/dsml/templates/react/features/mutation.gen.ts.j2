@@ -35,9 +35,9 @@ function decimalValue() {
   ]);
 }
 {% endif %}
-{% if feature.custom is not none %}
+{% if feature.own_schemas %}
 
-/** The input of the operation {{ feature.name }}: the `in` parameters. */
+/** {{ feature.input_doc }} */
 export const {{ feature.input_schema }} = {% for line in feature.input_schema_lines() %}{{ line }}
 {% endfor %}
 
@@ -45,7 +45,7 @@ export const {{ feature.input_schema }} = {% for line in feature.input_schema_li
 export type {{ feature.input_type }} = z.input<typeof {{ feature.input_schema }}>;
 {% if feature.output_schema is not none %}
 
-/** The output of the operation {{ feature.name }}. A related entity is its key. */
+/** {{ feature.output_doc }} */
 {% for line in feature.output_schema_lines() %}
 {{ line }}
 {% endfor %}
@@ -67,7 +67,7 @@ export interface {{ feature.variables_type }} {
 {% for line in feature.function_lines() %}
 {{ line }}
 {% endfor %}
-{% if feature.custom is not none %}
+{% if feature.own_schemas %}
   const data = {{ feature.input_schema }}.parse(input);
 {% endif %}
   {%+ if feature.output_schema is not none %}const body = {% endif %}await apiRequest({

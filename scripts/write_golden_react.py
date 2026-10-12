@@ -14,6 +14,10 @@ the generator or to its templates:
     uv run python scripts/write_golden_react.py
 
 Then examine the differences with `git diff` before you commit them.
+
+The script also writes the golden output of the external API model
+tests/models/react/external-api/external-api.sysml (story #175) in
+tests/golden/react/external-api/.
 """
 
 import shutil
@@ -28,6 +32,8 @@ from dsml.generate.react import ReactGenerator
 ROOT = Path(__file__).resolve().parent.parent
 PORTAL_MODEL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
 PORTAL_GOLDEN = ROOT / "tests" / "golden" / "react" / "order-portal"
+EXTERNAL_MODEL = ROOT / "tests" / "models" / "react" / "external-api" / "external-api.sysml"
+EXTERNAL_GOLDEN = ROOT / "tests" / "golden" / "react" / "external-api"
 CONFIGURATION = """\
 schema = 1
 
@@ -36,8 +42,15 @@ paths = ["model"]
 
 [applications.orderPortal]
 output = "."
+
+[applications.petPortal]
+output = "."
 """
-"""The configuration file of the golden output. The output folder is the golden folder."""
+"""The configuration file of the golden output. The output folder is the golden folder.
+
+The application `petPortal` of the external API model (story #175) is in
+the same file. A model has only one of the two applications.
+"""
 
 
 def write_output(folder: Path, model: Path = PORTAL_MODEL) -> None:
@@ -59,11 +72,12 @@ def main() -> int:
     if Path.cwd().resolve() != ROOT:
         print(f"Run this script from the folder {ROOT}.", file=sys.stderr)
         return 2
-    if PORTAL_GOLDEN.exists():
-        shutil.rmtree(PORTAL_GOLDEN)
-    PORTAL_GOLDEN.mkdir(parents=True)
-    write_output(PORTAL_GOLDEN)
-    print(f"Wrote {PORTAL_GOLDEN.relative_to(ROOT).as_posix()}.")
+    for model, golden in ((PORTAL_MODEL, PORTAL_GOLDEN), (EXTERNAL_MODEL, EXTERNAL_GOLDEN)):
+        if golden.exists():
+            shutil.rmtree(golden)
+        golden.mkdir(parents=True)
+        write_output(golden, model)
+        print(f"Wrote {golden.relative_to(ROOT).as_posix()}.")
     return 0
 
 

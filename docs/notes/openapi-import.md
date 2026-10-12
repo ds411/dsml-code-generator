@@ -103,5 +103,5 @@ The function `imported(ir)` in `dsml.ir.external` gives the identities of the im
 
 ## Items for later stories
 
-- The React client of an external API is in milestone M10 (#155).
+- Story #175 added the React client of an external API (`docs/notes/react-generator.md`, section "External API").
 - The IR has no hash of the OpenAPI file. Thus the suspect report does not find a change of the file.

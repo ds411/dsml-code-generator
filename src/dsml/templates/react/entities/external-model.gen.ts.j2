@@ -1,0 +1,20 @@
+{#- The model segment of the entity slice of an object schema of an external
+    API (PRD-APP-006): the Zod schema and its TypeScript type. The file also
+    has the schemas that the schema refers to, before it. Data: "entity" (a
+    dsml.generate.react_entities.ExternalEntitySlice). -#}
+{% include "common/header.j2" %}
+import { z } from "zod";
+{% for schema in entity.schemas %}
+
+{% if loop.last %}
+/** The schema {{ schema.name }} of the external API {{ entity.api.name }} in a response. */
+export const {{ entity.schema }} = {% else %}
+/** The schema {{ schema.name }} of the external API {{ entity.api.name }}. */
+const {{ schema.name | camel_case }}Schema = {% endif %}{% for line in entity.schema_lines(schema) %}{{ line }}
+{% endfor %}
+{% endfor %}
+
+/** The schema {{ entity.name }} of the external API {{ entity.api.name }} in a response. */
+{% for line in entity.type_lines() %}
+{{ line }}
+{% endfor %}

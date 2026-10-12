@@ -1,0 +1,223 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pet store",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/owners/{ownerId}": {
+      "get": {
+        "operationId": "readOwner",
+        "parameters": [
+          {
+            "name": "ownerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The owner.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Owner" } }
+            }
+          }
+        }
+      }
+    },
+    "/pets": {
+      "get": {
+        "operationId": "listPets",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100 }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["available", "sold"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of pets.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PetPage" } }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createPet",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/NewPet" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new pet.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Pet" } }
+            }
+          }
+        }
+      }
+    },
+    "/pets/{petId}": {
+      "get": {
+        "operationId": "readPet",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The pet.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Pet" } }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "renamePet",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "notify",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/PetName" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The changed pet.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Pet" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deletePet",
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "The pet is deleted." }
+        }
+      }
+    },
+    "/tags": {
+      "get": {
+        "operationId": "listTags",
+        "responses": {
+          "200": {
+            "description": "All tags.",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Tag" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NewPet": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "maxLength": 80 },
+          "species": { "type": "string", "enum": ["cat", "dog", "bird"] },
+          "birthDate": { "type": "string", "format": "date" },
+          "price": { "anyOf": [{ "type": "number" }, { "type": "string" }] },
+          "vaccinated": { "type": "boolean" },
+          "weight": { "type": "number" },
+          "ownerId": { "anyOf": [{ "type": "integer" }, { "type": "null" }] },
+          "nicknames": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["name", "species", "price", "vaccinated"]
+      },
+      "Owner": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "email": { "type": ["string", "null"] }
+        },
+        "required": ["id", "name"]
+      },
+      "Pet": {
+        "type": "object",
+        "description": "A pet of the store.",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "species": { "type": "string", "enum": ["cat", "dog", "bird"] },
+          "birthDate": { "anyOf": [{ "type": "string", "format": "date" }, { "type": "null" }] },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "price": { "type": "string" },
+          "vaccinated": { "type": "boolean" },
+          "weight": { "type": ["number", "null"] },
+          "nicknames": { "type": "array", "items": { "type": "string" } },
+          "owner": { "anyOf": [{ "$ref": "#/components/schemas/Owner" }, { "type": "null" }] },
+          "tags": { "type": "array", "items": { "$ref": "#/components/schemas/Tag" } }
+        },
+        "required": ["id", "name", "species", "createdAt", "price", "vaccinated", "nicknames", "tags"]
+      },
+      "PetName": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        },
+        "required": ["name"]
+      },
+      "PetPage": {
+        "type": "object",
+        "properties": {
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/Pet" } },
+          "total": { "type": "integer" }
+        },
+        "required": ["items", "total"]
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" }
+        },
+        "required": ["label"]
+      }
+    }
+  }
+}

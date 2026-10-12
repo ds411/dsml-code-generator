@@ -29,6 +29,13 @@ has a label and an error message. The form shows the `title` and the
 native controls and the shadcn/ui components, thus the user can reach each
 control with the keyboard (PRD-APP-228).
 
+Each operation of an external API that does not use the method GET also
+gives a slice, as a custom operation (PRD-APP-006). Its input schema has the
+path parameters, the query parameters and the properties of the request
+body. Its output schema is the schema of the entity slice of the response.
+After a success, the mutation invalidates the queries of each entity slice
+of the external API.
+
 A module imports only from lower layers, through the public API of a slice
 (PRD-APP-203): `@/entities/<entity>`, `@/shared/api` and `@/shared/ui`.
 """
@@ -55,13 +62,18 @@ from dsml.generate.react_entities import (
     INDENT,
     PRINT_WIDTH,
     EntitySlice,
+    ExternalEntitySlice,
     ZodField,
     base_chain,
     called_applications,
     entity_slices,
+    external_entity_slices,
     input_rule_chain,
     object_lines,
+    path_expression,
+    query_lines,
 )
+from dsml.generate.react_external import ExternalField, ExternalOperation, external_apis
 from dsml.generate.typescript_symbols import typescript_symbols
 from dsml.generate.writer import OutputFile
 from dsml.ir.model import Element, Ir
@@ -295,7 +307,7 @@ class FeatureSlice:
     elements_: tuple[str, ...]
     entity: EntitySlice | None
     """The entity slice of a CRUD operation, or `None` for a custom operation."""
-    changed: tuple[EntitySlice, ...]
+    changed: tuple[EntitySlice | ExternalEntitySlice, ...]
     """The entity slices of the entities that the operation changes, sorted by slice name."""
     fields: tuple[FormField, ...]
     """The fields of the form, in the order of the input schema."""
@@ -304,6 +316,17 @@ class FeatureSlice:
     key_type: str = "string"
     custom: CustomSlice | None = None
     output_fields: tuple[ZodField, ...] = field(default=())
+    external: ExternalOperation | None = None
+    """The operation of an external API, or `None`."""
+    external_inputs: tuple[ExternalField, ...] = field(default=())
+    """The input of an external operation: the parameters and the properties of the body."""
+    response: ExternalEntitySlice | None = None
+    """The entity slice of the response of an external operation, or `None`."""
+
+    @property
+    def own_schemas(self) -> bool:
+        """Tell if the mutation file has the input schema and the output schema of the operation."""
+        return self.custom is not None or self.external is not None
 
     @property
     def elements(self) -> list[str]:
@@ -387,6 +410,8 @@ class FeatureSlice:
         """The TypeScript type of the result of the mutation."""
         if self.entity is not None:
             return "void" if self.kind == "delete" else self.entity.pascal
+        if self.external is not None:
+            return "void" if self.response is None else f"{self.pascal}Output"
         if self.custom is None or self.custom.output_class is None:
             return "void"
         return f"{self.pascal}Output"
@@ -435,6 +460,10 @@ class FeatureSlice:
                 names.update((f"type {self.output_type}", self.output_schema))
         for entity in self.changed:
             by_source.setdefault(f"@/entities/{entity.slice}", set()).add(f"{entity.camel}QueryKey")
+        if self.response is not None:
+            by_source.setdefault(f"@/entities/{self.response.slice}", set()).add(
+                self.response.schema
+            )
         by_source["@/shared/api"] = {"apiRequest"}
         for source in sorted(by_source):
             result.extend(import_lines(sorted(by_source[source], key=_import_key), source))
@@ -451,6 +480,9 @@ class FeatureSlice:
     @property
     def decimal_helpers(self) -> list[str]:
         """The functions for decimal values that the input schema of a custom operation uses."""
+        if self.external is not None:
+            kinds = {item.rules.kind for item in self.external_inputs if item.rules is not None}
+            return ["decimalValue"] if "Decimal" in kinds else []
         if self.custom is None:
             return []
         result: set[str] = set()
@@ -460,14 +492,46 @@ class FeatureSlice:
         return sorted(result)
 
     def input_schema_lines(self) -> list[str]:
-        """Give the lines of the input schema of a custom operation."""
+        """Give the lines of the input schema of a custom operation or an external operation."""
+        if self.external is not None:
+            return object_lines(
+                "z.strictObject", [_external_input(item) for item in self.external_inputs]
+            )
         assert self.custom is not None
         return object_lines(
             "z.strictObject", [_input_property(item) for item in self.custom.inputs]
         )
 
+    @property
+    def input_doc(self) -> str:
+        """The comment of the input schema."""
+        if self.external is not None:
+            return f"The input of the operation {self.name}: the parameters and the request body."
+        return f"The input of the operation {self.name}: the `in` parameters."
+
+    @property
+    def output_doc(self) -> str:
+        """The comment of the output schema."""
+        if self.response is not None:
+            many = (
+                "An array of the schema"
+                if self.external and self.external.response_many
+                else "The schema"
+            )
+            return f"The output of the operation {self.name}. {many} {self.response.name}."
+        return f"The output of the operation {self.name}. A related entity is its key."
+
     def output_schema_lines(self) -> list[str]:
-        """Give the lines of the output schema of a custom operation, with no export."""
+        """Give the lines of the output schema of a custom operation or an external operation."""
+        if self.response is not None:
+            assert self.external is not None
+            value = self.response.schema
+            if self.external.response_many:
+                value = f"z.array({value})"
+            line = f"export const {self.camel}OutputSchema = {value};"
+            if len(line) <= PRINT_WIDTH:
+                return [line]
+            return [f"export const {self.camel}OutputSchema =", f"{INDENT}{value};"]
         assert self.custom is not None
         custom = self.custom
         if custom.entity_output is not None:
@@ -503,6 +567,17 @@ class FeatureSlice:
                 source = "variables.input" if self.kind == "update" else "input"
                 lines.append(f"{INDENT * 2}body: {self.input_schema}.parse({source}),")
             return lines
+        if self.external is not None:
+            lines.extend(query_lines(INDENT * 2, "data", self.external.query_parameters))
+            body = self.external_inputs[len(self.external.parameters) :]
+            if self.external.body is not None:
+                if not body:
+                    lines.append(f"{INDENT * 2}body: {{}},")
+                    return lines
+                lines.append(f"{INDENT * 2}body: {{")
+                lines.extend(f"{INDENT * 3}{item.name}: data.{item.name}," for item in body)
+                lines.append(f"{INDENT * 2}}},")
+            return lines
         assert self.custom is not None
         fields = self.custom.request_fields
         if not fields:
@@ -530,6 +605,8 @@ class FeatureSlice:
     @property
     def path_expression(self) -> str:
         """The path of the operation as a TypeScript literal, with the path parameters."""
+        if self.external is not None:
+            return path_expression(self.path, "data", self.external.path_parameters)
         if self.custom is not None:
             values = {
                 item.name: (f"data.{item.json_name}", _key_type(item.rules) == "string")
@@ -736,6 +813,18 @@ def _input_property(item: ParameterField) -> tuple[str, list[str]]:
     return item.json_name, chain
 
 
+# trace: PRD-APP-006, PRD-APP-226
+def _external_input(item: ExternalField) -> tuple[str, list[str]]:
+    """Give the name and the Zod schema of one input value of an external operation."""
+    assert item.rules is not None
+    chain = input_rule_chain(item.rules)
+    if item.many:
+        chain = [f"z.array({''.join(chain)})"]
+    elif item.optional:
+        chain.extend((".nullable()", ".optional()"))
+    return item.name, chain
+
+
 def _output_property(item: ParameterField) -> tuple[str, list[str]]:
     """Give the name and the Zod schema of one `out` parameter, as the Pydantic output model."""
     chain = base_chain(item.rules)
@@ -825,6 +914,82 @@ def _custom_fields(item: CustomSlice) -> tuple[FormField, ...]:
     return tuple(result)
 
 
+# trace: PRD-APP-006, PRD-APP-226
+def _external_slice(
+    operation: ExternalOperation,
+    api_name: str,
+    inputs: tuple[ExternalField, ...],
+    changed: tuple[ExternalEntitySlice, ...],
+    response: ExternalEntitySlice | None,
+) -> FeatureSlice:
+    fields: list[FormField] = []
+    for item in inputs:
+        if item.rules is None:
+            raise ToolchainError(
+                f"The property {item.name} of the request body of the operation "
+                f"{operation.name} of the external API {api_name} refers to an object schema. "
+                "The React target has no form control for an object. Use scalar properties."
+            )
+        if item.many and item.rules.kind not in _LIST_KINDS:
+            raise ToolchainError(
+                f"The property {item.name} of the operation {operation.name} of the external "
+                f"API {api_name} is an array of the type {item.rules.kind}. The React target "
+                "has no form control for this array. Use an array of texts."
+            )
+        fields.append(
+            FormField(name=item.name, rules=item.rules, optional=item.optional, many=item.many)
+        )
+    return FeatureSlice(
+        name=operation.name,
+        kind="custom",
+        method=operation.method,
+        path=operation.path,
+        elements_=tuple(operation.elements),
+        entity=None,
+        changed=changed,
+        fields=tuple(fields),
+        external=operation,
+        external_inputs=inputs,
+        response=response,
+    )
+
+
+# trace: PRD-APP-006
+def _external_slices(ir: Ir, application: Element) -> list[FeatureSlice]:
+    """Give the feature slices of the operations of the external APIs that do not use GET."""
+    by_response = {
+        (item.api.identity, item.entity.identity): item
+        for item in external_entity_slices(ir, application)
+    }
+    result: list[FeatureSlice] = []
+    for api in external_apis(ir, application):
+        changed = tuple(
+            item
+            for (owner, _), item in sorted(by_response.items(), key=lambda pair: pair[1].slice)
+            if owner == api.identity and item.queries
+        )
+        for operation in api.operations:
+            if operation.method == "get":
+                continue
+            inputs = list(operation.parameters)
+            if operation.body is not None:
+                inputs.extend(api.entities[operation.body].fields)
+            names = [item.name for item in inputs]
+            for name in sorted({name for name in names if names.count(name) > 1}):
+                raise ToolchainError(
+                    f"The operation {operation.name} of the external API {api.name} has a "
+                    f'parameter and a property of the request body with the name "{name}". '
+                    "The form of the operation cannot have two fields with one name."
+                )
+            response = (
+                by_response[(api.identity, operation.response)]
+                if operation.response is not None
+                else None
+            )
+            result.append(_external_slice(operation, api.name, tuple(inputs), changed, response))
+    return result
+
+
 def _crud_slice(item: Slice, entity: EntitySlice) -> FeatureSlice:
     key = item.parameter if item.operation in ("update", "delete") else None
     return FeatureSlice(
@@ -871,33 +1036,36 @@ def feature_slices(ir: Ir, application: Element) -> list[FeatureSlice]:
 
     Each operation with a change of a called application gives one slice:
     `create`, `update`, `delete` and each custom operation that does not
-    use the method GET. Two operations with one slice name give a
-    `ToolchainError`.
+    use the method GET. Each operation of a called external API that does
+    not use the method GET also gives one slice (PRD-APP-006). Two
+    operations with one slice name give a `ToolchainError`.
     """
     entities = entity_slices(ir, application)
     by_entity = {item.entity: item for item in entities}
-    result: dict[str, FeatureSlice] = {}
+    items: list[FeatureSlice] = []
     for api in called_applications(ir, application):
         found = models(ir, api)
         crud = slices(ir, api, found)
-        items: list[FeatureSlice] = [
+        items.extend(
             _crud_slice(item, by_entity[item.model.entity])
             for item in crud
             if item.operation in CHANGE_OPERATIONS and item.model.entity in by_entity
-        ]
+        )
         items.extend(
             _custom_slice(item, by_entity)
             for item in custom_slices(ir, api, found, crud)
             if item.method != "get"
         )
-        for entry in items:
-            if entry.slice in result:
-                raise ToolchainError(
-                    f"The application {application.name} calls two operations with the "
-                    f'feature slice name "{entry.slice}". Give one of the operations an '
-                    "other name."
-                )
-            result[entry.slice] = entry
+    items.extend(_external_slices(ir, application))
+    result: dict[str, FeatureSlice] = {}
+    for entry in items:
+        if entry.slice in result:
+            raise ToolchainError(
+                f"The application {application.name} calls two operations with the "
+                f'feature slice name "{entry.slice}". Give one of the operations an '
+                "other name."
+            )
+        result[entry.slice] = entry
     return [result[name] for name in sorted(result)]
 
 
