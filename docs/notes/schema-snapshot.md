@@ -1,13 +1,15 @@
 # Database schema and schema snapshot
 
-Story #61 added the database schema of an application, the schema snapshot `.dsml/schema-snapshot.json` and the rule STR-013. Story #77 added the column types (PRD-APP-121). Story #85 added the column types to the snapshot, and the Alembic migrations.
+Story #61 added the database schema of an application, the schema snapshot `.dsml/schema-snapshot.json` and the rule STR-013. Story #77 added the column types (PRD-APP-121). Story #85 added the column types to the snapshot, and the Alembic migrations. Story #182 added the Drizzle migrations of the Next.js target.
 
 - Schema from the IR: `src/dsml/database/schema.py`.
 - Snapshot reader and writer: `src/dsml/database/snapshot.py`.
 - Comparison of two schemas: `src/dsml/database/migration.py`.
 - Migration files of the FastAPI generator: `src/dsml/generate/fastapi_migrations.py`.
+- SQL of the Drizzle migrations: `src/dsml/database/drizzle.py`.
+- Drizzle schema and migration files of the Next.js generator: `src/dsml/generate/nextjs_database.py`.
 - Rule STR-013: `src/dsml/validate/rules/str_schema.py`.
-- Tests: `tests/test_schema_snapshot.py`, `tests/test_str_013.py` and `tests/test_fastapi_migrations.py`. Rule models: `tests/models/rules/STR-013/`.
+- Tests: `tests/test_schema_snapshot.py`, `tests/test_str_013.py`, `tests/test_fastapi_migrations.py` and `tests/test_nextjs_database.py`. Rule models: `tests/models/rules/STR-013/`.
 
 ## Tables and columns
 
@@ -102,7 +104,7 @@ The reader accepts only version 2. A snapshot of version 1 gives a `SnapshotErro
 
 ## Rule STR-013
 
-STR-013 compares the schema of each FastAPI application with its snapshot. The rule also reads a file, as its catalog row tells. If the configuration gives no output folder for the application, or the folder has no snapshot, the rule gives no finding.
+STR-013 compares the schema of each FastAPI and Next.js application with its snapshot. The rule also reads a file, as its catalog row tells. If the configuration gives no output folder for the application, or the folder has no snapshot, the rule gives no finding.
 
 | Change | Metadata that permits it |
 | --- | --- |
@@ -162,3 +164,43 @@ The other generated files are:
 | `tests/test_migrations_gen.py` | Checks the order of the migrations and writes their SQL in offline mode. |
 
 The CI job "FastAPI golden project" applies the migrations of the golden project to PostgreSQL 18. A second run of `app/migrate_gen.py` must apply nothing. Then `alembic check` must find no difference.
+
+## Drizzle migrations of the Next.js target
+
+The Next.js generator keeps the snapshot in the same format and at the same path. It compares the snapshot with the IR as the FastAPI generator does, and it uses the same order of changes and the same constraint names (PRD-APP-332). Thus the two targets give the same database schema for the same model.
+
+The Drizzle migrator reads the migration files (PRD-APP-331, Q67). The project does not use `drizzle-kit generate`. `src/dsml/database/drizzle.py` writes the SQL of the changes.
+
+| File | Purpose |
+| --- | --- |
+| `migrations/<NNNN>_<slug>.gen.sql` | One migration. The first migration has the number `0001`. The text `--> statement-breakpoint` divides the statements. The comment at the top gives the number and the list of changes. |
+| `migrations/meta/_journal.json` | The journal of the Drizzle migrator. It has one entry for each migration file, with the tag `<NNNN>_<slug>.gen`. The file is on the fixed-name list of PRD-APP-334. |
+| `src/shared/db/schema.gen.ts` | The Drizzle tables with the type map of PRD-APP-121 and the constraint names of this note (PRD-APP-330). |
+| `src/shared/db/client.server.gen.ts` | The function `getDatabase` that gives the Drizzle database with the driver `pg` (Q64), and the function `readDatabaseConfig`. |
+| `migrate.gen.mjs` | Applies the migrations that the database does not have, and then stops (PRD-APP-128). The one-off migration task runs `node migrate.gen.mjs` (Q53). |
+| `standalone-migrate.gen.mjs` | The Dockerfile runs it after `next build`. It copies `migrate.gen.mjs` and the files that it needs into the `standalone` output. |
+
+The Drizzle migrator identifies a migration by the SHA-256 hash of its file. The file has the number of the migration, thus the ID comes from the content and the number (PRD-APP-125). The value `when` of a journal entry is the number of the migration, not the time. The migrator applies each migration with a value `when` that is more than the value of the last migration in the database. It writes the applied migrations into the table `drizzle.__drizzle_migrations`, and it applies the new migrations in one transaction.
+
+The Drizzle schema has these column builders:
+
+| PostgreSQL type | Drizzle column | TypeScript value |
+| --- | --- | --- |
+| `VARCHAR(<n>)` | `varchar(<name>, { length: <n> })` | `string` |
+| `TEXT` | `text(<name>)` | `string` |
+| `BIGINT` | `bigint(<name>, { mode: "number" })` | `number` |
+| `DOUBLE PRECISION` | `doublePrecision(<name>)` | `number` |
+| `NUMERIC(<p>, <s>)` | `numeric(<name>, { precision: <p>, scale: <s> })` | `string` |
+| `BOOLEAN` | `boolean(<name>)` | `boolean` |
+| `DATE` | `date(<name>)` | `string` (`YYYY-MM-DD`) |
+| `TIMESTAMPTZ` | `timestamp(<name>, { withTimezone: true })` | `Date` |
+| `UUID` | `uuid(<name>)` | `string` |
+| Enumeration | `varchar(<name>, { length: 64, enum: [...] })` | A union of the values |
+
+The constant of a table is `<table in camel case>Table`, for example `orderTable`. The types `<Table>Row` and `New<Table>Row` give a row and the values of a new row. A table comes after the tables that it refers to. TypeScript cannot infer the types of the tables of a cycle. Thus a table with a foreign key to a later table gives the return type `PgTableExtraConfigValue[]` to the function of its constraints.
+
+The connection values come from the environment variables `DATABASE_HOST`, `DATABASE_PORT` (default `5432`), `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD` and `DATABASE_SSL_MODE` (default `require`). The infrastructure generator sets them in the container service. The values of `DATABASE_SSL_MODE` have the meaning of the PostgreSQL client library: `disable`, `require` (TLS with no check of the certificate) and `verify-full`.
+
+The schema snapshot is canonical JSON (Q16), not the Prettier format. Thus the script `format` of `package.json` and the CI job do not examine the folder `.dsml/` with Prettier.
+
+The CI job "Next.js golden project" applies the golden migrations to PostgreSQL 18 with the container image, two times. The second run must apply nothing.

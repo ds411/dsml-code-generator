@@ -10,7 +10,8 @@ from pathlib import Path, PurePosixPath
 from conftest import RULE_MODELS, RunRule
 
 from dsml.config import Application, Configuration
-from dsml.ir.model import Location
+from dsml.ir.model import Attribute, Element, EnumValue, Ir, Location
+from dsml.validate.rules.str_schema import database_applications
 
 FOLDER = RULE_MODELS / "STR-013"
 REJECT = "tests/models/rules/STR-013/reject.sysml"
@@ -65,3 +66,27 @@ def test_str_013_reports_a_snapshot_that_is_not_correct(run_rule: RunRule, tmp_p
     assert len(findings) == 1
     assert "is not correct. The top level must be a JSON object" in findings[0].message
     assert findings[0].element == "Shop::shopApi"
+
+
+def _application(name: str, target: str) -> Element:
+    location = Location(file="model.sysml", line=1, column=1)
+    return Element(
+        identity=f"Shop::{name}",
+        kind="Application",
+        name=name,
+        qualified_name=f"Shop::{name}",
+        location=location,
+        attributes=(Attribute("target", EnumValue("DSML::Target", target), location),),
+    )
+
+
+# trace: PRD-APP-127, PRD-APP-332
+def test_str_013_examines_the_fastapi_and_the_nextjs_applications() -> None:
+    ir = Ir(
+        elements=(
+            _application("web", "nextjs"),
+            _application("api", "fastapi"),
+            _application("portal", "react"),
+        )
+    )
+    assert [item.identity for item in database_applications(ir)] == ["Shop::api", "Shop::web"]

@@ -2,7 +2,8 @@
 
 The golden files in `tests/golden/nextjs/order-web/` are the output of the
 Next.js generator for the order web model. The folder is the project folder
-of the application orderWeb. Write the files again with
+of the application orderWeb. The configuration of the tests is in the parent
+folder, with the output folder `order-web`. Write the files again with
 `uv run python scripts/write_golden_nextjs.py`. The CI job "Next.js golden
 project" runs Prettier, tsc, ESLint, Steiger, Vitest, `next build` and
 `docker build` on the golden project.
@@ -14,7 +15,7 @@ each part story compares the files of its part. The phase 3 exit story
 
 import json
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from pathlib import Path
 
 import pytest
@@ -70,10 +71,26 @@ PROJECT_FILES = [
     "tsconfig.json",
     "vitest.config.ts",
 ]
-CONFIGURATION = '[applications.orderWeb]\noutput = "."\n'
+CONFIGURATION = '[applications.orderWeb]\noutput = "order-web"\n'
+OUTPUT = "order-web/"
+"""The output folder of the order web. The tests compare the paths in this folder."""
+DATABASE_FILES = [
+    ".dsml/schema-snapshot.json",
+    "migrate.gen.mjs",
+    "migrations/meta/_journal.json",
+    "src/shared/db/client.server.gen.ts",
+    "src/shared/db/index.gen.ts",
+    "src/shared/db/index.server.gen.ts",
+    "src/shared/db/index.server.ts",
+    "src/shared/db/index.ts",
+    "src/shared/db/schema.gen.ts",
+    "standalone-migrate.gen.mjs",
+]
+"""The files of the database part (story #182) for an application with no entity."""
 
 PART_FOLDERS = (
     "app/api/",
+    "migrate.gen.mjs",
     "migrations/",
     "proxy.ts",
     "src/_app/api-routes/",
@@ -84,6 +101,7 @@ PART_FOLDERS = (
     "src/shared/auth/",
     "src/shared/db/",
     "src/widgets/",
+    "standalone-migrate.gen.mjs",
 )
 """The paths of the files of the part stories. The test of each part story tests them."""
 
@@ -101,6 +119,11 @@ def part_file(path: str) -> bool:
 
 def project_files(files: dict[str, bytes]) -> dict[str, bytes]:
     return {path: content for path, content in files.items() if not part_file(path)}
+
+
+def output_files(files: Sequence[OutputFile]) -> dict[str, bytes]:
+    """Give the content of each output file by its path in the output folder of the order web."""
+    return {file.path.removeprefix(OUTPUT): file.content for file in files}
 
 
 def golden_files() -> dict[str, bytes]:
@@ -142,7 +165,7 @@ def web_ir() -> Ir:
 # trace: PRD-CORE-030, PRD-APP-002, PRD-APP-334
 def test_project_files_of_the_order_web_agree_with_the_golden_files(web_ir: Ir) -> None:
     files = collect([NextjsGenerator()], web_ir, configuration(), None)
-    output = project_files({file.path: file.content for file in files})
+    output = project_files(output_files(files))
     assert output == project_files(golden_files()), (
         "The output is different from the golden files. If the change is correct, run "
         "uv run python scripts/write_golden_nextjs.py and examine the differences."
@@ -195,7 +218,11 @@ def test_fixed_names_and_no_lockfile(web_ir: Ir) -> None:
         for file in files
     )
     assert not [file.path for file in files if Path(file.path).name in LOCKFILES]
-    assert not [file.path for file in files if file.path.startswith(".dsml/")]
+    # The only file in .dsml/ is the schema snapshot. The phase 3 exit story
+    # (#189) adds the manifests.
+    assert [path for path in output_files(files) if path.startswith(".dsml/")] == [
+        ".dsml/schema-snapshot.json"
+    ]
 
 
 # trace: PRD-APP-302, PRD-CORE-039
@@ -220,7 +247,7 @@ def test_route_files_only_re_export_from_src() -> None:
 # trace: PRD-APP-303
 def test_layers_app_and_pages_have_the_names_of_next_js(web_ir: Ir) -> None:
     files = collect([NextjsGenerator()], web_ir, configuration(), None)
-    paths = [file.path for file in files]
+    paths = list(output_files(files))
     assert not [path for path in paths if path.startswith(("src/app/", "src/pages/"))]
     assert "src/_app/layout/root-layout.gen.tsx" in paths
 
@@ -400,7 +427,7 @@ def test_generator_writes_into_the_output_folder_of_each_application() -> None:
     settings = configuration('[applications.orderWeb]\noutput = "apps/web"\n')
     files = NextjsGenerator().generate(ir, settings, None)
     paths = sorted(file.path for file in files)
-    assert paths == [f"apps/web/{path}" for path in PROJECT_FILES]
+    assert paths == sorted(f"apps/web/{path}" for path in [*PROJECT_FILES, *DATABASE_FILES])
     assert {file.part for file in files} == {application_part("orderWeb")}
 
 
@@ -431,10 +458,10 @@ def test_generator_calls_each_part_module(monkeypatch: pytest.MonkeyPatch) -> No
     monkeypatch.setattr(nextjs, "PART_FUNCTIONS", tuple(part(name) for name in names))
     files = NextjsGenerator().generate(small_ir(application()), configuration(), None)
     assert called == list(names)
-    assert {f"src/{name}.gen.ts" for name in names} <= {file.path for file in files}
+    assert {f"src/{name}.gen.ts" for name in names} <= set(output_files(files))
 
 
-def test_part_modules_give_no_file_yet() -> None:
+def test_part_modules_after_the_database_give_no_file_yet() -> None:
     item = application()
     context = ReactContext(
         TemplateEngine(),
@@ -453,5 +480,5 @@ def test_part_modules_give_no_file_yet() -> None:
         "dsml.generate.nextjs_routes",
         "dsml.generate.nextjs_pages",
     ]
-    for function in PART_FUNCTIONS:
+    for function in PART_FUNCTIONS[1:]:
         assert function(context) == [], function.__module__

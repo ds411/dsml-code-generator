@@ -8,7 +8,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "format": "prettier --check .",
+    "format": "prettier --check . '!.dsml/**'",
     "lint": "eslint .",
     "start": "node .next/standalone/server.js",
     "steiger": "steiger ./src",

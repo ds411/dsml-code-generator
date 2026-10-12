@@ -4,7 +4,9 @@
 Story #180 added the golden output of the order web model
 docs/model/examples/order-web/order-web.sysml in
 tests/golden/nextjs/order-web/. The folder is the project folder of the
-application orderWeb. It has no manifests in `.dsml/`. The test
+application orderWeb. It has the schema snapshot `.dsml/schema-snapshot.json`
+of story #182, but no manifests in `.dsml/`. The script removes the folder
+first, thus the generator writes the migrations again from no snapshot. The test
 tests/test_nextjs_generator.py compares the output of the Next.js generator
 with these files. The CI job "Next.js golden project" runs Prettier, tsc,
 ESLint, Steiger, Vitest, "next build" and "docker build" on the golden
@@ -35,17 +37,23 @@ schema = 1
 paths = ["model"]
 
 [applications.orderWeb]
-output = "."
+output = "order-web"
 """
-"""The configuration file of the golden output. The output folder is the golden folder."""
+"""The configuration file of the golden output. It is in the parent folder of the golden
+folder, and the output folder is the golden folder. The output folder must not be the
+folder of the configuration file, because the generator must not write into the manifest
+folder `.dsml/` of the configuration file."""
 
 
 def write_output(folder: Path) -> None:
-    """Write the generated files and the create-once files of the order web into `folder`."""
-    configuration = parse_configuration(CONFIGURATION, folder / "dsml.toml")
+    """Write the generated files and the create-once files of the order web into `folder`.
+
+    The name of `folder` must be `order-web`.
+    """
+    configuration = parse_configuration(CONFIGURATION, folder.parent / "dsml.toml")
     ir = make_ir([WEB_MODEL], ROOT)
     for file in collect([NextjsGenerator()], ir, configuration, None):
-        path = folder / file.path
+        path = folder.parent / file.path
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(file.content)
 
