@@ -21,8 +21,10 @@ from dsml.baseline import (
     read_baseline,
     repository_root,
 )
+from dsml.check_output import ApplicationCode, check_output, passed, select_applications
+from dsml.check_output import text_report as check_report
 from dsml.config import Configuration, load_configuration
-from dsml.errors import NotAvailableError, ToolchainError, UsageError
+from dsml.errors import ToolchainError, UsageError
 from dsml.generate import generators
 from dsml.generate.manifest import read_manifest
 from dsml.generate.trace import SymbolKind, read_trace
@@ -644,13 +646,37 @@ def change_report(args: argparse.Namespace, configuration: Configuration) -> Rep
     return impact_report(data) if args.report == IMPACT else suspect_report(data)
 
 
-def not_available(args: argparse.Namespace) -> Outcome:
-    """Stop a subcommand that has no implementation in this version."""
-    raise NotAvailableError()
+# trace: PRD-CORE-001, PRD-CORE-002, PRD-CORE-006, PRD-CORE-011, PRD-IAC-038
+def run_check_output(args: argparse.Namespace) -> Outcome:
+    """Run the language tools on the generated code of the selected targets.
+
+    `--application <name>` selects one application and `--infrastructure`
+    selects the infrastructure. With no option, the command checks all
+    applications of the model and the infrastructure folder of the
+    configuration file. Only an application check reads the model.
+
+    The report gives one line for each tool and target, sorted by target and
+    tool. The exit code is 1 if a tool finds an error or a tool is missing.
+    """
+    configuration = read_configuration(args)
+    every = args.application is None and not args.infrastructure
+    applications: list[ApplicationCode] = []
+    if args.application is not None or (every and configuration.model):
+        ir = read_model(configuration)
+        applications = select_applications(ir, configuration, args.application)
+    infrastructure = args.infrastructure or (every and configuration.infrastructure is not None)
+    if not applications and not infrastructure:
+        raise ToolchainError(
+            "There is no generated code to check. The model has no application, "
+            "and the configuration file gives no infrastructure folder."
+        )
+    results = check_output(configuration, applications, infrastructure)
+    write_report(check_report(results), args.output)
+    return Outcome.SUCCESS if passed(results) else Outcome.ERROR_FINDING
 
 
 HANDLERS: dict[str, Handler] = {
-    "check-output": not_available,
+    "check-output": run_check_output,
     "generate": run_generate,
     "init": run_init,
     "ir": run_ir,

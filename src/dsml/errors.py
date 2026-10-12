@@ -1,8 +1,6 @@
 # trace: PRD-CORE-002
 """The errors that stop the toolchain with exit code 2."""
 
-NOT_AVAILABLE = "This subcommand is not available in this version."
-
 
 # trace: PRD-CORE-002
 class ToolchainError(Exception):
@@ -20,11 +18,3 @@ class UsageError(ToolchainError):
     def __init__(self, message: str, usage: str) -> None:
         super().__init__(message)
         self.usage = usage
-
-
-# trace: PRD-CORE-002
-class NotAvailableError(ToolchainError):
-    """The subcommand has no implementation in this version of the toolchain."""
-
-    def __init__(self) -> None:
-        super().__init__(NOT_AVAILABLE)

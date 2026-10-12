@@ -397,6 +397,20 @@ jobs:
           done
           exit "$status"
 
+      # trace: PRD-CORE-011, PRD-IAC-038
+      # dsml check-output must pass on the golden output of the order
+      # service (story #134). A path in the configuration file cannot
+      # contain "..". Thus the step copies the output and writes the
+      # configuration file in a temporary folder. tflint uses the AWS rule
+      # set of the step "Install the HCL tools".
+      - name: Check the golden HCL with dsml check-output
+        run: |
+          check="$RUNNER_TEMP/check-output"
+          mkdir -p "$check"
+          cp -r tests/golden/infrastructure/order-service/infra "$check/infra"
+          printf 'schema = 1\n\n[infrastructure]\noutput = "infra"\n' > "$check/dsml.toml"
+          uv run dsml check-output --infrastructure --config "$check/dsml.toml"
+
       # .checkov.yaml gives the settings and the skipped checks.
       - name: Scan the golden HCL with Checkov
         run: uv tool run "checkov@${CHECKOV_VERSION}" --config-file .checkov.yaml --directory tests/golden/infrastructure

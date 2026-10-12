@@ -94,7 +94,7 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | `init` | Writes a starter configuration file and a starter model as create-once files. See "Command `dsml init`". |
 | `validate` | Runs the validation rules on the model and writes the findings as text, JSON or SARIF. See "Command `dsml validate`". |
 | `trace` | Writes the coverage report or the orphans report as JSON or as CSV. See "Command `dsml trace`". |
-| `check-output` | Not available yet. The subcommand stops with exit code 2. |
+| `check-output` | Runs the language tools on the generated code: ruff and pyright on each FastAPI application, and `tofu fmt`, `tofu init`, `tofu validate` and `tflint` on the infrastructure. A tool error or a missing tool gives exit code 1. `docs/notes/check-output.md` gives the rules. |
 | `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. The infrastructure generator writes the root modules of the environments and the local modules of the databases and the user directories. The other generators come in M6. `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
