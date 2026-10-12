@@ -1,0 +1,59 @@
+{#- The page of a list view (PRD-APP-320). The server component checks the
+    session and the roles of the view (PRD-APP-324). It calls the server
+    function of the operation list directly and gives the first page of the
+    table to the query cache of the client (PRD-APP-314). Data: "page" (a
+    dsml.generate.nextjs_pages.NextPage). -#}
+{% include "common/header.j2" %}
+{% for line in page.import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The access rule of the view: the attributes allowedRoles and public. */
+{% for line in page.access_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The route path of the view (PRD-APP-221). */
+const PATH = {{ page.path | tojson }};
+{% if page.description is not none %}
+
+/** The description of the view {{ page.name }} in the model. */
+{% for line in page.description_lines() %}
+{{ line }}
+{% endfor %}
+{% endif %}
+
+/**
+ * The page of the view {{ page.name }}: the list of the entities {{ page.page.entity.name }}. The
+ * server function gives the first page of the table, with no HTTP request.
+ * If the server function fails, the table reads the page again and shows
+ * the error.
+ */
+export async function {{ page.component }}() {
+  if (!(await permitsView(ACCESS, PATH))) {
+    return <NotPermittedPage />;
+  }
+  const queryClient = new QueryClient();
+  const queryKey = {{ page.query_key }}();
+  await queryClient
+    .query({
+      queryKey,
+      queryFn: () => {{ page.server_function }}(queryKey[2].limit, queryKey[2].offset),
+    })
+    .catch(noop);
+  return (
+    <section className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">{{ page.title }}</h1>
+{% if page.description is not none %}
+      <p className="text-muted-foreground">{DESCRIPTION}</p>
+{% endif %}
+      <HydrationBoundary state={dehydrate(queryClient)}>
+{% if page.has_content %}
+        <{{ page.content_component }} />
+{% else %}
+        <{{ page.page.widget.component }} />
+{% endif %}
+      </HydrationBoundary>
+    </section>
+  );
+}

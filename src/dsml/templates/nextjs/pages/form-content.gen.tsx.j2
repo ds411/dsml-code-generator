@@ -1,0 +1,26 @@
+{#- The client component of the page of a form view (PRD-APP-321). It shows
+    the form of the operation of the view. After a success, it shows a
+    status message. Data: "page" (a dsml.generate.nextjs_pages.NextPage). -#}
+{% include "common/header.j2" %}
+"use client";
+
+{% for line in page.content_import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The form of the view {{ page.name }} and the status message after a success. */
+export function {{ page.content_component }}() {
+  const [complete, setComplete] = useState(false);
+  return (
+    <>
+      <p role="status" className="text-sm">
+        {complete ? "The operation is complete." : ""}
+      </p>
+      <{{ page.page.feature.component }}
+        onSuccess={() => {
+          setComplete(true);
+        }}
+      />
+    </>
+  );
+}

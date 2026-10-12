@@ -1,0 +1,33 @@
+{#- The role check of a view in a server component (PRD-APP-009,
+    PRD-APP-324). The session comes from the Amplify adapter. Data: none. -#}
+{% include "common/header.j2" %}
+import "server-only";
+
+import { redirect } from "next/navigation";
+
+import {
+  type Access,
+  checkAccess,
+  LOGIN_PATH,
+  RETURN_PARAMETER,
+} from "{{ layout.import_path("shared", "auth") }}";
+import { getSession } from "{{ layout.import_path("shared", "auth") }}/index.server";
+
+/**
+ * Check the session and the roles of a view. A public view needs no
+ * session. With no valid session, go to the login page, and then back to
+ * the path. Give true if a role of the user permits the view. Else the page
+ * must show the "not permitted" page.
+ */
+export async function permitsView(
+  access: Access,
+  path: string,
+): Promise<boolean> {
+  const session = access.public ? undefined : await getSession();
+  const status = checkAccess(session, access);
+  if (status === 401) {
+    const query = new URLSearchParams({ [RETURN_PARAMETER]: path });
+    redirect(`${LOGIN_PATH}?${query.toString()}`);
+  }
+  return status === 200;
+}

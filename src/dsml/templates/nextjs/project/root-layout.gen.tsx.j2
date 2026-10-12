@@ -1,7 +1,9 @@
 {#- The root layout of the Next.js target (PRD-APP-325). It reads the public
     runtime values from the environment variables of the server at each
     request, and gives them to the client components. Thus one build
-    operates in all environments (PRD-APP-010). -#}
+    operates in all environments (PRD-APP-010). The providers, the layout
+    with the navigation and the style sheet come from the pages part
+    (story #188). -#}
 {% include "common/header.j2" %}
 import type { Metadata } from "next";
 import { connection } from "next/server";
@@ -9,6 +11,10 @@ import type { ReactNode } from "react";
 
 import { PublicConfigProvider } from "@/shared/config";
 import { readPublicConfig } from "@/shared/config/index.server";
+
+import { AppProviders } from "../providers/app-providers.gen";
+import "../styles/index.css";
+import { AppLayout } from "./app-layout.gen";
 
 /** The metadata of the pages. */
 export const metadata: Metadata = {
@@ -30,7 +36,11 @@ export async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <PublicConfigProvider config={config}>{children}</PublicConfigProvider>
+        <PublicConfigProvider config={config}>
+          <AppProviders>
+            <AppLayout>{children}</AppLayout>
+          </AppProviders>
+        </PublicConfigProvider>
       </body>
     </html>
   );

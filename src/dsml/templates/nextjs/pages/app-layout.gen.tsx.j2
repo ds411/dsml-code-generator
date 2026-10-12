@@ -1,0 +1,52 @@
+{#- The layout of all pages: the title of the application, the navigation,
+    the login link or the logout button, and the page. The server component
+    reads the session through the Amplify adapter (PRD-APP-324). Data: "app"
+    (a dsml.generate.nextjs_pages.AppData). -#}
+{% include "common/header.j2" %}
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+import { LOGIN_PATH } from "{{ layout.import_path("shared", "auth") }}";
+import { getSession } from "{{ layout.import_path("shared", "auth") }}/index.server";
+import { Button } from "{{ layout.import_path("shared", "ui") }}";
+
+import { LogoutButton } from "./logout-button.gen";
+import { Navigation } from "./navigation.gen";
+
+/** The title of the application: the application name in words. */
+{% for line in app.title_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The properties of the layout. */
+export interface AppLayoutProps {
+  /** The page of the route. */
+  children: ReactNode;
+}
+
+/** The layout of all pages: the title, the navigation, the login and the page. */
+export async function AppLayout({ children }: AppLayoutProps) {
+  const session = await getSession();
+  return (
+    <div className="bg-background text-foreground min-h-screen">
+      <header className="border-b">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-6 px-4 py-3">
+          <Link href="/" className="font-semibold">
+            {APPLICATION_TITLE}
+          </Link>
+          <Navigation session={session} />
+          <div className="ml-auto">
+            {session === undefined ? (
+              <Button asChild variant="outline">
+                <Link href={LOGIN_PATH}>Log in</Link>
+              </Button>
+            ) : (
+              <LogoutButton />
+            )}
+          </div>
+        </div>
+      </header>
+      <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
+    </div>
+  );
+}

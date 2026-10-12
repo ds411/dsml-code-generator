@@ -35,7 +35,6 @@ from dsml.generate.nextjs import (
 from dsml.generate.react import dependencies
 from dsml.generate.react_common import NEXTJS_LAYOUT, ReactContext
 from dsml.generate.react_shared import SHADCN_SEGMENTS, shadcn_files
-from dsml.generate.templates import TemplateEngine
 from dsml.generate.writer import LOCKFILES, Kind, OutputFile, application_part, is_generated_name
 from dsml.ir.model import Attribute, Element, EnumValue, Ir, Location
 from dsml.versions import load_baseline, pinned_version
@@ -126,17 +125,46 @@ ROUTE_FILES = [
 ]
 """The files of the route handler part (story #186) for an application with no operation."""
 
+PAGE_FILES = [
+    "app/not-found.tsx",
+    "app/page.tsx",
+    "src/_app/layout/app-layout.gen.tsx",
+    "src/_app/layout/logout-button.gen.tsx",
+    "src/_app/layout/navigation.gen.tsx",
+    "src/_app/layout/status-pages.gen.tsx",
+    "src/_app/providers/app-providers.gen.tsx",
+    "src/_app/providers/query-client.gen.ts",
+    "src/_app/styles/index.css",
+    "src/shared/access/index.gen.ts",
+    "src/shared/access/index.server.gen.ts",
+    "src/shared/access/index.server.ts",
+    "src/shared/access/index.ts",
+    "src/shared/access/not-permitted-page.gen.tsx",
+    "src/shared/access/view-access.server.gen.ts",
+]
+"""The files of the pages part (story #188) for an application with no view."""
+
 PART_FOLDERS = (
     "app/api/",
     "app/auth/",
+    "app/cancel-order/",
+    "app/not-found.tsx",
+    "app/orders/",
+    "app/page.tsx",
     "migrate.gen.mjs",
     "migrations/",
     "proxy.ts",
     "src/_app/api-routes/",
+    "src/_app/layout/app-layout.gen.tsx",
+    "src/_app/layout/logout-button.gen.tsx",
+    "src/_app/layout/navigation.gen.tsx",
+    "src/_app/layout/status-pages.gen.tsx",
     "src/_app/providers/",
+    "src/_app/styles/",
     "src/_pages/",
     "src/entities/",
     "src/features/",
+    "src/shared/access/",
     "src/shared/api/",
     "src/shared/auth/",
     "src/shared/db/",
@@ -257,10 +285,12 @@ def test_fixed_names_and_no_lockfile(web_ir: Ir) -> None:
     # Only the public API index.ts and index.server.ts of a segment, the
     # shadcn/ui copy and the server function of a custom operation are
     # create-once files (PRD-APP-204, PRD-APP-212, PRD-APP-305, PRD-APP-313).
+    # The style sheet of components.json is also a create-once file.
     assert all(
         file.kind is Kind.GENERATED
         or Path(file.path).name in ("index.ts", "index.server.ts")
         or file.path.startswith(("order-web/src/shared/lib/", "order-web/src/shared/ui/"))
+        or file.path == "order-web/src/_app/styles/index.css"
         or file.path == "order-web/src/features/cancel-order/api/cancel-order.server.ts"
         for file in files
     )
@@ -476,7 +506,14 @@ def test_generator_writes_into_the_output_folder_of_each_application() -> None:
     paths = sorted(file.path for file in files)
     assert paths == sorted(
         f"apps/web/{path}"
-        for path in [*PROJECT_FILES, *DATABASE_FILES, *AUTH_FILES, *SLICE_FILES, *ROUTE_FILES]
+        for path in [
+            *PROJECT_FILES,
+            *DATABASE_FILES,
+            *AUTH_FILES,
+            *SLICE_FILES,
+            *ROUTE_FILES,
+            *PAGE_FILES,
+        ]
     )
     assert {file.part for file in files} == {application_part("orderWeb")}
 
@@ -511,17 +548,7 @@ def test_generator_calls_each_part_module(monkeypatch: pytest.MonkeyPatch) -> No
     assert {f"src/{name}.gen.ts" for name in names} <= set(output_files(files))
 
 
-def test_part_modules_after_the_routes_give_no_file_yet() -> None:
-    item = application()
-    context = ReactContext(
-        TemplateEngine(),
-        small_ir(item),
-        item,
-        configuration(),
-        "",
-        application_part(item.name),
-        NEXTJS_LAYOUT,
-    )
+def test_part_modules_are_in_the_order_of_the_milestone() -> None:
     modules = [function.__module__ for function in PART_FUNCTIONS]
     assert modules == [
         "dsml.generate.nextjs_database",
@@ -530,5 +557,3 @@ def test_part_modules_after_the_routes_give_no_file_yet() -> None:
         "dsml.generate.nextjs_routes",
         "dsml.generate.nextjs_pages",
     ]
-    for function in PART_FUNCTIONS[4:]:
-        assert function(context) == [], function.__module__
