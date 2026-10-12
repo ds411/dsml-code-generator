@@ -7,6 +7,10 @@ import type { ReactNode } from "react";
 import { PublicConfigProvider } from "@/shared/config";
 import { readPublicConfig } from "@/shared/config/index.server";
 
+import { AppProviders } from "../providers/app-providers.gen";
+import "../styles/index.css";
+import { AppLayout } from "./app-layout.gen";
+
 /** The metadata of the pages. */
 export const metadata: Metadata = {
   title: "orderWeb",
@@ -27,7 +31,11 @@ export async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <PublicConfigProvider config={config}>{children}</PublicConfigProvider>
+        <PublicConfigProvider config={config}>
+          <AppProviders>
+            <AppLayout>{children}</AppLayout>
+          </AppProviders>
+        </PublicConfigProvider>
       </body>
     </html>
   );

@@ -196,6 +196,48 @@ The create-once stub `<operation>.server.ts` has no generated header, because a 
 - `tests/nextjs/routes/routes.test.ts` is a Vitest test. The CI job copies it into the golden project and gives it a PostgreSQL database. The test applies the migrations and replaces the Amplify adapter. It sends requests to the route handlers and examines the CRUD responses and the statuses 401, 403, 404, 409, 422 and 501. For HTTP 409, the test adds a unique index on the column `note`.
 - The CI job gets `/api/orders` from the container with no session. The response must be HTTP 401 with problem details.
 
+## Pages and navigation
+
+Story #188 added the pages part: `src/dsml/generate/nextjs_pages.py` and the templates in `src/dsml/templates/nextjs/pages/`. The page slices come from `page_slices` of the React target, thus the views, the route paths and the errors are the same for the two targets (PRD-APP-221). The tests are in `tests/test_nextjs_pages.py` and `tests/nextjs/pages/`.
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `src/_pages/<view>/ui/<view>-page.server.gen.tsx` | The page of the view: a server component. It checks the session and the roles of the view. A list page and a detail page call the server function of `list` or `read`. | PRD-APP-009, PRD-APP-314, PRD-APP-320, PRD-APP-324 |
+| `src/_pages/<view>/ui/<view>-content.gen.tsx` | The client component of a form page, and of a list page with a link or a delete button in each row. | PRD-APP-321 |
+| `src/_pages/<view>/index.server.gen.ts`, `index.server.ts` | The server-only public API of the slice. The slice has no `index.ts`. | PRD-APP-305 |
+| `app/<route>/page.tsx` | The route file of the view. It re-exports the page. | PRD-APP-302, PRD-APP-320 |
+| `app/page.tsx`, `app/not-found.tsx` | The route files of the home page and of the "not found" page. | PRD-APP-302 |
+| `src/_app/layout/app-layout.gen.tsx` | The layout of all pages: the title, the navigation, the login link or the logout button, and the page. | PRD-APP-009, PRD-APP-324 |
+| `src/_app/layout/navigation.gen.tsx` | The views of the navigation of the model, in the order of the model. It shows only the views that the roles of the user permit. | PRD-APP-009, PRD-DSML-032, PRD-DSML-033 |
+| `src/_app/layout/logout-button.gen.tsx`, `status-pages.gen.tsx` | The logout button, the home page and the "not found" page. | PRD-APP-007 |
+| `src/_app/providers/` | The providers of TanStack Query and of the client session. | PRD-APP-314, PRD-APP-322 |
+| `src/_app/styles/index.css` | The create-once Tailwind CSS file with the theme of shadcn/ui. | PRD-APP-212 |
+| `src/shared/access/` | `permitsView`: the role check of a view in a server component. `NotPermittedPage`: the "not permitted" page. | PRD-APP-009, PRD-APP-324 |
+
+The routes use the paths of PRD-APP-221. The key of a detail view is the dynamic segment `[id]`, for example `app/orders/[id]/page.tsx`. A view with a route that starts with `/api`, `/auth` or `/healthz` gives an error, because the other parts use these segments.
+
+### Role check of a page
+
+The page calls `permitsView` of `@/shared/access/index.server` with the access rule of the view and the requested path. The function reads the session with `getSession` and applies `checkAccess` of `@/shared/auth`:
+
+1. A public view needs no session.
+2. With no valid session, the function calls `redirect` of Next.js to `/auth/login?next=<path>`. The request interceptor usually does this before the page (PRD-APP-323).
+3. If no group of the user is in the roles of the view, the function gives `false`. Then the page shows `NotPermittedPage` and reads no data (PRD-APP-009).
+
+The route handlers check the roles again, thus the server check of PRD-APP-008 stays the protection.
+
+### Data of a page
+
+A list page and a detail page call the server function of `list` or `read` directly, with no HTTP request (PRD-APP-314). The page puts the result into a new `QueryClient` with the query key of the entity slice. `HydrationBoundary` gives the data to the client. Thus the widget of the page gets the data with no request to `/api`. The client keeps the data fresh for 30 seconds (`STALE_TIME` of `src/_app/providers/query-client.gen.ts`). After this time, or after a change, the widget reads the data from the route handlers.
+
+If the server function fails, for example with HTTP 404, the page gives no data to the client. Then the widget reads the data from the route handler and shows the problem details.
+
+### Tests
+
+- `tests/test_nextjs_pages.py` compares the page files of the order web with the golden files. It also examines a detail view with an integer key, a public view, a detail view in the navigation and a route that starts with `/api`.
+- `tests/nextjs/pages/pages.test.tsx` is a Vitest test. The CI job copies it into the golden project. It replaces the Amplify adapter and the server functions. It examines the "not permitted" page, the redirect to the login, the data of the server functions with no HTTP request and the navigation of the roles.
+- The CI job gets `/` from the container with no session. The response must contain the home page.
+
 ## Notes for the next stories
 
 - The golden test of each part story compares only the files of its part. `PART_FOLDERS` in `tests/test_nextjs_generator.py` gives these folders. `src/_app/api-routes/healthz.gen.ts` belongs to the project files.
@@ -203,7 +245,7 @@ The create-once stub `<operation>.server.ts` has no generated header, because a 
 - Story #182 added the database part: `src/shared/db/`, `migrations/`, `migrate.gen.mjs` and `standalone-migrate.gen.mjs`. `docs/notes/schema-snapshot.md` ("Drizzle migrations of the Next.js target") gives the files. A server function gets the database with `getDatabase()` from `@/shared/db/index.server`, and the tables from `@/shared/db`.
 - The `standalone` output has only the files that the server needs. After `next build`, the Dockerfile runs `node standalone-migrate.gen.mjs`. The script copies `migrate.gen.mjs` and the files that it needs into the `standalone` output, with the file trace of Next.js (`next/dist/compiled/@vercel/nft`). The trace is a part of Next.js that has no public API. The CI job runs `node migrate.gen.mjs` in the image, thus a change of Next.js that breaks the script makes the job fail.
 - ESLint does not examine the scripts `*.gen.mjs`, because the type-aware rules need the TypeScript project.
-- The root layout has no providers and no style sheet yet. Story #188 adds the providers, the navigation and the style sheet `src/_app/styles/index.css` of `components.json`. A client component that calls Amplify Auth, for example a logout button, must first call `configureAuth` of `@/shared/auth` with `usePublicConfig()` and `window.location.origin`.
-- The CI job runs Vitest with no tests. The part stories add their tests.
+- Story #188 added the providers, the layout with the navigation and the style sheet `src/_app/styles/index.css` of `components.json` to the root layout. A client component that calls Amplify Auth, for example the logout button, must first call `configureAuth` of `@/shared/auth` with `usePublicConfig()` and `window.location.origin`.
+- The CI job copies the Vitest tests of the part stories from `tests/nextjs/` into the golden project.
 - Story #186 added the server functions in `src/features/<operation>/api/`. The function `server_api_files` of `react_common.py` gives only `index.server.gen.ts` and `index.server.ts` of a slice, because the slices part gives `index.gen.ts` and `index.ts`.
 - The route handlers accept the requests of `apiRequest`: the paths of the FastAPI contract after `/api`, and the session in the cookies.

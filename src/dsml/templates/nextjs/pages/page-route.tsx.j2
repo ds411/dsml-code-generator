@@ -1,0 +1,5 @@
+{#- The route file of a page (PRD-APP-302, PRD-APP-320). It re-exports the
+    page component from src/. Data: "component" (the name of the component)
+    and "source" (the import path of the module). -#}
+{% include "common/header.j2" %}
+export { {{ component }} as default } from "{{ source }}";

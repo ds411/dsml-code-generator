@@ -1,0 +1,28 @@
+{#- The logout button. The client component configures Amplify Auth with the
+    public runtime values first. The logout goes to the logout path of the
+    app client. Data: none. -#}
+{% include "common/header.j2" %}
+"use client";
+
+import { signOut } from "aws-amplify/auth";
+
+import { configureAuth } from "{{ layout.import_path("shared", "auth") }}";
+import { usePublicConfig } from "{{ layout.import_path("shared", "config") }}";
+import { Button } from "{{ layout.import_path("shared", "ui") }}";
+
+/** The button that ends the session of the user. */
+export function LogoutButton() {
+  const config = usePublicConfig();
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      onClick={() => {
+        configureAuth(config, window.location.origin);
+        void signOut();
+      }}
+    >
+      Log out
+    </Button>
+  );
+}

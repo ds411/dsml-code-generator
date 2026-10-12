@@ -1,0 +1,33 @@
+{#- The providers of the client components: TanStack Query and the client
+    session. The root layout contains them. Data: none. -#}
+{% include "common/header.j2" %}
+"use client";
+
+import { QueryClientProvider } from "@tanstack/react-query";
+import { type ReactNode, useEffect, useState } from "react";
+
+import { configureAuth } from "{{ layout.import_path("shared", "auth") }}";
+import { usePublicConfig } from "{{ layout.import_path("shared", "config") }}";
+
+import { createQueryClient } from "./query-client.gen";
+
+/** The properties of the providers. */
+export interface AppProvidersProps {
+  children: ReactNode;
+}
+
+/**
+ * The providers of the client components. Each browser has one client of
+ * TanStack Query. Amplify Auth gets the public runtime values, thus a
+ * client component can use the session in the cookies.
+ */
+export function AppProviders({ children }: AppProvidersProps) {
+  const config = usePublicConfig();
+  const [queryClient] = useState(createQueryClient);
+  useEffect(() => {
+    configureAuth(config, window.location.origin);
+  }, [config]);
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+}

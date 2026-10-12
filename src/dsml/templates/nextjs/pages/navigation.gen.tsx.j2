@@ -1,0 +1,48 @@
+{#- The navigation of the application (PRD-APP-009, PRD-DSML-032). Data:
+    "app" (a dsml.generate.nextjs_pages.AppData). -#}
+{% include "common/header.j2" %}
+import Link from "next/link";
+
+import { type Access, checkAccess, type Session } from "{{ layout.import_path("shared", "auth") }}";
+
+/** A view of the navigation: its route path, its title and its access rule. */
+export interface NavigationView extends Access {
+  readonly path: string;
+  readonly title: string;
+}
+
+/** The views of the navigation, in the order of the model (PRD-DSML-032). */
+{% for line in app.navigation_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The properties of the navigation. */
+export interface NavigationProps {
+  /** The session of the user, or undefined if the user is not logged in. */
+  session: Session | undefined;
+}
+
+/**
+ * The navigation of the application: the views of the navigation of the
+ * model, in the order of the model. It shows only the views that the roles
+ * of the user permit (PRD-APP-009).
+ */
+export function Navigation({ session }: NavigationProps) {
+  const views = NAVIGATION.filter((view) => checkAccess(session, view) === 200);
+  return (
+    <nav aria-label="Main">
+      <ul className="flex flex-wrap gap-4">
+        {views.map((view) => (
+          <li key={view.path}>
+            <Link
+              href={view.path}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {view.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}

@@ -1,0 +1,60 @@
+{#- The page of a detail view (PRD-APP-320). The server component checks the
+    session and the roles of the view (PRD-APP-324). It calls the server
+    function of the operation read directly and gives the entity to the
+    query cache of the client (PRD-APP-314). Data: "page" (a
+    dsml.generate.nextjs_pages.NextPage). -#}
+{% include "common/header.j2" %}
+{% for line in page.import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The access rule of the view: the attributes allowedRoles and public. */
+{% for line in page.access_lines() %}
+{{ line }}
+{% endfor %}
+{% if page.description is not none %}
+
+/** The description of the view {{ page.name }} in the model. */
+{% for line in page.description_lines() %}
+{{ line }}
+{% endfor %}
+{% endif %}
+
+/** The properties of the page of the view {{ page.name }}. */
+export interface {{ page.component }}Props {
+  /** The path parameters. "id" is the key of the entity. */
+  params: Promise<{ id: string }>;
+}
+
+/**
+ * The page of the view {{ page.name }}: the details of one entity {{ page.page.entity.name }}. The
+ * server function gives the entity, with no HTTP request. If the server
+ * function fails, for example with HTTP 404, the details read the entity
+ * again and show the error.
+ */
+export async function {{ page.component }}({ params }: {{ page.component }}Props) {
+  const { id } = await params;
+  const path = `{{ page.collection }}/${encodeURIComponent(id)}`;
+  if (!(await permitsView(ACCESS, path))) {
+    return <NotPermittedPage />;
+  }
+  const key = {{ page.key_value }};
+  const queryClient = new QueryClient();
+  await queryClient
+    .query({
+      queryKey: {{ page.query_key }}(key),
+      queryFn: () => {{ page.server_function }}(key),
+    })
+    .catch(noop);
+  return (
+    <section className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">{{ page.title }}</h1>
+{% if page.description is not none %}
+      <p className="text-muted-foreground">{DESCRIPTION}</p>
+{% endif %}
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <{{ page.page.widget.component }} {{ page.page.detail_key }}={key} />
+      </HydrationBoundary>
+    </section>
+  );
+}

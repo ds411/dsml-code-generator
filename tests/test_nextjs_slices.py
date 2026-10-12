@@ -154,6 +154,10 @@ def test_each_server_only_module_imports_server_only(web_files: dict[str, Output
             # The server function of a feature slice is in its segment api.
             folder = folder.removesuffix("/api")
             module = f"api/{module}"
+        if folder.endswith("/ui") and folder.startswith("src/_pages/"):
+            # The page of a page slice is in its segment ui (story #188).
+            folder = folder.removesuffix("/ui")
+            module = f"ui/{module}"
         server_api = web_files[f"{folder}/index.server.gen.ts"].content.decode("utf-8")
         assert f'export * from "./{module}";' in server_api, path
         public_api = web_files.get(f"{folder}/index.gen.ts")

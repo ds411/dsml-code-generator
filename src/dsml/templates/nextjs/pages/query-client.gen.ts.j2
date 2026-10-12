@@ -1,0 +1,20 @@
+{#- The client of TanStack Query in the browser. The pages give the data of
+    the server functions to the client (PRD-APP-314). Data: none. -#}
+{% include "common/header.j2" %}
+import { QueryClient } from "@tanstack/react-query";
+
+/** The time in milliseconds that the data of a query stays fresh. */
+export const STALE_TIME = 30_000;
+
+/**
+ * Make the client of TanStack Query. The data that a page gives from the
+ * server stays fresh for STALE_TIME, thus a widget does not read it again
+ * immediately.
+ */
+export function createQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: { staleTime: STALE_TIME },
+    },
+  });
+}

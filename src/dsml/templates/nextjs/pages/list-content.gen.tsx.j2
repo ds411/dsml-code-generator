@@ -1,0 +1,25 @@
+{#- The client component of the page of a list view (PRD-APP-321). It shows
+    the table of the entity. Each row has a link to the detail view of the
+    entity and the delete button, if the application has them. Data:
+    "page" (a dsml.generate.nextjs_pages.NextPage). -#}
+{% include "common/header.j2" %}
+"use client";
+
+{% for line in page.content_import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The table of the view {{ page.name }} with the controls of each row. */
+export function {{ page.content_component }}() {
+  return (
+    <{{ page.page.widget.component }}
+      actions={(item) => (
+        <div className="flex flex-wrap items-center gap-2">
+{% for line in page.actions_lines("          ") %}
+{{ line }}
+{% endfor %}
+        </div>
+      )}
+    />
+  );
+}
