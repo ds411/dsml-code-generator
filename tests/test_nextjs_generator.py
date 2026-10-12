@@ -9,10 +9,13 @@ project" runs Prettier, tsc, ESLint, Steiger, Vitest, `next build` and
 `docker build` on the golden project.
 
 The test of the golden files compares only the project files. The test of
-each part story compares the files of its part. The phase 3 exit story
-(#189) adds the manifests in `.dsml/`.
+each part story compares the files of its part. The test of the full output
+(story #189) compares all files and the manifests `generated.json` and
+`trace.gen.json` in `tests/golden/nextjs/.dsml/`, the folder of the
+configuration file.
 """
 
+import hashlib
 import json
 import re
 from collections.abc import Callable, Sequence
@@ -25,6 +28,7 @@ from dsml.errors import ToolchainError
 from dsml.generate import generators, nextjs
 from dsml.generate.generators import collect
 from dsml.generate.header import FileType, file_type_of, header
+from dsml.generate.manifest import MANIFEST_PATH
 from dsml.generate.nextjs import (
     FIXED_NAMES,
     PART_FUNCTIONS,
@@ -35,13 +39,24 @@ from dsml.generate.nextjs import (
 from dsml.generate.react import dependencies
 from dsml.generate.react_common import NEXTJS_LAYOUT, ReactContext
 from dsml.generate.react_shared import SHADCN_SEGMENTS, shadcn_files
-from dsml.generate.writer import LOCKFILES, Kind, OutputFile, application_part, is_generated_name
+from dsml.generate.trace import TRACE_PATH
+from dsml.generate.writer import (
+    LOCKFILES,
+    Kind,
+    OutputFile,
+    application_part,
+    apply_plan,
+    is_generated_name,
+    make_plan,
+)
 from dsml.ir.model import Attribute, Element, EnumValue, Ir, Location
 from dsml.versions import load_baseline, pinned_version
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB_MODEL = ROOT / "docs" / "model" / "examples" / "order-web" / "order-web.sysml"
 GOLDEN = ROOT / "tests" / "golden" / "nextjs" / "order-web"
+MANIFESTS = GOLDEN.parent / ".dsml"
+"""The manifests of the golden output, in the folder of the configuration file (story #189)."""
 APP = "OrderWeb::orderWeb"
 PROJECT_FILES = [
     ".dockerignore",
@@ -243,6 +258,76 @@ def test_project_files_of_the_order_web_agree_with_the_golden_files(web_ir: Ir) 
         "uv run python scripts/write_golden_nextjs.py and examine the differences."
     )
     assert sorted(output) == PROJECT_FILES
+
+
+# trace: PRD-CORE-029, PRD-CORE-030, PRD-CORE-040, PRD-TRACE-006
+def test_full_output_of_the_order_web_agrees_with_the_golden_files(
+    web_ir: Ir, tmp_path: Path
+) -> None:
+    """Write the output with the manifests, as `dsml generate` does, and compare all bytes."""
+    files = collect([NextjsGenerator()], web_ir, configuration(), None)
+    apply_plan(tmp_path, make_plan(tmp_path, files, None))
+    output = {
+        path.relative_to(tmp_path).as_posix(): path.read_bytes()
+        for path in sorted(tmp_path.rglob("*"))
+        if path.is_file()
+    }
+    golden = {OUTPUT + path: content for path, content in golden_files().items()}
+    for name in (MANIFEST_PATH, TRACE_PATH):
+        golden[name] = (MANIFESTS.parent / name).read_bytes()
+    assert sorted(output) == sorted(golden)
+    different = sorted(path for path in output if output[path] != golden[path])
+    assert different == [], (
+        "The output is different from the golden files. If the change is correct, run "
+        "uv run python scripts/write_golden_nextjs.py and examine the differences."
+    )
+
+
+# trace: PRD-CORE-040, PRD-TRACE-006, PRD-TRACE-008
+def test_manifests_of_the_order_web_give_each_file_and_its_symbols() -> None:
+    """Each generated file is in `generated.json` with its hash. Each symbol has a line range."""
+    golden = {OUTPUT + path: content for path, content in golden_files().items()}
+    manifest = json.loads((MANIFESTS.parent / MANIFEST_PATH).read_bytes())
+    generated = {item["path"]: item["sha256"] for item in manifest["generated"]}
+    create_once = {item["path"] for item in manifest["createOnce"]}
+    assert generated.keys() | create_once == golden.keys()
+    assert not generated.keys() & create_once
+    for path, sha256 in generated.items():
+        assert hashlib.sha256(golden[path]).hexdigest() == sha256, path
+    trace = json.loads((MANIFESTS.parent / TRACE_PATH).read_bytes())
+    elements = [item["element"] for item in trace["elements"]]
+    assert elements == sorted(elements)
+    traced: set[str] = set()
+    for item in trace["elements"]:
+        paths = [file["path"] for file in item["files"]]
+        assert paths == sorted(paths)
+        for file in item["files"]:
+            assert file["path"] in generated
+            assert file["symbols"]
+            lines = golden[file["path"]].count(b"\n")
+            for symbol in file["symbols"]:
+                assert 1 <= symbol["firstLine"] <= symbol["lastLine"] <= lines, symbol
+            traced.add(file["path"])
+    # Each module with a top-level declaration has symbols. A public API file
+    # and a route file in app/ only export the declarations of other modules,
+    # and the tool configurations have no symbols.
+    modules = (".mjs", ".ts", ".tsx")
+    no_symbols = sorted(path for path in generated if path.endswith(modules) and path not in traced)
+    re_exports = sorted(
+        path
+        for path in generated
+        if path.startswith(f"{OUTPUT}app/") or re.search(r"/index(\.server)?\.gen\.ts$", path)
+    )
+    configurations = [f"{OUTPUT}{name}" for name in nextjs.TOOL_CONFIGURATIONS]
+    assert no_symbols == sorted([*re_exports, *configurations])
+    for path in re_exports:
+        assert all(
+            line.startswith(("export ", "//")) or not line.strip()
+            for line in golden[path].decode("utf-8").splitlines()
+        ), path
+    assert {APP, "OrderWeb::Order", "OrderWeb::orderWeb::cancelOrder"} <= set(elements)
+    assert f"{OUTPUT}proxy.ts" in traced
+    assert f"{OUTPUT}migrate.gen.mjs" in traced
 
 
 # trace: PRD-CORE-028

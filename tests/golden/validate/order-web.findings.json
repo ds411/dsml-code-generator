@@ -8,7 +8,7 @@
         "file": "docs/model/examples/order-web/order-web.sysml",
         "line": 160
       },
-      "message": "The verification V-001 refers to the test file \"apps/order-web/tests/api/orders.test.ts\". This file does not exist.",
+      "message": "The verification V-001 refers to the test file \"apps/order-web/tests/routes/routes.test.ts\". This file does not exist.",
       "rule": "COV-006",
       "severity": "warning"
     },
@@ -25,6 +25,18 @@
       "severity": "warning"
     },
     {
+      "element": "V-003",
+      "fixHint": "Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file.",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 172
+      },
+      "message": "The verification V-003 refers to the test file \"apps/order-web/tests/widgets/widgets.test.tsx\". This file does not exist.",
+      "rule": "COV-006",
+      "severity": "warning"
+    },
+    {
       "element": "V-004",
       "fixHint": "Correct the path in `testFiles`, or add the test file. The path is relative to the folder of the configuration file.",
       "location": {
@@ -32,7 +44,7 @@
         "file": "docs/model/examples/order-web/order-web.sysml",
         "line": 178
       },
-      "message": "The verification V-004 refers to the test file \"apps/order-web/tests/api/cancel-order.test.ts\". This file does not exist.",
+      "message": "The verification V-004 refers to the test file \"apps/order-web/tests/auth/auth.test.ts\". This file does not exist.",
       "rule": "COV-006",
       "severity": "warning"
     },
@@ -53,7 +65,7 @@
     "error": 0,
     "info": 0,
     "waived": 0,
-    "warning": 4
+    "warning": 5
   },
   "waived": []
 }

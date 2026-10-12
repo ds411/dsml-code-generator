@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSML trace report: impact</title>
+<style>
+:root { color-scheme: light dark; }
+body { margin: 1rem; font-family: system-ui, sans-serif; font-size: 0.9rem; }
+h1 { font-size: 1.3rem; }
+dl { display: grid; grid-template-columns: max-content auto; gap: 0.2rem 1rem; }
+dt { font-weight: bold; }
+dd { margin: 0; font-family: monospace; }
+.table { overflow-x: auto; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #8888; padding: 0.3rem 0.5rem; text-align: left; vertical-align: top; }
+th { background: #8882; }
+td { font-family: monospace; }
+ul { margin: 0; padding-left: 1rem; }
+.status-missing { color: #c62828; font-weight: bold; }
+.status-satisfied { color: #b26a00; }
+.status-verified { color: #2e7d32; }
+</style>
+</head>
+<body>
+<h1>DSML trace report: impact</h1>
+<dl>
+<dt>Model commit</dt>
+<dd>6570a3c3fd34de0bd33c9b9741d9e7e73d4ffebf</dd>
+<dt>Baseline commit</dt>
+<dd>f8b37e2b07b740554901a1bd8b72021915710eea</dd>
+<dt>Rows</dt>
+<dd>2</dd>
+</dl>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th scope="col">element</th>
+<th scope="col">change</th>
+<th scope="col">needs</th>
+<th scope="col">requirements</th>
+<th scope="col">verifications</th>
+<th scope="col">generatedFiles</th>
+<th scope="col">hclAddresses</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OrderWeb::Order::note</td>
+<td>changed</td>
+<td><ul><li>N-001</li><li>N-002</li></ul></td>
+<td><ul><li>R-001</li><li>R-003</li><li>R-004</li></ul></td>
+<td><ul><li>V-001</li><li>V-003</li><li>V-004</li></ul></td>
+<td><ul><li>.github/workflows/main.gen.yml</li><li>.github/workflows/pr.gen.yml</li><li>.github/workflows/promote.gen.yml</li><li>apps/order-web/migrate.gen.mjs</li><li>apps/order-web/proxy.ts</li><li>apps/order-web/src/_app/api-routes/cancel-order.gen.ts</li><li>apps/order-web/src/_app/api-routes/create-order.gen.ts</li><li>apps/order-web/src/_app/api-routes/delete-order.gen.ts</li><li>apps/order-web/src/_app/api-routes/healthz.gen.ts</li><li>apps/order-web/src/_app/api-routes/list-order.gen.ts</li><li>apps/order-web/src/_app/api-routes/read-order.gen.ts</li><li>apps/order-web/src/_app/api-routes/update-order.gen.ts</li><li>apps/order-web/src/_app/layout/app-layout.gen.tsx</li><li>apps/order-web/src/_app/layout/logout-button.gen.tsx</li><li>apps/order-web/src/_app/layout/navigation.gen.tsx</li><li>apps/order-web/src/_app/layout/root-layout.gen.tsx</li><li>apps/order-web/src/_app/layout/status-pages.gen.tsx</li><li>apps/order-web/src/_app/providers/app-providers.gen.tsx</li><li>apps/order-web/src/_app/providers/query-client.gen.ts</li><li>apps/order-web/src/_pages/cancel-order-form/ui/cancel-order-form-content.gen.tsx</li><li>apps/order-web/src/_pages/cancel-order-form/ui/cancel-order-form-page.server.gen.tsx</li><li>apps/order-web/src/_pages/order-detail/ui/order-detail-page.server.gen.tsx</li><li>apps/order-web/src/_pages/order-list/ui/order-list-content.gen.tsx</li><li>apps/order-web/src/_pages/order-list/ui/order-list-page.server.gen.tsx</li><li>apps/order-web/src/entities/order/api/order-queries.gen.ts</li><li>apps/order-web/src/entities/order/model/order.gen.ts</li><li>apps/order-web/src/features/cancel-order/api/cancel-order.gen.ts</li><li>apps/order-web/src/features/cancel-order/ui/cancel-order-form.gen.tsx</li><li>apps/order-web/src/features/create-order/api/create-order.gen.ts</li><li>apps/order-web/src/features/create-order/api/create-order.server.gen.ts</li><li>apps/order-web/src/features/create-order/ui/create-order-form.gen.tsx</li><li>apps/order-web/src/features/delete-order/api/delete-order.gen.ts</li><li>apps/order-web/src/features/delete-order/api/delete-order.server.gen.ts</li><li>apps/order-web/src/features/delete-order/ui/delete-order-button.gen.tsx</li><li>apps/order-web/src/features/list-order/api/list-order.server.gen.ts</li><li>apps/order-web/src/features/read-order/api/read-order.server.gen.ts</li><li>apps/order-web/src/features/update-order/api/update-order.gen.ts</li><li>apps/order-web/src/features/update-order/api/update-order.server.gen.ts</li><li>apps/order-web/src/features/update-order/ui/update-order-form.gen.tsx</li><li>apps/order-web/src/shared/access/not-permitted-page.gen.tsx</li><li>apps/order-web/src/shared/access/view-access.server.gen.ts</li><li>apps/order-web/src/shared/api/client.gen.ts</li><li>apps/order-web/src/shared/auth/access.gen.ts</li><li>apps/order-web/src/shared/auth/amplify.gen.ts</li><li>apps/order-web/src/shared/auth/callback-page.gen.tsx</li><li>apps/order-web/src/shared/auth/login-page.gen.tsx</li><li>apps/order-web/src/shared/auth/session.server.gen.ts</li><li>apps/order-web/src/shared/config/public-config.gen.tsx</li><li>apps/order-web/src/shared/config/public-config.server.gen.ts</li><li>apps/order-web/src/shared/db/client.server.gen.ts</li><li>apps/order-web/src/shared/db/schema.gen.ts</li><li>apps/order-web/src/shared/http/route.server.gen.ts</li><li>apps/order-web/src/shared/log/logger.server.gen.ts</li><li>apps/order-web/src/shared/log/request-id.gen.ts</li><li>apps/order-web/src/widgets/order-details/ui/order-details.gen.tsx</li><li>apps/order-web/src/widgets/order-list/ui/order-table.gen.tsx</li><li>apps/order-web/standalone-migrate.gen.mjs</li><li>infra/envs/dev/main.gen.tf</li><li>infra/envs/dev/outputs.gen.tf</li><li>infra/envs/dev/variables.gen.tf</li><li>infra/envs/prod/main.gen.tf</li><li>infra/envs/prod/outputs.gen.tf</li><li>infra/envs/prod/variables.gen.tf</li><li>infra/envs/staging/main.gen.tf</li><li>infra/envs/staging/outputs.gen.tf</li><li>infra/envs/staging/variables.gen.tf</li><li>infra/modules/container-service/main.gen.tf</li><li>infra/modules/container-service/outputs.gen.tf</li><li>infra/modules/container-service/variables.gen.tf</li><li>infra/tooling/main.gen.tf</li></ul></td>
+<td><ul><li>aws_acm_certificate.main</li><li>aws_acm_certificate_validation.main</li><li>aws_appautoscaling_policy.cpu</li><li>aws_appautoscaling_target.main</li><li>aws_cloudwatch_log_group.main</li><li>aws_ecr_lifecycle_policy.order_web</li><li>aws_ecr_repository.order_web</li><li>aws_ecr_repository_policy.order_web</li><li>aws_ecs_cluster.main</li><li>aws_ecs_service.main</li><li>aws_ecs_task_definition.migration</li><li>aws_ecs_task_definition.service</li><li>aws_iam_role.execution</li><li>aws_iam_role.task</li><li>aws_iam_role_policy.execution</li><li>aws_lb.main</li><li>aws_lb_listener.http</li><li>aws_lb_listener.https</li><li>aws_lb_target_group.main</li><li>aws_route53_record.api</li><li>aws_route53_record.certificate_validation</li><li>aws_security_group.alb</li><li>aws_security_group.service</li><li>aws_vpc_security_group_egress_rule.alb_to_service</li><li>aws_vpc_security_group_egress_rule.service_https</li><li>aws_vpc_security_group_ingress_rule.alb</li><li>aws_vpc_security_group_ingress_rule.service_from_alb</li><li>data.aws_iam_policy_document.ecs_tasks_trust</li><li>data.aws_iam_policy_document.execution</li><li>data.aws_iam_policy_document.order_web_pull</li><li>data.aws_route53_zone.main</li><li>locals</li><li>module.web_service</li><li>output.api_url</li><li>output.cluster_name</li><li>output.execution_role_arn</li><li>output.migration_task_definition</li><li>output.private_subnet_ids</li><li>output.security_group_id</li><li>output.service_name</li><li>output.task_role_arn</li><li>output.web_service_api_url</li><li>output.web_service_cluster_name</li><li>output.web_service_migration_task_definition</li><li>output.web_service_private_subnet_ids</li><li>output.web_service_security_group_id</li><li>output.web_service_service_name</li><li>var.application</li><li>var.container_port</li><li>var.cpu</li><li>var.desired_count</li><li>var.domain_name</li><li>var.ecr_account_id</li><li>var.ecr_region</li><li>var.ecr_repository</li><li>var.element</li><li>var.environment_variables</li><li>var.image_digest</li><li>var.kms_key_arns</li><li>var.max_count</li><li>var.memory</li><li>var.migration_command</li><li>var.min_count</li><li>var.names</li><li>var.order_web_image_digest</li><li>var.private_subnet_ids</li><li>var.public_subnet_ids</li><li>var.secret_arns</li><li>var.secrets</li><li>var.vpc_id</li><li>var.zone_name</li></ul></td>
+</tr>
+<tr>
+<td>R-004</td>
+<td>changed</td>
+<td><ul><li>N-002</li></ul></td>
+<td><ul><li>R-004</li></ul></td>
+<td><ul><li>V-004</li></ul></td>
+<td><ul><li>.github/workflows/main.gen.yml</li><li>.github/workflows/pr.gen.yml</li><li>.github/workflows/promote.gen.yml</li><li>apps/order-web/migrate.gen.mjs</li><li>apps/order-web/proxy.ts</li><li>apps/order-web/src/_app/api-routes/healthz.gen.ts</li><li>apps/order-web/src/_app/layout/app-layout.gen.tsx</li><li>apps/order-web/src/_app/layout/logout-button.gen.tsx</li><li>apps/order-web/src/_app/layout/navigation.gen.tsx</li><li>apps/order-web/src/_app/layout/root-layout.gen.tsx</li><li>apps/order-web/src/_app/layout/status-pages.gen.tsx</li><li>apps/order-web/src/_app/providers/app-providers.gen.tsx</li><li>apps/order-web/src/_app/providers/query-client.gen.ts</li><li>apps/order-web/src/shared/access/not-permitted-page.gen.tsx</li><li>apps/order-web/src/shared/access/view-access.server.gen.ts</li><li>apps/order-web/src/shared/api/client.gen.ts</li><li>apps/order-web/src/shared/auth/access.gen.ts</li><li>apps/order-web/src/shared/auth/amplify.gen.ts</li><li>apps/order-web/src/shared/auth/callback-page.gen.tsx</li><li>apps/order-web/src/shared/auth/login-page.gen.tsx</li><li>apps/order-web/src/shared/auth/session.server.gen.ts</li><li>apps/order-web/src/shared/config/public-config.gen.tsx</li><li>apps/order-web/src/shared/config/public-config.server.gen.ts</li><li>apps/order-web/src/shared/db/client.server.gen.ts</li><li>apps/order-web/src/shared/http/route.server.gen.ts</li><li>apps/order-web/src/shared/log/logger.server.gen.ts</li><li>apps/order-web/src/shared/log/request-id.gen.ts</li><li>apps/order-web/standalone-migrate.gen.mjs</li><li>infra/envs/dev/main.gen.tf</li><li>infra/envs/dev/outputs.gen.tf</li><li>infra/envs/dev/variables.gen.tf</li><li>infra/envs/prod/main.gen.tf</li><li>infra/envs/prod/outputs.gen.tf</li><li>infra/envs/prod/variables.gen.tf</li><li>infra/envs/staging/main.gen.tf</li><li>infra/envs/staging/outputs.gen.tf</li><li>infra/envs/staging/variables.gen.tf</li><li>infra/modules/container-service/main.gen.tf</li><li>infra/modules/container-service/outputs.gen.tf</li><li>infra/modules/container-service/variables.gen.tf</li><li>infra/tooling/main.gen.tf</li></ul></td>
+<td><ul><li>aws_acm_certificate.main</li><li>aws_acm_certificate_validation.main</li><li>aws_appautoscaling_policy.cpu</li><li>aws_appautoscaling_target.main</li><li>aws_cloudwatch_log_group.main</li><li>aws_ecr_lifecycle_policy.order_web</li><li>aws_ecr_repository.order_web</li><li>aws_ecr_repository_policy.order_web</li><li>aws_ecs_cluster.main</li><li>aws_ecs_service.main</li><li>aws_ecs_task_definition.migration</li><li>aws_ecs_task_definition.service</li><li>aws_iam_role.execution</li><li>aws_iam_role.task</li><li>aws_iam_role_policy.execution</li><li>aws_lb.main</li><li>aws_lb_listener.http</li><li>aws_lb_listener.https</li><li>aws_lb_target_group.main</li><li>aws_route53_record.api</li><li>aws_route53_record.certificate_validation</li><li>aws_security_group.alb</li><li>aws_security_group.service</li><li>aws_vpc_security_group_egress_rule.alb_to_service</li><li>aws_vpc_security_group_egress_rule.service_https</li><li>aws_vpc_security_group_ingress_rule.alb</li><li>aws_vpc_security_group_ingress_rule.service_from_alb</li><li>data.aws_iam_policy_document.ecs_tasks_trust</li><li>data.aws_iam_policy_document.execution</li><li>data.aws_iam_policy_document.order_web_pull</li><li>data.aws_route53_zone.main</li><li>locals</li><li>module.web_service</li><li>output.api_url</li><li>output.cluster_name</li><li>output.execution_role_arn</li><li>output.migration_task_definition</li><li>output.private_subnet_ids</li><li>output.security_group_id</li><li>output.service_name</li><li>output.task_role_arn</li><li>output.web_service_api_url</li><li>output.web_service_cluster_name</li><li>output.web_service_migration_task_definition</li><li>output.web_service_private_subnet_ids</li><li>output.web_service_security_group_id</li><li>output.web_service_service_name</li><li>var.application</li><li>var.container_port</li><li>var.cpu</li><li>var.desired_count</li><li>var.domain_name</li><li>var.ecr_account_id</li><li>var.ecr_region</li><li>var.ecr_repository</li><li>var.element</li><li>var.environment_variables</li><li>var.image_digest</li><li>var.kms_key_arns</li><li>var.max_count</li><li>var.memory</li><li>var.migration_command</li><li>var.min_count</li><li>var.names</li><li>var.order_web_image_digest</li><li>var.private_subnet_ids</li><li>var.public_subnet_ids</li><li>var.secret_arns</li><li>var.secrets</li><li>var.vpc_id</li><li>var.zone_name</li></ul></td>
+</tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

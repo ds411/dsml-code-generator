@@ -1,0 +1,2920 @@
+{
+  "elements": [
+    {
+      "element": "OrderWeb::CancelOrder",
+      "files": [
+        {
+          "path": "order-web/src/_app/api-routes/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "Params"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "Context"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "handle"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 43,
+              "name": "POST"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-content.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "function",
+              "lastLine": 24,
+              "name": "CancelOrderFormContent"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "PATH"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/cancel-order/api/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "cancelOrderInputSchema"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "cancelOrderOutputSchema"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderOutput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "cancelOrder"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "useCancelOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "CancelOrderFormProps"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 47,
+              "kind": "function",
+              "lastLine": 49,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 127,
+              "name": "CancelOrderForm"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::Order",
+      "files": [
+        {
+          "path": "order-web/src/_app/api-routes/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "Params"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "Context"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "handle"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 43,
+              "name": "POST"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/create-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 9,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 19,
+              "name": "handle"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "POST"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/delete-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "Params"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "Context"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "pathSchema"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "handle"
+            },
+            {
+              "firstLine": 38,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "DELETE"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/list-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "LIMIT_DEFAULT"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "LIMIT_MAX"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 35,
+              "name": "querySchema"
+            },
+            {
+              "firstLine": 38,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "handle"
+            },
+            {
+              "firstLine": 46,
+              "kind": "class",
+              "lastLine": 46,
+              "name": "GET"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/read-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "Params"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "Context"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "pathSchema"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "handle"
+            },
+            {
+              "firstLine": 38,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "GET"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/update-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 17,
+              "kind": "class",
+              "lastLine": 19,
+              "name": "Params"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 24,
+              "name": "Context"
+            },
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 29,
+              "name": "pathSchema"
+            },
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 37,
+              "name": "handle"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "PATCH"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-content.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "function",
+              "lastLine": 24,
+              "name": "CancelOrderFormContent"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "PATH"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-detail/ui/order-detail-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "OrderDetailPageProps"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "OrderDetailPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-list/ui/order-list-content.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "OrderListContent"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-list/ui/order-list-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 24,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "PATH"
+            },
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 38,
+              "kind": "function",
+              "lastLine": 59,
+              "name": "OrderListPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/entities/order/api/order-queries.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 10,
+              "name": "orderQueryKey"
+            },
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 15,
+              "name": "readOrderQueryKey"
+            },
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "readOrderQueryOptions"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "OrderListParameters"
+            },
+            {
+              "firstLine": 41,
+              "kind": "function",
+              "lastLine": 45,
+              "name": "listOrderQueryKey"
+            },
+            {
+              "firstLine": 48,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "listOrderQueryOptions"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/entities/order/model/order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "decimal"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 48,
+              "name": "orderSchema"
+            },
+            {
+              "firstLine": 51,
+              "kind": "class",
+              "lastLine": 51,
+              "name": "Order"
+            },
+            {
+              "firstLine": 54,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "orderPageSchema"
+            },
+            {
+              "firstLine": 60,
+              "kind": "class",
+              "lastLine": 60,
+              "name": "OrderPage"
+            },
+            {
+              "firstLine": 63,
+              "kind": "class",
+              "lastLine": 67,
+              "name": "createOrderInputSchema"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 70,
+              "name": "CreateOrderInput"
+            },
+            {
+              "firstLine": 73,
+              "kind": "class",
+              "lastLine": 77,
+              "name": "updateOrderInputSchema"
+            },
+            {
+              "firstLine": 80,
+              "kind": "class",
+              "lastLine": 80,
+              "name": "UpdateOrderInput"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/cancel-order/api/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "cancelOrderInputSchema"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "cancelOrderOutputSchema"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderOutput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "cancelOrder"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "useCancelOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "CancelOrderFormProps"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 47,
+              "kind": "function",
+              "lastLine": 49,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 127,
+              "name": "CancelOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/create-order/api/create-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "createOrder"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "useCreateOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/create-order/api/create-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "handleCreateOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/create-order/ui/create-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CreateOrderFormProps"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 43,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 46,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 53,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 56,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "optionalText"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 72,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 75,
+              "kind": "function",
+              "lastLine": 180,
+              "name": "CreateOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/delete-order/api/delete-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 9,
+              "kind": "function",
+              "lastLine": 14,
+              "name": "deleteOrder"
+            },
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 28,
+              "name": "useDeleteOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/delete-order/api/delete-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "NOT_FOUND"
+            },
+            {
+              "firstLine": 22,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "handleDeleteOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/delete-order/ui/delete-order-button.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "DeleteOrderButtonProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 90,
+              "name": "DeleteOrderButton"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/list-order/api/list-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "handleListOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/read-order/api/read-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 16,
+              "name": "NOT_FOUND"
+            },
+            {
+              "firstLine": 19,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "handleReadOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/update-order/api/update-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "UpdateOrderVariables"
+            },
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "updateOrder"
+            },
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "useUpdateOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/update-order/api/update-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "NOT_FOUND"
+            },
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 33,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 64,
+              "name": "handleUpdateOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/update-order/ui/update-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "UpdateOrderFormProps"
+            },
+            {
+              "firstLine": 42,
+              "kind": "class",
+              "lastLine": 42,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "optionalText"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 71,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 74,
+              "kind": "function",
+              "lastLine": 184,
+              "name": "UpdateOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/db/schema.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 31,
+              "name": "orderTable"
+            },
+            {
+              "firstLine": 34,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "OrderRow"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "NewOrderRow"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/widgets/order-details/ui/order-details.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 16,
+              "name": "OrderDetailsProps"
+            },
+            {
+              "firstLine": 19,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "OrderDetails"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/widgets/order-list/ui/order-table.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "OrderTableProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "pageText"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 143,
+              "name": "OrderTable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::orderWeb",
+      "files": [
+        {
+          "path": "order-web/migrate.gen.mjs",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "MIGRATIONS_FOLDER"
+            },
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 16,
+              "name": "MIGRATIONS_SCHEMA"
+            },
+            {
+              "firstLine": 17,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "MIGRATIONS_TABLE"
+            },
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 24,
+              "name": "SSL_MODES"
+            },
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "log"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 75,
+              "name": "readDatabaseConfig"
+            },
+            {
+              "firstLine": 78,
+              "kind": "function",
+              "lastLine": 88,
+              "name": "lastApplied"
+            },
+            {
+              "firstLine": 94,
+              "kind": "function",
+              "lastLine": 107,
+              "name": "migrateDatabase"
+            },
+            {
+              "firstLine": 110,
+              "kind": "function",
+              "lastLine": 136,
+              "name": "main"
+            }
+          ]
+        },
+        {
+          "path": "order-web/proxy.ts",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "function",
+              "lastLine": 10,
+              "name": "proxy"
+            },
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "config"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/healthz.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "Health"
+            },
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "GET"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/layout/app-layout.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "APPLICATION_TITLE"
+            },
+            {
+              "firstLine": 17,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "AppLayoutProps"
+            },
+            {
+              "firstLine": 23,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "AppLayout"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/layout/logout-button.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "LogoutButton"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/layout/navigation.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 11,
+              "name": "NavigationView"
+            },
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "NAVIGATION"
+            },
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "NavigationProps"
+            },
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "Navigation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/layout/root-layout.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "metadata"
+            },
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "RootLayoutProps"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "RootLayout"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/layout/status-pages.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "function",
+              "lastLine": 17,
+              "name": "HomePage"
+            },
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "NotFoundPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/providers/app-providers.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 16,
+              "name": "AppProvidersProps"
+            },
+            {
+              "firstLine": 23,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "AppProviders"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/providers/query-client.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 6,
+              "name": "STALE_TIME"
+            },
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 19,
+              "name": "createQueryClient"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/access/not-permitted-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "NotPermittedPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/access/view-access.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "permitsView"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/api/client.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ApiRequest"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "API_PREFIX"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "PROBLEM_MEDIA_TYPE"
+            },
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "problemSchema"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 45,
+              "name": "ApiError"
+            },
+            {
+              "firstLine": 48,
+              "kind": "function",
+              "lastLine": 55,
+              "name": "apiUrl"
+            },
+            {
+              "firstLine": 63,
+              "kind": "function",
+              "lastLine": 84,
+              "name": "apiRequest"
+            },
+            {
+              "firstLine": 87,
+              "kind": "function",
+              "lastLine": 104,
+              "name": "apiError"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/auth/access.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "class",
+              "lastLine": 9,
+              "name": "Access"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "Session"
+            },
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "AccessToken"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "AccessStatus"
+            },
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "sessionOf"
+            },
+            {
+              "firstLine": 53,
+              "kind": "function",
+              "lastLine": 66,
+              "name": "checkAccess"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/auth/amplify.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 8,
+              "name": "CALLBACK_PATH"
+            },
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 11,
+              "name": "LOGOUT_PATH"
+            },
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "LOGIN_PATH"
+            },
+            {
+              "firstLine": 17,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "RETURN_PARAMETER"
+            },
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "RETURN_KEY"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "SCOPES"
+            },
+            {
+              "firstLine": 30,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "configureAuth"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "returnPath"
+            },
+            {
+              "firstLine": 71,
+              "kind": "function",
+              "lastLine": 75,
+              "name": "loginUrl"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/auth/callback-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "CallbackPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/auth/login-page.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "startLogin"
+            },
+            {
+              "firstLine": 38,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "LoginPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/auth/session.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "ServerRunner"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "runner"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "serverRunner"
+            },
+            {
+              "firstLine": 47,
+              "kind": "class",
+              "lastLine": 50,
+              "name": "ProxyContext"
+            },
+            {
+              "firstLine": 58,
+              "kind": "function",
+              "lastLine": 66,
+              "name": "getSession"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 83,
+              "name": "requireSession"
+            },
+            {
+              "firstLine": 86,
+              "kind": "class",
+              "lastLine": 88,
+              "name": "Authorization"
+            },
+            {
+              "firstLine": 90,
+              "kind": "class",
+              "lastLine": 99,
+              "name": "PROBLEMS"
+            },
+            {
+              "firstLine": 102,
+              "kind": "function",
+              "lastLine": 107,
+              "name": "accessProblem"
+            },
+            {
+              "firstLine": 116,
+              "kind": "function",
+              "lastLine": 125,
+              "name": "authorize"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/config/public-config.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "PublicConfig"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "PublicConfigContext"
+            },
+            {
+              "firstLine": 25,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "PublicConfigProviderProps"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "PublicConfigProvider"
+            },
+            {
+              "firstLine": 39,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "usePublicConfig"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/config/public-config.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "PUBLIC_CONFIG_VARIABLES"
+            },
+            {
+              "firstLine": 19,
+              "kind": "function",
+              "lastLine": 34,
+              "name": "readPublicConfig"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/db/client.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 11,
+              "name": "Database"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "SSL_MODES"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "readDatabaseConfig"
+            },
+            {
+              "firstLine": 65,
+              "kind": "class",
+              "lastLine": 65,
+              "name": "database"
+            },
+            {
+              "firstLine": 72,
+              "kind": "function",
+              "lastLine": 75,
+              "name": "getDatabase"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/http/route.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "PROBLEM_MEDIA_TYPE"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 24,
+              "name": "TITLES"
+            },
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 29,
+              "name": "titleOf"
+            },
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "ValidationIssue"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 59,
+              "name": "ProblemError"
+            },
+            {
+              "firstLine": 62,
+              "kind": "function",
+              "lastLine": 77,
+              "name": "problemResponse"
+            },
+            {
+              "firstLine": 80,
+              "kind": "class",
+              "lastLine": 80,
+              "name": "InputLocation"
+            },
+            {
+              "firstLine": 88,
+              "kind": "function",
+              "lastLine": 106,
+              "name": "parseInput"
+            },
+            {
+              "firstLine": 112,
+              "kind": "function",
+              "lastLine": 124,
+              "name": "readJson"
+            },
+            {
+              "firstLine": 130,
+              "kind": "function",
+              "lastLine": 144,
+              "name": "readJsonObject"
+            },
+            {
+              "firstLine": 151,
+              "kind": "function",
+              "lastLine": 158,
+              "name": "numberParameter"
+            },
+            {
+              "firstLine": 164,
+              "kind": "function",
+              "lastLine": 169,
+              "name": "booleanParameter"
+            },
+            {
+              "firstLine": 172,
+              "kind": "class",
+              "lastLine": 172,
+              "name": "UNIQUE_VIOLATION"
+            },
+            {
+              "firstLine": 173,
+              "kind": "class",
+              "lastLine": 173,
+              "name": "FOREIGN_KEY_VIOLATION"
+            },
+            {
+              "firstLine": 174,
+              "kind": "class",
+              "lastLine": 174,
+              "name": "DATA_EXCEPTION_CLASS"
+            },
+            {
+              "firstLine": 177,
+              "kind": "function",
+              "lastLine": 187,
+              "name": "databaseCode"
+            },
+            {
+              "firstLine": 200,
+              "kind": "function",
+              "lastLine": 221,
+              "name": "databaseProblem"
+            },
+            {
+              "firstLine": 224,
+              "kind": "class",
+              "lastLine": 228,
+              "name": "OperationHandler"
+            },
+            {
+              "firstLine": 237,
+              "kind": "function",
+              "lastLine": 255,
+              "name": "routeHandler"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/log/logger.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 10,
+              "name": "LogLevel"
+            },
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "requestIds"
+            },
+            {
+              "firstLine": 19,
+              "kind": "function",
+              "lastLine": 33,
+              "name": "log"
+            },
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "currentRequestId"
+            },
+            {
+              "firstLine": 46,
+              "kind": "function",
+              "lastLine": 81,
+              "name": "withRequestLog"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/shared/log/request-id.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 4,
+              "kind": "class",
+              "lastLine": 4,
+              "name": "REQUEST_ID_HEADER"
+            },
+            {
+              "firstLine": 6,
+              "kind": "class",
+              "lastLine": 6,
+              "name": "VALID_REQUEST_ID"
+            },
+            {
+              "firstLine": 12,
+              "kind": "function",
+              "lastLine": 17,
+              "name": "requestIdOf"
+            }
+          ]
+        },
+        {
+          "path": "order-web/standalone-migrate.gen.mjs",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "STANDALONE"
+            },
+            {
+              "firstLine": 16,
+              "kind": "function",
+              "lastLine": 23,
+              "name": "exists"
+            },
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 45,
+              "name": "main"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::orderWeb::cancelOrder",
+      "files": [
+        {
+          "path": "order-web/src/_app/api-routes/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "Params"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "Context"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "handle"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 43,
+              "name": "POST"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-content.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "function",
+              "lastLine": 24,
+              "name": "CancelOrderFormContent"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "PATH"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/cancel-order/api/cancel-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "cancelOrderInputSchema"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "cancelOrderOutputSchema"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderOutput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "cancelOrder"
+            },
+            {
+              "firstLine": 44,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "useCancelOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "CancelOrderFormProps"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 47,
+              "kind": "function",
+              "lastLine": 49,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 127,
+              "name": "CancelOrderForm"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::orderWeb::cancelOrderForm",
+      "files": [
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-content.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "function",
+              "lastLine": 24,
+              "name": "CancelOrderFormContent"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 18,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "PATH"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "CancelOrderFormPage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::orderWeb::orderDetail",
+      "files": [
+        {
+          "path": "order-web/src/_pages/order-detail/ui/order-detail-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "OrderDetailPageProps"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "OrderDetailPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/widgets/order-details/ui/order-details.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 16,
+              "name": "OrderDetailsProps"
+            },
+            {
+              "firstLine": 19,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "OrderDetails"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::orderWeb::orderList",
+      "files": [
+        {
+          "path": "order-web/src/_app/layout/navigation.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 8,
+              "kind": "class",
+              "lastLine": 11,
+              "name": "NavigationView"
+            },
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 21,
+              "name": "NAVIGATION"
+            },
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "NavigationProps"
+            },
+            {
+              "firstLine": 34,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "Navigation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-list/ui/order-list-content.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "OrderListContent"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-list/ui/order-list-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 24,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "PATH"
+            },
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 38,
+              "kind": "function",
+              "lastLine": 59,
+              "name": "OrderListPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/widgets/order-list/ui/order-table.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "OrderTableProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "pageText"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 143,
+              "name": "OrderTable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderWeb::orderWeb::orders",
+      "files": [
+        {
+          "path": "order-web/src/_app/api-routes/create-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 9,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 19,
+              "name": "handle"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 22,
+              "name": "POST"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/delete-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "Params"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "Context"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "pathSchema"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "handle"
+            },
+            {
+              "firstLine": 38,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "DELETE"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/list-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 14,
+              "kind": "class",
+              "lastLine": 17,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "LIMIT_DEFAULT"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "LIMIT_MAX"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 35,
+              "name": "querySchema"
+            },
+            {
+              "firstLine": 38,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "handle"
+            },
+            {
+              "firstLine": 46,
+              "kind": "class",
+              "lastLine": 46,
+              "name": "GET"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/read-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "Params"
+            },
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "Context"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 28,
+              "name": "pathSchema"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "handle"
+            },
+            {
+              "firstLine": 38,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "GET"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_app/api-routes/update-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "class",
+              "lastLine": 14,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 17,
+              "kind": "class",
+              "lastLine": 19,
+              "name": "Params"
+            },
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 24,
+              "name": "Context"
+            },
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 29,
+              "name": "pathSchema"
+            },
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 37,
+              "name": "handle"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 40,
+              "name": "PATCH"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-detail/ui/order-detail-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 26,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "OrderDetailPageProps"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "OrderDetailPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-list/ui/order-list-content.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "OrderListContent"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/_pages/order-list/ui/order-list-page.server.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 24,
+              "name": "ACCESS"
+            },
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "PATH"
+            },
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 30,
+              "name": "DESCRIPTION"
+            },
+            {
+              "firstLine": 38,
+              "kind": "function",
+              "lastLine": 59,
+              "name": "OrderListPage"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/entities/order/api/order-queries.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 10,
+              "kind": "class",
+              "lastLine": 10,
+              "name": "orderQueryKey"
+            },
+            {
+              "firstLine": 13,
+              "kind": "function",
+              "lastLine": 15,
+              "name": "readOrderQueryKey"
+            },
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "readOrderQueryOptions"
+            },
+            {
+              "firstLine": 33,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "OrderListParameters"
+            },
+            {
+              "firstLine": 41,
+              "kind": "function",
+              "lastLine": 45,
+              "name": "listOrderQueryKey"
+            },
+            {
+              "firstLine": 48,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "listOrderQueryOptions"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/entities/order/model/order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 11,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "decimal"
+            },
+            {
+              "firstLine": 43,
+              "kind": "class",
+              "lastLine": 48,
+              "name": "orderSchema"
+            },
+            {
+              "firstLine": 51,
+              "kind": "class",
+              "lastLine": 51,
+              "name": "Order"
+            },
+            {
+              "firstLine": 54,
+              "kind": "class",
+              "lastLine": 57,
+              "name": "orderPageSchema"
+            },
+            {
+              "firstLine": 60,
+              "kind": "class",
+              "lastLine": 60,
+              "name": "OrderPage"
+            },
+            {
+              "firstLine": 63,
+              "kind": "class",
+              "lastLine": 67,
+              "name": "createOrderInputSchema"
+            },
+            {
+              "firstLine": 70,
+              "kind": "class",
+              "lastLine": 70,
+              "name": "CreateOrderInput"
+            },
+            {
+              "firstLine": 73,
+              "kind": "class",
+              "lastLine": 77,
+              "name": "updateOrderInputSchema"
+            },
+            {
+              "firstLine": 80,
+              "kind": "class",
+              "lastLine": 80,
+              "name": "UpdateOrderInput"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/create-order/api/create-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "createOrder"
+            },
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 36,
+              "name": "useCreateOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/create-order/api/create-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 27,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 51,
+              "name": "handleCreateOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/create-order/ui/create-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CreateOrderFormProps"
+            },
+            {
+              "firstLine": 40,
+              "kind": "class",
+              "lastLine": 43,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 46,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 53,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 56,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "optionalText"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 72,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 75,
+              "kind": "function",
+              "lastLine": 180,
+              "name": "CreateOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/delete-order/api/delete-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 9,
+              "kind": "function",
+              "lastLine": 14,
+              "name": "deleteOrder"
+            },
+            {
+              "firstLine": 20,
+              "kind": "function",
+              "lastLine": 28,
+              "name": "useDeleteOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/delete-order/api/delete-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 15,
+              "name": "NOT_FOUND"
+            },
+            {
+              "firstLine": 22,
+              "kind": "function",
+              "lastLine": 35,
+              "name": "handleDeleteOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/delete-order/ui/delete-order-button.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "DeleteOrderButtonProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 52,
+              "kind": "function",
+              "lastLine": 90,
+              "name": "DeleteOrderButton"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/list-order/api/list-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 12,
+              "kind": "class",
+              "lastLine": 12,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 29,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "handleListOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/read-order/api/read-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 13,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 16,
+              "kind": "class",
+              "lastLine": 16,
+              "name": "NOT_FOUND"
+            },
+            {
+              "firstLine": 19,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 32,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "handleReadOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/update-order/api/update-order.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "class",
+              "lastLine": 18,
+              "name": "UpdateOrderVariables"
+            },
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "updateOrder"
+            },
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "useUpdateOrderMutation"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/update-order/api/update-order.server.gen.ts",
+          "symbols": [
+            {
+              "firstLine": 20,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "KEY"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 23,
+              "name": "NOT_FOUND"
+            },
+            {
+              "firstLine": 26,
+              "kind": "function",
+              "lastLine": 33,
+              "name": "entityOf"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 64,
+              "name": "handleUpdateOrder"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/features/update-order/ui/update-order-form.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 32,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "UpdateOrderFormProps"
+            },
+            {
+              "firstLine": 42,
+              "kind": "class",
+              "lastLine": 42,
+              "name": "initialValues"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "isInvalid"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 52,
+              "name": "shownErrors"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 57,
+              "name": "optionalText"
+            },
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 71,
+              "name": "OperationError"
+            },
+            {
+              "firstLine": 74,
+              "kind": "function",
+              "lastLine": 184,
+              "name": "UpdateOrderForm"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/widgets/order-details/ui/order-details.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 13,
+              "kind": "class",
+              "lastLine": 16,
+              "name": "OrderDetailsProps"
+            },
+            {
+              "firstLine": 19,
+              "kind": "function",
+              "lastLine": 30,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "OrderDetails"
+            }
+          ]
+        },
+        {
+          "path": "order-web/src/widgets/order-list/ui/order-table.gen.tsx",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 32,
+              "name": "OrderTableProps"
+            },
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "QueryError"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "pageText"
+            },
+            {
+              "firstLine": 61,
+              "kind": "function",
+              "lastLine": 143,
+              "name": "OrderTable"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}

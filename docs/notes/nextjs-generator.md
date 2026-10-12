@@ -6,7 +6,7 @@ Story #180 added the first part of the Next.js generator (phase 3). The generato
 - Part modules: `nextjs_database.py` (#182), `nextjs_auth.py` (#183), `nextjs_slices.py` (#184), `nextjs_routes.py` (#186) and `nextjs_pages.py` (#188) in `src/dsml/generate/`. In story #180, each function gave no file.
 - Templates: `src/dsml/templates/nextjs/project/`.
 - Tests: `tests/test_nextjs_generator.py`.
-- Golden files: `tests/golden/nextjs/order-web/`, with the schema snapshot but no manifests in `.dsml/`. Write them again with `uv run python scripts/write_golden_nextjs.py`. The configuration of the script is in the parent folder, with the output folder `order-web`, because a generator must not write into the folder `.dsml/` of the configuration file.
+- Golden files: `tests/golden/nextjs/order-web/`, with the schema snapshot in `.dsml/`. The manifests `generated.json` and `trace.gen.json` are in `tests/golden/nextjs/.dsml/` (story #189). Write them again with `uv run python scripts/write_golden_nextjs.py`. The configuration of the script is in the parent folder, with the output folder `order-web`, because a generator must not write into the folder `.dsml/` of the configuration file.
 - CI: the job "Next.js golden project" in `.github/workflows/ci.yml`.
 
 ## Inputs
@@ -137,7 +137,7 @@ The rules of the Next.js slices:
 - `apiRequest` sends each request to `/api<path>` on the same origin, for example `/api/orders?limit=50&offset=0` (PRD-APP-311). The browser sends the cookies of the Amplify session, thus the client adds no bearer token (PRD-APP-322). A problem details response gives an `ApiError` with its `title` and `detail` (PRD-APP-227).
 - The files `alert-dialog.tsx`, `field.tsx`, `label.tsx` and `separator.tsx` of the shadcn/ui copy start with `"use client"`, as in the source, because `components.json` has `"rsc": true`.
 - No module of this part is server-only. Thus the slices have no `index.server.ts` yet. The test `test_each_server_only_module_imports_server_only` examines each server-only module of the full output: it imports `server-only`, and only `index.server.gen.ts` of its folder exports it (PRD-APP-305).
-- Steiger finds no error in the golden project (PRD-APP-306). Story #185 added the Next.js tools to `dsml check-output`. The CI job runs `dsml check-output --application orderWeb` on the golden project (`docs/notes/check-output.md`).
+- Steiger finds no error in the golden project (PRD-APP-306). Story #185 added the Next.js tools to `dsml check-output`. Since story #189, the CI job runs `dsml check-output` on the full output of the order web (`docs/notes/check-output.md`).
 
 The Vitest tests render the client components in jsdom and replace `fetch`. The features test examines the request of the form `cancelOrder` to `/api/orders/<id>/cancel`, a field error, a problem details error and the invalidation of the order queries after a delete. The widgets test examines the requests of the table and of the details. The CI job copies the folders to `tests/features/` and `tests/widgets/` of the golden project. V-004 of the order web names `tests/features/features.test.tsx`.
 
@@ -238,6 +238,43 @@ If the server function fails, for example with HTTP 404, the page gives no data 
 - `tests/nextjs/pages/pages.test.tsx` is a Vitest test. The CI job copies it into the golden project. It replaces the Amplify adapter and the server functions. It examines the "not permitted" page, the redirect to the login, the data of the server functions with no HTTP request and the navigation of the roles.
 - The CI job gets `/` from the container with no session. The response must contain the home page.
 
+## Phase 3 exit
+
+Story #189 completed the checks of the full Next.js output and the phase 3 exit criteria that do not need AWS.
+
+| Check | Where | Requirements |
+| --- | --- | --- |
+| The full Next.js output of the order web, with the manifests, agrees with the golden files. | `tests/test_nextjs_generator.py`, and the step "Compare the Next.js output with the golden files" of the CI job | PRD-CORE-029, PRD-CORE-030, PRD-CORE-040, PRD-TRACE-006 |
+| The environment and the clock do not change the full output of the order web. The output has no absolute path, no user name and no host name. | `tests/test_determinism.py`, in the CI job "Check (linux-x64)" | PRD-CORE-015, PRD-CORE-028, PRD-CORE-033, Q62 |
+| The coverage, orphans, impact and suspect reports of the order web agree with the golden files. The coverage report shows each requirement as `verified`. | `tests/test_trace_reports.py`, `tests/test_trace_changes.py`, `tests/golden/trace/order-web.*` | PRD-TRACE-001 to PRD-TRACE-018 |
+| `dsml check-output` finds no error on the full output. | The step "Check the full output with dsml check-output" of the CI job | PRD-APP-016, PRD-APP-306 |
+| The built container starts with PostgreSQL after the migrations, and answers `GET /healthz` with HTTP 200. | The step "Start the container with PostgreSQL and get GET /healthz" of the CI job | PRD-APP-012, PRD-APP-332, PRD-APP-333 |
+
+The configuration file of the golden output is in `tests/golden/nextjs/`, with the output folder `order-web`. Thus the manifests are in `tests/golden/nextjs/.dsml/`, and their paths start with `order-web/` (PRD-CORE-040). In the full output of the CI job, the manifests are in the folder of the configuration file, and their paths start with `apps/order-web/`. Thus the job compares only the application folder with the golden folder.
+
+The trace manifest gives the symbols of each generated module with a top-level declaration (PRD-TRACE-006). A part module gives the symbols of its own files. The generator gives the symbols of the other modules, for example `proxy.ts`, `migrate.gen.mjs` and the files of `src/shared/log/`, with the application as the element. These generated modules have no symbols, thus they are not in the trace manifest:
+
+- The public API files `index.gen.ts` and `index.server.gen.ts`. They only re-export.
+- The route files in `app/`. They only re-export the declarations of `src/`.
+- The tool configurations `drizzle.config.ts`, `next.config.ts`, `steiger.config.ts` and `vitest.config.ts`.
+
+The determinism test runs the order web with the generators of the toolchain (`DSML_TEST_GENERATORS=toolchain`). The configuration file of the test gives an output folder to each generator: the Next.js application, the infrastructure and the workflows.
+
+`scripts/write_golden_reports.py` writes the reports of the order web from a project with the full output of `dsml generate`. The Vitest tests of `tests/nextjs/` are in `apps/order-web/tests/`, as in the CI job. The verifications of the order web model name these test files:
+
+- V-001 (R-001, the API of the orders): `routes/routes.test.ts`.
+- V-003 (R-003, the list and the details of the orders): `pages/pages.test.tsx` and `widgets/widgets.test.tsx`.
+- V-004 (R-004, the form that cancels an order, only for an admin): `auth/auth.test.ts` and `features/features.test.tsx`.
+
+The model folder `docs/model/examples/order-web/` has no test files. Thus `dsml validate` on the model gives the warning COV-006 for each test file. In the project of the reports, no verification gets COV-006.
+
+The phase 3 exit criterion "The reference model with a Next.js application deploys to dev" waits for an AWS account (Q58, M8 #142).
+
+## Differences from the story text
+
+- Story #189 gives the manifests in `tests/golden/nextjs/order-web/.dsml/`. The writer puts the manifests in the folder `.dsml/` of the configuration file, and a generator must not write into that folder. The configuration file of the golden output is in `tests/golden/nextjs/`, thus the manifests are in `tests/golden/nextjs/.dsml/`. The folder `tests/golden/nextjs/order-web/.dsml/` keeps only the schema snapshot of the application.
+- Story #189 asks that the status of each verified requirement becomes `verified`. The coverage report gives this status from the links (PRD-TRACE-014). The attribute `status` of the requirements in the model stays `approved`, as in the order portal model of phase 2.
+
 ## Notes for the next stories
 
 - The golden test of each part story compares only the files of its part. `PART_FOLDERS` in `tests/test_nextjs_generator.py` gives these folders. `src/_app/api-routes/healthz.gen.ts` belongs to the project files.
@@ -246,6 +283,6 @@ If the server function fails, for example with HTTP 404, the page gives no data 
 - The `standalone` output has only the files that the server needs. After `next build`, the Dockerfile runs `node standalone-migrate.gen.mjs`. The script copies `migrate.gen.mjs` and the files that it needs into the `standalone` output, with the file trace of Next.js (`next/dist/compiled/@vercel/nft`). The trace is a part of Next.js that has no public API. The CI job runs `node migrate.gen.mjs` in the image, thus a change of Next.js that breaks the script makes the job fail.
 - ESLint does not examine the scripts `*.gen.mjs`, because the type-aware rules need the TypeScript project.
 - Story #188 added the providers, the layout with the navigation and the style sheet `src/_app/styles/index.css` of `components.json` to the root layout. A client component that calls Amplify Auth, for example the logout button, must first call `configureAuth` of `@/shared/auth` with `usePublicConfig()` and `window.location.origin`.
-- The CI job copies the Vitest tests of the part stories from `tests/nextjs/` into the golden project.
+- The CI job copies the Vitest tests of the part stories from `tests/nextjs/` into the full output.
 - Story #186 added the server functions in `src/features/<operation>/api/`. The function `server_api_files` of `react_common.py` gives only `index.server.gen.ts` and `index.server.ts` of a slice, because the slices part gives `index.gen.ts` and `index.ts`.
 - The route handlers accept the requests of `apiRequest`: the paths of the FastAPI contract after `/api`, and the session in the cookies.

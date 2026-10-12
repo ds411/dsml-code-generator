@@ -7,6 +7,7 @@ Story #70 added the symbol interface of the generators and the trace manifest `.
 - Tests: `tests/test_trace_manifest.py` and `tests/test_generate.py`.
 - Golden file: `tests/golden/trace/order-service.trace.gen.json`. The test generator `IrGenerator` in `tests/dsml_test_command.py` writes it for the example model.
 - Golden file of a real generator: `tests/golden/react/order-portal/.dsml/trace.gen.json`. The React generator writes it for the order portal model (story #177).
+- Golden file of the Next.js generator: `tests/golden/nextjs/.dsml/trace.gen.json`. The generator writes it for the order web model (story #189).
 
 ## Symbols
 

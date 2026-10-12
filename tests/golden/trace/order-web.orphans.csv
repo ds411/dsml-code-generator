@@ -1,0 +1,14 @@
+# report: orphans
+# model commit: none: the folder is not in a Git repository
+# baseline commit: none
+category,item,location
+element-without-requirement,OrderWeb::CancelOrder,model/order-web.sysml:80
+element-without-requirement,OrderWeb::Order,model/order-web.sysml:73
+element-without-requirement,OrderWeb::network,model/order-web.sysml:121
+element-without-requirement,OrderWeb::networkAws,model/order-web.sysml:132
+element-without-requirement,OrderWeb::orderDb,model/order-web.sysml:123
+element-without-requirement,OrderWeb::orderDbAws,model/order-web.sysml:134
+element-without-requirement,OrderWeb::secrets,model/order-web.sysml:125
+element-without-requirement,OrderWeb::secretsAws,model/order-web.sysml:136
+element-without-requirement,OrderWeb::users,model/order-web.sysml:124
+element-without-requirement,OrderWeb::usersAws,model/order-web.sysml:135

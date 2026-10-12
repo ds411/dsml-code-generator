@@ -1,0 +1,63 @@
+{
+  "baselineCommit": null,
+  "columns": [
+    "category",
+    "item",
+    "location"
+  ],
+  "modelCommit": "none: the folder is not in a Git repository",
+  "report": "orphans",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::CancelOrder",
+      "location": "model/order-web.sysml:80"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::Order",
+      "location": "model/order-web.sysml:73"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::network",
+      "location": "model/order-web.sysml:121"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::networkAws",
+      "location": "model/order-web.sysml:132"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::orderDb",
+      "location": "model/order-web.sysml:123"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::orderDbAws",
+      "location": "model/order-web.sysml:134"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::secrets",
+      "location": "model/order-web.sysml:125"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::secretsAws",
+      "location": "model/order-web.sysml:136"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::users",
+      "location": "model/order-web.sysml:124"
+    },
+    {
+      "category": "element-without-requirement",
+      "item": "OrderWeb::usersAws",
+      "location": "model/order-web.sysml:135"
+    }
+  ]
+}

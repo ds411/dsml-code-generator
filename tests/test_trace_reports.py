@@ -1,6 +1,7 @@
 """Tests of `dsml trace` with the coverage and orphans reports (story #72).
 
 The phase 2 exit story (#177) added the reports of the order portal model.
+The phase 3 exit story (#189) added the reports of the order web model.
 """
 
 import contextlib
@@ -12,7 +13,7 @@ import os
 import re
 import subprocess
 import sys
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from types import ModuleType
 from typing import Any
@@ -154,27 +155,52 @@ def test_report_of_example_model_agrees_with_golden_file(
 
 
 @pytest.fixture(scope="module")
-def portal_project(tmp_path_factory: pytest.TempPathFactory) -> Path:
+def full_projects(tmp_path_factory: pytest.TempPathFactory) -> Callable[[str], Path]:
+    """Give the project of a reference model with the full output of `dsml generate` and the tests.
+
+    The fixture writes each project one time for the tests of this module.
+    """
+    projects: dict[str, Path] = {}
+
+    def project(name: str) -> Path:
+        if name not in projects:
+            folder = tmp_path_factory.mktemp(name) / "project"
+            folder.mkdir()
+            with write_golden_reports.outside_git():
+                write_golden_reports.write_full_project(folder, name)
+            projects[name] = folder
+        return projects[name]
+
+    return project
+
+
+@pytest.fixture(scope="module")
+def portal_project(full_projects: Callable[[str], Path]) -> Path:
     """The order portal project with the full output of `dsml generate` and the Vitest tests."""
-    folder = tmp_path_factory.mktemp("order-portal") / "project"
-    folder.mkdir()
-    with write_golden_reports.outside_git():
-        write_golden_reports.write_portal_project(folder)
-    return folder
+    return full_projects(write_golden_reports.PORTAL)
+
+
+@pytest.fixture(scope="module")
+def web_project(full_projects: Callable[[str], Path]) -> Path:
+    """The order web project with the full output of `dsml generate` and the Vitest tests."""
+    return full_projects(write_golden_reports.WEB)
 
 
 # trace: PRD-CORE-030, PRD-TRACE-013, PRD-TRACE-017
+@pytest.mark.parametrize("name", sorted(write_golden_reports.FULL_MODELS))
 @pytest.mark.parametrize("report_format", write_golden_reports.FORMATS)
 @pytest.mark.parametrize("report", write_golden_reports.REPORTS)
-def test_report_of_order_portal_agrees_with_golden_file(
-    report: str, report_format: str, portal_project: Path, tmp_path: Path
+def test_report_of_reference_model_agrees_with_golden_file(
+    report: str,
+    report_format: str,
+    name: str,
+    full_projects: Callable[[str], Path],
+    tmp_path: Path,
 ) -> None:
     output = tmp_path / "report.out"
-    with write_golden_reports.outside_git(), contextlib.chdir(portal_project):
+    with write_golden_reports.outside_git(), contextlib.chdir(full_projects(name)):
         assert main(["trace", report, "--format", report_format, "--output", str(output)]) == 0
-    golden: Path = write_golden_reports.golden_file(
-        report, report_format, write_golden_reports.PORTAL
-    )
+    golden: Path = write_golden_reports.golden_file(report, report_format, name)
     assert output.read_bytes() == golden.read_bytes(), (
         f"The {report} report is not the same as {golden.relative_to(ROOT)}. "
         "If the change is correct, run scripts/write_golden_reports.py."
@@ -216,6 +242,40 @@ def test_verifications_of_order_portal_name_each_vitest_file(
     findings = json.loads(output.read_bytes())["findings"]
     # The FastAPI story of V-001 (M9) gives no test file of this name.
     assert [item["element"] for item in findings if item["rule"] == "COV-006"] == ["V-001"]
+
+
+# trace: PRD-TRACE-013, PRD-TRACE-014
+def test_coverage_report_of_order_web_shows_each_requirement_as_verified() -> None:
+    rows = _csv_rows("coverage", write_golden_reports.WEB)
+    assert {row["requirement"]: row["status"] for row in rows} == {
+        "R-001": VERIFIED,
+        "R-002": VERIFIED,
+        "R-003": VERIFIED,
+        "R-004": VERIFIED,
+    }
+    nextjs = {row["requirement"]: row for row in rows if row["requirement"] != "R-002"}
+    for row in nextjs.values():
+        assert row["satisfiedBy"] == "OrderWeb::orderWeb"
+        assert "apps/order-web/proxy.ts" in row["generatedFiles"]
+    assert {key: row["verifications"] for key, row in nextjs.items()} == {
+        "R-001": "V-001",
+        "R-003": "V-003",
+        "R-004": "V-004",
+    }
+
+
+# trace: PRD-TRACE-012, PRD-DSML-048
+def test_verifications_of_order_web_name_each_vitest_file(
+    web_project: Path, tmp_path: Path
+) -> None:
+    """The orphans report has no test file, and each test file of the verifications exists."""
+    rows = _csv_rows("orphans", write_golden_reports.WEB)
+    assert [row for row in rows if row["category"] == TEST_FILE_WITHOUT_VERIFICATION] == []
+    output = tmp_path / "findings.json"
+    with write_golden_reports.outside_git(), contextlib.chdir(web_project):
+        assert main(["validate", "--format", "json", "--output", str(output)]) == 0
+    findings = json.loads(output.read_bytes())["findings"]
+    assert [item for item in findings if item["rule"] == "COV-006"] == []
 
 
 # trace: PRD-CORE-006

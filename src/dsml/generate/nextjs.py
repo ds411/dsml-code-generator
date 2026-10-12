@@ -35,8 +35,16 @@ start with the prefix `/api`, as the route files in `app/api/` do
 
 The versions come from the version baseline `versions.toml` (PRD-APP-301,
 PRD-TOP-008). The generator does not write `pnpm-lock.yaml` (PRD-CORE-036).
+
+The generator gives the symbols of each generated TypeScript or JavaScript
+module to the trace manifest (PRD-TRACE-006). A part module gives the symbols
+of its own files. For the other modules, for example `proxy.ts` and the
+files of `src/shared/log`, the generator gives the symbols with the
+application as the element (story #189). The tool configurations have no
+symbols.
 """
 
+import dataclasses
 from collections.abc import Callable, Collection, Sequence
 from typing import Final, cast
 
@@ -56,6 +64,7 @@ from dsml.generate.prettier_json import prettier_json
 from dsml.generate.react import dependencies
 from dsml.generate.react_common import NEXTJS_LAYOUT, ReactContext, public_api_files
 from dsml.generate.templates import TemplateEngine
+from dsml.generate.typescript_symbols import typescript_symbols
 from dsml.generate.writer import Kind, OutputFile, application_part
 from dsml.ir.model import Element, EnumValue, Ir
 from dsml.ir.writer import JsonValue
@@ -199,6 +208,17 @@ _TEMPLATES: Final = {
     f"{LOG_SEGMENT}/request-id.gen.ts": "nextjs/project/request-id.gen.ts.j2",
 }
 
+TOOL_CONFIGURATIONS: Final = (
+    "drizzle.config.ts",
+    "next.config.ts",
+    "steiger.config.ts",
+    "vitest.config.ts",
+)
+"""The tool configurations. The trace manifest gives no symbols for these files."""
+
+MODULE_SUFFIXES: Final = (".mjs", ".ts", ".tsx")
+"""The file name ends of the TypeScript and JavaScript modules."""
+
 PART_FUNCTIONS: Final[tuple[Callable[[ReactContext], list[OutputFile]], ...]] = (
     database_files,
     auth_files,
@@ -307,7 +327,18 @@ def application_files(context: ReactContext) -> list[OutputFile]:
     for part_files in PART_FUNCTIONS:
         files.extend(part_files(context))
     files.append(openapi_output(context))
-    return sorted(files, key=lambda file: file.path)
+    return sorted((_with_symbols(context, file) for file in files), key=lambda file: file.path)
+
+
+# trace: PRD-TRACE-006
+def _with_symbols(context: ReactContext, file: OutputFile) -> OutputFile:
+    """Give the symbols of a generated module that has no symbols from its part module."""
+    if file.kind is not Kind.GENERATED or file.symbols or not file.path.endswith(MODULE_SUFFIXES):
+        return file
+    if file.path.removeprefix(context.folder) in TOOL_CONFIGURATIONS:
+        return file
+    symbols = typescript_symbols(file.content, tuple(context.elements))
+    return dataclasses.replace(file, symbols=symbols)
 
 
 # trace: PRD-APP-004, PRD-APP-311

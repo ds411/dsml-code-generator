@@ -12,6 +12,9 @@ CI runs these tests on Linux x64 (Q62).
 The tests of the order portal (story #177) run the generators of the
 toolchain on the phase 2 reference model. The output has the FastAPI
 application, the React application, the infrastructure and the workflows.
+The tests of the order web (story #189) do the same for the phase 3
+reference model. Its output has the Next.js application, the infrastructure
+and the workflows.
 
 The tests do not change `HOME`, because the `opensysml` client keeps the
 `sysml-grpc` binary in a cache below the home folder.
@@ -34,6 +37,8 @@ EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 PRD_MODEL = ROOT / "docs" / "model" / "prd"
 PORTAL_MODEL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
 REACT_GOLDEN = ROOT / "tests" / "golden" / "react" / "order-portal"
+WEB_MODEL = ROOT / "docs" / "model" / "examples" / "order-web" / "order-web.sysml"
+NEXTJS_GOLDEN = ROOT / "tests" / "golden" / "nextjs" / "order-web"
 PORTAL_CONFIGURATION = """\
 schema = 1
 
@@ -53,6 +58,22 @@ output = "infra"
 output = ".github/workflows"
 """
 """The configuration file of the order portal: all generators write output."""
+WEB_CONFIGURATION = """\
+schema = 1
+
+[model]
+paths = ["model"]
+
+[applications.orderWeb]
+output = "apps/order-web"
+
+[infrastructure]
+output = "infra"
+
+[pipelines]
+output = ".github/workflows"
+"""
+"""The configuration file of the order web: all generators write output."""
 # The requirement IDs of the example model and of the PRD model, for example
 # "R-001" and "PRD-CORE-012" (PRD-DSML-051).
 PRD_IDS = "'(R|PRD-[A-Z]+)-[0-9]{3,}'"
@@ -254,71 +275,117 @@ def test_environment_does_not_change_the_output(
     assert differences(reference, output) == []
 
 
-def portal_project(folder: Path, old_files: bool = False) -> Path:
-    """Write a project folder with the order portal model and all output folders."""
+@dataclass(frozen=True)
+class FullProject:
+    """A reference model that the generators of the toolchain write in full."""
+
+    name: str
+    model: Path
+    configuration: str
+    folders: frozenset[str]
+    """The top-level folders of the output, with the model folder."""
+    golden: Path
+    """The golden folder of the application output."""
+    output: str
+    """The output folder of the application of the golden folder, with "/" at the end."""
+
+
+FULL_PROJECTS = (
+    FullProject(
+        "order-portal",
+        PORTAL_MODEL,
+        PORTAL_CONFIGURATION,
+        frozenset({".dsml", ".github", "apps", "infra", "model", "services"}),
+        REACT_GOLDEN,
+        "apps/order-portal/",
+    ),
+    FullProject(
+        "order-web",
+        WEB_MODEL,
+        WEB_CONFIGURATION,
+        frozenset({".dsml", ".github", "apps", "infra", "model"}),
+        NEXTJS_GOLDEN,
+        "apps/order-web/",
+    ),
+)
+"""The order portal (story #177) and the order web (story #189)."""
+
+MANIFESTS = (".dsml/generated.json", ".dsml/trace.gen.json")
+"""The manifests in the folder of the configuration file. The golden folders of
+the applications do not compare them with the full output."""
+
+
+def full_project(reference: FullProject, folder: Path, old_files: bool = False) -> Path:
+    """Write a project folder with a reference model and all output folders."""
     folder.mkdir(parents=True)
-    model = folder / "model" / PORTAL_MODEL.name
+    model = folder / "model" / reference.model.name
     model.parent.mkdir()
-    model.write_bytes(PORTAL_MODEL.read_bytes())
+    model.write_bytes(reference.model.read_bytes())
     if old_files:
         os.utime(model, (OLD_FILE_TIME, OLD_FILE_TIME))
-    (folder / "dsml.toml").write_text(PORTAL_CONFIGURATION, encoding="utf-8", newline="\n")
+    (folder / "dsml.toml").write_text(reference.configuration, encoding="utf-8", newline="\n")
     return folder
 
 
-def portal_environment(variant: Mapping[str, str] | None = None) -> dict[str, str]:
-    """Give the environment of a run of the order portal with the generators of the toolchain."""
+def toolchain_environment(variant: Mapping[str, str] | None = None) -> dict[str, str]:
+    """Give the environment of a run with the generators of the toolchain."""
     environment = base_environment()
     environment.update(variant or {})
     environment["DSML_TEST_GENERATORS"] = "toolchain"
     return environment
 
 
-@pytest.fixture(scope="module")
-def portal_reference(tmp_path_factory: pytest.TempPathFactory) -> dict[str, bytes]:
-    """The full output of the order portal in the reference environment."""
-    project = portal_project(tmp_path_factory.mktemp("portal-reference") / "project")
-    output = run_dsml(project, portal_environment())
+@pytest.fixture(scope="module", params=FULL_PROJECTS, ids=[item.name for item in FULL_PROJECTS])
+def full_reference(
+    request: pytest.FixtureRequest, tmp_path_factory: pytest.TempPathFactory
+) -> tuple[FullProject, dict[str, bytes]]:
+    """The full output of a reference model in the reference environment."""
+    reference: FullProject = request.param
+    folder = tmp_path_factory.mktemp(f"{reference.name}-reference") / "project"
+    output = run_dsml(full_project(reference, folder), toolchain_environment())
     assert output["dsml generate: exit code"] == b"0", output[
         "dsml generate: standard error"
     ].decode()
-    return output
+    return reference, output
 
 
 # trace: PRD-CORE-028, PRD-CORE-029
-def test_reference_run_of_order_portal_writes_the_full_output(
-    portal_reference: Mapping[str, bytes],
+def test_reference_run_writes_the_full_output(
+    full_reference: tuple[FullProject, Mapping[str, bytes]],
 ) -> None:
     """The run writes the output of each generator.
 
-    The React output agrees with the golden files.
+    The application output agrees with the golden files.
     """
-    assert portal_reference["dsml ir: standard error"] == b""
-    assert portal_reference["dsml generate: standard error"] == b""
-    folders = {name.split("/")[0] for name in portal_reference if "/" in name}
-    assert folders == {".dsml", ".github", "apps", "infra", "model", "services"}
-    prefix = "apps/order-portal/"
-    react = {
-        name.removeprefix(prefix): content
-        for name, content in portal_reference.items()
-        if name.startswith(prefix)
+    reference, output = full_reference
+    assert output["dsml ir: standard error"] == b""
+    assert output["dsml generate: standard error"] == b""
+    folders = {name.split("/")[0] for name in output if "/" in name}
+    assert folders == reference.folders
+    application = {
+        name.removeprefix(reference.output): content
+        for name, content in output.items()
+        if name.startswith(reference.output)
     }
     golden = {
-        path.relative_to(REACT_GOLDEN).as_posix(): path.read_bytes()
-        for path in sorted(REACT_GOLDEN.rglob("*"))
-        if path.is_file() and not path.relative_to(REACT_GOLDEN).as_posix().startswith(".dsml/")
+        path.relative_to(reference.golden).as_posix(): path.read_bytes()
+        for path in sorted(reference.golden.rglob("*"))
+        if path.is_file() and path.relative_to(reference.golden).as_posix() not in MANIFESTS
     }
-    assert react == golden
+    assert application == golden
 
 
 # trace: PRD-CORE-015, PRD-CORE-028
 @pytest.mark.parametrize("variant", VARIANTS, ids=[variant.name for variant in VARIANTS])
-def test_environment_does_not_change_the_output_of_order_portal(
-    variant: Variant, portal_reference: Mapping[str, bytes], tmp_path: Path
+def test_environment_does_not_change_the_full_output(
+    variant: Variant,
+    full_reference: tuple[FullProject, Mapping[str, bytes]],
+    tmp_path: Path,
 ) -> None:
-    project = portal_project(tmp_path / "project", old_files=variant.old_files)
-    output = run_dsml(project, portal_environment(variant.environment))
-    assert differences(portal_reference, output) == []
+    reference, expected = full_reference
+    project = full_project(reference, tmp_path / "project", old_files=variant.old_files)
+    output = run_dsml(project, toolchain_environment(variant.environment))
+    assert differences(expected, output) == []
 
 
 @pytest.fixture(scope="module")
@@ -365,7 +432,7 @@ def test_order_of_the_model_files_does_not_change_the_output(
 
 
 # trace: PRD-CORE-033
-@pytest.mark.parametrize("model", ["order-service", "order-portal"])
+@pytest.mark.parametrize("model", ["order-service", "order-portal", "order-web"])
 def test_output_has_no_absolute_path_no_user_name_and_no_host_name(
     model: str, tmp_path: Path
 ) -> None:
@@ -376,9 +443,10 @@ def test_output_has_no_absolute_path_no_user_name_and_no_host_name(
         "HOSTNAME": FAKE_HOST,
         "DSML_TEST_HOST_NAME": FAKE_HOST,
     }
-    if model == "order-portal":
-        project = portal_project(tmp_path / "project")
-        environment = portal_environment(names)
+    references = {item.name: item for item in FULL_PROJECTS}
+    if model in references:
+        project = full_project(references[model], tmp_path / "project")
+        environment = toolchain_environment(names)
         # The generated code has fixed words that can be real names, for
         # example "root" in the React entry module and "runner" in the
         # workflows. Thus the test examines only the changed names.
@@ -394,7 +462,9 @@ def test_output_has_no_absolute_path_no_user_name_and_no_host_name(
         str(project),
         str(project.resolve()),
         str(ROOT),
-        str(Path.home()),
+        # A path below the home folder. The home folder alone can be a part
+        # of a file name, for example "/root" in "src/_app/layout/root-layout.gen.tsx".
+        f"{Path.home()}/",
         FAKE_USER,
         FAKE_HOST,
     }

@@ -152,12 +152,12 @@ package OrderWeb {
     }
     satisfy orderDataSafe by prod.orderDbProd;
 
-    // Verification layer. The tests of milestone M11 do not exist yet. Thus
-    // the requirements stay "approved" until these test files exist.
+    // Verification layer. The test files are the Vitest tests of tests/nextjs/
+    // in the folder tests/ of the application (story #189).
     #Verification verification <'V-001'> orderDataTest {
         :>> title = "Order API test";
         :>> method = VerificationMethod::test;
-        :>> testFiles = ("apps/order-web/tests/api/orders.test.ts");
+        :>> testFiles = ("apps/order-web/tests/routes/routes.test.ts");
         objective { verify manageOrderData; }
     }
     #Verification verification <'V-002'> orderDataSafeAnalysis {
@@ -169,13 +169,13 @@ package OrderWeb {
     #Verification verification <'V-003'> showOrdersTest {
         :>> title = "Order list and order details test";
         :>> method = VerificationMethod::test;
-        :>> testFiles = ("apps/order-web/tests/pages/pages.test.tsx");
+        :>> testFiles = ("apps/order-web/tests/pages/pages.test.tsx", "apps/order-web/tests/widgets/widgets.test.tsx");
         objective { verify showOrdersOnWeb; }
     }
     #Verification verification <'V-004'> cancelOrderTest {
         :>> title = "Cancel order form and API test";
         :>> method = VerificationMethod::test;
-        :>> testFiles = ("apps/order-web/tests/features/features.test.tsx", "apps/order-web/tests/api/cancel-order.test.ts");
+        :>> testFiles = ("apps/order-web/tests/auth/auth.test.ts", "apps/order-web/tests/features/features.test.tsx");
         objective { verify cancelOrderOnWeb; }
     }
 }

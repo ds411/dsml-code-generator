@@ -1,0 +1,10 @@
+# report: suspect
+# model commit: 6570a3c3fd34de0bd33c9b9741d9e7e73d4ffebf
+# baseline commit: f8b37e2b07b740554901a1bd8b72021915710eea
+linkType,source,target,changedEnds,changedElements
+allocate,OrderWeb::orderWeb,OrderWeb::webService,source,OrderWeb::Order::note
+frame,R-004,N-002,source,R-004
+satisfy,OrderWeb::orderWeb,R-001,source,OrderWeb::Order::note
+satisfy,OrderWeb::orderWeb,R-003,source,OrderWeb::Order::note
+satisfy,OrderWeb::orderWeb,R-004,source; target,OrderWeb::Order::note; R-004
+verify,V-004,R-004,target,R-004
