@@ -3,6 +3,11 @@
   "generated": [
     {
       "part": "pipelines",
+      "path": ".github/workflows/README.gen.md",
+      "sha256": "371c4d430052c6ca2229084750f63712c99583c38ee8ec6e16d6941c6fb02855"
+    },
+    {
+      "part": "pipelines",
       "path": ".github/workflows/main.gen.yml",
       "sha256": "ad36001e0988f4efa004986bb856a2be759f97d3a4f91068eb48409d1f90e433"
     },
