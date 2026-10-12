@@ -38,6 +38,7 @@ module "api" {
   ecr_repository = "shop-tooling-shop-api"
   element        = "Shop::api"
   environment_variables = {
+    APP_ENVIRONMENT      = local.environment
     AWS_REGION           = local.aws_region
     CORS_ALLOWED_ORIGINS = "https://shop-web.shop.example.com"
   }

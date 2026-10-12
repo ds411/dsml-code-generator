@@ -637,19 +637,24 @@ def service_counts(element: Element, attributes: Mapping[str, Attribute]) -> tup
     return desired, minimum, maximum
 
 
-# trace: PRD-IAC-015, PRD-APP-136
+# trace: PRD-IAC-015, PRD-APP-010, PRD-APP-132, PRD-APP-136
 def _service_environment(
     ir: Ir, element: Element, application: Element, environment: Element
 ) -> tuple[list[tuple[str, str]], list[tuple[str, str]], list[str], list[str]]:
     """Give the environment variables, the secrets, the secret ARNs and the KMS key ARNs.
 
-    The values come from the elements that the service uses (`#Uses`): one
-    database, one user directory and each secret store. The secrets give
+    Each container gets `APP_ENVIRONMENT`, the name of the environment, and
+    `AWS_REGION` (PRD-APP-010). The other values come from the elements that
+    the service uses (`#Uses`): one database, one user directory and each
+    secret store. The secrets give
     the `valueFrom` of each secret environment variable. If `react`
     applications call the application, `CORS_ALLOWED_ORIGINS` gets their
     site origins in the environment (PRD-APP-136).
     """
-    variables: list[tuple[str, str]] = [("AWS_REGION", "local.aws_region")]
+    variables: list[tuple[str, str]] = [
+        ("APP_ENVIRONMENT", "local.environment"),
+        ("AWS_REGION", "local.aws_region"),
+    ]
     callers = react_callers(ir, application)
     if callers:
         origins = ",".join(

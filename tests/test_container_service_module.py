@@ -217,6 +217,7 @@ def test_container_gets_the_values_of_the_database_and_the_user_directory(
     call = _arguments(files, "staging")
     assert (
         "  environment_variables = {\n"
+        "    APP_ENVIRONMENT = local.environment\n"
         "    AWS_REGION = local.aws_region\n"
         '    COGNITO_APP_CLIENT_ID = module.users.app_client_ids["order_api"]\n'
         "    COGNITO_USER_POOL_ID = module.users.user_pool_id\n"

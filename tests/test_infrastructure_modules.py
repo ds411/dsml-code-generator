@@ -19,7 +19,9 @@ import pytest
 from dsml.adapter.convert import make_ir
 from dsml.config import Configuration
 from dsml.errors import ToolchainError
-from dsml.generate.infrastructure import modules
+from dsml.generate.fastapi import CORS_VARIABLES, DATABASE_VARIABLES, VARIABLES, react_callers
+from dsml.generate.fastapi_database import models
+from dsml.generate.infrastructure import modules, names
 from dsml.generate.infrastructure.generator import InfrastructureGenerator
 from dsml.generate.infrastructure.modules import MODULE_FILES, module_calls, zone_count
 from dsml.generate.writer import check_files
@@ -27,6 +29,7 @@ from dsml.ir.model import Attribute, Element, IntegerValue, Ir, Location
 
 ROOT = Path(__file__).resolve().parent.parent
 EXAMPLE = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
+PORTAL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
 SHOP = Path("tests/models/ir/solution-layers.sysml")
 INFRA = PurePosixPath("infra")
 
@@ -280,3 +283,82 @@ def test_modules_are_in_the_order_of_their_calls() -> None:
         "container-service",
         "static-site",
     ]
+
+
+def _map_keys(call: str, argument: str) -> set[str]:
+    """Give the keys of a map argument in the text of a module call."""
+    match = re.search(rf"^  {argument} *= \{{\n(.*?)^  \}}$", call, re.MULTILINE | re.DOTALL)
+    if match is None:
+        return set()
+    return set(re.findall(r"^ *([A-Z][A-Z0-9_]*) *=", match.group(1), re.MULTILINE))
+
+
+def _missing_variables(ir: Ir, files: dict[str, str]) -> list[str]:
+    """Give each mandatory variable of a FastAPI application that its container does not get.
+
+    The mandatory variables are the variables with no default value in the
+    configuration of the FastAPI target. The root module of each environment
+    must give each of them to the container service, as an environment
+    variable or as a secret.
+    """
+    missing: list[str] = []
+    services = sorted(
+        (item for item in ir.elements if item.kind == "ContainerService"),
+        key=lambda item: item.identity,
+    )
+    roots = sorted(path for path in files if path.endswith("/main.gen.tf") and "/envs/" in path)
+    assert services and roots
+    for service in services:
+        application = modules.service_application(ir, service)
+        variables = VARIABLES + DATABASE_VARIABLES if models(ir, application) else VARIABLES
+        if react_callers(ir, application):
+            variables += CORS_VARIABLES
+        address = names.hcl_address(service.name)
+        for root in roots:
+            match = re.search(
+                rf'^module "{address}" \{{\n(.*?)^\}}$', files[root], re.MULTILINE | re.DOTALL
+            )
+            assert match is not None, (root, address)
+            given = _map_keys(match.group(1), "environment_variables") | _map_keys(
+                match.group(1), "secrets"
+            )
+            missing += [
+                f"{root}: {address}: {variable.name}"
+                for variable in variables
+                if variable.mandatory and variable.name not in given
+            ]
+    return missing
+
+
+# trace: PRD-APP-010, PRD-APP-132, PRD-IAC-015
+@pytest.mark.parametrize("model", [EXAMPLE, PORTAL], ids=lambda path: path.stem)
+def test_container_service_gets_each_mandatory_variable_of_the_application(model: Path) -> None:
+    """Examine the reference models.
+
+    The test model `shop` has no user directory. Thus it is not a model that
+    can deploy, and this test does not examine it.
+    """
+    ir = make_ir([model], ROOT)
+    assert _missing_variables(ir, _files(ir)) == []
+
+
+# trace: PRD-APP-010, PRD-APP-132, PRD-IAC-015
+def test_container_service_with_no_application_environment_fails_the_check(example: Ir) -> None:
+    files = {
+        path: re.sub(r"^ *APP_ENVIRONMENT *=.*\n", "", text, flags=re.MULTILINE)
+        for path, text in _files(example).items()
+    }
+    missing = _missing_variables(example, files)
+    assert missing
+    assert all(item.endswith(": api_service: APP_ENVIRONMENT") for item in missing)
+    assert len(missing) == 3
+
+
+# trace: PRD-APP-010, PRD-IAC-015
+def test_application_environment_is_the_name_of_the_environment(example: Ir) -> None:
+    for path, text in _files(example).items():
+        if path.endswith("/main.gen.tf") and "/envs/" in path:
+            text = re.sub(r" +=", " =", text)
+            assert "    APP_ENVIRONMENT = local.environment\n" in text, path
+            environment = PurePosixPath(path).parent.name
+            assert f'  environment = "{environment}"\n' in text, path
