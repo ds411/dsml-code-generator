@@ -1,6 +1,11 @@
-// The DSML library, version 1.0.0.
+// The DSML library, version 1.1.0.
 //
 // trace: PRD-DSML-001, PRD-DSML-002, PRD-DSML-003, PRD-DSML-009, PRD-DSML-056
+// trace: PRD-DSML-057
+//
+// Version 1.1.0 adds the phase 2 keywords #View, #StaticSite and
+// #AwsStaticSite, and the navigation of an application. A model of version
+// 1.0 stays valid (PRD-DSML-057).
 //
 // A model imports the library with "private import DSML::*;". Each element
 // kind is a metadata definition. A model uses it as a user-defined keyword,
@@ -26,7 +31,7 @@ library package DSML {
     private import Metaobjects::SemanticMetadata;
 
     // trace: PRD-DSML-056
-    @DsmlVersion { major = 1; minor = 0; patch = 0; }
+    @DsmlVersion { major = 1; minor = 1; patch = 0; }
 
     // ------------------------------------------------------------------
     // Attribute types (PRD-DSML-023)
@@ -70,6 +75,9 @@ library package DSML {
 
     // trace: PRD-DSML-029
     enum def HttpMethod { get; post; put; patch; delete; }
+
+    // trace: PRD-DSML-031
+    enum def ViewKind { list; detail; form; }
 
     // trace: PRD-DSML-046
     // "analysis" is a SysML keyword, so the definition writes it as an
@@ -139,9 +147,13 @@ library package DSML {
 
         // Application layer
 
-        // trace: PRD-DSML-020
+        // trace: PRD-DSML-020, PRD-DSML-032
+        // Phase 2: navigation is the ordered list of the views in the
+        // navigation of the application, for example
+        // ":>> navigation = (orderList, orderDetail);".
         part def Application {
             attribute target : Target;
+            ref part navigation : View [0..*] ordered;
         }
         abstract part applications : Application [*];
 
@@ -170,6 +182,20 @@ library package DSML {
         }
         abstract action operations : Operation [*];
 
+        // trace: PRD-DSML-031, PRD-DSML-033
+        // Phase 2: a view of an application. A list or detail view gives
+        // its entity as the type of the reference entity, for example
+        // "ref :>> entity : Order;". A form view gives its operation in the
+        // same form, for example "ref :>> operation : PlaceOrder;".
+        part def View {
+            attribute kind : ViewKind;
+            ref part entity : Entity [0..1];
+            ref action operation : Operation [0..1];
+            attribute allowedRoles : Roles [0..*];
+            attribute 'public' : Boolean default = false;
+        }
+        abstract part views : View [*];
+
         // trace: PRD-DSML-033
         // The roles enumeration of a model specializes this definition.
         attribute def Roles;
@@ -194,6 +220,11 @@ library package DSML {
 
         part def SecretStore :> LogicalElement;
         abstract part secretStores : SecretStore [*];
+
+        // trace: PRD-DSML-035, PRD-DSML-039, PRD-DSML-040
+        // Phase 2.
+        part def StaticSite :> LogicalElement;
+        abstract part staticSites : StaticSite [*];
 
         // Infrastructure layer: AWS realizations
 
@@ -228,6 +259,13 @@ library package DSML {
 
         part def AwsSecrets :> AwsRealization;
         abstract part awsSecretStores : AwsSecrets [*] :> awsRealizations;
+
+        // trace: PRD-DSML-037, PRD-DSML-038
+        // Phase 2. The static site module of PRD-IAC-021 needs no AWS
+        // attribute, and PRD-DSML-042 gives none for a static site. Thus
+        // this AWS kind has no attribute.
+        part def AwsStaticSite :> AwsRealization;
+        abstract part awsStaticSites : AwsStaticSite [*] :> awsRealizations;
 
         // trace: PRD-DSML-041, PRD-DSML-042
         // An override is a part usage in an environment. It subsets an AWS
@@ -332,6 +370,15 @@ library package DSML {
         :>> baseType = BaseTypes::roles meta SysML::Usage;
     }
 
+    // trace: PRD-DSML-031, PRD-DSML-033
+    metadata def View :> SemanticMetadata {
+        doc /*
+         * Phase 2: a view of an application. Use it on a part usage in an
+         * application. Give the kind, and the entity or the operation.
+         */
+        :>> baseType = BaseTypes::views meta SysML::Usage;
+    }
+
     // trace: PRD-DSML-034
     metadata def Destructive {
         doc /*
@@ -391,6 +438,12 @@ library package DSML {
         :>> baseType = BaseTypes::secretStores meta SysML::Usage;
     }
 
+    // trace: PRD-DSML-035, PRD-DSML-039
+    metadata def StaticSite :> SemanticMetadata {
+        doc /* Phase 2: a logical static site. Use it on a part usage. */
+        :>> baseType = BaseTypes::staticSites meta SysML::Usage;
+    }
+
     // trace: PRD-DSML-037
     metadata def AwsVpc :> SemanticMetadata {
         doc /* The AWS realization of a network. Use it on a part usage. */
@@ -419,6 +472,12 @@ library package DSML {
     metadata def AwsSecrets :> SemanticMetadata {
         doc /* The AWS realization of a secret store. Use it on a part usage. */
         :>> baseType = BaseTypes::awsSecretStores meta SysML::Usage;
+    }
+
+    // trace: PRD-DSML-037
+    metadata def AwsStaticSite :> SemanticMetadata {
+        doc /* Phase 2: the AWS realization of a static site. Use it on a part usage. */
+        :>> baseType = BaseTypes::awsStaticSites meta SysML::Usage;
     }
 
     // trace: PRD-DSML-037

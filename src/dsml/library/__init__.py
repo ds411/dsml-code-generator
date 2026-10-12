@@ -11,8 +11,8 @@ from importlib import resources
 LIBRARY_FILE = "DSML.sysml"
 """The name of the library source file in the package."""
 
-# trace: PRD-DSML-056
-LIBRARY_VERSION = "1.0.0"
+# trace: PRD-DSML-056, PRD-DSML-057
+LIBRARY_VERSION = "1.1.0"
 """The semantic version of the library. `@DsmlVersion` in the source must agree."""
 
 
