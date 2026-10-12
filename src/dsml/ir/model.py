@@ -1,4 +1,4 @@
-# trace: PRD-CORE-022, PRD-CORE-023, PRD-CORE-024, PRD-CORE-025, PRD-TRACE-003
+# trace: PRD-CORE-022, PRD-CORE-023, PRD-CORE-024, PRD-CORE-025, PRD-CORE-031, PRD-TRACE-003
 """The typed models of the IR.
 
 Each model is a frozen data class. The writer (`dsml.ir.writer`) converts the
@@ -21,7 +21,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Final, Literal
 
-IR_VERSION: Final = "1.0.0"
+IR_VERSION: Final = "1.1.0"
 """The semantic version of the IR (PRD-CORE-023).
 
 A change that removes or renames a field, or that changes the meaning of a
@@ -44,6 +44,7 @@ type ElementKind = Literal[
     "AwsEcsService",
     "AwsRdsPostgres",
     "AwsSecrets",
+    "AwsStaticSite",
     "AwsVpc",
     "ContainerService",
     "Entity",
@@ -63,9 +64,11 @@ type ElementKind = Literal[
     "Roles",
     "SecretStore",
     "Stakeholder",
+    "StaticSite",
     "ToolingAccount",
     "UserDirectory",
     "Verification",
+    "View",
 ]
 """The kinds of IR elements.
 

@@ -1,0 +1,1116 @@
+{
+  "constraintResults": [],
+  "elements": [
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 20,
+                "file": "tests/models/ir/views.sysml",
+                "line": 8
+              },
+              "name": "major",
+              "value": {
+                "type": "integer",
+                "value": 1
+              }
+            },
+            {
+              "location": {
+                "column": 31,
+                "file": "tests/models/ir/views.sysml",
+                "line": 8
+              },
+              "name": "minor",
+              "value": {
+                "type": "integer",
+                "value": 1
+              }
+            }
+          ],
+          "location": {
+            "column": 5,
+            "file": "tests/models/ir/views.sysml",
+            "line": 8
+          },
+          "name": "DsmlVersion"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal",
+      "kind": "Package",
+      "location": {
+        "column": 1,
+        "file": "tests/models/ir/views.sysml",
+        "line": 5
+      },
+      "multiplicity": null,
+      "name": "Portal",
+      "owner": null,
+      "qualifiedName": "Portal",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::Order",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 12
+      },
+      "multiplicity": null,
+      "name": "Order",
+      "owner": "Portal",
+      "qualifiedName": "Portal::Order",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [],
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 13
+          },
+          "name": "Key"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::Order::id",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 13
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "Portal::Order",
+      "qualifiedName": "Portal::Order::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::Order::total",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 14
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "Portal::Order",
+      "qualifiedName": "Portal::Order::total",
+      "shortName": null,
+      "types": [
+        "DSML::Decimal"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 20
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "post",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 21
+          },
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders/place"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::PlaceOrder",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 17
+      },
+      "multiplicity": null,
+      "name": "PlaceOrder",
+      "owner": "Portal",
+      "qualifiedName": "Portal::PlaceOrder",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "out",
+      "doc": null,
+      "identity": "Portal::PlaceOrder::order",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 19
+      },
+      "multiplicity": null,
+      "name": "order",
+      "owner": "Portal::PlaceOrder",
+      "qualifiedName": "Portal::PlaceOrder::order",
+      "shortName": null,
+      "types": [
+        "Portal::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "in",
+      "doc": null,
+      "identity": "Portal::PlaceOrder::total",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 18
+      },
+      "multiplicity": null,
+      "name": "total",
+      "owner": "Portal::PlaceOrder",
+      "qualifiedName": "Portal::PlaceOrder::total",
+      "shortName": null,
+      "types": [
+        "DSML::Decimal"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::PortalRoles",
+      "kind": "Roles",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 10
+      },
+      "multiplicity": null,
+      "name": "PortalRoles",
+      "owner": "Portal",
+      "qualifiedName": "Portal::PortalRoles",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 64
+          },
+          "name": "navigation",
+          "value": {
+            "items": [
+              {
+                "target": "Portal::adminPortal::orderAdmin",
+                "type": "reference"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 58
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "react",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::adminPortal",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 57
+      },
+      "multiplicity": null,
+      "name": "adminPortal",
+      "owner": "Portal",
+      "qualifiedName": "Portal::adminPortal",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 62
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 61
+          },
+          "name": "entity",
+          "value": {
+            "target": "Portal::Order",
+            "type": "reference"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 60
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "list",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::adminPortal::orderAdmin",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 59
+      },
+      "multiplicity": null,
+      "name": "orderAdmin",
+      "owner": "Portal::adminPortal",
+      "qualifiedName": "Portal::adminPortal::orderAdmin",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::adminSite",
+      "kind": "StaticSite",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 70
+      },
+      "multiplicity": null,
+      "name": "adminSite",
+      "owner": "Portal",
+      "qualifiedName": "Portal::adminSite",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::adminSiteAws",
+      "kind": "AwsStaticSite",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 80
+      },
+      "multiplicity": null,
+      "name": "adminSiteAws",
+      "owner": "Portal",
+      "qualifiedName": "Portal::adminSiteAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::apiService",
+      "kind": "ContainerService",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 68
+      },
+      "multiplicity": null,
+      "name": "apiService",
+      "owner": "Portal",
+      "qualifiedName": "Portal::apiService",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::apiServiceAws",
+      "kind": "AwsEcsService",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 78
+      },
+      "multiplicity": null,
+      "name": "apiServiceAws",
+      "owner": "Portal",
+      "qualifiedName": "Portal::apiServiceAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 25
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "fastapi",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::orderApi",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 24
+      },
+      "multiplicity": null,
+      "name": "orderApi",
+      "owner": "Portal",
+      "qualifiedName": "Portal::orderApi",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 28
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "clerk",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 27
+          },
+          "name": "crud",
+          "value": {
+            "items": [
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "read",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "list",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "crudDefaults",
+          "value": {
+            "items": [
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "read",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}/{id}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "list",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}"
+                  }
+                ],
+                "type": "list"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::orderApi::orders",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 26
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": null
+      },
+      "name": "orders",
+      "owner": "Portal::orderApi",
+      "qualifiedName": "Portal::orderApi::orders",
+      "shortName": null,
+      "types": [
+        "Portal::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 31
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "clerk",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::orderApi::placeOrder",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 30
+      },
+      "multiplicity": null,
+      "name": "placeOrder",
+      "owner": "Portal::orderApi",
+      "qualifiedName": "Portal::orderApi::placeOrder",
+      "shortName": null,
+      "types": [
+        "Portal::PlaceOrder"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 53
+          },
+          "name": "navigation",
+          "value": {
+            "items": [
+              {
+                "target": "Portal::orderPortal::placeOrderForm",
+                "type": "reference"
+              },
+              {
+                "target": "Portal::orderPortal::orderList",
+                "type": "reference"
+              },
+              {
+                "target": "Portal::orderPortal::orderDetail",
+                "type": "reference"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/ir/views.sysml",
+            "line": 36
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "react",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::orderPortal",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 35
+      },
+      "multiplicity": null,
+      "name": "orderPortal",
+      "owner": "Portal",
+      "qualifiedName": "Portal::orderPortal",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 46
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 45
+          },
+          "name": "entity",
+          "value": {
+            "target": "Portal::Order",
+            "type": "reference"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 44
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "detail",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::orderPortal::orderDetail",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 43
+      },
+      "multiplicity": null,
+      "name": "orderDetail",
+      "owner": "Portal::orderPortal",
+      "qualifiedName": "Portal::orderPortal::orderDetail",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 40
+          },
+          "name": "entity",
+          "value": {
+            "target": "Portal::Order",
+            "type": "reference"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 39
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "list",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 41
+          },
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The list of the orders.",
+      "identity": "Portal::orderPortal::orderList",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 37
+      },
+      "multiplicity": null,
+      "name": "orderList",
+      "owner": "Portal::orderPortal",
+      "qualifiedName": "Portal::orderPortal::orderList",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 51
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "Portal::PortalRoles",
+                "literal": "clerk",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 49
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "form",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "tests/models/ir/views.sysml",
+            "line": 50
+          },
+          "name": "operation",
+          "value": {
+            "target": "Portal::PlaceOrder",
+            "type": "reference"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::orderPortal::placeOrderForm",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "tests/models/ir/views.sysml",
+        "line": 48
+      },
+      "multiplicity": null,
+      "name": "placeOrderForm",
+      "owner": "Portal::orderPortal",
+      "qualifiedName": "Portal::orderPortal::placeOrderForm",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::portalSite",
+      "kind": "StaticSite",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 69
+      },
+      "multiplicity": null,
+      "name": "portalSite",
+      "owner": "Portal",
+      "qualifiedName": "Portal::portalSite",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::portalSiteAws",
+      "kind": "AwsStaticSite",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 79
+      },
+      "multiplicity": null,
+      "name": "portalSiteAws",
+      "owner": "Portal",
+      "qualifiedName": "Portal::portalSiteAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::users",
+      "kind": "UserDirectory",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 71
+      },
+      "multiplicity": null,
+      "name": "users",
+      "owner": "Portal",
+      "qualifiedName": "Portal::users",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "Portal::usersAws",
+      "kind": "AwsCognito",
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 81
+      },
+      "multiplicity": null,
+      "name": "usersAws",
+      "owner": "Portal",
+      "qualifiedName": "Portal::usersAws",
+      "shortName": null,
+      "types": []
+    }
+  ],
+  "files": [
+    "tests/models/ir/views.sysml"
+  ],
+  "findings": [],
+  "irVersion": "1.1.0",
+  "links": [
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 76
+      },
+      "source": "Portal::adminPortal",
+      "target": "Portal::adminSite",
+      "type": "allocate"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 66
+      },
+      "source": "Portal::adminPortal",
+      "target": "Portal::orderApi",
+      "type": "calls"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 73
+      },
+      "source": "Portal::adminSite",
+      "target": "Portal::users",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 84
+      },
+      "source": "Portal::adminSiteAws",
+      "target": "Portal::adminSite",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 82
+      },
+      "source": "Portal::apiServiceAws",
+      "target": "Portal::apiService",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 74
+      },
+      "source": "Portal::orderApi",
+      "target": "Portal::apiService",
+      "type": "allocate"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 75
+      },
+      "source": "Portal::orderPortal",
+      "target": "Portal::portalSite",
+      "type": "allocate"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 55
+      },
+      "source": "Portal::orderPortal",
+      "target": "Portal::orderApi",
+      "type": "calls"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 72
+      },
+      "source": "Portal::portalSite",
+      "target": "Portal::users",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 83
+      },
+      "source": "Portal::portalSiteAws",
+      "target": "Portal::portalSite",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/ir/views.sysml",
+        "line": 85
+      },
+      "source": "Portal::usersAws",
+      "target": "Portal::users",
+      "type": "realizes"
+    }
+  ]
+}

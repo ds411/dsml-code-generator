@@ -25,7 +25,8 @@ def build_ir(model: ParsedModel, files: Sequence[str]) -> Ir:
     `files` gives the names of the model files, relative to the repository
     root, as the parse got them. The DSML library is not a model file. If the
     parse gives an error, the IR holds only the files and the SYN findings,
-    because the elements of the model are not complete.
+    because the elements of the model are not complete. A view with a wrong
+    reference also gives a SYN-001 finding, but the IR keeps its elements.
     """
     findings = syn_findings(model.diagnostics)
     if any(item.severity == "error" for item in model.diagnostics):
@@ -41,7 +42,7 @@ def build_ir(model: ParsedModel, files: Sequence[str]) -> Ir:
         elements=tuple(elements),
         links=tuple(links),
         constraint_results=constraints.evaluate_constraints(graph, model, elements),
-        findings=findings,
+        findings=(*findings, *solution.view_findings(elements)),
     )
 
 

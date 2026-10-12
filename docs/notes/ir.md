@@ -1,6 +1,6 @@
-# IR 1.0.0: structure and version rules
+# IR 1.1.0: structure and version rules
 
-Story #28 added the IR models, the JSON Schema of the IR and the canonical JSON writer. This document gives the structure of the IR, the order of its lists and the rules for its version.
+Story #28 added the IR models, the JSON Schema of the IR and the canonical JSON writer. Story #159 added the version 1.1.0 (see "Versions"). This document gives the structure of the IR, the order of its lists and the rules for its version.
 
 - Models: `src/dsml/ir/model.py`.
 - JSON Schema: `src/dsml/ir/ir.schema.json` (package data, PRD-CORE-022).
@@ -23,7 +23,7 @@ The root object has six keys.
 
 | Key | Content |
 | --- | --- |
-| `irVersion` | The semantic version of the IR, for example `"1.0.0"`. |
+| `irVersion` | The semantic version of the IR, for example `"1.1.0"`. |
 | `files` | The model files, relative to the repository root. |
 | `elements` | The elements of the five layers (PRD-CORE-024). |
 | `links` | The trace links (PRD-TRACE-003). |
@@ -120,7 +120,14 @@ The field `irVersion` has the form `<major>.<minor>.<patch>` (PRD-CORE-023). The
 | Add a key, an element kind, a link type or a value form. | Minor |
 | Correct a description in the schema, with no change to the data. | Patch |
 
-A change of the IR version also changes the golden IR files (PRD-CORE-027). A minor or patch release of the toolchain must not change the IR of an unchanged model, except to fix a defect that its release notes name (PRD-CORE-037).
+A change of the IR version also changes the golden IR files (PRD-CORE-027).
+
+### Versions
+
+| Version | Story | Change |
+| --- | --- | --- |
+| 1.0.0 | #28 | The first version. |
+| 1.1.0 | #159 | The element kinds `View`, `StaticSite` and `AwsStaticSite`. A view has the attributes `entity` or `operation`, and an application has the attribute `navigation` (`docs/notes/ir-solution-layers.md`). | A minor or patch release of the toolchain must not change the IR of an unchanged model, except to fix a defect that its release notes name (PRD-CORE-037).
 
 ## Conversion of the needs and requirements layers (story #30)
 
