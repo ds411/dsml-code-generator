@@ -31,6 +31,9 @@ Each CRUD operation is a slice with a generated handler
 create-once `handler.py` stub that a developer owns
 (`dsml.generate.fastapi_operations`, PRD-APP-116, PRD-APP-117).
 
+The generator also writes the OpenAPI document `openapi.gen.json`
+(`dsml.generate.fastapi_openapi`, PRD-APP-004).
+
 The versions come from the version baseline `versions.toml` (PRD-APP-101).
 The generator gives the symbols of each Python file for the trace manifest.
 """
@@ -46,6 +49,7 @@ from dsml.database.snapshot import SNAPSHOT_PATH
 from dsml.errors import ToolchainError
 from dsml.generate.fastapi_database import MODELS_FOLDER, Model, import_lines, models
 from dsml.generate.fastapi_migrations import Call, code_lines, migration_files
+from dsml.generate.fastapi_openapi import OPENAPI_PATH, openapi_file
 from dsml.generate.fastapi_operations import HANDLER_FILE, CustomSlice, custom_slices
 from dsml.generate.fastapi_slices import (
     FEATURES_FOLDER,
@@ -327,9 +331,9 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
     return value
 
 
-# trace: PRD-APP-002, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104, PRD-APP-105, PRD-APP-116,
-# PRD-APP-120, PRD-APP-124, PRD-APP-128, PRD-APP-130, PRD-APP-131, PRD-APP-133,
-# PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
+# trace: PRD-APP-002, PRD-APP-004, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104,
+# PRD-APP-105, PRD-APP-116, PRD-APP-120, PRD-APP-124, PRD-APP-128, PRD-APP-130, PRD-APP-131,
+# PRD-APP-133, PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
 def application_files(
     engine: TemplateEngine,
     ir: Ir,
@@ -413,6 +417,8 @@ def application_files(
         test_file(engine, tests, folder, part) for tests in entity_tests(ir, crud, entity_models)
     )
     files.extend(operation_test_file(engine, item, folder, part) for item in custom)
+    content = openapi_file(application.name, PROJECT_VERSION, routers)
+    files.append(OutputFile(f"{folder}{OPENAPI_PATH}", content, Kind.GENERATED, part, ()))
     if database:
         schema = application_schema(ir, application.identity)
         files.extend(migration_files(engine, ir, application, configuration, schema, folder, part))

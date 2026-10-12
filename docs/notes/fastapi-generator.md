@@ -1,6 +1,6 @@
 # FastAPI generator: project files and shared code
 
-Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Story #84 added the CRUD slices (see `docs/notes/fastapi-slices.md`). Story #85 added the schema snapshot and the Alembic migrations. Story #88 added the custom operations (see `docs/notes/fastapi-custom-operations.md`). An other M6 story adds `openapi.gen.json`.
+Story #75 added the first part of the FastAPI generator (phase 1). The generator writes a project that starts and answers `GET /healthz`. Story #77 added the SQLAlchemy models and the database session. Story #78 added the Cognito token check and the role check. Story #84 added the CRUD slices (see `docs/notes/fastapi-slices.md`). Story #85 added the schema snapshot and the Alembic migrations. Story #88 added the custom operations (see `docs/notes/fastapi-custom-operations.md`). Story #90 added the OpenAPI document `openapi.gen.json` (see `docs/notes/fastapi-openapi.md`).
 
 - Generator: `src/dsml/generate/fastapi.py`. It is in the list `GENERATORS` of `src/dsml/generate/generators.py`.
 - Database code: `src/dsml/generate/fastapi_database.py`. The tables and the column types come from `src/dsml/database/schema.py` (see `docs/notes/schema-snapshot.md`).
@@ -30,12 +30,13 @@ All files are generated files. The generator writes them again at each run.
 | `.dockerignore` | Only `app/`, `pyproject.toml` and `uv.lock` go into the build context. | PRD-APP-013 |
 | `app/main_gen.py` | The factory `create_app` and the route `GET /healthz` with no authentication. | PRD-APP-012, PRD-APP-105 |
 | `app/shared/config_gen.py` | The class `Settings` and the function `load_settings`. | PRD-APP-010, PRD-APP-132 |
-| `app/shared/errors_gen.py` | `ProblemError` and the handlers that give problem details (RFC 9457). `NotImplementedError` gives HTTP 501. | PRD-APP-014, PRD-APP-117 |
+| `app/shared/errors_gen.py` | `ProblemError` and the handlers that give problem details (RFC 9457). `NotImplementedError` gives HTTP 501. The schema `Problem` and the problem details responses of the OpenAPI document. | PRD-APP-004, PRD-APP-014, PRD-APP-117 |
 | `app/shared/logs_gen.py` | JSON line logs on standard output, and the middleware of the request ID. | PRD-APP-015 |
 | `app/shared/auth/cognito_gen.py` | The token check `current_user` and the role check `require_roles`. | PRD-APP-007, PRD-APP-008, PRD-APP-104, PRD-APP-130, PRD-APP-131 |
-| `tests/test_app_gen.py` | The tests of the shared code. Thus `pytest` finds tests in a new project. | PRD-APP-135 |
+| `tests/test_app_gen.py` | The tests of the shared code. Thus `pytest` finds tests in a new project. A test compares the OpenAPI document of the application with `openapi.gen.json`. | PRD-APP-004, PRD-APP-135 |
 | `tests/test_auth_gen.py` | The tests of the token check and the role check, with a local key pair and a local JWKS. | PRD-APP-008, PRD-APP-130, PRD-APP-131 |
 | `app/__init__.py`, `app/shared/__init__.py`, `app/shared/auth/__init__.py` | The header only. | PRD-APP-134 |
+| `openapi.gen.json` | The OpenAPI 3.1 document of the application, from the IR. | PRD-APP-004 |
 
 If the application has one or more entities, the generator also writes the database code:
 

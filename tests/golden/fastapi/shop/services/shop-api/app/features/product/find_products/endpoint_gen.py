@@ -25,6 +25,7 @@ from app.features.product.find_products.schemas_gen import (
 )
 from app.shared.auth.cognito_gen import User, require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("clerk",)
 """The roles that can use the operation (`allowedRoles`)."""
@@ -32,7 +33,7 @@ ALLOWED_ROLES = ("clerk",)
 router = APIRouter(tags=["findProducts"])
 
 
-@router.get("/product-search")
+@router.get("/product-search", responses=problem_responses(401, 403, 422))
 async def find_products(
     query: Annotated[FindProductsQuery, Query()],
     session: Annotated[AsyncSession, Depends(get_session)],

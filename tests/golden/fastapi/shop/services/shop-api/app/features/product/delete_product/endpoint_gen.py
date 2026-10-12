@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.features.product.delete_product.handler_gen import handle
 from app.shared.auth.cognito_gen import require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("admin", "clerk")
 """The roles that can use the operation (`allowedRoles`)."""
@@ -28,6 +29,7 @@ router = APIRouter(tags=["products"])
     "/products/{id}",
     status_code=HTTPStatus.NO_CONTENT,
     dependencies=[Depends(require_roles(*ALLOWED_ROLES))],
+    responses=problem_responses(401, 403, 404, 409, 422),
 )
 async def delete_product(id: UUID, session: Annotated[AsyncSession, Depends(get_session)]) -> None:
     """Delete the entity Product with the key. Return HTTP 204, or HTTP 404."""

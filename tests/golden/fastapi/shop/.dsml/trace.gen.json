@@ -7,15 +7,15 @@
           "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 31,
+              "firstLine": 32,
               "kind": "function",
-              "lastLine": 41,
+              "lastLine": 46,
               "name": "archive_supplier"
             },
             {
-              "firstLine": 31,
+              "firstLine": 32,
               "kind": "route",
-              "lastLine": 41,
+              "lastLine": 46,
               "name": "POST /suppliers/{supplier}/archive"
             }
           ]
@@ -63,15 +63,15 @@
           "path": "services/shop-api/app/features/count_customers/count_customers/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 34,
+              "firstLine": 35,
               "kind": "function",
-              "lastLine": 41,
+              "lastLine": 42,
               "name": "count_customers"
             },
             {
-              "firstLine": 34,
+              "firstLine": 35,
               "kind": "route",
-              "lastLine": 41,
+              "lastLine": 42,
               "name": "GET /customer-count"
             }
           ]
@@ -131,15 +131,15 @@
           "path": "services/shop-api/app/features/customer/create_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 30,
+              "firstLine": 31,
               "kind": "function",
-              "lastLine": 39,
+              "lastLine": 41,
               "name": "create_customer"
             },
             {
-              "firstLine": 30,
+              "firstLine": 31,
               "kind": "route",
-              "lastLine": 39,
+              "lastLine": 41,
               "name": "POST /customers"
             }
           ]
@@ -176,15 +176,15 @@
           "path": "services/shop-api/app/features/customer/delete_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "function",
-              "lastLine": 33,
+              "lastLine": 35,
               "name": "delete_customer"
             },
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "route",
-              "lastLine": 33,
+              "lastLine": 35,
               "name": "DELETE /customers/{id}"
             }
           ]
@@ -204,15 +204,15 @@
           "path": "services/shop-api/app/features/customer/list_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "function",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "list_customer"
             },
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "route",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "GET /customers"
             }
           ]
@@ -249,15 +249,15 @@
           "path": "services/shop-api/app/features/customer/read_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "function",
-              "lastLine": 31,
+              "lastLine": 36,
               "name": "read_customer"
             },
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "route",
-              "lastLine": 31,
+              "lastLine": 36,
               "name": "GET /customers/{id}"
             }
           ]
@@ -288,15 +288,15 @@
           "path": "services/shop-api/app/features/customer/update_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 30,
               "kind": "function",
-              "lastLine": 34,
+              "lastLine": 39,
               "name": "update_customer"
             },
             {
-              "firstLine": 29,
+              "firstLine": 30,
               "kind": "route",
-              "lastLine": 34,
+              "lastLine": 39,
               "name": "PATCH /customers/{id}"
             }
           ]
@@ -462,15 +462,15 @@
           "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 35,
+              "firstLine": 36,
               "kind": "function",
-              "lastLine": 43,
+              "lastLine": 44,
               "name": "find_products"
             },
             {
-              "firstLine": 35,
+              "firstLine": 36,
               "kind": "route",
-              "lastLine": 43,
+              "lastLine": 44,
               "name": "GET /product-search"
             }
           ]
@@ -536,15 +536,15 @@
           "path": "services/shop-api/app/features/product/create_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 36,
+              "lastLine": 38,
               "name": "create_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 36,
+              "lastLine": 38,
               "name": "POST /products"
             }
           ]
@@ -581,15 +581,15 @@
           "path": "services/shop-api/app/features/product/delete_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 34,
+              "lastLine": 36,
               "name": "delete_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 34,
+              "lastLine": 36,
               "name": "DELETE /products/{id}"
             }
           ]
@@ -609,15 +609,15 @@
           "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 35,
+              "firstLine": 36,
               "kind": "function",
-              "lastLine": 43,
+              "lastLine": 44,
               "name": "find_products"
             },
             {
-              "firstLine": 35,
+              "firstLine": 36,
               "kind": "route",
-              "lastLine": 43,
+              "lastLine": 44,
               "name": "GET /product-search"
             }
           ]
@@ -649,15 +649,15 @@
           "path": "services/shop-api/app/features/product/list_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "function",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "list_product"
             },
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "route",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "GET /products"
             }
           ]
@@ -694,15 +694,15 @@
           "path": "services/shop-api/app/features/product/read_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "read_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "GET /products/{id}"
             }
           ]
@@ -733,15 +733,15 @@
           "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "function",
-              "lastLine": 47,
+              "lastLine": 48,
               "name": "restock_product"
             },
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "route",
-              "lastLine": 47,
+              "lastLine": 48,
               "name": "POST /products/{productId}/restock"
             }
           ]
@@ -773,15 +773,15 @@
           "path": "services/shop-api/app/features/product/update_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "update_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "PATCH /products/{id}"
             }
           ]
@@ -1005,15 +1005,15 @@
           "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "function",
-              "lastLine": 47,
+              "lastLine": 48,
               "name": "restock_product"
             },
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "route",
-              "lastLine": 47,
+              "lastLine": 48,
               "name": "POST /products/{productId}/restock"
             }
           ]
@@ -1079,15 +1079,15 @@
           "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 31,
+              "firstLine": 32,
               "kind": "function",
-              "lastLine": 41,
+              "lastLine": 46,
               "name": "archive_supplier"
             },
             {
-              "firstLine": 31,
+              "firstLine": 32,
               "kind": "route",
-              "lastLine": 41,
+              "lastLine": 46,
               "name": "POST /suppliers/{supplier}/archive"
             }
           ]
@@ -1113,15 +1113,15 @@
           "path": "services/shop-api/app/features/supplier/create_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 25,
+              "firstLine": 26,
               "kind": "function",
-              "lastLine": 30,
+              "lastLine": 31,
               "name": "create_supplier"
             },
             {
-              "firstLine": 25,
+              "firstLine": 26,
               "kind": "route",
-              "lastLine": 30,
+              "lastLine": 31,
               "name": "POST /suppliers"
             }
           ]
@@ -1158,15 +1158,15 @@
           "path": "services/shop-api/app/features/supplier/list_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 34,
+              "lastLine": 35,
               "name": "list_supplier"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 34,
+              "lastLine": 35,
               "name": "GET /suppliers"
             }
           ]
@@ -1203,15 +1203,15 @@
           "path": "services/shop-api/app/features/supplier/read_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 22,
+              "firstLine": 23,
               "kind": "function",
-              "lastLine": 27,
+              "lastLine": 28,
               "name": "read_supplier"
             },
             {
-              "firstLine": 22,
+              "firstLine": 23,
               "kind": "route",
-              "lastLine": 27,
+              "lastLine": 28,
               "name": "GET /suppliers/{id}"
             }
           ]
@@ -1543,45 +1543,51 @@
           "path": "services/shop-api/app/shared/errors_gen.py",
           "symbols": [
             {
-              "firstLine": 24,
+              "firstLine": 55,
               "kind": "class",
-              "lastLine": 30,
+              "lastLine": 61,
               "name": "ProblemError"
             },
             {
-              "firstLine": 33,
+              "firstLine": 64,
               "kind": "function",
-              "lastLine": 49,
+              "lastLine": 80,
               "name": "problem_response"
             },
             {
-              "firstLine": 52,
+              "firstLine": 83,
               "kind": "function",
-              "lastLine": 57,
+              "lastLine": 91,
+              "name": "problem_responses"
+            },
+            {
+              "firstLine": 94,
+              "kind": "function",
+              "lastLine": 113,
               "name": "register_error_handlers"
             },
             {
-              "firstLine": 60,
+              "firstLine": 116,
               "kind": "function",
-              "lastLine": 62,
+              "lastLine": 118,
               "name": "_problem"
             },
             {
-              "firstLine": 65,
+              "firstLine": 121,
               "kind": "function",
-              "lastLine": 69,
+              "lastLine": 125,
               "name": "_http"
             },
             {
-              "firstLine": 72,
+              "firstLine": 128,
               "kind": "function",
-              "lastLine": 74,
+              "lastLine": 130,
               "name": "_not_implemented"
             },
             {
-              "firstLine": 77,
+              "firstLine": 133,
               "kind": "function",
-              "lastLine": 89,
+              "lastLine": 145,
               "name": "_validation"
             }
           ]
@@ -1706,40 +1712,46 @@
           "path": "services/shop-api/tests/test_app_gen.py",
           "symbols": [
             {
-              "firstLine": 29,
-              "kind": "function",
-              "lastLine": 34,
-              "name": "test_healthz_returns_200_with_no_token"
-            },
-            {
-              "firstLine": 37,
+              "firstLine": 35,
               "kind": "function",
               "lastLine": 40,
-              "name": "test_request_id_of_the_request_is_in_the_response"
+              "name": "test_healthz_returns_200_with_no_token"
             },
             {
               "firstLine": 43,
               "kind": "function",
-              "lastLine": 48,
+              "lastLine": 46,
+              "name": "test_request_id_of_the_request_is_in_the_response"
+            },
+            {
+              "firstLine": 49,
+              "kind": "function",
+              "lastLine": 54,
               "name": "test_unknown_path_returns_problem_details"
             },
             {
-              "firstLine": 51,
+              "firstLine": 57,
               "kind": "function",
-              "lastLine": 61,
+              "lastLine": 67,
               "name": "test_not_implemented_error_returns_501"
             },
             {
-              "firstLine": 64,
+              "firstLine": 70,
               "kind": "function",
-              "lastLine": 68,
+              "lastLine": 74,
               "name": "test_missing_mandatory_variable_stops_the_app"
             },
             {
-              "firstLine": 71,
+              "firstLine": 77,
               "kind": "function",
-              "lastLine": 73,
+              "lastLine": 79,
               "name": "test_log_level_that_is_not_correct_stops_the_app"
+            },
+            {
+              "firstLine": 82,
+              "kind": "function",
+              "lastLine": 93,
+              "name": "test_openapi_document_agrees_with_openapi_gen_json"
             }
           ]
         },
@@ -1941,15 +1953,15 @@
           "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 31,
+              "firstLine": 32,
               "kind": "function",
-              "lastLine": 41,
+              "lastLine": 46,
               "name": "archive_supplier"
             },
             {
-              "firstLine": 31,
+              "firstLine": 32,
               "kind": "route",
-              "lastLine": 41,
+              "lastLine": 46,
               "name": "POST /suppliers/{supplier}/archive"
             }
           ]
@@ -1997,15 +2009,15 @@
           "path": "services/shop-api/app/features/count_customers/count_customers/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 34,
+              "firstLine": 35,
               "kind": "function",
-              "lastLine": 41,
+              "lastLine": 42,
               "name": "count_customers"
             },
             {
-              "firstLine": 34,
+              "firstLine": 35,
               "kind": "route",
-              "lastLine": 41,
+              "lastLine": 42,
               "name": "GET /customer-count"
             }
           ]
@@ -2065,15 +2077,15 @@
           "path": "services/shop-api/app/features/customer/create_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 30,
+              "firstLine": 31,
               "kind": "function",
-              "lastLine": 39,
+              "lastLine": 41,
               "name": "create_customer"
             },
             {
-              "firstLine": 30,
+              "firstLine": 31,
               "kind": "route",
-              "lastLine": 39,
+              "lastLine": 41,
               "name": "POST /customers"
             }
           ]
@@ -2110,15 +2122,15 @@
           "path": "services/shop-api/app/features/customer/delete_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "function",
-              "lastLine": 33,
+              "lastLine": 35,
               "name": "delete_customer"
             },
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "route",
-              "lastLine": 33,
+              "lastLine": 35,
               "name": "DELETE /customers/{id}"
             }
           ]
@@ -2138,15 +2150,15 @@
           "path": "services/shop-api/app/features/customer/list_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "function",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "list_customer"
             },
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "route",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "GET /customers"
             }
           ]
@@ -2183,15 +2195,15 @@
           "path": "services/shop-api/app/features/customer/read_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "function",
-              "lastLine": 31,
+              "lastLine": 36,
               "name": "read_customer"
             },
             {
-              "firstLine": 26,
+              "firstLine": 27,
               "kind": "route",
-              "lastLine": 31,
+              "lastLine": 36,
               "name": "GET /customers/{id}"
             }
           ]
@@ -2222,15 +2234,15 @@
           "path": "services/shop-api/app/features/customer/update_customer/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 29,
+              "firstLine": 30,
               "kind": "function",
-              "lastLine": 34,
+              "lastLine": 39,
               "name": "update_customer"
             },
             {
-              "firstLine": 29,
+              "firstLine": 30,
               "kind": "route",
-              "lastLine": 34,
+              "lastLine": 39,
               "name": "PATCH /customers/{id}"
             }
           ]
@@ -2385,15 +2397,15 @@
           "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 35,
+              "firstLine": 36,
               "kind": "function",
-              "lastLine": 43,
+              "lastLine": 44,
               "name": "find_products"
             },
             {
-              "firstLine": 35,
+              "firstLine": 36,
               "kind": "route",
-              "lastLine": 43,
+              "lastLine": 44,
               "name": "GET /product-search"
             }
           ]
@@ -2459,15 +2471,15 @@
           "path": "services/shop-api/app/features/product/create_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 36,
+              "lastLine": 38,
               "name": "create_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 36,
+              "lastLine": 38,
               "name": "POST /products"
             }
           ]
@@ -2504,15 +2516,15 @@
           "path": "services/shop-api/app/features/product/delete_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 34,
+              "lastLine": 36,
               "name": "delete_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 34,
+              "lastLine": 36,
               "name": "DELETE /products/{id}"
             }
           ]
@@ -2532,15 +2544,15 @@
           "path": "services/shop-api/app/features/product/list_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "function",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "list_product"
             },
             {
-              "firstLine": 32,
+              "firstLine": 33,
               "kind": "route",
-              "lastLine": 39,
+              "lastLine": 44,
               "name": "GET /products"
             }
           ]
@@ -2577,15 +2589,15 @@
           "path": "services/shop-api/app/features/product/read_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "read_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "GET /products/{id}"
             }
           ]
@@ -2616,15 +2628,15 @@
           "path": "services/shop-api/app/features/product/update_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "update_product"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 32,
+              "lastLine": 37,
               "name": "PATCH /products/{id}"
             }
           ]
@@ -2779,15 +2791,15 @@
           "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "function",
-              "lastLine": 47,
+              "lastLine": 48,
               "name": "restock_product"
             },
             {
-              "firstLine": 36,
+              "firstLine": 37,
               "kind": "route",
-              "lastLine": 47,
+              "lastLine": 48,
               "name": "POST /products/{productId}/restock"
             }
           ]
@@ -2853,15 +2865,15 @@
           "path": "services/shop-api/app/features/supplier/create_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 25,
+              "firstLine": 26,
               "kind": "function",
-              "lastLine": 30,
+              "lastLine": 31,
               "name": "create_supplier"
             },
             {
-              "firstLine": 25,
+              "firstLine": 26,
               "kind": "route",
-              "lastLine": 30,
+              "lastLine": 31,
               "name": "POST /suppliers"
             }
           ]
@@ -2898,15 +2910,15 @@
           "path": "services/shop-api/app/features/supplier/list_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "function",
-              "lastLine": 34,
+              "lastLine": 35,
               "name": "list_supplier"
             },
             {
-              "firstLine": 27,
+              "firstLine": 28,
               "kind": "route",
-              "lastLine": 34,
+              "lastLine": 35,
               "name": "GET /suppliers"
             }
           ]
@@ -2943,15 +2955,15 @@
           "path": "services/shop-api/app/features/supplier/read_supplier/endpoint_gen.py",
           "symbols": [
             {
-              "firstLine": 22,
+              "firstLine": 23,
               "kind": "function",
-              "lastLine": 27,
+              "lastLine": 28,
               "name": "read_supplier"
             },
             {
-              "firstLine": 22,
+              "firstLine": 23,
               "kind": "route",
-              "lastLine": 27,
+              "lastLine": 28,
               "name": "GET /suppliers/{id}"
             }
           ]

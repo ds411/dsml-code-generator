@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.features.supplier.list_supplier.handler_gen import handle
 from app.features.supplier.list_supplier.schemas_gen import ListSupplierPage
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 LIMIT_DEFAULT = 50
 """The number of entities in a page if the request gives no `limit`."""
@@ -24,7 +25,7 @@ LIMIT_MAX = 200
 router = APIRouter(tags=["suppliers"])
 
 
-@router.get("/suppliers")
+@router.get("/suppliers", responses=problem_responses(422))
 async def list_supplier(
     session: Annotated[AsyncSession, Depends(get_session)],
     limit: Annotated[int, Query(ge=1, le=LIMIT_MAX)] = LIMIT_DEFAULT,

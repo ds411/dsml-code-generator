@@ -16,6 +16,7 @@ from app.features.product.list_product.handler_gen import handle
 from app.features.product.list_product.schemas_gen import ListProductPage
 from app.shared.auth.cognito_gen import require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("admin", "clerk")
 """The roles that can use the operation (`allowedRoles`)."""
@@ -29,7 +30,11 @@ LIMIT_MAX = 200
 router = APIRouter(tags=["products"])
 
 
-@router.get("/products", dependencies=[Depends(require_roles(*ALLOWED_ROLES))])
+@router.get(
+    "/products",
+    dependencies=[Depends(require_roles(*ALLOWED_ROLES))],
+    responses=problem_responses(401, 403, 422),
+)
 async def list_product(
     session: Annotated[AsyncSession, Depends(get_session)],
     limit: Annotated[int, Query(ge=1, le=LIMIT_MAX)] = LIMIT_DEFAULT,

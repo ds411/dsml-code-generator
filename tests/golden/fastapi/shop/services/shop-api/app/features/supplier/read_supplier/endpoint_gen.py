@@ -15,11 +15,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.features.supplier.read_supplier.handler_gen import handle
 from app.features.supplier.read_supplier.schemas_gen import ReadSupplierOutput
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 router = APIRouter(tags=["suppliers"])
 
 
-@router.get("/suppliers/{id}")
+@router.get("/suppliers/{id}", responses=problem_responses(404, 422))
 async def read_supplier(
     id: UUID, session: Annotated[AsyncSession, Depends(get_session)]
 ) -> ReadSupplierOutput:

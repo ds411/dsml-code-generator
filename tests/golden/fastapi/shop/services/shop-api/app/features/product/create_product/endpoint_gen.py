@@ -17,6 +17,7 @@ from app.features.product.create_product.handler_gen import handle
 from app.features.product.create_product.schemas_gen import CreateProductInput, CreateProductOutput
 from app.shared.auth.cognito_gen import require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("admin", "clerk")
 """The roles that can use the operation (`allowedRoles`)."""
@@ -28,6 +29,7 @@ router = APIRouter(tags=["products"])
     "/products",
     status_code=HTTPStatus.CREATED,
     dependencies=[Depends(require_roles(*ALLOWED_ROLES))],
+    responses=problem_responses(401, 403, 409, 422),
 )
 async def create_product(
     data: CreateProductInput, session: Annotated[AsyncSession, Depends(get_session)]

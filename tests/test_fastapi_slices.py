@@ -497,7 +497,7 @@ def test_read_path_must_have_one_parameter_with_a_python_name(path: str, message
 def test_crud_operation_uses_the_method_and_the_path_of_the_model() -> None:
     files = generate(small_ir(defaults=(("read", "get", "/shop/{entities}/{itemId}"),)))
     text = files[f"{PROJECT}/app/features/item/read_item/endpoint_gen.py"]
-    assert '@router.get("/shop/items/{itemId}")\n' in text
+    assert '@router.get("/shop/items/{itemId}", responses=problem_responses(404, 422))\n' in text
     assert "    return await handle(itemId, session)\n" in text
 
 

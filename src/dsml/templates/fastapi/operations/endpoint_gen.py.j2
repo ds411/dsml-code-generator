@@ -38,7 +38,7 @@ router = APIRouter(tags=[{{ operation.tag }}])
 {% for line in operation.signature_lines %}
 {{ line }}
 {% endfor %}
-    """Validate the input and call the hand-written handler."""
+    """{{ operation.endpoint_doc }}"""
 {% for line in operation.input_lines %}
 {{ line }}
 {% endfor %}

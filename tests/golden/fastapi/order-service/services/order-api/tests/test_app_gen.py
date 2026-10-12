@@ -6,6 +6,9 @@ The generator writes this file again at each run. Put your tests in other
 files of this folder.
 """
 
+import json
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -24,6 +27,9 @@ ENVIRON = {
     "DATABASE_PASSWORD": "test",
 }
 """A value for each mandatory environment variable."""
+
+OPENAPI_DOCUMENT = Path(__file__).resolve().parent.parent / "openapi.gen.json"
+"""The OpenAPI document that the generator writes from the model."""
 
 
 def test_healthz_returns_200_with_no_token() -> None:
@@ -71,3 +77,17 @@ def test_missing_mandatory_variable_stops_the_app(name: str) -> None:
 def test_log_level_that_is_not_correct_stops_the_app() -> None:
     with pytest.raises(ConfigurationError, match="LOG_LEVEL"):
         load_settings({**ENVIRON, "LOG_LEVEL": "LOUD"})
+
+
+def test_openapi_document_agrees_with_openapi_gen_json() -> None:
+    """The running application must supply the document of the model (PRD-APP-004).
+
+    The test compares the parsed JSON. Thus the order of the keys has no
+    effect. FastAPI writes a minimum or a maximum as a real number, for
+    example 0.0 for 0. The parsed values are equal, thus this has no effect.
+    """
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.get("/openapi.json")
+    assert response.status_code == 200
+    expected = json.loads(OPENAPI_DOCUMENT.read_text(encoding="utf-8"))
+    assert response.json() == expected

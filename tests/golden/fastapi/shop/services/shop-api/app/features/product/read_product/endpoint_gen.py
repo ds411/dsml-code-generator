@@ -17,6 +17,7 @@ from app.features.product.read_product.handler_gen import handle
 from app.features.product.read_product.schemas_gen import ReadProductOutput
 from app.shared.auth.cognito_gen import require_roles
 from app.shared.db.session_gen import get_session
+from app.shared.errors_gen import problem_responses
 
 ALLOWED_ROLES = ("admin", "clerk")
 """The roles that can use the operation (`allowedRoles`)."""
@@ -24,7 +25,11 @@ ALLOWED_ROLES = ("admin", "clerk")
 router = APIRouter(tags=["products"])
 
 
-@router.get("/products/{id}", dependencies=[Depends(require_roles(*ALLOWED_ROLES))])
+@router.get(
+    "/products/{id}",
+    dependencies=[Depends(require_roles(*ALLOWED_ROLES))],
+    responses=problem_responses(401, 403, 404, 422),
+)
 async def read_product(
     id: UUID, session: Annotated[AsyncSession, Depends(get_session)]
 ) -> ReadProductOutput:
