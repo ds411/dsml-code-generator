@@ -1,0 +1,23 @@
+{#- The drizzle.config.ts of the Next.js target (PRD-APP-334). The generator
+    writes the migrations from the schema snapshot, thus the project does not
+    use "drizzle-kit generate" (PRD-APP-331). The file gives the schema, the
+    migration folder and the database to a developer tool, for example
+    "drizzle-kit studio". The project does not install drizzle-kit, thus the
+    file does not import it. The values of the database come from the
+    environment variables of the application at run time. -#}
+{% include "common/header.j2" %}
+const drizzleConfig = {
+  dialect: "postgresql",
+  schema: "./src/shared/db/schema.gen.ts",
+  out: "./migrations",
+  dbCredentials: {
+    host: process.env.DATABASE_HOST ?? "localhost",
+    port: Number(process.env.DATABASE_PORT ?? "5432"),
+    database: process.env.DATABASE_NAME ?? "",
+    user: process.env.DATABASE_USER ?? "",
+    password: process.env.DATABASE_PASSWORD ?? "",
+    ssl: process.env.DATABASE_SSL_MODE !== "disable",
+  },
+} as const;
+
+export default drizzleConfig;

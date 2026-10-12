@@ -1,0 +1,32 @@
+{#- The Dockerfile of the Next.js target (PRD-APP-013, PRD-APP-333). A
+    Dockerfile must not have a parser directive, because the header is on the
+    first line. -#}
+{% include "common/header.j2" %}
+
+# The base image is pinned by digest (PRD-APP-013).
+FROM {{ node_image }} AS build
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm install --global pnpm@{{ pnpm_version }}
+WORKDIR /srv
+# pnpm can write pnpm-workspace.yaml with the settings of the install. The
+# file is optional, thus the pattern "pnpm-workspace.yaml*".
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
+RUN pnpm install --frozen-lockfile
+COPY . .
+# The build reads no environment value of an environment (PRD-APP-010).
+RUN mkdir -p public && pnpm build
+
+# The "standalone" output holds the server and its dependencies only
+# (PRD-APP-333).
+FROM {{ node_image }} AS runtime
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    HOSTNAME=0.0.0.0 \
+    PORT={{ port }}
+WORKDIR /srv
+COPY --from=build /srv/.next/standalone ./
+COPY --from=build /srv/.next/static ./.next/static
+COPY --from=build /srv/public ./public
+USER node
+EXPOSE {{ port }}
+CMD ["node", "server.js"]

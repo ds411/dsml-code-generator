@@ -1,0 +1,13 @@
+{#- The .dockerignore of the Next.js target. Only the listed files go into
+    the build context, so no local secret file goes into the image
+    (PRD-APP-013). -#}
+{% include "common/header.j2" %}
+**
+!app/
+!next.config.ts
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!public/
+!src/
+!tsconfig.json

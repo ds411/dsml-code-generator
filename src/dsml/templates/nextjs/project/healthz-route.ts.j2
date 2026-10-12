@@ -1,0 +1,4 @@
+{#- The route file of GET /healthz (PRD-APP-012, PRD-APP-302). It re-exports
+    the handler of the layer _app. -#}
+{% include "common/header.j2" %}
+export { GET } from "{{ layout.import_path("app") }}/api-routes/healthz.gen";

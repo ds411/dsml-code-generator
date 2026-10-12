@@ -1,0 +1,14 @@
+{#- The handler of GET /healthz (PRD-APP-012). The route needs no token. It
+    gives HTTP 200 while the process operates. -#}
+{% include "common/header.j2" %}
+import { withRequestLog } from "@/shared/log/index.server";
+
+/** The response of GET /healthz. */
+export interface Health {
+  status: "ok";
+}
+
+/** Tell that the process operates. The route needs no token. */
+export const GET = withRequestLog(() =>
+  Promise.resolve(Response.json({ status: "ok" } satisfies Health)),
+);

@@ -15,7 +15,7 @@ def test_package_baseline_pins_opensysml() -> None:
     assert pinned_version("opensysml") == "0.9.2"
 
 
-def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
+def test_package_baseline_has_the_items_of_phases_1_to_3() -> None:
     assert set(load_baseline()) == {
         "action-checkout",
         "action-configure-aws-credentials",
@@ -51,6 +51,7 @@ def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
         "lucide-react",
         "next",
         "node",
+        "node-image",
         "opensysml",
         "opentofu",
         "opentofu-sha256",
@@ -75,6 +76,7 @@ def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
         "react",
         "react-dom",
         "ruff",
+        "server-only",
         "shadcn-ui",
         "shadcn-ui-commit",
         "sqlalchemy",
@@ -85,6 +87,7 @@ def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
         "sysml-grpc-sha256-linux-arm64",
         "tailwind-merge",
         "tailwindcss",
+        "tailwindcss-postcss",
         "tailwindcss-vite",
         "tanstack-react-form",
         "tanstack-react-query",
@@ -98,6 +101,7 @@ def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
         "tflint-ruleset-aws",
         "tflint-ruleset-aws-sha256",
         "tflint-sha256",
+        "types-node",
         "types-pg",
         "types-react",
         "types-react-dom",

@@ -1,0 +1,18 @@
+{#- The request ID of the logs (PRD-APP-015). The module has no server-only
+    code. -#}
+{% include "common/header.j2" %}
+/** The HTTP header of the request ID. */
+export const REQUEST_ID_HEADER = "X-Request-ID";
+
+const VALID_REQUEST_ID = /^[A-Za-z0-9._-]{1,128}$/;
+
+/**
+ * Give the request ID of a request: the value of the header X-Request-ID,
+ * or a new ID if the header is missing or not valid.
+ */
+export function requestIdOf(headers: Headers): string {
+  const value = headers.get(REQUEST_ID_HEADER) ?? "";
+  return VALID_REQUEST_ID.test(value)
+    ? value
+    : crypto.randomUUID().replaceAll("-", "");
+}

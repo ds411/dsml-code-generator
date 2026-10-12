@@ -21,7 +21,7 @@ The versions come from the version baseline `versions.toml` (PRD-APP-201,
 PRD-TOP-008). The generator does not write `pnpm-lock.yaml` (PRD-CORE-036).
 """
 
-from collections.abc import Callable, Collection, Sequence
+from collections.abc import Callable, Collection, Mapping, Sequence
 from typing import Final
 
 from dsml.config import Configuration
@@ -182,17 +182,25 @@ def _target(application: Element) -> str | None:
 
 # trace: PRD-APP-201, PRD-CORE-046, PRD-TOP-008
 def dependencies(
-    application: Element, configuration: Configuration, baseline: dict[str, Pin]
+    application: Element,
+    configuration: Configuration,
+    baseline: dict[str, Pin],
+    packages: tuple[Mapping[str, str], Mapping[str, str]] = (RUNTIME_PACKAGES, DEV_PACKAGES),
+    target: str = "React",
 ) -> tuple[dict[str, str], dict[str, str]]:
     """Give the run-time and the dev dependencies of an application, each sorted by name.
 
     The run-time dependencies are the pinned packages of the target and the
     extra dependencies of the key `applications.<name>.dependencies`
     (PRD-CORE-046). An extra dependency has the form `<package>@<version>`,
-    for example `date-fns@4.1.0` or `@scope/package@1.2.3`.
+    for example `date-fns@4.1.0` or `@scope/package@1.2.3`. `packages`
+    gives the run-time and the dev packages of the target and their
+    baseline items. The Next.js generator gives its own packages and the
+    name of its target.
     """
-    runtime = {name: pinned_version(item, baseline) for name, item in RUNTIME_PACKAGES.items()}
-    dev = {name: pinned_version(item, baseline) for name, item in DEV_PACKAGES.items()}
+    runtime_packages, dev_packages = packages
+    runtime = {name: pinned_version(item, baseline) for name, item in runtime_packages.items()}
+    dev = {name: pinned_version(item, baseline) for name, item in dev_packages.items()}
     settings = configuration.application(application.name)
     for text in settings.dependencies if settings is not None else ():
         at = text.rfind("@")
@@ -205,7 +213,7 @@ def dependencies(
         if name in runtime or name in dev:
             raise ToolchainError(
                 f'The dependency "{text}" of the application "{application.name}" is a package '
-                "of the React target. The version baseline gives its version. Remove it from "
+                f"of the {target} target. The version baseline gives its version. Remove it from "
                 f"the key applications.{application.name}.dependencies."
             )
         runtime[name] = version

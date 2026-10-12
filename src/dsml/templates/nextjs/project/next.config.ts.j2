@@ -1,0 +1,12 @@
+{#- The next.config.ts of the Next.js target. The build uses the "standalone"
+    output: the Dockerfile copies the server and its dependencies only
+    (PRD-APP-333). The build reads no environment value (PRD-APP-010). -#}
+{% include "common/header.j2" %}
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  output: "standalone",
+  poweredByHeader: false,
+};
+
+export default nextConfig;

@@ -1,0 +1,47 @@
+{#- The public runtime values on the client (PRD-APP-325). The root layout
+    reads them on the server and gives them to PublicConfigProvider. A client
+    component reads them with usePublicConfig. The build uses no
+    NEXT_PUBLIC_ variable. Data: "variables" (the pairs of the key and the
+    environment variable). -#}
+{% include "common/header.j2" %}
+"use client";
+
+import { createContext, type ReactNode, use } from "react";
+
+/**
+ * The public runtime values of the environment. The root layout reads them
+ * from the environment variables of the server at each request.
+ */
+export interface PublicConfig {
+{% for key, variable in variables %}
+  /** The value of the environment variable {{ variable }}. */
+  {{ key }}: string;
+{% endfor %}
+}
+
+const PublicConfigContext = createContext<PublicConfig | null>(null);
+
+/** The properties of the provider of the public runtime values. */
+export interface PublicConfigProviderProps {
+  config: PublicConfig;
+  children: ReactNode;
+}
+
+/** Give the public runtime values to the client components. */
+export function PublicConfigProvider({
+  config,
+  children,
+}: PublicConfigProviderProps) {
+  return <PublicConfigContext value={config}>{children}</PublicConfigContext>;
+}
+
+/** Give the public runtime values. The root layout must contain the component. */
+export function usePublicConfig(): PublicConfig {
+  const config = use(PublicConfigContext);
+  if (config === null) {
+    throw new Error(
+      "The public runtime values are missing. The root layout must give them.",
+    );
+  }
+  return config;
+}

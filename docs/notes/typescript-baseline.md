@@ -1,6 +1,6 @@
 # Version baseline of the TypeScript targets
 
-Story #158 added the items of the React and Next.js targets to the version baseline `src/dsml/versions.toml`. Decision record 09 (Q64) gives the line of each item. This note gives the source and the license of each exact version. Story #167 added the items `types-react` and `types-react-dom`, because React does not include its type declarations.
+Story #158 added the items of the React and Next.js targets to the version baseline `src/dsml/versions.toml`. Decision record 09 (Q64) gives the line of each item. This note gives the source and the license of each exact version. Story #167 added the items `types-react` and `types-react-dom`, because React does not include its type declarations. Story #180 added the items `server-only`, `tailwindcss-postcss` and `types-node` of the Next.js target, and the base image `node-image` of its Dockerfile.
 
 ## Rules
 
@@ -45,6 +45,9 @@ Story #158 added the items of the React and Next.js targets to the version basel
 | `drizzle-orm` | `drizzle-orm` | 0.45 | 0.45.4 | Apache-2.0 |
 | `pg` | `pg` | 8 | 8.23.1 | MIT |
 | `types-pg` | `@types/pg` | 8 | 8.23.1 | MIT |
+| `server-only` | `server-only` | 0.0 | 0.0.1 | MIT |
+| `tailwindcss-postcss` | `@tailwindcss/postcss` | 4 | 4.3.3 | MIT |
+| `types-node` | `@types/node` | 26 | 26.6.5 | MIT |
 | `steiger` | `steiger` | 0.7 | 0.7.0 | MIT |
 | `feature-sliced-steiger-plugin` | `@feature-sliced/steiger-plugin` | 0.8 | 0.8.0 | MIT |
 | `steiger-toolkit` | `@steiger/toolkit` | 0.2 | 0.2.3 | MIT |
