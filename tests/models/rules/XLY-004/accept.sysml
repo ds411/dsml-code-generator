@@ -1,5 +1,5 @@
-// Test model of story #63: XLY-004 accepts this model.
-// The react application calls the API and uses no database.
+// Test model of stories #63 and #161: XLY-004 accepts this model.
+// The static site of the react application uses no database.
 package XlyAccept {
     private import DSML::*;
     private import ScalarValues::*;
@@ -15,9 +15,27 @@ package XlyAccept {
         }
     }
 
+    #Application part orderPortal {
+        :>> target = Target::react;
+        #View part orderList {
+            :>> kind = ViewKind::list;
+            ref :>> entity : Order;
+            :>> allowedRoles = (AppRoles::clerk);
+        }
+    }
+
     #ContainerService part apiService;
+    #StaticSite part portalSite;
     #RelationalDatabase part orderDb;
     #UserDirectory part users;
+    #Uses dependency from apiService to orderDb;
+    #Uses dependency from apiService to users;
+    #Uses dependency from portalSite to users;
+    #Calls dependency from orderPortal to orderApi;
+    allocate orderApi to apiService;
+    allocate orderPortal to portalSite;
+    #AwsStaticSite part portalSiteAws;
+    #Realizes dependency from portalSiteAws to portalSite;
 
     #AwsEcsService part apiServiceAws;
     #AwsRdsPostgres part orderDbAws;
@@ -25,9 +43,4 @@ package XlyAccept {
     #Realizes dependency from apiServiceAws to apiService;
     #Realizes dependency from orderDbAws to orderDb;
     #Realizes dependency from usersAws to users;
-
-    #ContainerService part webService;
-    #Application part orderWeb { :>> target = Target::react; }
-    #Calls dependency from orderWeb to orderApi;
-    allocate orderWeb to webService;
 }

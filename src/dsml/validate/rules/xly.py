@@ -2,14 +2,11 @@
 """The rules of the category XLY. They examine links between the layers.
 
 The rules read the `allocate`, `realizes`, `uses` and `calls` links of the IR
-(`docs/notes/ir-solution-layers.md`).
+(`docs/notes/ir-solution-layers.md`). A `react` application is allocated to a
+`#StaticSite`, and a `#AwsStaticSite` realizes the static site.
 
-Phase 1 has no static site and no imported OpenAPI file. Thus:
-
-- The IR has no `#StaticSite` element. XLY-002 rejects each allocation of a
-  `react` application, because only a static site is correct for it.
-- XLY-005 accepts only a `#Calls` dependency.
-- XLY-007 examines only exposed entities and operations. A view is in phase 2.
+The IR has no imported OpenAPI file yet. Thus XLY-005 accepts only a `#Calls`
+dependency. The import story of milestone M9 adds the imported file.
 """
 
 from collections.abc import Iterator
@@ -27,15 +24,16 @@ from dsml.ir.model import (
 )
 from dsml.validate.rule import Hit, Rule, implements
 
-# trace: PRD-DSML-035, PRD-DSML-037
+# trace: PRD-DSML-035, PRD-DSML-037, PRD-DSML-039
 REALIZATIONS: Final[dict[ElementKind, ElementKind]] = {
     "Network": "AwsVpc",
     "ContainerService": "AwsEcsService",
     "RelationalDatabase": "AwsRdsPostgres",
     "UserDirectory": "AwsCognito",
     "SecretStore": "AwsSecrets",
+    "StaticSite": "AwsStaticSite",
 }
-"""The logical kinds of phase 1 and the AWS kind that realizes each logical kind."""
+"""The logical kinds and the AWS kind that realizes each logical kind."""
 
 # trace: PRD-DSML-039
 HOSTS: Final[dict[str, str]] = {
@@ -141,10 +139,7 @@ class _Graph:
         return None if element is None else element.kind
 
     def hosts(self, application: Element) -> list[Link]:
-        """Give the allocations of an application to logical elements.
-
-        Phase 2 adds the logical kind `StaticSite` to `REALIZATIONS`.
-        """
+        """Give the allocations of an application to logical elements."""
         return [
             link
             for link in self.links_from(application.identity, "allocate")
@@ -159,6 +154,14 @@ class _Graph:
         """Give the exposed entities and operations of an application."""
         return (
             element for element in self.of_kind("Exposed") if element.owner == application.identity
+        )
+
+    def guarded(self, application: Element) -> Iterator[Element]:
+        """Give the exposed entities, the exposed operations and the views of an application."""
+        return (
+            element
+            for element in self.of_kind("Exposed", "View")
+            if element.owner == application.identity
         )
 
 
@@ -287,12 +290,12 @@ def xly_006(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
             yield Hit(location=application.location, element=application.identity)
 
 
-# trace: PRD-DSML-033, PRD-DSML-039, PRD-DSML-040
+# trace: PRD-DSML-031, PRD-DSML-033, PRD-DSML-039, PRD-DSML-040
 @implements(XLY_007)
 def xly_007(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
     graph = _Graph(ir)
     for application in graph.of_kind("Application"):
-        protected = any(not _is_public(element) for element in graph.exposed(application))
+        protected = any(not _is_public(element) for element in graph.guarded(application))
         hosts = [link.target for link in graph.hosts(application)]
         if not protected or not hosts:
             continue  # XLY-001 reports a missing service or site.
