@@ -1,0 +1,22 @@
+{
+  "name": "typescript-check",
+  "private": true,
+  "type": "module",
+  "description": "Test project of story #190. It checks the tools of the TypeScript targets with one TypeScript version.",
+  "packageManager": "pnpm@12.11.2",
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.12.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.11.1",
+      "onFail": "download"
+    }
+  }
+}

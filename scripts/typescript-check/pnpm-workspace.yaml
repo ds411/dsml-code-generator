@@ -1,0 +1,5 @@
+# The two test applications. check.sh replaces the TypeScript version
+# with an override.
+packages:
+  - react-app
+  - next-app
