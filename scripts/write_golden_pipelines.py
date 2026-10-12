@@ -1,7 +1,7 @@
 # trace: PRD-CORE-030, PRD-CICD-001
 """Write the golden files of the pipeline generator again.
 
-Stories #83 and #87 added the golden output of the example model in
+Stories #83, #87 and #89 added the golden output of the example model in
 tests/golden/pipelines/order-service/. The test
 tests/test_pipeline_generator.py compares the output of the pipeline
 generator with these files. The CI step "Lint the golden workflows" runs
