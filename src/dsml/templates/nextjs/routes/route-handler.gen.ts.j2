@@ -1,0 +1,101 @@
+{#- The route handler of one operation (PRD-APP-008, PRD-APP-014, PRD-APP-114,
+    PRD-APP-310, PRD-APP-311, PRD-APP-312, PRD-CORE-045). The function
+    routeHandler applies the role check first. Then the function handle
+    validates the input with the Zod schema, calls the server function and
+    gives the response. Data: "operation" (a
+    dsml.generate.nextjs_routes.Operation), "http_source", "auth_source",
+    "limit_default" and "limit_max". -#}
+{% include "common/header.j2" %}
+{% if operation.uses_zod %}
+import { z } from "zod";
+
+{% endif %}
+{% for line in operation.import_lines(http_source, auth_source) %}
+{{ line }}
+{% endfor %}
+
+/** The access rule of the operation: the attributes allowedRoles and public. */
+{% for line in operation.access_lines() %}
+{{ line }}
+{% endfor %}
+{% if operation.kind == "list" %}
+
+/** The number of entities in a page if the request gives no `limit`. */
+const LIMIT_DEFAULT = {{ limit_default }};
+
+/** The maximum number of entities in a page. */
+const LIMIT_MAX = {{ limit_max }};
+
+/**
+ * The query parameters of the operation list. The function numberParameter
+ * changes a text into a number.
+ */
+const querySchema = z.object({
+  limit: z.preprocess(
+    numberParameter,
+    z.int().min(1).max(LIMIT_MAX).default(LIMIT_DEFAULT),
+  ),
+  offset: z.preprocess(numberParameter, z.int().min(0).default(0)),
+});
+{% endif %}
+{% if operation.uses_context %}
+
+/** The path parameters of the route. */
+{% for line in operation.params_lines() %}
+{{ line }}
+{% endfor %}
+
+/** {{ operation.context_doc }} */
+interface Context {
+  params: Promise<Params>;
+}
+{% endif %}
+{% if operation.uses_zod and operation.kind != "list" %}
+
+/** The path parameters of the operation, with the type of the key. */
+{% for line in operation.path_schema_lines() %}
+{{ line }}
+{% endfor %}
+{% endif %}
+
+/** Validate the input, call the server function and give the response. */
+{% for line in operation.handle_lines() %}
+{{ line }}
+{% endfor %}
+{% if operation.custom is not none %}
+{% if operation.uses_context %}
+  const params = await context.params;
+{% endif %}
+{% if operation.custom.request_fields and not operation.custom.has_body %}
+  const query = new URL(request.url).searchParams;
+{% endif %}
+{% for line in operation.value_lines() %}
+  {{ line }}
+{% endfor %}
+  const input = parseInput(inputSchema, value, "{{ operation.request_location }}");
+{% else %}
+{% if operation.kind == "list" %}
+  const parameters = Object.fromEntries(new URL(request.url).searchParams);
+  const query = parseInput(querySchema, parameters, "query");
+{% endif %}
+{% if operation.uses_zod and operation.kind != "list" %}
+  const path = parseInput(pathSchema, await context.params, "path");
+{% endif %}
+{% if operation.kind in ("create", "update") %}
+  const input = parseInput(inputSchema, await readJson(request), "body");
+{% endif %}
+{% endif %}
+{% for line in operation.call_lines() %}
+  {{ line }}
+{% endfor %}
+{% if operation.success_status == 204 %}
+  return new Response(null, { status: 204 });
+{% elif operation.success_status == 200 %}
+  return Response.json(result);
+{% else %}
+  return Response.json(result, { status: {{ operation.success_status }} });
+{% endif %}
+}
+
+/** The operation {{ operation.description }}: {{ operation.route }}. */
+export const {{ operation.http_method }} = routeHandler(ACCESS, handle);

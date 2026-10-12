@@ -3,7 +3,7 @@
 Story #180 added the first part of the Next.js generator (phase 3). The generator writes a project that `tsc`, ESLint, Steiger, Vitest, `next build` and `docker build` accept. The container answers `GET /healthz`. The next stories of M11 (#156) write the other parts.
 
 - Generator: `src/dsml/generate/nextjs.py`. It is in the list `GENERATORS` of `src/dsml/generate/generators.py`, after the React generator.
-- Part modules: `nextjs_database.py` (#182), `nextjs_auth.py` (#183), `nextjs_slices.py` (#184), `nextjs_routes.py` (#186) and `nextjs_pages.py` (#188) in `src/dsml/generate/`. In story #180, each function gives no file.
+- Part modules: `nextjs_database.py` (#182), `nextjs_auth.py` (#183), `nextjs_slices.py` (#184), `nextjs_routes.py` (#186) and `nextjs_pages.py` (#188) in `src/dsml/generate/`. In story #180, each function gave no file.
 - Templates: `src/dsml/templates/nextjs/project/`.
 - Tests: `tests/test_nextjs_generator.py`.
 - Golden files: `tests/golden/nextjs/order-web/`, with the schema snapshot but no manifests in `.dsml/`. Write them again with `uv run python scripts/write_golden_nextjs.py`. The configuration of the script is in the parent folder, with the output folder `order-web`, because a generator must not write into the folder `.dsml/` of the configuration file.
@@ -141,6 +141,61 @@ The rules of the Next.js slices:
 
 The Vitest tests render the client components in jsdom and replace `fetch`. The features test examines the request of the form `cancelOrder` to `/api/orders/<id>/cancel`, a field error, a problem details error and the invalidation of the order queries after a delete. The widgets test examines the requests of the table and of the details. The CI job copies the folders to `tests/features/` and `tests/widgets/` of the golden project. V-004 of the order web names `tests/features/features.test.tsx`.
 
+## Route handlers and server functions
+
+Story #186 added the route handler part: `src/dsml/generate/nextjs_routes.py` and the templates in `src/dsml/templates/nextjs/routes/`. Each operation of the application gets a route handler under `/api` with the REST contract of the FastAPI target (PRD-APP-310, PRD-APP-311). The tests are in `tests/test_nextjs_routes.py` and `tests/nextjs/routes/`.
+
+| File | Content | Requirements |
+| --- | --- | --- |
+| `src/_app/api-routes/<operation>.gen.ts` | The route handler of the operation. | PRD-APP-008, PRD-APP-014, PRD-APP-310, PRD-APP-312 |
+| `app/api/<path>/route.ts` | The route file. It re-exports the route handler of each method of the path. | PRD-APP-302, PRD-APP-310 |
+| `src/features/<operation>/api/<operation>.server.gen.ts` | The server function of a CRUD operation, with the Drizzle schema of `src/shared/db/`. | PRD-APP-113, PRD-APP-114, PRD-APP-313 |
+| `src/features/<operation>/api/<operation>.server.ts` | The create-once stub of the server function of a custom operation. | PRD-APP-313, PRD-CORE-045 |
+| `src/features/<operation>/model/<operation>-schemas.gen.ts` | The Zod schemas of a custom operation with the method GET. The client has no feature slice for it. | PRD-APP-312 |
+| `src/features/<operation>/index.server.gen.ts`, `index.server.ts` | The server-only public API of the slice. | PRD-APP-305 |
+| `src/shared/http/route.server.gen.ts` | The function `routeHandler`, the class `ProblemError`, the function `parseInput` and the change of database errors into API errors. | PRD-APP-008, PRD-APP-014, PRD-APP-113 |
+
+The operation name gives the slice name. A CRUD operation has the name `<kind><Entity>`, for example `createOrder` and `listOrder`. A custom operation has the name of its `#Exposed` element, for example `cancelOrder`. The slices of `read` and `list` have only server files. The server function has the name `handle<Operation>`, for example `handleReadOrder`. The pages story (#188) can call the server functions of `read` and `list` directly (PRD-APP-314).
+
+### Route handler
+
+The function `routeHandler` of `src/shared/http/` makes the route handler. It writes one log line for each request with `withRequestLog`. Then it does these steps:
+
+1. It calls `authorize` of `src/shared/auth/` with the access rule of the operation. With no valid token, the response is HTTP 401. If no group of the user is in the roles, the response is HTTP 403 (PRD-APP-008).
+2. It calls the function `handle` of the route handler. `handle` validates the path parameters, the query parameters and the request body with Zod. A value that is not correct gives HTTP 422 with the list `errors` (PRD-APP-113).
+3. `handle` calls the server function and gives the response: HTTP 201 for `create`, HTTP 204 with no body for `delete` and for a custom operation with no output, and HTTP 200 for the other operations.
+4. A `ProblemError` gives problem details with its status (PRD-APP-014). An other error gives HTTP 500.
+
+The input schemas of `create` and `update` come from the entity slice. The input schema of a custom operation comes from its feature slice. A path parameter or a query parameter is a text. The functions `numberParameter` and `booleanParameter` change the text into the value of a number field or a boolean field. A custom operation with a request body gets the fields of the JSON object and the path parameters in one input.
+
+The `list` operation accepts `limit` (default 50, maximum 200) and `offset` (default 0). The server function sorts the entities by key (PRD-APP-114).
+
+### Route folders
+
+Next.js permits one name for a dynamic segment at one place of the route tree. Thus all the path parameters at one place get the first name in sorted order. For example, `/orders/{id}` and `/orders/{orderId}/cancel` give the folders `app/api/orders/[id]` and `app/api/orders/[id]/cancel`. The route handler of `cancelOrder` reads `orderId` from the parameter `id`. Two operations with the same method and path give an error.
+
+### Server functions
+
+A CRUD server function uses the Drizzle table of `src/shared/db/` and `getDatabase()`. The JSON names of the fields are the column names, and the properties of a row are in camel case. The server function changes the values between the two forms. A decimal value is a text in the database. A time stamp is a `Date` in a row and an ISO 8601 text in JSON.
+
+The server function changes a database error into a `ProblemError` (PRD-APP-113):
+
+- HTTP 409 if a value breaks a `unique` rule.
+- HTTP 422 if a foreign key refers to an entity that does not exist. The status is HTTP 409 if a `delete` breaks a relation.
+- HTTP 422 if the database cannot keep a value.
+
+An entity that does not exist gives HTTP 404. The `create` server function makes a random UUID for the key. The Drizzle schema has no generated values for an integer key, thus a `create` operation of an entity with an integer key gives an error in `dsml generate`.
+
+### Custom operations
+
+The create-once stub `<operation>.server.ts` has no generated header, because a developer owns it. It has the type `Handler` of the server function: the input of the Zod schema and the session of the user give a promise of the output. Until a developer writes the logic, the function gives HTTP 501 (PRD-APP-313). The route handler calls the function and gives its result the type of the output. Thus a change of the model that does not agree with the stub gives a type check error (PRD-CORE-045).
+
+### Tests
+
+- `tests/test_nextjs_routes.py` compares the route files of the order web with the golden files. It also generates the shop model of `tests/models/fastapi/shop.sysml` with the target `nextjs`. That model has custom operations with the method GET, query parameters, a request body and no output.
+- `tests/nextjs/routes/routes.test.ts` is a Vitest test. The CI job copies it into the golden project and gives it a PostgreSQL database. The test applies the migrations and replaces the Amplify adapter. It sends requests to the route handlers and examines the CRUD responses and the statuses 401, 403, 404, 409, 422 and 501. For HTTP 409, the test adds a unique index on the column `note`.
+- The CI job gets `/api/orders` from the container with no session. The response must be HTTP 401 with problem details.
+
 ## Notes for the next stories
 
 - The golden test of each part story compares only the files of its part. `PART_FOLDERS` in `tests/test_nextjs_generator.py` gives these folders. `src/_app/api-routes/healthz.gen.ts` belongs to the project files.
@@ -150,5 +205,5 @@ The Vitest tests render the client components in jsdom and replace `fetch`. The 
 - ESLint does not examine the scripts `*.gen.mjs`, because the type-aware rules need the TypeScript project.
 - The root layout has no providers and no style sheet yet. Story #188 adds the providers, the navigation and the style sheet `src/_app/styles/index.css` of `components.json`. A client component that calls Amplify Auth, for example a logout button, must first call `configureAuth` of `@/shared/auth` with `usePublicConfig()` and `window.location.origin`.
 - The CI job runs Vitest with no tests. The part stories add their tests.
-- Story #186 writes the server functions in `src/features/<operation>/api/`. A slice with a server function must also get `index.server.gen.ts` and `index.server.ts`. Give the server modules to `public_api_files` of the slice. The feature slices of story #184 have only `index.gen.ts` and `index.ts`.
-- The route handlers (#186) must accept the requests of `apiRequest`: the paths of the FastAPI contract after `/api`, and the session in the cookies.
+- Story #186 added the server functions in `src/features/<operation>/api/`. The function `server_api_files` of `react_common.py` gives only `index.server.gen.ts` and `index.server.ts` of a slice, because the slices part gives `index.gen.ts` and `index.ts`.
+- The route handlers accept the requests of `apiRequest`: the paths of the FastAPI contract after `/api`, and the session in the cookies.

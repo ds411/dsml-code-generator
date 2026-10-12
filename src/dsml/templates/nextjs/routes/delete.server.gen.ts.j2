@@ -1,0 +1,26 @@
+{#- The server function of the operation delete (PRD-APP-113, PRD-APP-313). If
+    other entities refer to the entity, the response is HTTP 409. Data: see
+    _server_head.ts.j2. -#}
+{% include "nextjs/routes/_server_head.ts.j2" %}
+
+/**
+ * The server function of the operation {{ operation.description }}: {{ operation.route }}.
+ * Delete the entity with the key. Throw HTTP 404 if there is none. If other
+ * entities refer to the entity, the error is HTTP 409.
+ */
+{% for line in server.signature %}
+{{ line }}
+{% endfor %}
+  let rows: { key: unknown }[];
+  try {
+    rows = await getDatabase()
+      .delete(table)
+      .where(eq(KEY, key))
+      .returning({ key: KEY });
+  } catch (error) {
+    throw databaseProblem(error, 409);
+  }
+  if (rows.length === 0) {
+    throw new ProblemError(404, NOT_FOUND);
+  }
+}

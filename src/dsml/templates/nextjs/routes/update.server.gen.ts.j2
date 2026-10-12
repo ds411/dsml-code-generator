@@ -1,0 +1,32 @@
+{#- The server function of the operation update (PRD-APP-111, PRD-APP-113,
+    PRD-APP-313). It changes only the fields of the request body. Data: see
+    _server_head.ts.j2. -#}
+{% include "nextjs/routes/_server_head.ts.j2" %}
+
+/**
+ * The server function of the operation {{ operation.description }}: {{ operation.route }}.
+ * Change the fields of the request body. Throw HTTP 404 if there is no
+ * entity. A request body with no field gives the entity with no change.
+ */
+{% for line in server.signature %}
+{{ line }}
+{% endfor %}
+{% for line in server.values_lines() %}
+{{ line }}
+{% endfor %}
+  const database = getDatabase();
+  const where = eq(KEY, key);
+  let rows: Row[];
+  try {
+    rows = Object.values<unknown>(values).some((value) => value !== undefined)
+      ? await database.update(table).set(values).where(where).returning()
+      : await database.select().from(table).where(where);
+  } catch (error) {
+    throw databaseProblem(error);
+  }
+  const row = rows[0];
+  if (row === undefined) {
+    throw new ProblemError(404, NOT_FOUND);
+  }
+  return entityOf(row);
+}

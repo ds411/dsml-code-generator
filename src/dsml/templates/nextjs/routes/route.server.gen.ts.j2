@@ -1,0 +1,255 @@
+{#- The common parts of the route handlers (PRD-APP-008, PRD-APP-014, PRD-APP-113,
+    PRD-APP-312). The function routeHandler applies the role check, calls the
+    handler of the operation and changes a ProblemError into problem details.
+    Data: "problem_media_type", "titles" (the title of each HTTP status, sorted
+    by status) and "unprocessable" (the status of a request that is not
+    correct). -#}
+{% include "common/header.j2" %}
+import "server-only";
+
+import type { z } from "zod";
+
+import type { Access, Session } from "{{ layout.import_path("shared", "auth") }}";
+import { authorize } from "{{ layout.import_path("shared", "auth") }}/index.server";
+import { withRequestLog } from "{{ layout.import_path("shared", "log") }}/index.server";
+
+/** The media type of a problem details response (RFC 9457). */
+export const PROBLEM_MEDIA_TYPE = "{{ problem_media_type }}";
+
+/** The title of each HTTP status of a problem details response. */
+const TITLES: Readonly<Record<number, string>> = {
+{% for status, title in titles %}
+  {{ status }}: "{{ title }}",
+{% endfor %}
+};
+
+/** Give the title of an HTTP status. */
+function titleOf(status: number): string {
+  return TITLES[status] ?? `HTTP ${String(status)}`;
+}
+
+/** One error of a request that is not correct. */
+export interface ValidationIssue {
+  /** The location of the value: "body", "path" or "query", and the field. */
+  location: string[];
+  message: string;
+  type: string;
+}
+
+/**
+ * An API error that the route handler returns as problem details. A server
+ * function throws it to return an error, for example HTTP 404.
+ */
+export class ProblemError extends Error {
+  readonly status: number;
+  readonly detail: string | undefined;
+  readonly errors: readonly ValidationIssue[] | undefined;
+
+  constructor(
+    status: number,
+    detail?: string,
+    errors?: readonly ValidationIssue[],
+  ) {
+    super(detail ?? titleOf(status));
+    this.name = "ProblemError";
+    this.status = status;
+    this.detail = detail;
+    this.errors = errors;
+  }
+}
+
+/** Give a problem details response with the status and the title of the status. */
+export function problemResponse(
+  status: number,
+  detail?: string,
+  errors?: readonly ValidationIssue[],
+): Response {
+  return Response.json(
+    {
+      type: "about:blank",
+      title: titleOf(status),
+      status,
+      ...(detail === undefined ? {} : { detail }),
+      ...(errors === undefined ? {} : { errors }),
+    },
+    { status, headers: { "Content-Type": PROBLEM_MEDIA_TYPE } },
+  );
+}
+
+/** The location of an input value in the request. */
+export type InputLocation = "body" | "path" | "query";
+
+/**
+ * Validate an input value with a Zod schema and give the result. A value
+ * that is not correct gives a ProblemError with HTTP {{ unprocessable }}. The errors do
+ * not include the input values, because an input value can be a secret
+ * value.
+ */
+export function parseInput<Schema extends z.ZodType>(
+  schema: Schema,
+  value: unknown,
+  location: InputLocation,
+): z.output<Schema> {
+  const result = schema.safeParse(value);
+  if (result.success) {
+    return result.data;
+  }
+  throw new ProblemError(
+    {{ unprocessable }},
+    "The request is not correct.",
+    result.error.issues.map((issue) => ({
+      location: [location, ...issue.path.map(String)],
+      message: issue.message,
+      type: issue.code,
+    })),
+  );
+}
+
+/**
+ * Read the JSON body of a request. A body that is not JSON gives a
+ * ProblemError with HTTP {{ unprocessable }}.
+ */
+export async function readJson(request: Request): Promise<unknown> {
+  try {
+    return (await request.json()) as unknown;
+  } catch {
+    throw new ProblemError({{ unprocessable }}, "The request body is not correct JSON.", [
+      {
+        location: ["body"],
+        message: "The body must be a JSON value.",
+        type: "json_invalid",
+      },
+    ]);
+  }
+}
+
+/**
+ * Read the JSON body of a request that must be a JSON object. A different
+ * body gives a ProblemError with HTTP {{ unprocessable }}.
+ */
+export async function readJsonObject(
+  request: Request,
+): Promise<Record<string, unknown>> {
+  const body = await readJson(request);
+  if (typeof body === "object" && body !== null && !Array.isArray(body)) {
+    return body as Record<string, unknown>;
+  }
+  throw new ProblemError({{ unprocessable }}, "The request is not correct.", [
+    {
+      location: ["body"],
+      message: "The body must be a JSON object.",
+      type: "object_type",
+    },
+  ]);
+}
+
+/**
+ * Give the value of a path parameter or a query parameter for a number
+ * field. A text that is not a number stays a text, thus the Zod schema
+ * refuses it. A value that is not a text stays as it is.
+ */
+export function numberParameter(value: unknown): unknown {
+  if (typeof value !== "string") {
+    return value;
+  }
+  return /^\s*[+-]?(?=\.?\d)\d*(?:\.\d*)?(?:[eE][+-]?\d+)?\s*$/.test(value)
+    ? Number(value)
+    : value;
+}
+
+/**
+ * Give the value of a path parameter or a query parameter for a boolean
+ * field. Only the texts "true" and "false" are booleans.
+ */
+export function booleanParameter(value: unknown): unknown {
+  if (value === "true") {
+    return true;
+  }
+  return value === "false" ? false : value;
+}
+
+/** The PostgreSQL error codes of the database errors that are API errors. */
+const UNIQUE_VIOLATION = "23505";
+const FOREIGN_KEY_VIOLATION = "23503";
+const DATA_EXCEPTION_CLASS = "22";
+
+/** Give the PostgreSQL error code of an error or of its causes. */
+function databaseCode(error: unknown): string | undefined {
+  let item: unknown = error;
+  for (let depth = 0; depth < 5 && item instanceof Error; depth += 1) {
+    const code = (item as { code?: unknown }).code;
+    if (typeof code === "string" && /^[0-9A-Z]{5}$/.test(code)) {
+      return code;
+    }
+    item = item.cause;
+  }
+  return undefined;
+}
+
+/**
+ * Change a database error into an API error (PRD-APP-113):
+ *
+ * - HTTP 409 if a value breaks a unique rule.
+ * - HTTP {{ unprocessable }}, or the status that the server function gives, if a foreign
+ *   key refers to an entity that does not exist, or if an entity that
+ *   other entities refer to is deleted.
+ * - HTTP {{ unprocessable }} if the database cannot keep a value.
+ *
+ * Other errors stay as they are.
+ */
+export function databaseProblem(
+  error: unknown,
+  foreignKeyStatus = {{ unprocessable }},
+): unknown {
+  const code = databaseCode(error);
+  if (code === UNIQUE_VIOLATION) {
+    return new ProblemError(
+      409,
+      "A different entity has the same value in a unique field.",
+    );
+  }
+  if (code === FOREIGN_KEY_VIOLATION) {
+    return new ProblemError(
+      foreignKeyStatus,
+      "The change breaks a relation between entities.",
+    );
+  }
+  if (code?.startsWith(DATA_EXCEPTION_CLASS)) {
+    return new ProblemError({{ unprocessable }}, "The database cannot keep a value.");
+  }
+  return error;
+}
+
+/** The handler of the operation of a route. It gets the session after the role check. */
+export type OperationHandler<Context> = (
+  request: Request,
+  context: Context,
+  session: Session | undefined,
+) => Promise<Response>;
+
+/**
+ * Make the route handler of an operation (PRD-APP-312). The route handler
+ * writes one log line for each request. First it applies the role check of
+ * the access rule: HTTP 401 or HTTP 403 (PRD-APP-008). Then it calls the
+ * handler of the operation. A ProblemError gives problem details
+ * (PRD-APP-014).
+ */
+export function routeHandler<Context>(
+  access: Access,
+  handler: OperationHandler<Context>,
+): (request: Request, context: Context) => Promise<Response> {
+  return withRequestLog(async (request: Request, context: Context) => {
+    const authorization = await authorize(access);
+    if (!authorization.ok) {
+      return authorization.response;
+    }
+    try {
+      return await handler(request, context, authorization.session);
+    } catch (error) {
+      if (error instanceof ProblemError) {
+        return problemResponse(error.status, error.detail, error.errors);
+      }
+      throw error;
+    }
+  });
+}

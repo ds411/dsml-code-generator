@@ -1,0 +1,23 @@
+{#- The server function of the operation list (PRD-APP-114, PRD-APP-313,
+    PRD-APP-314). It gives one page of the entities, sorted by key, and the
+    number of all entities. Data: see _server_head.ts.j2. -#}
+{% include "nextjs/routes/_server_head.ts.j2" %}
+
+/**
+ * The server function of the operation {{ operation.description }}: {{ operation.route }}.
+ * Give the entities from `offset`, sorted by key, and the number of all
+ * entities.
+ */
+{% for line in server.signature %}
+{{ line }}
+{% endfor %}
+  const database = getDatabase();
+  const [rows, counts] = await Promise.all([
+    database.select().from(table).orderBy(asc(KEY)).limit(limit).offset(offset),
+    database.select({ total: count() }).from(table),
+  ]);
+  return {
+    items: rows.map(entityOf),
+    total: counts[0]?.total ?? 0,
+  };
+}

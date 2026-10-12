@@ -1,0 +1,27 @@
+{#- The server function of the operation create (PRD-APP-111, PRD-APP-113,
+    PRD-APP-313). It adds the entity with a new random key. A value that
+    breaks a unique rule gives HTTP 409. Data: see _server_head.ts.j2. -#}
+{% include "nextjs/routes/_server_head.ts.j2" %}
+
+/**
+ * The server function of the operation {{ operation.description }}: {{ operation.route }}.
+ * Add the entity with a new random key. Give the entity.
+ */
+{% for line in server.signature %}
+{{ line }}
+{% endfor %}
+{% for line in server.values_lines() %}
+{{ line }}
+{% endfor %}
+  let rows: Row[];
+  try {
+    rows = await getDatabase().insert(table).values(values).returning();
+  } catch (error) {
+    throw databaseProblem(error);
+  }
+  const row = rows[0];
+  if (row === undefined) {
+    throw new Error("The database gave no row.");
+  }
+  return entityOf(row);
+}

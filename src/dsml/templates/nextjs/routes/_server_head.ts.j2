@@ -1,0 +1,44 @@
+{#- The imports and the common declarations of a CRUD server function. Data:
+    "server" (a dsml.generate.nextjs_routes.ServerFunction), "operation",
+    "db_source" and "http_source". -#}
+{% include "common/header.j2" %}
+import "server-only";
+
+{% if operation.kind == "create" %}
+import { randomUUID } from "node:crypto";
+
+{% endif %}
+{% if operation.kind == "list" %}
+import { asc, count } from "drizzle-orm";
+
+{% elif operation.kind != "create" %}
+import { eq } from "drizzle-orm";
+
+{% endif %}
+{% for line in server.entity_import_lines() %}
+{{ line }}
+{% endfor %}
+{% for line in server.db_import_lines() %}
+{{ line }}
+{% endfor %}
+import { getDatabase } from "{{ db_source }}";
+{% if server.http_names() %}
+import { {{ server.http_names() | join(", ") }} } from "{{ http_source }}";
+{% endif %}
+{% if operation.kind != "create" %}
+
+/** The key column of the table {{ server.table }}. */
+{{ server.key_line }}
+{% endif %}
+{% if operation.kind in ("read", "update", "delete") %}
+
+/** The detail of the response HTTP 404. */
+const NOT_FOUND = "{{ server.not_found }}";
+{% endif %}
+{% if operation.kind != "delete" %}
+
+/** Give the entity {{ server.entity.name }} of a row of the table {{ server.table }}. A related entity is its key. */
+{% for line in server.entity_lines() %}
+{{ line }}
+{% endfor %}
+{% endif %}

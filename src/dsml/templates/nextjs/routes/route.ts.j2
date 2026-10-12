@@ -1,0 +1,7 @@
+{#- The route file of one path under /api (PRD-APP-302, PRD-APP-310). It
+    re-exports the route handler of each method from the layer _app. Data:
+    "exports" (the method and the module of each route handler, sorted). -#}
+{% include "common/header.j2" %}
+{% for method, module in exports %}
+export { {{ method }} } from "{{ module }}";
+{% endfor %}
