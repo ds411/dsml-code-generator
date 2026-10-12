@@ -73,16 +73,16 @@ A project keyword can specialize a DSML keyword, for example `metadata def Safet
 
 ## Link from an element in an environment (story #136)
 
-Story #136 added `satisfy orderDataSafe by prod::orderDbProd;` and the verification V-002 to the example model and to its copy in the DSML PRD.
+Story #136 added `satisfy orderDataSafe by prod.orderDbProd;` and the verification V-002 to the example model and to its copy in the DSML PRD. The sketch did not give the form of a `satisfy` link from an element in an environment.
 
-| Form | Result | Reason |
+| Form | OpenSysML 0.9.2 | Pilot kernel |
 | --- | --- | --- |
-| `satisfy orderDataSafe by prod::orderDbProd;` | The IR has the `satisfy` link from `OrderService::prod::orderDbProd` to R-002. | The qualified name refers to the element. Use this form. |
-| `satisfy orderDataSafe by prod.orderDbProd;` | OpenSysML 0.9.2 accepts it, but the IR has no `satisfy` link. | The subject of the link is a feature chain, not a named element. The IR adapter makes a link only between named elements. |
+| `satisfy orderDataSafe by prod.orderDbProd;` | Accepts it. The IR adapter finds the element of the chain (`docs/notes/ir-solution-layers.md`, "Links"). | Accepts it. |
+| `satisfy orderDataSafe by prod::orderDbProd;` | Accepts it. | Does not accept it: "Must be an accessible feature (use dot notation for nesting)". |
 
 ### Rule for models
 
-To refer to an element in an environment in a `satisfy` link, use a qualified name with `::`, not a feature chain with `.`.
+To refer to an element in an environment in a `satisfy` link, use a feature chain with `.`, not a qualified name with `::`.
 
 ## Items for later stories
 

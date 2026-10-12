@@ -94,7 +94,7 @@ package OrderService {
         #Override part apiServiceProd :> apiServiceAws { :>> desiredCount = 3; }
         #Override part orderDbProd :> orderDbAws { :>> multiAz = true; }
     }
-    satisfy orderDataSafe by prod::orderDbProd;
+    satisfy orderDataSafe by prod.orderDbProd;
 
     // Verification layer
     #Verification verification <'V-001'> orderStatusTest {

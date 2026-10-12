@@ -63,6 +63,8 @@ A metadata usage that does not give the kind of the element is an annotation. Ex
 
 The location of a link is the first character of its statement. For `verify`, it is the first character of `verify`.
 
+`E` in a `satisfy` link can be a feature chain, for example `satisfy orderDataSafe by prod.orderDbProd;` (story #136). OpenSysML 0.9.2 gives the chain as text, not as a reference. The adapter finds the element of the chain in the namespace of the link, or in a namespace that contains it. Each name after the first name must be an owned member of the element before it. The pilot kernel does not accept the qualified name `prod::orderDbProd` for a feature in a part, so a model must use the chain.
+
 ## Environments
 
 An override holds only the attributes that it changes, with their locations. It also holds a change of an attribute that the model adds to the realization, for example `:>> engine = "postgres-16";`. Rule STR-012 uses this to find a change of an attribute that PRD-DSML-042 does not permit.

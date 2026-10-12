@@ -1,6 +1,6 @@
 # report: impact
-# model commit: 40fe040bf1d92b6c318f142aa70bc1358b2b9c15
-# baseline commit: 9288f14d748621287f738a5dcb46e46d81e24676
+# model commit: dd7e750e37a43a761779893983adac8754f28a4c
+# baseline commit: 172e0ee93ad3f8fcfb9ca270cc621df0ca301269
 element,change,needs,requirements,verifications,generatedFiles,hclAddresses
 OrderService::Order,changed,N-001,R-001,V-001,app/main_gen.py; app/models_gen.py; infra/envs/prod/main.gen.tf,aws_ecs_service.api_service
 OrderService::Order::note,changed,N-001,R-001,V-001,app/main_gen.py; app/models_gen.py; infra/envs/prod/main.gen.tf,aws_ecs_service.api_service
