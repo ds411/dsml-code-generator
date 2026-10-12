@@ -21,6 +21,7 @@ from typing import Final
 
 from dsml.errors import ToolchainError
 from dsml.generate import names as safe_names
+from dsml.generate.fastapi import react_callers
 from dsml.generate.infrastructure import hcl, names
 from dsml.ir.environments import realization_attributes
 from dsml.ir.model import (
@@ -636,17 +637,25 @@ def service_counts(element: Element, attributes: Mapping[str, Attribute]) -> tup
     return desired, minimum, maximum
 
 
-# trace: PRD-IAC-015
+# trace: PRD-IAC-015, PRD-APP-136
 def _service_environment(
-    ir: Ir, element: Element, application: Element
+    ir: Ir, element: Element, application: Element, environment: Element
 ) -> tuple[list[tuple[str, str]], list[tuple[str, str]], list[str], list[str]]:
     """Give the environment variables, the secrets, the secret ARNs and the KMS key ARNs.
 
     The values come from the elements that the service uses (`#Uses`): one
     database, one user directory and each secret store. The secrets give
-    the `valueFrom` of each secret environment variable.
+    the `valueFrom` of each secret environment variable. If `react`
+    applications call the application, `CORS_ALLOWED_ORIGINS` gets their
+    site origins in the environment (PRD-APP-136).
     """
     variables: list[tuple[str, str]] = [("AWS_REGION", "local.aws_region")]
+    callers = react_callers(ir, application)
+    if callers:
+        origins = ",".join(
+            sorted(f"https://{site_domain(caller, environment)}" for caller in callers)
+        )
+        variables.append(("CORS_ALLOWED_ORIGINS", hcl.string(origins)))
     secrets: list[tuple[str, str]] = []
     secret_arns: list[str] = []
     key_arns: list[str] = []
@@ -687,7 +696,7 @@ def _hcl_list(values: Sequence[str]) -> str:
 
 
 # trace: PRD-IAC-008, PRD-IAC-009, PRD-IAC-012, PRD-IAC-013, PRD-IAC-014, PRD-IAC-015
-# trace: PRD-IAC-016, PRD-IAC-035, PRD-IAC-037
+# trace: PRD-IAC-016, PRD-IAC-035, PRD-IAC-037, PRD-APP-136
 def _container_service_arguments(
     element: Element, attributes: Mapping[str, Attribute], context: CallContext
 ) -> dict[str, str]:
@@ -731,7 +740,7 @@ def _container_service_arguments(
         ("task_role", hcl.string(names.task_role(product, environment, element.name))),
     ]
     variables, secrets, secret_arns, key_arns = _service_environment(
-        context.ir, element, application
+        context.ir, element, application, context.environment
     )
     return {
         "application": hcl.string(names.tag_value(application.identity)),

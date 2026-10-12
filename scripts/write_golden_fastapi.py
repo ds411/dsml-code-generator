@@ -7,7 +7,11 @@ the test model tests/models/fastapi/shop.sysml in tests/golden/fastapi/shop/.
 Story #88 added tests/golden/fastapi/handler-check/: the generated files of
 the slice cancel_order for a changed example model. The CI job "FastAPI
 golden project" uses them to show a type check error in a hand-written
-handler that does not agree with the changed model (PRD-CORE-045). The
+handler that does not agree with the changed model (PRD-CORE-045). Story
+#164 added the golden output of the order portal model
+docs/model/examples/order-portal/order-portal.sysml in
+tests/golden/fastapi/order-portal/. A `react` application calls its FastAPI
+application, thus the output has the CORS middleware (PRD-APP-136). The
 file handler.py in that folder is hand-written. The script does not change
 it. The tests tests/test_fastapi_generator.py and tests/test_fastapi_slices.py
 compare the output of the FastAPI generator with these files. The CI job
@@ -35,8 +39,10 @@ from dsml.ir.model import Element, Ir, StringValue
 ROOT = Path(__file__).resolve().parent.parent
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 SHOP_MODEL = ROOT / "tests" / "models" / "fastapi" / "shop.sysml"
+PORTAL_MODEL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
 GOLDEN = ROOT / "tests" / "golden" / "fastapi" / "order-service"
 SHOP_GOLDEN = ROOT / "tests" / "golden" / "fastapi" / "shop"
+PORTAL_GOLDEN = ROOT / "tests" / "golden" / "fastapi" / "order-portal"
 CONFIGURATION = """\
 schema = 1
 
@@ -71,6 +77,7 @@ HANDLER_CHECK_FILES = ("endpoint_gen.py", "schemas_gen.py")
 GOLDENS = (
     (GOLDEN, EXAMPLE_MODEL, CONFIGURATION),
     (SHOP_GOLDEN, SHOP_MODEL, SHOP_CONFIGURATION),
+    (PORTAL_GOLDEN, PORTAL_MODEL, CONFIGURATION),
 )
 """The golden folder, the model and the configuration file of each golden output."""
 
@@ -128,7 +135,7 @@ def handler_check_files() -> dict[str, bytes]:
 
 
 def main() -> int:
-    """Write the golden output of the example model and of the shop model."""
+    """Write the golden output of the example model, the shop model and the order portal."""
     if Path.cwd().resolve() != ROOT:
         print(f"Run this script from the folder {ROOT}.", file=sys.stderr)
         return 2

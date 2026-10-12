@@ -1,4 +1,5 @@
-{#- The configuration of the FastAPI target (PRD-APP-010, PRD-APP-132). -#}
+{#- The configuration of the FastAPI target (PRD-APP-010, PRD-APP-132,
+    PRD-APP-136). -#}
 {% include "common/header.j2" %}
 """The configuration of the application, from environment variables.
 
@@ -62,7 +63,36 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
             "Use a port number, for example 5432."
         )
 {% endif %}
+{% if cors %}
+    allowed_origins(settings)
+{% endif %}
     return settings
+{% if cors %}
+
+
+def allowed_origins(settings: Settings) -> tuple[str, ...]:
+    """Give the origins that can call the API from a browser (CORS).
+
+    Each origin must start with "https://" or "http://" and must not have a
+    path. An origin with "*" is not permitted.
+    """
+    origins = tuple(
+        origin.strip() for origin in settings.cors_allowed_origins.split(",") if origin.strip()
+    )
+    for origin in origins:
+        scheme, _, host = origin.partition("://")
+        if scheme not in ("https", "http") or not host or "/" in host or "*" in host:
+            raise ConfigurationError(
+                f'The environment variable CORS_ALLOWED_ORIGINS has the origin "{origin}". '
+                "Use origins such as https://portal.example.com, separated by commas."
+            )
+    if not origins:
+        raise ConfigurationError(
+            "The environment variable CORS_ALLOWED_ORIGINS has no origin. "
+            "Use origins such as https://portal.example.com, separated by commas."
+        )
+    return origins
+{% endif %}
 
 
 def _mandatory(values: Mapping[str, str], name: str) -> str:

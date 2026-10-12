@@ -9,7 +9,7 @@
             {
               "firstLine": 58,
               "kind": "resource",
-              "lastLine": 107,
+              "lastLine": 108,
               "name": "module.api_service"
             }
           ]
@@ -72,7 +72,7 @@
             {
               "firstLine": 58,
               "kind": "resource",
-              "lastLine": 107,
+              "lastLine": 108,
               "name": "module.api_service"
             }
           ]
@@ -135,7 +135,7 @@
             {
               "firstLine": 58,
               "kind": "resource",
-              "lastLine": 107,
+              "lastLine": 108,
               "name": "module.api_service"
             }
           ]
@@ -572,7 +572,7 @@
             {
               "firstLine": 58,
               "kind": "resource",
-              "lastLine": 107,
+              "lastLine": 108,
               "name": "module.api_service"
             }
           ]
@@ -635,7 +635,7 @@
             {
               "firstLine": 58,
               "kind": "resource",
-              "lastLine": 107,
+              "lastLine": 108,
               "name": "module.api_service"
             }
           ]
@@ -698,7 +698,7 @@
             {
               "firstLine": 58,
               "kind": "resource",
-              "lastLine": 107,
+              "lastLine": 108,
               "name": "module.api_service"
             }
           ]
@@ -2356,9 +2356,9 @@
           "path": "infra/envs/dev/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 109,
+              "firstLine": 110,
               "kind": "resource",
-              "lastLine": 122,
+              "lastLine": 123,
               "name": "module.portal_site"
             }
           ]
@@ -2390,9 +2390,9 @@
           "path": "infra/envs/prod/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 109,
+              "firstLine": 110,
               "kind": "resource",
-              "lastLine": 122,
+              "lastLine": 123,
               "name": "module.portal_site"
             }
           ]
@@ -2424,9 +2424,9 @@
           "path": "infra/envs/staging/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 109,
+              "firstLine": 110,
               "kind": "resource",
-              "lastLine": 122,
+              "lastLine": 123,
               "name": "module.portal_site"
             }
           ]
@@ -2640,9 +2640,9 @@
           "path": "infra/envs/dev/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 109,
+              "firstLine": 110,
               "kind": "resource",
-              "lastLine": 122,
+              "lastLine": 123,
               "name": "module.portal_site"
             }
           ]
@@ -2674,9 +2674,9 @@
           "path": "infra/envs/prod/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 109,
+              "firstLine": 110,
               "kind": "resource",
-              "lastLine": 122,
+              "lastLine": 123,
               "name": "module.portal_site"
             }
           ]
@@ -2708,9 +2708,9 @@
           "path": "infra/envs/staging/main.gen.tf",
           "symbols": [
             {
-              "firstLine": 109,
+              "firstLine": 110,
               "kind": "resource",
-              "lastLine": 122,
+              "lastLine": 123,
               "name": "module.portal_site"
             }
           ]

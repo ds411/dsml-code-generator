@@ -1,5 +1,5 @@
 # trace: PRD-APP-001, PRD-APP-002, PRD-APP-008, PRD-APP-101, PRD-APP-104, PRD-APP-120
-# trace: PRD-APP-123, PRD-APP-130, PRD-APP-134
+# trace: PRD-APP-123, PRD-APP-130, PRD-APP-134, PRD-APP-136
 """The FastAPI generator (phase 1).
 
 The generator reads only the IR and the configuration (PRD-APP-001,
@@ -33,6 +33,10 @@ create-once `handler.py` stub that a developer owns
 
 The generator also writes the OpenAPI document `openapi.gen.json`
 (`dsml.generate.fastapi_openapi`, PRD-APP-004).
+
+If one or more `react` applications call the application (`#Calls`), the
+application gets the CORS middleware of FastAPI. It reads the permitted
+origins from the variable `CORS_ALLOWED_ORIGINS` (PRD-APP-136).
 
 The versions come from the version baseline `versions.toml` (PRD-APP-101).
 The generator gives the symbols of each Python file for the trace manifest.
@@ -179,6 +183,8 @@ class Variable:
     """The default value. An empty text makes the variable mandatory."""
     secret: bool = False
     """Tell if the value is secret. The text of the settings does not show a secret value."""
+    test_value: str = "test"
+    """The value of the variable in the generated tests of the shared code."""
 
     @property
     def mandatory(self) -> bool:
@@ -237,6 +243,20 @@ DATABASE_VARIABLES: Final = (
 )
 """The environment variables of the database, if the application has entities."""
 
+# trace: PRD-APP-010, PRD-APP-136
+CORS_VARIABLES: Final = (
+    Variable(
+        "CORS_ALLOWED_ORIGINS",
+        "cors_allowed_origins",
+        "The permitted browser origins, separated by commas.",
+        test_value="https://site.test",
+    ),
+)
+"""The environment variables of CORS, if `react` applications call the application."""
+
+REACT: Final = "react"
+"""The target of an application that runs in a browser and calls an API (PRD-APP-136)."""
+
 
 # trace: PRD-APP-001, PRD-APP-002, PRD-APP-017, PRD-CORE-039, PRD-TRACE-006
 class FastApiGenerator:
@@ -279,6 +299,28 @@ def _target(application: Element) -> str | None:
         if attribute.name == "target" and isinstance(attribute.value, EnumValue):
             return attribute.value.literal
     return None
+
+
+# trace: PRD-APP-136
+def react_callers(ir: Ir, application: Element) -> tuple[Element, ...]:
+    """Give the `react` applications that call an application (`#Calls`), sorted by identity."""
+    callers = {
+        link.source
+        for link in ir.links
+        if link.type == "calls" and link.target == application.identity
+    }
+    return tuple(
+        sorted(
+            (
+                element
+                for element in ir.elements
+                if element.identity in callers
+                and element.kind == "Application"
+                and _target(element) == REACT
+            ),
+            key=lambda element: element.identity,
+        )
+    )
 
 
 # trace: PRD-APP-002, PRD-CORE-013
@@ -333,7 +375,7 @@ def _value(baseline: dict[str, Pin], name: str) -> str:
 
 # trace: PRD-APP-002, PRD-APP-004, PRD-APP-008, PRD-APP-013, PRD-APP-017, PRD-APP-104
 # trace: PRD-APP-105, PRD-APP-116, PRD-APP-120, PRD-APP-124, PRD-APP-128, PRD-APP-130, PRD-APP-131
-# trace: PRD-APP-133, PRD-APP-134, PRD-TRACE-005, PRD-TRACE-006
+# trace: PRD-APP-133, PRD-APP-134, PRD-APP-136, PRD-TRACE-005, PRD-TRACE-006
 def application_files(
     engine: TemplateEngine,
     ir: Ir,
@@ -351,7 +393,10 @@ def application_files(
     routers: list[Slice | CustomSlice] = sorted([*crud, *custom], key=lambda item: item.folder)
     runtime, dev = dependencies(application, configuration, baseline, database)
     elements = (application.identity,)
+    cors = bool(react_callers(ir, application))
     variables = VARIABLES + DATABASE_VARIABLES if database else VARIABLES
+    if cors:
+        variables += CORS_VARIABLES
     templates = {**_TEMPLATES, **_DATABASE_TEMPLATES} if database else dict(_TEMPLATES)
     if routers:
         templates.update(_SLICE_TEMPLATES)
@@ -367,6 +412,8 @@ def application_files(
         "uv_image": _value(baseline, "uv-image"),
         "variables": variables,
         "database": database,
+        "cors": cors,
+        "cors_origin": CORS_VARIABLES[0].test_value,
         "models": entity_models,
         "join_tables": [table for model in entity_models for table in model.join_tables],
         "checks": any(model.checks for model in entity_models),

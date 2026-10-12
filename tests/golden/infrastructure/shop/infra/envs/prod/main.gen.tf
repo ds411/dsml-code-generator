@@ -38,7 +38,8 @@ module "api" {
   ecr_repository = "shop-tooling-shop-api"
   element        = "Shop::api"
   environment_variables = {
-    AWS_REGION = local.aws_region
+    AWS_REGION           = local.aws_region
+    CORS_ALLOWED_ORIGINS = "https://shop-web.shop.example.com"
   }
   image_digest      = var.shop_api_image_digest
   kms_key_arns      = [module.secrets.key_arn]

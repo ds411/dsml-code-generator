@@ -1,4 +1,5 @@
-{#- The application factory of the FastAPI target (PRD-APP-012, PRD-APP-105). -#}
+{#- The application factory of the FastAPI target (PRD-APP-012, PRD-APP-105,
+    PRD-APP-136). -#}
 {% include "common/header.j2" %}
 """The FastAPI application {{ application }}.
 
@@ -13,18 +14,33 @@ from contextlib import asynccontextmanager
 
 {% endif %}
 from fastapi import APIRouter, FastAPI
+{% if cors %}
+from fastapi.middleware.cors import CORSMiddleware
+{% endif %}
 from pydantic import BaseModel
 
 {% for line in router_import_lines %}
 {{ line }}
 {% endfor %}
+{% if cors %}
+from app.shared.config_gen import ConfigurationError, Settings, allowed_origins, load_settings
+{% else %}
 from app.shared.config_gen import ConfigurationError, Settings, load_settings
+{% endif %}
 {% if database %}
 from app.shared.db.session_gen import create_engine, create_session_factory
 {% endif %}
 from app.shared.errors_gen import register_error_handlers
 from app.shared.logs_gen import configure_logging, request_context
 
+{% if cors %}
+CORS_METHODS = ("DELETE", "GET", "PATCH", "POST", "PUT")
+"""The HTTP methods that a browser can use from a permitted origin."""
+
+CORS_HEADERS = ("Authorization", "Content-Type", "X-Request-ID")
+"""The request headers that a browser can send from a permitted origin."""
+
+{% endif %}
 health_router = APIRouter(tags=["health"])
 
 
@@ -70,6 +86,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 {% endif %}
     register_error_handlers(app)
     app.middleware("http")(request_context)
+{% if cors %}
+    # The browser sends the access token in the header Authorization. The
+    # middleware does not permit credentials in cookies.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins(settings),
+        allow_credentials=False,
+        allow_methods=CORS_METHODS,
+        allow_headers=CORS_HEADERS,
+        expose_headers=("X-Request-ID",),
+    )
+{% endif %}
     app.include_router(health_router)
 {% for item in slices %}
     app.include_router({{ item.router }})
