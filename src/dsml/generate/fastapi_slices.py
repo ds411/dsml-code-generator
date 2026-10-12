@@ -19,8 +19,9 @@ schema classes start with the name of the slice, for example
 name.
 
 The methods and the paths come from `dsml.ir.operations`, the module that
-the rule STR-009 also uses (PRD-APP-110). The custom operations are not in
-this module.
+the rule STR-009 also uses (PRD-APP-110). The module
+`dsml.generate.fastapi_operations` gives the slices of the custom
+operations.
 
 The functions of this module also give the data of the HTTP tests of each
 exposed entity (`dsml.generate.fastapi_examples`).
@@ -82,7 +83,7 @@ The create input has no key (PRD-APP-111). The handler makes a UUID key,
 and the database makes an integer key.
 """
 
-_KINDS: Final = {
+FIELD_KINDS: Final = {
     "Decimal": "Decimal",
     "UUID": "Uuid",
     "bool": "Boolean",
@@ -328,7 +329,7 @@ class Slice:
     def schema_import_lines(self) -> list[str]:
         if self.operation == "delete":
             return []
-        modules = _type_imports(item.column.type.python for item in self.schema_fields)
+        modules = type_imports(item.column.type.python for item in self.schema_fields)
         if self.value_alias_fields:
             modules.setdefault("typing", set()).add("Literal")
         pydantic = {"BaseModel", "ConfigDict"}
@@ -342,8 +343,8 @@ class Slice:
             pydantic.add("Field")
         if self.operation == "update" and self.required_fields:
             pydantic.add("field_validator")
-        lines = _from_imports(modules)
-        return [*lines, *([""] if lines else []), *import_lines("pydantic", _ruff_order(pydantic))]
+        lines = from_imports(modules)
+        return [*lines, *([""] if lines else []), *import_lines("pydantic", ruff_order(pydantic))]
 
     @property
     def input_field_lines(self) -> list[str]:
@@ -364,7 +365,7 @@ class Slice:
 
     @property
     def endpoint_import_lines(self) -> list[str]:
-        modules = _type_imports([self.key.column.type.python] if self.parameter else [])
+        modules = type_imports([self.key.column.type.python] if self.parameter else [])
         if self.operation in ("create", "delete"):
             modules.setdefault("http", set()).add("HTTPStatus")
         modules.setdefault("typing", set()).add("Annotated")
@@ -374,11 +375,11 @@ class Slice:
         schemas = [name for name in (self.input_class, self.output_class) if name]
         if self.page_class:
             schemas = [self.page_class]
-        schema_lines = import_lines(f"{self.package}.schemas_gen", _ruff_order(set(schemas)))
+        schema_lines = import_lines(f"{self.package}.schemas_gen", ruff_order(set(schemas)))
         return [
-            *_from_imports(modules),
+            *from_imports(modules),
             "",
-            *import_lines("fastapi", _ruff_order(fastapi)),
+            *import_lines("fastapi", ruff_order(fastapi)),
             "from sqlalchemy.ext.asyncio import AsyncSession",
             "",
             f"from {self.package}.handler_gen import handle",
@@ -444,20 +445,20 @@ class Slice:
         python: list[str] = []
         if self.parameter:
             python.append(self.key.column.type.python)
-            modules = _type_imports(python)
+            modules = type_imports(python)
             modules.setdefault("http", set()).add("HTTPStatus")
         else:
             modules = {}
         if self.operation == "create" and self.key.rules.kind == "Uuid":
             modules.setdefault("uuid", set()).add("uuid4")
-        lines = [*_from_imports(modules), *([""] if modules else [])]
+        lines = [*from_imports(modules), *([""] if modules else [])]
         if self.operation == "list":
             lines.append("from sqlalchemy import func, select")
         lines.append("from sqlalchemy.ext.asyncio import AsyncSession")
         lines.append("")
         schemas = {name for name in (self.input_class, self.output_class, self.page_class) if name}
         if schemas:
-            lines.extend(import_lines(f"{self.package}.schemas_gen", _ruff_order(schemas)))
+            lines.extend(import_lines(f"{self.package}.schemas_gen", ruff_order(schemas)))
         if self.operation in ("create", "update", "delete"):
             lines.append("from app.shared.db.commit_gen import commit")
         lines.extend(import_lines(f"app.shared.db.models.{self.model.module}", [self.model_class]))
@@ -619,7 +620,7 @@ class EntityTests:
         names = {"SETTINGS", "SKIP_REASON", "api", "assert_same", "headers"}
         if not self.public:
             names.add("NO_ROLE")
-        return import_lines("tests.http_support_gen", _ruff_order(names))
+        return import_lines("tests.http_support_gen", ruff_order(names))
 
     def request_lines(
         self, operation: str, path: str, json: str = "", params: str = "", target: str = "response"
@@ -670,9 +671,9 @@ def slices(ir: Ir, application: Element, models: list[Model]) -> list[Slice]:
             exposed=endpoint.exposed.identity,
             collection=endpoint.exposed.name,
             model=model,
-            roles=_roles(endpoint.exposed),
-            public=_public(endpoint.exposed),
-            fields=_fields(model, elements),
+            roles=roles_of(endpoint.exposed),
+            public=is_public(endpoint.exposed),
+            fields=entity_fields(model, elements),
         )
         if item.folder in result:
             raise ToolchainError(
@@ -709,19 +710,22 @@ def _parameter(endpoint: Endpoint) -> str | None:
     return name
 
 
-def _roles(exposed: Element) -> tuple[str, ...]:
+def roles_of(exposed: Element) -> tuple[str, ...]:
+    """Give the roles of the attribute `allowedRoles` of an exposed element, sorted."""
     value = attribute(exposed, "allowedRoles")
     if not isinstance(value, ListValue):
         return ()
     return tuple(sorted({item.literal for item in value.items if isinstance(item, EnumValue)}))
 
 
-def _public(exposed: Element) -> bool:
+def is_public(exposed: Element) -> bool:
+    """Tell if an exposed element has `public = true`. Then it needs no token."""
     value = attribute(exposed, "public")
     return isinstance(value, BooleanValue) and value.value
 
 
-def _fields(model: Model, elements: Mapping[str, Element]) -> tuple[SchemaField, ...]:
+def entity_fields(model: Model, elements: Mapping[str, Element]) -> tuple[SchemaField, ...]:
+    """Give the schema fields of an entity: one field for each column of its table."""
     fields = {
         snake_case(item.name): item
         for item in elements.values()
@@ -731,7 +735,7 @@ def _fields(model: Model, elements: Mapping[str, Element]) -> tuple[SchemaField,
 
 
 def _field(column: ModelColumn, element: Element | None) -> SchemaField:
-    kind = "Enumeration" if column.values else _KINDS[column.type.python]
+    kind = "Enumeration" if column.values else FIELD_KINDS[column.type.python]
     precision = scale = None
     if kind == "Decimal":
         match = _NUMERIC.fullmatch(column.type.expression)
@@ -867,7 +871,7 @@ class _Parents:
         if model is None:
             raise _NoValue(f"a row of the table {table}")
         self.visiting.add(table)
-        fields = _fields(model, self.elements)
+        fields = entity_fields(model, self.elements)
         row = tuple((item.name, _row_value(item, 0, table, self)) for item in fields)
         self.visiting.discard(table)
         key = next(item for item in fields if item.key)
@@ -897,7 +901,8 @@ def bracket_lines(
     return [f"{head}{opening}", *(f"    {item}," for item in items), closing]
 
 
-def _type_imports(types: Iterable[str]) -> dict[str, set[str]]:
+def type_imports(types: Iterable[str]) -> dict[str, set[str]]:
+    """Give the modules and the names to import for the Python types."""
     modules: dict[str, set[str]] = {}
     for python in types:
         module = _TYPE_IMPORTS.get(python)
@@ -906,15 +911,16 @@ def _type_imports(types: Iterable[str]) -> dict[str, set[str]]:
     return modules
 
 
-def _from_imports(modules: Mapping[str, set[str]]) -> list[str]:
+def from_imports(modules: Mapping[str, set[str]]) -> list[str]:
+    """Give the import lines of the modules, sorted by module."""
     return [
         line
         for module, names in sorted(modules.items())
-        for line in import_lines(module, _ruff_order(names))
+        for line in import_lines(module, ruff_order(names))
     ]
 
 
-def _ruff_order(names: set[str]) -> list[str]:
+def ruff_order(names: set[str]) -> list[str]:
     """Sort imported names as ruff sorts them: constants, classes, then other names."""
 
     def key(name: str) -> tuple[int, str]:

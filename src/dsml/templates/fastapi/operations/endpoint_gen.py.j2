@@ -1,0 +1,49 @@
+{#- The router of one custom operation slice (PRD-APP-102, PRD-APP-110, PRD-APP-116).
+    Data: "operation" (a dsml.generate.fastapi_operations.CustomSlice). -#}
+{% include "common/header.j2" %}
+"""The endpoint of the operation {{ operation.name }}: {{ operation.route }}.
+
+The endpoint validates the input, opens a database session and calls
+`handle` in the hand-written file `handler.py`. It returns the output of
+`handle` as the output schema. If `handle` raises `NotImplementedError`,
+the response is HTTP 501.
+
+{% if operation.public %}
+The operation is public. It needs no token, and `handle` gets no user. The
+generator writes this file again at each run.
+{% else %}
+The endpoint returns HTTP 401 if the request has no valid access token,
+and HTTP 403 if the user has no role in `ALLOWED_ROLES`. The generator
+writes this file again at each run.
+{% endif %}
+"""
+
+{% for line in operation.endpoint_import_lines %}
+{{ line }}
+{% endfor %}
+{% if not operation.public %}
+
+{% for line in operation.roles_lines %}
+{{ line }}
+{% endfor %}
+"""The roles that can use the operation (`allowedRoles`)."""
+{% endif %}
+
+router = APIRouter(tags=[{{ operation.tag }}])
+
+
+{% for line in operation.decorator_lines %}
+{{ line }}
+{% endfor %}
+{% for line in operation.signature_lines %}
+{{ line }}
+{% endfor %}
+    """Validate the input and call the hand-written handler."""
+{% for line in operation.input_lines %}
+{{ line }}
+{% endfor %}
+{% if operation.output_class %}
+    return await {{ operation.call }}
+{% else %}
+    await {{ operation.call }}
+{% endif %}

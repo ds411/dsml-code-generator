@@ -1,0 +1,27 @@
+{#- The create-once stub of the handler of one custom operation (PRD-APP-103, PRD-APP-117,
+    PRD-CORE-044, PRD-CORE-045). It has no generated header, because a developer owns
+    the file. Data: "operation" (a dsml.generate.fastapi_operations.CustomSlice). -#}
+"""The handler of the operation {{ operation.name }}: {{ operation.route }}.
+
+Write the logic of the operation in this file. The generator wrote this
+file one time, and it does not change it again. The endpoint in
+`endpoint_gen.py` calls `handle` with the input schema, the database
+session and the user of the request. Call `await session.commit()` to keep
+the changes.
+
+If the operation changes in the model, the generator changes the schemas.
+Then a type check shows each place where this file does not agree with the
+schemas. Until you write the logic, the endpoint returns HTTP 501.
+"""
+
+{% for line in operation.handler_import_lines %}
+{{ line }}
+{% endfor %}
+
+
+# trace: {{ operation.operation }}
+{% for line in operation.handler_signature_lines %}
+{{ line }}
+{% endfor %}
+    """Do the operation {{ operation.operation_name }}. Replace this body with the logic."""
+    raise NotImplementedError("Write the logic of the operation {{ operation.name }}.")

@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from pydantic import BaseModel
 
+from app.features.order.cancel_order.endpoint_gen import router as cancel_order_router
 from app.features.order.create_order.endpoint_gen import router as create_order_router
 from app.features.order.list_order.endpoint_gen import router as list_order_router
 from app.features.order.read_order.endpoint_gen import router as read_order_router
@@ -62,6 +63,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_error_handlers(app)
     app.middleware("http")(request_context)
     app.include_router(health_router)
+    app.include_router(cancel_order_router)
     app.include_router(create_order_router)
     app.include_router(list_order_router)
     app.include_router(read_order_router)

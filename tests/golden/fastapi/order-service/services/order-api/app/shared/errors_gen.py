@@ -4,7 +4,9 @@
 
 Each error response has the media type `application/problem+json`. A slice
 raises `ProblemError` to return an error. The handlers also change the
-errors of FastAPI and Starlette into problem details.
+errors of FastAPI and Starlette into problem details. A handler that raises
+`NotImplementedError` gives HTTP 501, for example the stub of a custom
+operation.
 """
 
 from collections.abc import Mapping
@@ -52,6 +54,7 @@ def register_error_handlers(app: FastAPI) -> None:
     app.add_exception_handler(ProblemError, _problem)
     app.add_exception_handler(HTTPException, _http)
     app.add_exception_handler(RequestValidationError, _validation)
+    app.add_exception_handler(NotImplementedError, _not_implemented)
 
 
 async def _problem(request: Request, error: Exception) -> Response:
@@ -64,6 +67,11 @@ async def _http(request: Request, error: Exception) -> Response:
     status = HTTPStatus(error.status_code)
     detail = None if error.detail == status.phrase else error.detail
     return problem_response(status, detail, headers=error.headers)
+
+
+async def _not_implemented(request: Request, error: Exception) -> Response:
+    assert isinstance(error, NotImplementedError)
+    return problem_response(HTTPStatus.NOT_IMPLEMENTED, str(error) or None)
 
 
 async def _validation(request: Request, error: Exception) -> Response:

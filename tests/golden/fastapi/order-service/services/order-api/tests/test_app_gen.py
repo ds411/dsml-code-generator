@@ -48,6 +48,19 @@ def test_unknown_path_returns_problem_details() -> None:
     assert response.json() == {"type": "about:blank", "title": "Not Found", "status": 404}
 
 
+def test_not_implemented_error_returns_501() -> None:
+    app = create_app(load_settings(ENVIRON))
+
+    @app.get("/stub")
+    async def stub() -> None:
+        raise NotImplementedError("No logic.")
+
+    response = TestClient(app).get("/stub")
+    assert response.status_code == 501
+    assert response.headers["content-type"] == PROBLEM_MEDIA_TYPE
+    assert response.json()["detail"] == "No logic."
+
+
 @pytest.mark.parametrize("name", sorted(ENVIRON))
 def test_missing_mandatory_variable_stops_the_app(name: str) -> None:
     environ = {key: value for key, value in ENVIRON.items() if key != name}

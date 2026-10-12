@@ -1,5 +1,22 @@
 {
-  "createOnce": [],
+  "createOnce": [
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/count_customers/count_customers/handler.py"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/find_products/handler.py"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/restock_product/handler.py"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/archive_supplier/handler.py"
+    }
+  ],
   "generated": [
     {
       "part": "application/shopApi",
@@ -30,6 +47,26 @@
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/__init__.py",
       "sha256": "3e04288f8a49dba09ef98bb2c654968395beb7d107e718a6a8f5a77d1b6e7c41"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/count_customers/__init__.py",
+      "sha256": "b4363e4e90d2a34dabac35a04e62da2094fb28d2a4fbfdcdfbfaa116b1c37918"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/count_customers/count_customers/__init__.py",
+      "sha256": "5ff2ad4014a27192a9f6301d9d179b984d0ee517a5604f4255c160357a3959c3"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/count_customers/count_customers/endpoint_gen.py",
+      "sha256": "699236ca241c1fdbee2f9b69ef8b338f8154b40ff006e8259afae00c97f91ffc"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/count_customers/count_customers/schemas_gen.py",
+      "sha256": "5ab681e017dc21d79a9ae1d4edd322dfdcbf3e3f2f1d8aaa45f4c53d10953a72"
     },
     {
       "part": "application/shopApi",
@@ -183,6 +220,21 @@
     },
     {
       "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/find_products/__init__.py",
+      "sha256": "83e349829890cc03b9361edef3304a66d7da9aa5951095386f3180a7f5836252"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/find_products/endpoint_gen.py",
+      "sha256": "568a475d5f30b1aa270a412f0f39f0518cfede69d2102d34c7cb5cb51eb14e55"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/find_products/schemas_gen.py",
+      "sha256": "d99d3271b4ab6e0975406bfcdd2993fa67629caf69a05015be636b93ba04396a"
+    },
+    {
+      "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/list_product/__init__.py",
       "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
     },
@@ -223,6 +275,21 @@
     },
     {
       "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/restock_product/__init__.py",
+      "sha256": "52cf83a7efef532273fc791130446e73e1df34c1bd1985754e4442a5669eb590"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/restock_product/endpoint_gen.py",
+      "sha256": "bcffa5bebeb7572a4aa265f7be2734ce1765d4b0db989a07c1fee2bb4203b268"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/product/restock_product/schemas_gen.py",
+      "sha256": "dee7a82a596b95ad98a1513daee9933281d9905b23923e360a4fcb36dfe2d578"
+    },
+    {
+      "part": "application/shopApi",
       "path": "services/shop-api/app/features/product/update_product/__init__.py",
       "sha256": "177dd3a1cc2ffa1d332296cc4f8f316a709601acfaf1f6024013716a9db12e89"
     },
@@ -245,6 +312,21 @@
       "part": "application/shopApi",
       "path": "services/shop-api/app/features/supplier/__init__.py",
       "sha256": "2f261514b4c1b555631c6107a10746d488507e14e9af1a394455d5e434b4d871"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/archive_supplier/__init__.py",
+      "sha256": "74070834a5c053308ec53b4717d5843a7411f6dfe9348cf56d732c8cb1e9aa7a"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/archive_supplier/endpoint_gen.py",
+      "sha256": "6607c6e6b814cdbca6ee60fbf9bb6693eb672f22de54e0843bf1484b753f8e08"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/app/features/supplier/archive_supplier/schemas_gen.py",
+      "sha256": "e280ec4777a39cc81b8b514760b22356fa2e93237aca267f5514b92ce9b73f93"
     },
     {
       "part": "application/shopApi",
@@ -309,7 +391,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/main_gen.py",
-      "sha256": "78c6bfc817e82378656633625403e1c0914a32a1af6b4087404e3216283bd538"
+      "sha256": "e4f533351dbfc1dce30cba1dc8cd498a19cb28ddebc9f0953ed9bb50bad1cb25"
     },
     {
       "part": "application/shopApi",
@@ -379,7 +461,7 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/app/shared/errors_gen.py",
-      "sha256": "a7c41eab4833bfab34969c8a20d672c625b5038a00f5ee9bb91de55506da56c7"
+      "sha256": "582c120f8bb316ab243dbbb339ea6363aa6277f613bf9f46c25c61bc2b1c253a"
     },
     {
       "part": "application/shopApi",
@@ -409,12 +491,22 @@
     {
       "part": "application/shopApi",
       "path": "services/shop-api/tests/test_app_gen.py",
-      "sha256": "8a62aec1decb90e4710cb7dac156ee88ffb6fbec80614a9d65d7e06ef6ab3b82"
+      "sha256": "7da47a71476914d38c34ff695f0815860161c9304ad927fb33331a62ad09ed6c"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_archive_supplier_http_gen.py",
+      "sha256": "0c2ece1af51cd22e18b2069496b0364411553257fe49435a96e9719ebcfdd296"
     },
     {
       "part": "application/shopApi",
       "path": "services/shop-api/tests/test_auth_gen.py",
       "sha256": "d946f32a6d8c3f052cd3c2dddfb948e4079df71e06e255ad61a82e2d72b6dec9"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_count_customers_http_gen.py",
+      "sha256": "480af77cd2c731a32811d89751eb80e990b8fb2ec8bdc6e9f7d3fe16c944fc3f"
     },
     {
       "part": "application/shopApi",
@@ -428,6 +520,11 @@
     },
     {
       "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_find_products_http_gen.py",
+      "sha256": "7e079206cf708afc68923ffc5c5b38a9f83b8323377cd7d4a5a4eaa5b68bf3e5"
+    },
+    {
+      "part": "application/shopApi",
       "path": "services/shop-api/tests/test_migrations_gen.py",
       "sha256": "18ccd929f7af194ac798291d448e1a028d9466ce19a4eaf52ad91204dbe8ae7d"
     },
@@ -435,6 +532,11 @@
       "part": "application/shopApi",
       "path": "services/shop-api/tests/test_products_http_gen.py",
       "sha256": "3491a905b12242a2ea636e94bb3f44a30d33d89cf4e5905aec5108c62ac618a2"
+    },
+    {
+      "part": "application/shopApi",
+      "path": "services/shop-api/tests/test_restock_product_http_gen.py",
+      "sha256": "a762546773f5792e4b3274e63410cbbd07494648c4367097a00a1bd70c8d0542"
     },
     {
       "part": "application/shopApi",
