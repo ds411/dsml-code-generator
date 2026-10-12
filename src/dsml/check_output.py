@@ -1,4 +1,4 @@
-# trace: PRD-CORE-011, PRD-IAC-038
+# trace: PRD-CORE-011, PRD-IAC-038, PRD-APP-234
 """Run the language tools on the generated code: the subcommand `dsml check-output`.
 
 The tools of each phase 1 target are:
@@ -6,6 +6,10 @@ The tools of each phase 1 target are:
 - FastAPI application: `ruff check`, `ruff format --check` and `pyright`.
   The tools run in the output folder of the application. pyright reads the
   virtual environment `.venv` of the project, thus `uv sync` must run first.
+- React application: `tsc --noEmit`, `eslint .` and `steiger ./src`. The
+  tools run in the output folder of the application. They come from the
+  folder `node_modules/.bin` of the project, thus `pnpm install` must run
+  first.
 - Infrastructure: `tofu fmt -check` on the output folder, then
   `tofu init -backend=false`, `tofu validate` and `tflint` with the AWS rule
   set on each root module (PRD-IAC-038). A root module is a folder with the
@@ -15,9 +19,10 @@ The tools of each phase 1 target are:
 infrastructure tools other than `tofu fmt` run on a temporary copy of the
 output folder. The generated folder does not change.
 
-The tools come from `PATH`. A missing tool is an error with the tool name
-(PRD-CORE-011). `tsc` and Steiger check the React and Next.js targets of
-phases 2 and 3. `docs/notes/check-output.md` tells where they go.
+The tools come from `PATH`. The tools of a React application come first
+from `node_modules/.bin`, then from `PATH`. A missing tool is an error with
+the tool name (PRD-CORE-011). The Next.js target of phase 3 has no tools in
+this version.
 """
 
 import os
@@ -37,6 +42,12 @@ from dsml.ir.model import EnumValue, Ir
 
 FASTAPI: Final = "fastapi"
 """The target of a FastAPI application in the model."""
+
+REACT: Final = "react"
+"""The target of a React application in the model."""
+
+NODE_TOOLS: Final = PurePosixPath("node_modules/.bin")
+"""The folder of the tools of a React project, relative to its output folder."""
 
 ROOT_MODULE_FILE: Final = "versions.gen.tf"
 """Each root module of the infrastructure has this file."""
@@ -61,7 +72,9 @@ class Step:
 
     `target` is the folder of the target, relative to the folder of the
     configuration file. `needs` gives the tool of the same target, or the
-    target and the tool, that must pass before this tool can run.
+    target and the tool, that must pass before this tool can run. If
+    `tools` is not `None`, the step looks for the tool in this folder
+    before `PATH`.
     """
 
     target: str
@@ -69,6 +82,7 @@ class Step:
     argv: tuple[str, ...]
     folder: Path
     needs: tuple[str, str] | None = None
+    tools: Path | None = None
 
 
 # trace: PRD-CORE-011
@@ -143,10 +157,12 @@ def check_output(
     results: list[Result] = []
     steps: list[Step] = []
     for application in applications:
-        if application.target != FASTAPI:
+        if application.target == FASTAPI:
+            steps.extend(fastapi_steps(root, application))
+        elif application.target == REACT:
+            steps.extend(react_steps(root, application))
+        else:
             results.append(_not_supported(application))
-            continue
-        steps.extend(fastapi_steps(root, application))
     if not infrastructure:
         return sorted(results + run_steps(steps, env), key=_order)
     with tempfile.TemporaryDirectory(prefix="dsml-check-output-") as temporary:
@@ -167,13 +183,39 @@ def _not_supported(application: ApplicationCode) -> Result:
         target,
         Status.ERROR,
         f'This version cannot check the application "{application.name}". '
-        f'Its target "{target}" is not a phase 1 target.\n',
+        f'It has no tools for the target "{target}".\n',
     )
 
 
 # trace: PRD-CORE-011, PRD-APP-016
 def fastapi_steps(root: Path, application: ApplicationCode) -> list[Step]:
     """Give the tools of one FastAPI application: ruff and pyright."""
+    folder, target = _output_folder(root, application)
+    return [
+        Step(target, "ruff check", ("ruff", "check", "--no-cache"), folder),
+        Step(target, "ruff format", ("ruff", "format", "--check", "--no-cache"), folder),
+        Step(target, "pyright", ("pyright",), folder),
+    ]
+
+
+# trace: PRD-CORE-011, PRD-APP-016, PRD-APP-234
+def react_steps(root: Path, application: ApplicationCode) -> list[Step]:
+    """Give the tools of one React application: `tsc`, ESLint and Steiger.
+
+    The tools come first from the folder `node_modules/.bin` of the project.
+    The path of this folder is absolute, because the tools run in the output
+    folder.
+    """
+    folder, target = _output_folder(root, application)
+    tools = (folder / NODE_TOOLS).absolute()
+    return [
+        Step(target, "tsc", ("tsc", "--noEmit"), folder, tools=tools),
+        Step(target, "eslint", ("eslint", "."), folder, tools=tools),
+        Step(target, "steiger", ("steiger", "./src"), folder, tools=tools),
+    ]
+
+
+def _output_folder(root: Path, application: ApplicationCode) -> tuple[Path, str]:
     if application.folder is None:
         raise ToolchainError(
             f'The configuration file gives no output folder for the application "'
@@ -185,12 +227,7 @@ def fastapi_steps(root: Path, application: ApplicationCode) -> list[Step]:
             f'The output folder "{application.folder.as_posix()}" of the application '
             f'"{application.name}" does not exist. Run "dsml generate" first.'
         )
-    target = application.folder.as_posix()
-    return [
-        Step(target, "ruff check", ("ruff", "check", "--no-cache"), folder),
-        Step(target, "ruff format", ("ruff", "format", "--check", "--no-cache"), folder),
-        Step(target, "pyright", ("pyright",), folder),
-    ]
+    return folder, application.folder.as_posix()
 
 
 # trace: PRD-IAC-038
@@ -317,13 +354,20 @@ def _run(
             f'The step did not run, because "{tool}" on "{target}" did not pass.\n',
         )
     program = step.argv[0]
-    executable = shutil.which(program, path=environment.get("PATH", os.defpath))
+    search = environment.get("PATH", os.defpath)
+    if step.tools is not None:
+        search = os.pathsep.join((str(step.tools), search))
+        environment = {**environment, "PATH": search}
+    executable = shutil.which(program, path=search)
     if executable is None:
+        where = f'Put "{program}" on PATH.'
+        if step.tools is not None:
+            where = f'Run "pnpm install" in "{step.target}", or put "{program}" on PATH.'
         return Result(
             step.target,
             step.tool,
             Status.ERROR,
-            f'The tool "{program}" is missing. Put "{program}" on PATH.\n',
+            f'The tool "{program}" is missing. {where}\n',
         )
     completed = subprocess.run(
         (executable, *step.argv[1:]),
