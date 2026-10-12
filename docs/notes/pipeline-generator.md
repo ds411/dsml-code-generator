@@ -26,7 +26,7 @@ Notes:
 
 - `uv sync --frozen` does not compare the lockfile with `pyproject.toml`. Thus the step `uv lock --check` comes first. A lockfile that does not agree makes the job fail (PRD-CICD-004).
 - The upload of the findings also runs when `dsml validate` fails, if the SARIF file exists.
-- `dsml check-output` comes in M7. Until then, the job fails with the message of the subcommand.
+- `dsml check-output` needs the language tools on `PATH` (`docs/notes/check-output.md`). The job does not install them yet. Story #140 adds them.
 - The plan job is only in the workflow if the model has the environment `dev` and the configuration has the key `infrastructure.output`. It uses the root module `<infrastructure.output>/envs/dev`.
 - The plan role is read-only. It cannot write the S3 state lock, thus `tofu plan` uses `-lock=false`. The job does not apply.
 - `model_commit` is the head commit of the pull request.

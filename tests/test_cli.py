@@ -11,13 +11,9 @@ import pytest
 
 from dsml import cli
 from dsml.cli import Outcome, main
-from dsml.errors import NOT_AVAILABLE, ToolchainError
+from dsml.errors import ToolchainError
 
 SUBCOMMANDS = ("init", "validate", "generate", "trace", "ir", "check-output", "version")
-NOT_AVAILABLE_ARGV = [
-    ["check-output"],
-    ["check-output", "--application", "orders", "--infrastructure"],
-]
 VERSION_TEXT = (
     f"toolchain: {metadata.version('dsml')}\n"
     "DSML library: 1.0.0\n"
@@ -52,16 +48,6 @@ def test_each_subcommand_has_the_common_options(
     out = capsys.readouterr().out
     for option in ("--config", "--output", "--verbose"):
         assert option in out
-
-
-@pytest.mark.parametrize("argv", NOT_AVAILABLE_ARGV)
-def test_subcommand_with_no_implementation_gives_exit_code_2(
-    argv: list[str], capsys: pytest.CaptureFixture[str]
-) -> None:
-    assert main(argv) == 2
-    captured = capsys.readouterr()
-    assert captured.out == ""
-    assert captured.err == f"dsml: error: {NOT_AVAILABLE}\n"
 
 
 @pytest.mark.parametrize(
@@ -246,4 +232,5 @@ def test_no_subcommand_waits_for_terminal_input(command: str, tmp_path: Path) ->
     elif command == "init":
         assert (returncode, out, err) == (0, "add dsml.toml\nadd model/model.sysml\n", "")
     else:
-        assert (returncode, out, err) == (2, "", f"dsml: error: {NOT_AVAILABLE}\n")
+        assert (returncode, out) == (2, "")
+        assert err.startswith("dsml: error: There is no generated code to check.")
