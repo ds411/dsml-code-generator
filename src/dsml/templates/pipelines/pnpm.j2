@@ -1,0 +1,17 @@
+{#- The setup of pnpm and Node.js for a React application (PRD-CICD-004,
+    PRD-CICD-007, PRD-CICD-014). pr.gen.yml and main.gen.yml import this
+    macro "with context". The versions come from the version baseline. The
+    pnpm action reads the field "packageManager" of the package.json of the
+    application. That field must agree with the version of the baseline. -#}
+{% macro setup_pnpm(app) %}
+      - name: Set up pnpm
+        uses: {{ actions.setup_pnpm }}
+        with:
+          version: {{ pnpm_version | yaml_string }}
+          package_json_file: {{ app.package_json | yaml_string }}
+
+      - name: Set up Node.js
+        uses: {{ actions.setup_node }}
+        with:
+          node-version: {{ node_version | yaml_string }}
+{% endmacro %}

@@ -15,6 +15,7 @@
           version: {{ uv_version | yaml_string }}
 {% endif %}
 {% endmacro %}
+{% from "pipelines/pnpm.j2" import setup_pnpm with context %}
 {% include "common/header.j2" %}
 
 name: Pull request
@@ -169,6 +170,42 @@ jobs:
 
       - name: Test
         run: uv run --frozen pytest
+{% endfor %}
+{% for app in react_applications %}
+
+  # Install the dependencies of {{ app.name }} from the committed lockfile, then
+  # run the type checker, the linters, the format check and the tests
+  # (PRD-CICD-004, decision record 09, Q64).
+  {{ app.job }}:
+    name: {{ ("Test " ~ app.name) | yaml_string }}
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: {{ app.folder | yaml_string }}
+    steps:
+{{ setup(with_uv=False) }}
+{{ setup_pnpm(app) }}
+      # A lockfile that does not agree with package.json makes the step fail.
+      - name: Install the dependencies from the lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: Check the types
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm exec eslint .
+
+      - name: Check the layers
+        run: pnpm exec steiger ./src
+
+      - name: Check the format
+        run: pnpm exec prettier --check .
+
+      - name: Test
+        run: pnpm exec vitest run
 {% endfor %}
 {% if plan %}
 

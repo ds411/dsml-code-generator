@@ -1,9 +1,10 @@
 {#- The deploy job of one environment (PRD-CICD-009, PRD-CICD-010,
-    PRD-CICD-012, PRD-CICD-015 to PRD-CICD-018, PRD-CICD-021).
+    PRD-CICD-012, PRD-CICD-015 to PRD-CICD-019, PRD-CICD-021).
     main.gen.yml and promote.gen.yml import this macro "with context". The
-    order of the steps is: apply, then the migrations, then the rollouts. A
-    failed step stops the job, thus a failed migration stops the job before
-    it changes a service. -#}
+    order of the steps is: apply, then the migrations, then the rollouts,
+    then the static files. A failed step stops the job, thus a failed
+    migration stops the job before it changes a service. The static files
+    change only after the services operate with the new images. -#}
 {% macro deploy_job(deploy, checkout_ref=None) %}
   # Deploy the build to {{ deploy.environment }} with the deploy role (PRD-CICD-010,
   # PRD-CICD-012, PRD-CICD-016 to PRD-CICD-018, PRD-CICD-021). The group of
@@ -22,6 +23,9 @@
       group: {{ deploy.concurrency | yaml_string }}
       cancel-in-progress: false
     permissions:
+{% if deploy.sites and deploy.other_run %}
+      actions: read
+{% endif %}
       contents: read
       id-token: write
     defaults:
@@ -31,6 +35,12 @@
       MODEL_COMMIT: {{ "${{ " ~ deploy.commit ~ " }}" }}
 {% for digest in deploy.digests %}
       {{ digest.name }}: {{ "${{ " ~ digest.expression ~ " }}" }}
+{% endfor %}
+{% for site in deploy.sites %}
+      {{ site.build.output }}: {{ "${{ " ~ site.artifact ~ " }}" }}
+{% if deploy.other_run %}
+      {{ site.build.run_output }}: {{ "${{ " ~ site.run ~ " }}" }}
+{% endif %}
 {% endfor %}
     steps:
       - name: Check out the repository
@@ -125,6 +135,61 @@
           aws ecs wait services-stable --cluster "$cluster" --services "$service"
           echo "| {{ rollout.label }} | \`$task_definition\` |" >> "$RUNNER_TEMP/services.md"
 {% endfor %}
+{% for site in deploy.sites %}
+
+      # Download the static files of {{ site.build.application.name }} from the build
+      # (PRD-CICD-007, PRD-CICD-008). The action compares the digest of the
+      # artifact with the digest that GitHub keeps.
+      - name: {{ ("Download the static files of " ~ site.build.application.name) | yaml_string }}
+        uses: {{ actions.download_artifact }}
+        with:
+          name: {{ site.build.artifact | yaml_string }}
+{% if deploy.other_run %}
+          run-id: {{ "${{ env." ~ site.build.run_output ~ " }}" }}
+          github-token: {{ "${{ github.token }}" }}
+{% endif %}
+          path: {{ "${{ runner.temp }}/" ~ site.path }}
+
+      # Upload the static files of {{ site.build.application.name }} to the S3 bucket of its
+      # site, write /{{ runtime_configuration }} from the outputs of the root module, and
+      # invalidate the CloudFront cache (PRD-CICD-019, PRD-APP-230). The
+      # step uploads index.html after the other files, and removes the old
+      # files at the end. Thus each file that index.html refers to is in the
+      # bucket. The browser must get index.html and /{{ runtime_configuration }} again
+      # each time.
+      - name: {{ ("Deploy the static files of " ~ site.build.application.name) | yaml_string }}
+        env:
+          APPLICATION: {{ site.build.application.name | yaml_string }}
+          CLIENT: {{ site.client | yaml_string }}
+          FILES: {{ "${{ runner.temp }}/" ~ site.path }}
+        run: |
+          bucket="$(tofu output -raw {{ site.site }}_bucket_name)"
+          distribution="$(tofu output -raw {{ site.site }}_distribution_id)"
+          url="$(tofu output -raw {{ site.site }}_url)"
+          api_base_url="$(tofu output -raw {{ site.api }}_api_url)"
+          region="$(tofu output -raw aws_region)"
+          user_pool_id="$(tofu output -raw {{ site.directory }}_user_pool_id)"
+          login_domain="$(tofu output -raw {{ site.directory }}_login_domain)"
+          app_client_id="$(tofu output -json {{ site.directory }}_app_client_ids | jq -r --arg client "$CLIENT" '.[$client] // empty')"
+          if [ -z "$app_client_id" ]; then
+            echo "::error::The user directory has no app client for $APPLICATION. No static file changed."
+            exit 1
+          fi
+          jq -n --arg apiBaseUrl "$api_base_url" --arg region "$region" --arg userPoolId "$user_pool_id" \
+            --arg appClientId "$app_client_id" --arg loginDomain "$login_domain" \
+            '{apiBaseUrl: $apiBaseUrl, region: $region, userPoolId: $userPoolId, appClientId: $appClientId, loginDomain: $loginDomain}' \
+            > "$RUNNER_TEMP/{{ site.build.label }}-{{ runtime_configuration }}"
+          aws s3 sync "$FILES" "s3://$bucket" --no-progress --exclude index.html --exclude {{ runtime_configuration }}
+          aws s3 cp "$RUNNER_TEMP/{{ site.build.label }}-{{ runtime_configuration }}" "s3://$bucket/{{ runtime_configuration }}" --no-progress \
+            --content-type application/json --cache-control no-cache
+          aws s3 cp "$FILES/index.html" "s3://$bucket/index.html" --no-progress \
+            --content-type "text/html; charset=utf-8" --cache-control no-cache
+          aws s3 sync "$FILES" "s3://$bucket" --no-progress --delete --exclude index.html --exclude {{ runtime_configuration }}
+          invalidation="$(aws cloudfront create-invalidation --distribution-id "$distribution" --paths "/*" \
+            --query Invalidation.Id --output text)"
+          aws cloudfront wait invalidation-completed --distribution-id "$distribution" --id "$invalidation"
+          echo "| {{ site.build.label }} | \`${{ site.build.output }}\` | \`$bucket\` | \`$distribution\` | \`$invalidation\` | $url |" >> "$RUNNER_TEMP/sites.md"
+{% endfor %}
 
       # The summary gives no secret value (PRD-CICD-015, PRD-CICD-021).
       - name: Write the deployment in the job summary
@@ -138,6 +203,7 @@
             echo "- Environment: {{ deploy.environment }}"
             echo "- Job status: $JOB_STATUS"
             echo "- Model commit: \`$MODEL_COMMIT\`"
+{% if deploy.digests %}
             echo
             echo "### Image digests"
             echo
@@ -146,6 +212,8 @@
 {% for digest in deploy.digests %}
             echo "| {{ digest.label }} | \`${{ digest.name }}\` |"
 {% endfor %}
+{% endif %}
+{% if deploy.rollouts %}
             echo
             echo "### Migrations"
             echo
@@ -168,5 +236,18 @@
             else
               echo "No service changed."
             fi
+{% endif %}
+{% if deploy.sites %}
+            echo
+            echo "### Static files"
+            echo
+            if [ -f "$RUNNER_TEMP/sites.md" ]; then
+              echo "| Application | Artifact ID | Bucket | Distribution | Invalidation | URL |"
+              echo "| --- | --- | --- | --- | --- | --- |"
+              cat "$RUNNER_TEMP/sites.md"
+            else
+              echo "No static file changed."
+            fi
+{% endif %}
           } >> "$GITHUB_STEP_SUMMARY"
 {% endmacro %}

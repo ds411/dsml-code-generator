@@ -1,7 +1,7 @@
 {#- The promote workflow (PRD-CICD-001, PRD-CICD-008 to PRD-CICD-012,
-    PRD-CICD-014 to PRD-CICD-018, PRD-CICD-020, PRD-CICD-021). The workflow
-    builds no image. It finds the image digests of one main build and
-    deploys them to each environment in its order. -#}
+    PRD-CICD-014 to PRD-CICD-021). The workflow builds no image and no
+    static files. It finds the image digests and the static files of one
+    main build and deploys them to each environment in its order. -#}
 {% from "pipelines/deploy.j2" import deploy_job with context %}
 {% include "common/header.j2" %}
 
@@ -25,21 +25,41 @@ defaults:
     shell: bash
 
 jobs:
+{% if builds %}
   # Find the image digests of the main build of the commit, with the push
   # role (PRD-CICD-008, PRD-CICD-010). The commit is the commit of the
   # release tag, or the input of a manual run.
+{% else %}
+  # Find the main build of the commit (PRD-CICD-008). The commit is the
+  # commit of the release tag, or the input of a manual run.
+{% endif %}
+{% if sites %}
+  # Find the artifact of the static files of each site in the newest run of
+  # the main workflow for the commit. GitHub deletes an artifact after its
+  # retention period. Then promote a newer commit.
+{% endif %}
   {{ resolve.job }}:
     name: Find the build
     runs-on: {{ runner }}
     timeout-minutes: 10
     permissions:
+{% if sites %}
+      actions: read
+{% endif %}
+{% if builds %}
       id-token: write
+{% endif %}
     outputs:
       commit: {{ "${{ steps.build.outputs.commit }}" }}
 {% for build in builds %}
       {{ build.output }}: {{ "${{ steps.build.outputs." ~ build.output ~ " }}" }}
 {% endfor %}
+{% for site in sites %}
+      {{ site.output }}: {{ "${{ steps.sites.outputs." ~ site.output ~ " }}" }}
+      {{ site.run_output }}: {{ "${{ steps.sites.outputs." ~ site.run_output ~ " }}" }}
+{% endfor %}
     steps:
+{% if builds %}
       - name: Get AWS credentials for the push role
         uses: {{ actions.configure_aws_credentials }}
         with:
@@ -47,6 +67,9 @@ jobs:
           aws-region: {{ resolve.region | yaml_string }}
 
       - name: Find the image digests of the build
+{% else %}
+      - name: Read the commit of the build
+{% endif %}
         id: build
         env:
           INPUT_COMMIT: {{ "${{ inputs.commit }}" }}
@@ -57,6 +80,7 @@ jobs:
             exit 1
           fi
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
+{% if builds %}
           find_digest() {
             local digest
             if ! digest="$(aws ecr describe-images --repository-name "$1" --image-ids "imageTag=$commit" \
@@ -69,6 +93,33 @@ jobs:
 {% for build in builds %}
           find_digest {{ build.repository.name | yaml_string }} {{ build.output }}
 {% endfor %}
+{% endif %}
+{% if sites %}
+
+      - name: Find the static files of the build
+        id: sites
+        env:
+          COMMIT: {{ "${{ steps.build.outputs.commit }}" }}
+          GH_TOKEN: {{ "${{ github.token }}" }}
+          MAIN_BRANCH: {{ main_branch | yaml_string }}
+        run: |
+          find_artifact() {
+            local found id run
+            found="$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/artifacts?name=$1&per_page=100" \
+              --jq ".artifacts[] | select(.expired == false and .workflow_run.head_sha == \"$COMMIT\" and .workflow_run.head_branch == \"$MAIN_BRANCH\") | \"\(.id) \(.workflow_run.id)\"" \
+              | sort -n -r | awk 'NR == 1')"
+            if [ -z "$found" ]; then
+              echo "::error::The main workflow has no artifact $1 of the commit $COMMIT. Promote only a commit that the main workflow built."
+              exit 1
+            fi
+            read -r id run <<< "$found"
+            echo "$2=$id" >> "$GITHUB_OUTPUT"
+            echo "$3=$run" >> "$GITHUB_OUTPUT"
+          }
+{% for site in sites %}
+          find_artifact {{ site.artifact | yaml_string }} {{ site.output }} {{ site.run_output }}
+{% endfor %}
+{% endif %}
 {% for deploy in deploys %}
 
 {{ deploy_job(deploy, checkout_ref="needs." ~ resolve.job ~ ".outputs.commit") }}

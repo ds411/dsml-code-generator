@@ -1,4 +1,4 @@
-"""Tests of the main workflow and the promote workflow (story #87).
+"""Tests of the main workflow and the promote workflow (stories #87 and #165).
 
 The golden files are in `tests/golden/pipelines/order-service/`. The test
 `test_output_of_the_example_model_agrees_with_the_golden_files` of
@@ -7,6 +7,7 @@ change of the output is correct, run
 `uv run python scripts/write_golden_pipelines.py`.
 """
 
+import dataclasses
 import re
 from pathlib import Path, PurePosixPath
 
@@ -14,8 +15,14 @@ import pytest
 
 from dsml.adapter.convert import make_ir
 from dsml.config import Application, Configuration
+from dsml.errors import ToolchainError
 from dsml.generate.infrastructure import names
-from dsml.generate.pipelines.deploy import build_jobs, deploy_jobs
+from dsml.generate.pipelines.deploy import (
+    CONFIGURATION_KEYS,
+    build_jobs,
+    deploy_jobs,
+    site_builds,
+)
 from dsml.generate.pipelines.generator import ACTIONS, PipelineGenerator
 from dsml.generate.pipelines.workflow import job_symbols, pinned_action
 from dsml.generate.trace import SymbolKind
@@ -295,4 +302,280 @@ def test_deploy_jobs_skip_environments_that_the_model_does_not_have(ir: Ir) -> N
     ]
     assert [(rollout.address, rollout.migrates) for rollout in jobs[0].rollouts] == [
         ("api_service", True)
+    ]
+
+
+# The phase 2 reference model "order portal" (story #165): the static files
+# of the React application. The golden files are in
+# tests/golden/pipelines/order-portal/.
+PORTAL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
+PORTAL_GOLDEN = ROOT / "tests/golden/pipelines/order-portal"
+PORTAL_OUTPUTS = ROOT / "tests/golden/infrastructure/order-portal/infra/envs/dev/outputs.gen.tf"
+PORTAL_CONFIGURATION = Configuration(
+    applications=(
+        Application("orderApi", PurePosixPath("services/order-api")),
+        Application("orderPortal", PurePosixPath("apps/order-portal")),
+    ),
+    infrastructure=PurePosixPath("infra"),
+    pipelines=WORKFLOWS,
+)
+
+
+@pytest.fixture(scope="module")
+def portal() -> Ir:
+    return make_ir([PORTAL], ROOT)
+
+
+@pytest.fixture(scope="module")
+def portal_workflows(portal: Ir) -> dict[str, str]:
+    files = PipelineGenerator(version="0.1.0").generate(portal, PORTAL_CONFIGURATION, None)
+    return {file.path: file.content.decode("utf-8") for file in files}
+
+
+def _step(job: str, name: str) -> str:
+    """Give the text of the step with a name, without the next steps."""
+    start = job.index(f"      - name: {name}\n")
+    end = job.find("\n      - name: ", start + 1)
+    return job[start:] if end < 0 else job[start:end]
+
+
+# trace: PRD-CICD-001, PRD-CORE-030
+def test_golden_workflows_of_the_order_portal_agree_with_the_output(
+    portal_workflows: dict[str, str],
+) -> None:
+    for path in (MAIN_PATH, PROMOTE_PATH):
+        assert portal_workflows[path] == (PORTAL_GOLDEN / path).read_text(encoding="utf-8"), path
+
+
+# trace: PRD-CICD-007, PRD-APP-233
+def test_main_workflow_builds_the_static_files_one_time(portal_workflows: dict[str, str]) -> None:
+    text = portal_workflows[MAIN_PATH]
+    jobs = _jobs(text)
+    assert tuple(jobs) == ("build-order-api", "build-order-portal", "deploy-dev")
+    assert _needs(jobs["deploy-dev"]) == ["build-order-api", "build-order-portal"]
+    build = jobs["build-order-portal"]
+    assert _steps(build) == [
+        "Check out the repository",
+        "Set up pnpm",
+        "Set up Node.js",
+        "Install the dependencies from the lockfile",
+        "Build the static files",
+        "Upload the static files",
+    ]
+    assert text.count("pnpm build\n") == 1
+    assert '        working-directory: "apps/order-portal"\n' in build
+    assert "run: pnpm install --frozen-lockfile\n" in build
+    upload = _step(build, "Upload the static files")
+    assert '          name: "static-files-order-portal"\n' in upload
+    assert '          path: "apps/order-portal/dist/"\n' in upload
+    assert "          if-no-files-found: error\n" in upload
+    assert "      ORDER_PORTAL_ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}\n" in build
+
+
+# trace: PRD-CICD-008
+def test_promote_workflow_does_not_build_again(portal_workflows: dict[str, str]) -> None:
+    text = portal_workflows[PROMOTE_PATH]
+    assert tuple(_jobs(text)) == PROMOTE_JOBS
+    for command in ("pnpm", "docker build", "docker push", "upload-artifact", "vite"):
+        assert command not in text, command
+    find = _jobs(text)["find-build"]
+    assert (
+        "      ORDER_PORTAL_ARTIFACT_ID: ${{ steps.sites.outputs.ORDER_PORTAL_ARTIFACT_ID }}\n"
+        in (find)
+    )
+    assert "      ORDER_PORTAL_RUN_ID: ${{ steps.sites.outputs.ORDER_PORTAL_RUN_ID }}\n" in find
+    sites = _step(find, "Find the static files of the build")
+    assert "          COMMIT: ${{ steps.build.outputs.commit }}\n" in sites
+    assert '.workflow_run.head_branch == \\"$MAIN_BRANCH\\"' in sites
+    assert (
+        '          find_artifact "static-files-order-portal" ORDER_PORTAL_ARTIFACT_ID '
+        "ORDER_PORTAL_RUN_ID" in sites
+    )
+
+
+# trace: PRD-CICD-008
+def test_promote_deploy_jobs_download_the_files_of_the_main_build(
+    portal_workflows: dict[str, str],
+) -> None:
+    jobs = _jobs(portal_workflows[PROMOTE_PATH])
+    for job_id in ("deploy-staging", "deploy-prod"):
+        job = jobs[job_id]
+        assert (
+            "      ORDER_PORTAL_ARTIFACT_ID: "
+            "${{ needs.find-build.outputs.ORDER_PORTAL_ARTIFACT_ID }}\n" in job
+        )
+        assert (
+            "      ORDER_PORTAL_RUN_ID: ${{ needs.find-build.outputs.ORDER_PORTAL_RUN_ID }}\n"
+            in job
+        )
+        download = _step(job, '"Download the static files of orderPortal"')
+        assert '          name: "static-files-order-portal"\n' in download
+        assert "          run-id: ${{ env.ORDER_PORTAL_RUN_ID }}\n" in download
+        assert "          github-token: ${{ github.token }}\n" in download
+    main = _jobs(portal_workflows[MAIN_PATH])["deploy-dev"]
+    download = _step(main, '"Download the static files of orderPortal"')
+    assert "run-id" not in download and "github-token" not in download
+
+
+# trace: PRD-CICD-019, PRD-APP-230, PRD-IAC-010
+def test_deploy_job_writes_the_configuration_from_the_root_module_outputs(
+    portal_workflows: dict[str, str],
+) -> None:
+    outputs = set(re.findall(r'^output "(\w+)"', PORTAL_OUTPUTS.read_text(), re.MULTILINE))
+    for path, jobs in (
+        (MAIN_PATH, ("deploy-dev",)),
+        (PROMOTE_PATH, ("deploy-staging", "deploy-prod")),
+    ):
+        for job_id in jobs:
+            step = _step(
+                _jobs(portal_workflows[path])[job_id], '"Deploy the static files of orderPortal"'
+            )
+            used = set(re.findall(r"tofu output -(?:raw|json) (\w+)", step))
+            assert used == {
+                "api_service_api_url",
+                "aws_region",
+                "portal_site_bucket_name",
+                "portal_site_distribution_id",
+                "portal_site_url",
+                "users_app_client_ids",
+                "users_login_domain",
+                "users_user_pool_id",
+            }
+            assert used <= outputs
+            keys = re.findall(r"(\w+): \$\w+", step[step.index("'{") :].split("\n")[0])
+            assert tuple(keys) == CONFIGURATION_KEYS
+            assert '          CLIENT: "order_portal"\n' in step
+            assert '"s3://$bucket/config.json"' in step
+            assert "--cache-control no-cache" in step
+
+
+# trace: PRD-CICD-019
+def test_deploy_job_uploads_index_html_last_then_invalidates_the_cache(
+    portal_workflows: dict[str, str],
+) -> None:
+    job = _jobs(portal_workflows[MAIN_PATH])["deploy-dev"]
+    assert _steps(job)[-4:] == [
+        "Roll out orderApi",
+        "Download the static files of orderPortal",
+        "Deploy the static files of orderPortal",
+        "Write the deployment in the job summary",
+    ]
+    step = _step(job, '"Deploy the static files of orderPortal"')
+    order = [
+        step.index('aws s3 sync "$FILES" "s3://$bucket" --no-progress --exclude'),
+        step.index("s3://$bucket/config.json"),
+        step.index("s3://$bucket/index.html"),
+        step.index("--delete"),
+        step.index("aws cloudfront create-invalidation"),
+        step.index("aws cloudfront wait invalidation-completed"),
+    ]
+    assert order == sorted(order)
+
+
+# trace: PRD-CICD-015, PRD-CICD-021
+def test_job_summary_gives_the_static_files(portal_workflows: dict[str, str]) -> None:
+    job = _jobs(portal_workflows[MAIN_PATH])["deploy-dev"]
+    summary = _step(job, "Write the deployment in the job summary")
+    assert 'echo "### Static files"' in summary
+    assert 'cat "$RUNNER_TEMP/sites.md"' in summary
+    assert 'echo "| order-api | \\`$ORDER_API_IMAGE_DIGEST\\` |"' in summary
+    for text in portal_workflows.values():
+        assert "secrets." not in text
+
+
+# trace: PRD-CICD-011
+def test_each_job_of_the_order_portal_declares_the_smallest_permissions(
+    portal_workflows: dict[str, str],
+) -> None:
+    aws = "contents: read\n      id-token: write\n"
+    expected = {
+        MAIN_PATH: {
+            "build-order-api": aws,
+            "build-order-portal": "contents: read\n",
+            "deploy-dev": aws,
+        },
+        PROMOTE_PATH: {
+            "find-build": "actions: read\n      id-token: write\n",
+            "deploy-staging": f"actions: read\n      {aws}",
+            "deploy-prod": f"actions: read\n      {aws}",
+        },
+    }
+    for path, jobs in expected.items():
+        for job_id, job in _jobs(portal_workflows[path]).items():
+            assert f"\n    permissions:\n      {jobs[job_id]}    " in job, job_id
+
+
+# trace: PRD-CICD-014
+def test_each_action_of_the_order_portal_has_a_full_commit_sha_from_the_baseline(
+    portal_workflows: dict[str, str],
+) -> None:
+    baseline = load_baseline()
+    pinned = {pinned_action(item, baseline).uses for item in ACTIONS.values()}
+    found: set[str] = set()
+    for path in (MAIN_PATH, PROMOTE_PATH):
+        found.update(re.findall(r"^ +(?:- )?uses: (.+)$", portal_workflows[path], re.MULTILINE))
+    assert found <= pinned
+    for item in ("action-download-artifact", "action-upload-artifact", "action-setup-pnpm"):
+        assert pinned_action(item, baseline).uses in found, item
+
+
+# trace: PRD-TRACE-006
+def test_each_job_of_the_order_portal_is_a_symbol_of_its_elements(portal: Ir) -> None:
+    files = PipelineGenerator(version="0.1.0").generate(portal, PORTAL_CONFIGURATION, None)
+    by_path = {file.path: file for file in files}
+    assert {symbol.name: symbol.elements for symbol in by_path[MAIN_PATH].symbols} == {
+        "build-order-api": ("OrderPortal::orderApi",),
+        "build-order-portal": ("OrderPortal::orderPortal",),
+        "deploy-dev": ("OrderPortal::dev",),
+    }
+    assert {symbol.name: symbol.elements for symbol in by_path[PROMOTE_PATH].symbols} == {
+        "find-build": ("OrderPortal::orderApi", "OrderPortal::orderPortal"),
+        "deploy-staging": ("OrderPortal::staging",),
+        "deploy-prod": ("OrderPortal::prod",),
+    }
+    assert (
+        by_path[MAIN_PATH]
+        .content.decode("utf-8")
+        .startswith(
+            "# Generated by dsml 0. Do not edit.\n# Elements: OrderPortal::apiService, "
+            "OrderPortal::dev, OrderPortal::orderApi, OrderPortal::orderPortal, "
+            "OrderPortal::portalSite, OrderPortal::tooling\n"
+        )
+    )
+
+
+def _without_links(ir: Ir, link_type: str) -> Ir:
+    return dataclasses.replace(ir, links=tuple(link for link in ir.links if link.type != link_type))
+
+
+# trace: PRD-APP-230
+def test_react_application_that_calls_no_container_application_gives_an_error(portal: Ir) -> None:
+    with pytest.raises(ToolchainError, match="must call one application on a container service"):
+        PipelineGenerator(version="0.1.0").generate(
+            _without_links(portal, "calls"), PORTAL_CONFIGURATION, None
+        )
+
+
+# trace: PRD-APP-230
+def test_react_application_with_no_user_directory_gives_an_error(portal: Ir) -> None:
+    users = [
+        link
+        for link in portal.links
+        if not (link.type == "uses" and link.source == "OrderPortal::portalSite")
+    ]
+    with pytest.raises(ToolchainError, match="must use one user directory"):
+        PipelineGenerator(version="0.1.0").generate(
+            dataclasses.replace(portal, links=tuple(users)), PORTAL_CONFIGURATION, None
+        )
+
+
+# trace: PRD-CICD-007, PRD-CICD-019
+def test_site_builds_need_the_infrastructure_folder(portal: Ir) -> None:
+    configuration = Configuration(
+        applications=PORTAL_CONFIGURATION.applications, pipelines=WORKFLOWS
+    )
+    assert site_builds(portal, configuration) == ()
+    builds = site_builds(portal, PORTAL_CONFIGURATION)
+    assert [(build.job, build.files, build.artifact) for build in builds] == [
+        ("build-order-portal", "apps/order-portal/dist", "static-files-order-portal")
     ]

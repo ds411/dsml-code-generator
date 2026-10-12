@@ -19,8 +19,12 @@ def test_package_baseline_has_the_items_of_phases_1_and_2() -> None:
     assert set(load_baseline()) == {
         "action-checkout",
         "action-configure-aws-credentials",
+        "action-download-artifact",
+        "action-setup-node",
         "action-setup-opentofu",
+        "action-setup-pnpm",
         "action-setup-uv",
+        "action-upload-artifact",
         "action-upload-sarif",
         "actionlint",
         "actionlint-sha256",
