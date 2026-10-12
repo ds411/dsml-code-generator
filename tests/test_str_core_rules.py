@@ -66,9 +66,27 @@ def test_str_001_rejects_a_dsml_version_that_the_toolchain_does_not_support(
         _error(
             "STR-001",
             'The package "Str001RejectVersion" gives the DSML version 2.0. '
-            "The toolchain supports the version 1.0.",
+            "The toolchain supports the versions 1.0 to 1.1.",
             _at("STR-001", "reject-version.sysml", 5, 5),
             "Str001RejectVersion",
+        ),
+    )
+
+
+# trace: PRD-VAL-008, PRD-DSML-056, PRD-DSML-057
+def test_str_001_accepts_the_minor_version_of_the_library(run_rule: RunRule) -> None:
+    assert run_rule("STR-001", "accept-minor-1.sysml") == ()
+
+
+# trace: PRD-VAL-008, PRD-DSML-056, PRD-DSML-057
+def test_str_001_rejects_a_minor_version_after_the_library(run_rule: RunRule) -> None:
+    assert run_rule("STR-001", "reject-minor-2.sysml") == (
+        _error(
+            "STR-001",
+            'The package "Str001RejectMinor2" gives the DSML version 1.2. '
+            "The toolchain supports the versions 1.0 to 1.1.",
+            _at("STR-001", "reject-minor-2.sysml", 5, 5),
+            "Str001RejectMinor2",
         ),
     )
 

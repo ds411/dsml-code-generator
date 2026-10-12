@@ -1,4 +1,4 @@
-"""Tests of the DSML library package (story #13).
+"""Tests of the DSML library package (stories #13 and #157).
 
 These tests start a private `sysml-grpc` child process. If the binary is not
 in the cache, the `opensysml` client downloads it one time.
@@ -21,10 +21,11 @@ MODELS = Path(__file__).resolve().parent / "models" / "dsml"
 
 SEMANTIC_METADATA = "Metaobjects::SemanticMetadata"
 
-# The keywords of element kinds in the scope of story #13. Each one
+# The keywords of element kinds of the stories #13 and #157. Each one
 # specializes Metaobjects::SemanticMetadata (PRD-DSML-009).
 ELEMENT_KIND_KEYWORDS = {
     "Application",
+    "AwsStaticSite",
     "AwsCognito",
     "AwsEcsService",
     "AwsRdsPostgres",
@@ -44,9 +45,11 @@ ELEMENT_KIND_KEYWORDS = {
     "Roles",
     "SecretStore",
     "Stakeholder",
+    "StaticSite",
     "ToolingAccount",
     "UserDirectory",
     "Verification",
+    "View",
 }
 
 # Keywords for a dependency, and metadata that holds its own attributes.
@@ -69,6 +72,7 @@ ENUMERATIONS = {
     "Status": ("draft", "approved", "implemented", "verified", "retired"),
     "Target": ("fastapi", "react", "nextjs"),
     "VerificationMethod": ("test", "analysis", "inspection", "demonstration"),
+    "ViewKind": ("list", "detail", "form"),
 }
 
 
@@ -86,6 +90,11 @@ def library(engine: Engine) -> ParsedModel:
 @pytest.fixture(scope="module")
 def keywords_model(engine: Engine) -> ParsedModel:
     return _parse_with_library(engine, "keywords.sysml")
+
+
+@pytest.fixture(scope="module")
+def phase_2_model(engine: Engine) -> ParsedModel:
+    return _parse_with_library(engine, "phase-2.sysml")
 
 
 def _parse_with_library(engine: Engine, name: str) -> ParsedModel:
@@ -119,7 +128,7 @@ def test_element_kind_keywords_are_semantic_metadata(library: ParsedModel) -> No
     assert semantic == ELEMENT_KIND_KEYWORDS
 
 
-# trace: PRD-DSML-016, PRD-DSML-020, PRD-DSML-027, PRD-DSML-029, PRD-DSML-046
+# trace: PRD-DSML-016, PRD-DSML-020, PRD-DSML-027, PRD-DSML-029, PRD-DSML-031, PRD-DSML-046
 def test_library_has_each_enumeration(library: ParsedModel) -> None:
     enumerations = library.owned_elements("DSML", kinds={"EnumerationDefinition"})
     assert {item.name for item in enumerations} == set(ENUMERATIONS)
@@ -138,13 +147,13 @@ def test_library_has_each_attribute_type(library: ParsedModel) -> None:
     assert general["Uuid"] == ("ScalarValues::String",)
 
 
-# trace: PRD-DSML-056
+# trace: PRD-DSML-056, PRD-DSML-057
 def test_library_version_agrees_with_the_source() -> None:
     match = re.search(
         r"@DsmlVersion \{ major = (\d+); minor = (\d+); patch = (\d+); \}", library_text()
     )
     assert match is not None
-    assert ".".join(match.groups()) == LIBRARY_VERSION == "1.0.0"
+    assert ".".join(match.groups()) == LIBRARY_VERSION == "1.1.0"
 
 
 # trace: PRD-CORE-033
@@ -211,6 +220,69 @@ def test_keyword_on_a_typed_usage_gives_the_base_type_features(
     assert keywords_model.evaluate_bool("orderApi.cancelOrder.'public' == false", namespace)
     assert keywords_model.evaluate_bool("prod.orderDbProd.multiAz == true", namespace)
     assert keywords_model.evaluate_bool("orderDbAws.multiAz == false", namespace)
+
+
+# trace: PRD-DSML-003, PRD-DSML-004, PRD-DSML-031, PRD-DSML-032, PRD-DSML-035
+def test_model_with_the_phase_2_keywords_parses_and_resolves(phase_2_model: ParsedModel) -> None:
+    assert phase_2_model.diagnostics == ()
+
+
+# trace: PRD-DSML-003, PRD-DSML-009, PRD-DSML-031, PRD-DSML-035, PRD-DSML-037
+@pytest.mark.parametrize(
+    ("element", "keyword", "path"),
+    [
+        ("orderPortal::orderList", "View", "orderPortal.orderList"),
+        ("orderPortal::orderDetail", "View", "orderPortal.orderDetail"),
+        ("orderPortal::placeOrderForm", "View", "orderPortal.placeOrderForm"),
+        ("portalSite", "StaticSite", "portalSite"),
+        ("portalSiteAws", "AwsStaticSite", "portalSiteAws"),
+    ],
+)
+def test_phase_2_keyword_gives_the_base_type(
+    phase_2_model: ParsedModel, element: str, keyword: str, path: str
+) -> None:
+    namespace = "PhaseTwo"
+    assert phase_2_model.has_metadata(element, f"DSML::{keyword}", namespace)
+    assert phase_2_model.evaluate_bool(f"{path} istype DSML::BaseTypes::{keyword}", namespace)
+
+
+# trace: PRD-DSML-037
+def test_aws_static_site_is_an_aws_realization(phase_2_model: ParsedModel) -> None:
+    assert phase_2_model.evaluate_bool(
+        "portalSiteAws istype DSML::BaseTypes::AwsRealization", "PhaseTwo"
+    )
+
+
+# trace: PRD-DSML-031, PRD-DSML-033
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "orderPortal.orderList.kind == DSML::ViewKind::list",
+        "orderPortal.orderDetail.kind == DSML::ViewKind::detail",
+        "orderPortal.placeOrderForm.kind == DSML::ViewKind::form",
+        "orderPortal.orderList.entity istype Order",
+        "orderPortal.orderDetail.entity istype Order",
+        "orderPortal.placeOrderForm.operation istype PlaceOrder",
+        "orderPortal.orderList.'public' == true",
+        "orderPortal.orderDetail.'public' == false",
+    ],
+)
+def test_view_gives_its_kind_reference_and_access(
+    phase_2_model: ParsedModel, expression: str
+) -> None:
+    assert phase_2_model.evaluate_bool(expression, "PhaseTwo")
+
+
+# trace: PRD-DSML-032
+@pytest.mark.parametrize(
+    ("position", "view"), [(1, "orderList"), (2, "orderDetail"), (3, "placeOrderForm")]
+)
+def test_navigation_keeps_the_order_of_the_views(
+    phase_2_model: ParsedModel, position: int, view: str
+) -> None:
+    assert phase_2_model.evaluate_bool(
+        f"orderPortal.navigation#({position}) == orderPortal.{view}", "PhaseTwo"
+    )
 
 
 def test_typed_usage_is_not_an_instance_of_the_keyword_base_type(engine: Engine) -> None:

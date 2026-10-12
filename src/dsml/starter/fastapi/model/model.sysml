@@ -1,6 +1,6 @@
 package StarterModel {
     private import DSML::*;
-    @DsmlVersion { major = 1; minor = 0; }
+    @DsmlVersion { major = 1; minor = 1; }
 
     // Needs layer
     #Stakeholder part def Owner;

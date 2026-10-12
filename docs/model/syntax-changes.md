@@ -84,6 +84,23 @@ Story #136 added `satisfy orderDataSafe by prod.orderDbProd;` and the verificati
 
 To refer to an element in an environment in a `satisfy` link, use a feature chain with `.`, not a qualified name with `::`.
 
+## Forms of the phase 2 keywords (story #157)
+
+The DSML PRD gives no sketch for views, navigation and static sites. Story #157 selected these forms in the DSML library 1.1.0. The test model `tests/models/dsml/phase-2.sysml` uses them. OpenSysML 0.9.2 and the pilot kernel accept them with no diagnostic. The example model and the PRD model do not use them, so they did not change.
+
+| Item | Form | Reason |
+| --- | --- | --- |
+| `#View` (PRD-DSML-031) | A part usage in the application, with `:>> kind = ViewKind::list;`, `ViewKind::detail` or `ViewKind::form`. It also has `allowedRoles` and `'public'`, as `#Exposed` has (PRD-DSML-033). | `ViewKind` is a new enumeration. The literal `list` is also in `CrudKind`, but the two enumerations are different types. |
+| Entity of a list or detail view | The view redefines the reference `entity` with the entity definition as its type: `ref :>> entity : Order;`. | An entity is a part definition. A definition is not a value, so the view cannot give it with `=`. The type of the reference gives the entity, and `orderPortal.orderList.entity istype Order` gives true. |
+| Operation of a form view | The view redefines the reference `operation` with the operation definition as its type: `ref :>> operation : PlaceOrder;`. | The reason is the same as for the entity. The reference is an action usage that an action definition types, so the pilot kernel accepts it (story #27). |
+| Navigation (PRD-DSML-032) | The application redefines the ordered reference `navigation` with a list of its views: `:>> navigation = (orderList, orderDetail, placeOrderForm);`. | The list keeps the order of the model. The chain `orderPortal.navigation#(1)` gives the first view. |
+| `#StaticSite` | A part usage, as the other logical kinds: `#StaticSite part portalSite;`. A `react` application is allocated to it with `allocate orderPortal to portalSite;` (PRD-DSML-039). | This is the form of the other logical kinds (PRD-DSML-035). |
+| `#AwsStaticSite` | A part usage with no attribute and a `#Realizes` dependency to the static site. | The static site module (PRD-IAC-021) needs no AWS attribute, and PRD-DSML-042 gives none for a static site. |
+
+### Rule for models
+
+The phase 2 keywords are in the library version 1.1. Thus, in a model that uses them, write `@DsmlVersion { major = 1; minor = 1; }`. A model of version 1.0 stays valid with the library 1.1.0 (PRD-DSML-057).
+
 ## Items for later stories
 
 - A feature chain does not use the type that a keyword gives (`docs/notes/opensysml-0.9.2.md`, limit 1). The chain `prod.orderDbProd.multiAz` of the example model resolves, because `orderDbProd` redefines `multiAz` in its body. A chain to an attribute that the part does not redefine needs an explicit type or subset on the part, for example `:> databases`.

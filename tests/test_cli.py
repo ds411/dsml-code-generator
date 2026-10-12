@@ -16,7 +16,7 @@ from dsml.errors import ToolchainError
 SUBCOMMANDS = ("init", "validate", "generate", "trace", "ir", "check-output", "version")
 VERSION_TEXT = (
     f"toolchain: {metadata.version('dsml')}\n"
-    "DSML library: 1.0.0\n"
+    "DSML library: 1.1.0\n"
     "OpenSysML: 0.9.2\n"
     "IR schema: 1.0.0\n"
 )

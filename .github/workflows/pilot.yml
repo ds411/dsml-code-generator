@@ -90,7 +90,7 @@ jobs:
 
       - name: Check the test models of the library with the pilot kernel
         run: |
-          for model in tests/models/dsml/keywords.sysml tests/models/dsml/typed-usage.sysml; do
+          for model in tests/models/dsml/keywords.sysml tests/models/dsml/typed-usage.sysml tests/models/dsml/phase-2.sysml; do
             uv run python scripts/check_pilot.py --one-model src/dsml/library/DSML.sysml "$model"
           done
 
