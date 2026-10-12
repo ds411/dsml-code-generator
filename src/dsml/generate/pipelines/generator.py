@@ -17,7 +17,9 @@ workflows need (PRD-CICD-013). The trigger of `pr.gen.yml` is
 - `generate-check`: `dsml generate --check` (PRD-CICD-003).
 - `check-output`: `dsml check-output` (PRD-CICD-005).
 - `test-<application>`: for each FastAPI application, the lockfile check,
-  `uv sync --frozen`, ruff, pyright and pytest (PRD-CICD-004).
+  `uv sync --frozen`, ruff, pyright and pytest. For each `react`
+  application, `pnpm install --frozen-lockfile`, the type checker, the
+  linters, the format check and the tests (PRD-CICD-004).
 - `plan-dev`: `tofu plan` of the root module of the environment `dev` with
   the plan role, and the plan text in the job summary (PRD-CICD-006). The
   job is only in the workflow if the model has the environment `dev` and the
@@ -25,9 +27,10 @@ workflows need (PRD-CICD-013). The trigger of `pr.gen.yml` is
 
 `main.gen.yml` and `promote.gen.yml` are only in the output if the
 configuration has the key `infrastructure.output` and the model has a
-container application. `main.gen.yml` builds each image one time and
-deploys it to `dev`. `promote.gen.yml` deploys the images of one main
-build to `staging`, then to `prod`. The module
+container application or a static site. `main.gen.yml` builds each image
+and the static files of each static site one time, and deploys them to
+`dev`. `promote.gen.yml` deploys the images and the static files of one
+main build to `staging`, then to `prod`. The module
 `dsml.generate.pipelines.deploy` gives their jobs.
 
 Each job that runs `dsml` uses the toolchain GitHub Action of
@@ -57,16 +60,21 @@ from dsml.generate.pipelines.deploy import (
     MAIN_ENVIRONMENT,
     MIGRATION_STREAM_PREFIX,
     PROMOTE_ENVIRONMENTS,
+    RUNTIME_CONFIGURATION,
     BuildJob,
     DeployJob,
+    SiteBuildJob,
     build_jobs,
+    check_job_ids,
     deploy_jobs,
+    site_builds,
+    site_deploys,
 )
 from dsml.generate.pipelines.workflow import job_symbols, pinned_action
 from dsml.generate.templates import TemplateEngine
 from dsml.generate.trace import Symbol
 from dsml.generate.writer import PIPELINES, Kind, OutputFile
-from dsml.ir.model import Element, Ir
+from dsml.ir.model import Element, EnumValue, Ir
 from dsml.versions import Pin, load_baseline, pinned_version
 
 PR_WORKFLOW: Final = "pr.gen.yml"
@@ -91,7 +99,10 @@ RELEASE_TAGS: Final = "v*"
 """The pattern of the release tags that start `promote.gen.yml` (PRD-CICD-001)."""
 
 FIND_BUILD_JOB: Final = "find-build"
-"""The job of `promote.gen.yml` that finds the image digests of a main build."""
+"""The job of `promote.gen.yml` that finds the image digests and the static files of a build."""
+
+REACT: Final = "react"
+"""The target of the applications that pnpm builds and tests (PRD-CICD-004)."""
 
 PLAN_ENVIRONMENT: Final = "dev"
 """The environment that the pull request workflow plans (PRD-CICD-006)."""
@@ -102,8 +113,12 @@ TOOLCHAIN_ACTION: Final = "ds411/dsml-code-generator"
 ACTIONS: Final = {
     "checkout": "action-checkout",
     "configure_aws_credentials": "action-configure-aws-credentials",
+    "download_artifact": "action-download-artifact",
+    "setup_node": "action-setup-node",
     "setup_opentofu": "action-setup-opentofu",
+    "setup_pnpm": "action-setup-pnpm",
     "setup_uv": "action-setup-uv",
+    "upload_artifact": "action-upload-artifact",
     "upload_sarif": "action-upload-sarif",
 }
 """The template name and the baseline item of each third-party action."""
@@ -132,6 +147,11 @@ class ApplicationJob:
     def name(self) -> str:
         """The name of the application in the model."""
         return self.element.name
+
+    @property
+    def package_json(self) -> str:
+        """The path of `package.json` of the application, for the pnpm setup action."""
+        return PurePosixPath(self.folder, "package.json").as_posix()
 
 
 # trace: PRD-CICD-006, PRD-CICD-010
@@ -176,21 +196,39 @@ def root_packages(ir: Ir) -> tuple[str, ...]:
     )
 
 
+def _is_react(element: Element) -> bool:
+    return any(
+        attribute.name == "target"
+        and isinstance(attribute.value, EnumValue)
+        and attribute.value.literal == REACT
+        for attribute in element.attributes
+    )
+
+
+def _jobs(ir: Ir, configuration: Configuration, elements: list[Element]) -> list[ApplicationJob]:
+    jobs: list[ApplicationJob] = []
+    for element in elements:
+        folder = fastapi.output_folder(element, configuration).rstrip("/")
+        jobs.append(ApplicationJob(element, folder or "."))
+    return jobs
+
+
 # trace: PRD-CICD-004
 def application_jobs(ir: Ir, configuration: Configuration) -> tuple[ApplicationJob, ...]:
     """Give the test job of each FastAPI application, sorted by identity."""
-    jobs: list[ApplicationJob] = []
-    for element in fastapi.applications(ir):
-        folder = fastapi.output_folder(element, configuration).rstrip("/")
-        jobs.append(ApplicationJob(element, folder or "."))
-    seen: set[str] = set()
-    for job in jobs:
-        if job.job in seen:
-            raise ToolchainError(
-                f'Two applications give the job ID "{job.job}". Give them different names.'
-            )
-        seen.add(job.job)
+    jobs = _jobs(ir, configuration, fastapi.applications(ir))
+    check_job_ids(job.job for job in (*jobs, *react_jobs(ir, configuration)))
     return tuple(jobs)
+
+
+# trace: PRD-CICD-004
+def react_jobs(ir: Ir, configuration: Configuration) -> tuple[ApplicationJob, ...]:
+    """Give the test job of each `react` application, sorted by identity."""
+    elements = sorted(
+        (item for item in ir.elements if item.kind == "Application" and _is_react(item)),
+        key=Element.sort_key,
+    )
+    return tuple(_jobs(ir, configuration, elements))
 
 
 # trace: PRD-CICD-006
@@ -253,8 +291,9 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
     baseline = load_baseline()
     toolchain_version = metadata.version(PROG) if version is None else version
     apps = application_jobs(ir, configuration)
+    web = react_jobs(ir, configuration)
     plan = plan_job(ir, configuration)
-    elements = [*root_packages(ir), *(app.element.identity for app in apps)]
+    elements = [*root_packages(ir), *(app.element.identity for app in (*apps, *web))]
     if plan is not None:
         elements.append(plan.root.element.identity)
     return {
@@ -262,6 +301,9 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
         "elements": elements,
         "actions": actions(baseline),
         "applications": apps,
+        "react_applications": web,
+        "node_version": pinned_version("node", baseline),
+        "pnpm_version": pinned_version("pnpm", baseline),
         "check_infrastructure": configuration.infrastructure is not None,
         "opentofu_version": pinned_version("opentofu", baseline),
         "plan": plan,
@@ -277,10 +319,13 @@ def pr_data(ir: Ir, configuration: Configuration, version: str | None = None) ->
 # trace: PRD-CICD-008, PRD-CICD-010
 @dataclass(frozen=True, slots=True)
 class FindBuildJob:
-    """The job of `promote.gen.yml` that finds the image digests of a main build."""
+    """The job of `promote.gen.yml` that finds the image digests and the static files of a
+    main build.
+    """
 
-    build: BuildJob
-    """A build job. All build jobs use the same tooling account and push role."""
+    build: BuildJob | None
+    """A build job, or `None` if the model has no container application. All build jobs use
+    the same tooling account and push role."""
 
     @property
     def job(self) -> str:
@@ -290,11 +335,15 @@ class FindBuildJob:
     @property
     def role_arn(self) -> str:
         """The ARN of the push role of the tooling account (PRD-IAC-028)."""
+        if self.build is None:
+            raise ToolchainError("The model has no container application.")
         return self.build.role_arn
 
     @property
     def region(self) -> str:
         """The AWS Region of the tooling account."""
+        if self.build is None:
+            raise ToolchainError("The model has no container application.")
         return self.build.region
 
 
@@ -305,27 +354,41 @@ def _base_data(baseline: dict[str, Pin]) -> dict[str, Any]:
         "actions": actions(baseline),
         "container_name": CONTAINER_NAME,
         "migration_stream_prefix": MIGRATION_STREAM_PREFIX,
+        "node_version": pinned_version("node", baseline),
         "opentofu_version": pinned_version("opentofu", baseline),
+        "pnpm_version": pinned_version("pnpm", baseline),
         "runner": _value(baseline, "github-runner"),
+        "runtime_configuration": RUNTIME_CONFIGURATION,
     }
 
 
-def _deploy_elements(builds: Sequence[BuildJob], deploys: Sequence[DeployJob]) -> list[str]:
+def _deploy_elements(
+    builds: Sequence[BuildJob], sites: Sequence[SiteBuildJob], deploys: Sequence[DeployJob]
+) -> list[str]:
     """Give the identities of the elements of a workflow with deploy jobs, sorted."""
     identities = {build.account.element.identity for build in builds}
     for build in builds:
         identities.update((build.application.identity, build.repository.service.identity))
+    for site in sites:
+        identities.update((site.application.identity, site.site.identity))
     identities.update(deploy.root.element.identity for deploy in deploys)
     return sorted(identities)
 
 
 # trace: PRD-CICD-001, PRD-CICD-007, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011
-# trace: PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-021
+# trace: PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-019
+# trace: PRD-CICD-021, PRD-APP-233
 def main_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
-    """Give the template data of `main.gen.yml`, or `None` if the workflow has no build job."""
+    """Give the template data of `main.gen.yml`, or `None` if the workflow has no build job.
+
+    The deploy job downloads the static files from the build jobs of the
+    same workflow run.
+    """
     builds = build_jobs(ir, configuration)
-    if not builds:
+    sites = site_builds(ir, configuration)
+    if not builds and not sites:
         return None
+    check_job_ids(job.job for job in (*builds, *sites))
     deploys = deploy_jobs(
         ir,
         configuration,
@@ -333,47 +396,57 @@ def main_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
         builds,
         digest="needs.{job}.outputs.{output}",
         commit="github.sha",
-        first_needs=tuple(build.job for build in builds),
+        first_needs=tuple(build.job for build in (*builds, *sites)),
+        sites=site_deploys(ir, sites, artifact="needs.{job}.outputs.{output}", run="github.run_id"),
     )
     return {
         **_base_data(load_baseline()),
-        "elements": _deploy_elements(builds, deploys),
+        "elements": _deploy_elements(builds, sites, deploys),
         "builds": builds,
+        "sites": sites,
         "deploys": deploys,
         "main_branch": MAIN_BRANCH,
     }
 
 
 # trace: PRD-CICD-001, PRD-CICD-008, PRD-CICD-009, PRD-CICD-010, PRD-CICD-011
-# trace: PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-020
-# trace: PRD-CICD-021
+# trace: PRD-CICD-012, PRD-CICD-014, PRD-CICD-016, PRD-CICD-017, PRD-CICD-018, PRD-CICD-019
+# trace: PRD-CICD-020, PRD-CICD-021
 def promote_data(ir: Ir, configuration: Configuration) -> dict[str, Any] | None:
     """Give the template data of `promote.gen.yml`, or `None` if the workflow has no deploy job.
 
     The first deploy job needs the job that finds the build. Each next
     deploy job also needs the deploy job before it. Thus prod starts only
     after the deployment of the same build to staging succeeded
-    (PRD-CICD-020).
+    (PRD-CICD-020). The deploy jobs download the static files from the
+    workflow run of the main build. The workflow builds nothing
+    (PRD-CICD-008).
     """
     builds = build_jobs(ir, configuration)
+    sites = site_builds(ir, configuration)
+    find = f"needs.{FIND_BUILD_JOB}.outputs.{{output}}"
     deploys = deploy_jobs(
         ir,
         configuration,
         PROMOTE_ENVIRONMENTS,
         builds,
-        digest=f"needs.{FIND_BUILD_JOB}.outputs.{{output}}",
+        digest=find,
         commit=f"needs.{FIND_BUILD_JOB}.outputs.commit",
         first_needs=(FIND_BUILD_JOB,),
+        sites=site_deploys(ir, sites, artifact=find, run=find),
+        other_run=True,
     )
     if not deploys:
         return None
     return {
         **_base_data(load_baseline()),
-        "elements": _deploy_elements(builds, deploys),
+        "elements": _deploy_elements(builds, sites, deploys),
         "builds": builds,
+        "sites": sites,
         "deploys": deploys,
+        "main_branch": MAIN_BRANCH,
         "release_tags": RELEASE_TAGS,
-        "resolve": FindBuildJob(builds[0]),
+        "resolve": FindBuildJob(builds[0] if builds else None),
     }
 
 
@@ -383,7 +456,7 @@ def _deploy_symbols(content: bytes, data: dict[str, Any]) -> tuple[Symbol, ...]:
     A build job gives the application. The job that finds the build gives
     the applications. A deploy job gives its environment.
     """
-    builds: Sequence[BuildJob] = data["builds"]
+    builds: Sequence[BuildJob | SiteBuildJob] = (*data["builds"], *data["sites"])
     job_elements: dict[str, tuple[str, ...]] = {
         build.job: (build.application.identity,) for build in builds
     }
@@ -458,7 +531,7 @@ def readme_data(
         "plan": pr["plan"] is not None,
         "main_branch": MAIN_BRANCH,
         "pr_workflow": PR_WORKFLOW,
-        "tooling": main is not None,
+        "tooling": main is not None and bool(main["builds"]),
     }
 
 
@@ -484,7 +557,7 @@ class PipelineGenerator:
         data = pr_data(ir, configuration, self._version)
         content = engine.render_bytes(f"pipelines/{PR_WORKFLOW}.j2", data)
         job_elements: dict[str, tuple[str, ...]] = dict.fromkeys(MODEL_JOBS, root_packages(ir))
-        for app in data["applications"]:
+        for app in (*data["applications"], *data["react_applications"]):
             job_elements[app.job] = (app.element.identity,)
         if data["plan"] is not None:
             job_elements[data["plan"].job] = (data["plan"].root.element.identity,)

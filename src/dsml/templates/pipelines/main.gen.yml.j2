@@ -1,8 +1,10 @@
 {#- The main workflow (PRD-CICD-001, PRD-CICD-007, PRD-CICD-009 to
-    PRD-CICD-012, PRD-CICD-014 to PRD-CICD-018, PRD-CICD-021). Each build
-    job builds one image one time. The deploy job deploys the digests of the
-    build jobs to dev. -#}
+    PRD-CICD-012, PRD-CICD-014 to PRD-CICD-019, PRD-CICD-021). Each build
+    job builds one image or the static files of one site one time. The
+    deploy job deploys the digests and the static files of the build jobs to
+    dev. -#}
 {% from "pipelines/deploy.j2" import deploy_job with context %}
+{% from "pipelines/pnpm.j2" import setup_pnpm with context %}
 {% include "common/header.j2" %}
 
 name: Main
@@ -70,6 +72,52 @@ jobs:
             exit 1
           fi
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
+{% endfor %}
+{% for site in sites %}
+{% if builds or not loop.first %}
+
+{% endif %}
+  # Build the static files of {{ site.application.name }} one time and keep them as a
+  # workflow artifact (PRD-CICD-007, PRD-APP-233). The files contain no
+  # value of an environment. The deploy jobs write /{{ runtime_configuration }} for each
+  # environment. A second run of the job replaces the artifact.
+  {{ site.job }}:
+    name: {{ ("Build " ~ site.application.name) | yaml_string }}
+    runs-on: {{ runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      {{ site.output }}: {{ "${{ steps.upload.outputs.artifact-id }}" }}
+    defaults:
+      run:
+        working-directory: {{ site.folder | yaml_string }}
+    steps:
+      - name: Check out the repository
+        uses: {{ actions.checkout }}
+        with:
+          persist-credentials: false
+
+{{ setup_pnpm(site) }}
+      - name: Install the dependencies from the lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the static files
+        run: |
+          pnpm build
+          if [ ! -f dist/index.html ]; then
+            echo "::error::pnpm build wrote no file {{ site.files }}/index.html."
+            exit 1
+          fi
+
+      - name: Upload the static files
+        id: upload
+        uses: {{ actions.upload_artifact }}
+        with:
+          name: {{ site.artifact | yaml_string }}
+          path: {{ (site.files ~ "/") | yaml_string }}
+          if-no-files-found: error
+          overwrite: true
 {% endfor %}
 {% for deploy in deploys %}
 

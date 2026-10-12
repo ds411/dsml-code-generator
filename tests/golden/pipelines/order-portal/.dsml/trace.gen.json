@@ -1,0 +1,168 @@
+{
+  "elements": [
+    {
+      "element": "OrderPortal",
+      "files": [
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "job",
+              "lastLine": 39,
+              "name": "validate"
+            },
+            {
+              "firstLine": 43,
+              "kind": "job",
+              "lastLine": 60,
+              "name": "generate-check"
+            },
+            {
+              "firstLine": 65,
+              "kind": "job",
+              "lastLine": 133,
+              "name": "check-output"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::dev",
+      "files": [
+        {
+          "path": ".github/workflows/main.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 122,
+              "kind": "job",
+              "lastLine": 327,
+              "name": "deploy-dev"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 229,
+              "kind": "job",
+              "lastLine": 273,
+              "name": "plan-dev"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi",
+      "files": [
+        {
+          "path": ".github/workflows/main.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "job",
+              "lastLine": 64,
+              "name": "build-order-api"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 137,
+              "kind": "job",
+              "lastLine": 174,
+              "name": "test-order-api"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 30,
+              "kind": "job",
+              "lastLine": 91,
+              "name": "find-build"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderPortal",
+      "files": [
+        {
+          "path": ".github/workflows/main.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 70,
+              "kind": "job",
+              "lastLine": 116,
+              "name": "build-order-portal"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/pr.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 179,
+              "kind": "job",
+              "lastLine": 222,
+              "name": "test-order-portal"
+            }
+          ]
+        },
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 30,
+              "kind": "job",
+              "lastLine": 91,
+              "name": "find-build"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::prod",
+      "files": [
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 313,
+              "kind": "job",
+              "lastLine": 523,
+              "name": "deploy-prod"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::staging",
+      "files": [
+        {
+          "path": ".github/workflows/promote.gen.yml",
+          "symbols": [
+            {
+              "firstLine": 97,
+              "kind": "job",
+              "lastLine": 306,
+              "name": "deploy-staging"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}
