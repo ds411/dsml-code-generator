@@ -1,0 +1,35 @@
+{#- The public runtime values on the server (PRD-APP-010, PRD-APP-325). The
+    values come from the environment variables of the container at run time,
+    not at build time. Data: "variables" (the pairs of the key and the
+    environment variable). -#}
+{% include "common/header.j2" %}
+import "server-only";
+
+import type { PublicConfig } from "./public-config.gen";
+
+/** The environment variable of each public runtime value. */
+export const PUBLIC_CONFIG_VARIABLES = {
+{% for key, variable in variables %}
+  {{ key }}: "{{ variable }}",
+{% endfor %}
+} as const satisfies Record<keyof PublicConfig, string>;
+
+/**
+ * Read the public runtime values from the environment variables. A missing
+ * variable gives an error that names the variable.
+ */
+export function readPublicConfig(): PublicConfig {
+  const missing = Object.values(PUBLIC_CONFIG_VARIABLES).filter(
+    (name) => !process.env[name],
+  );
+  if (missing.length > 0) {
+    throw new Error(
+      `The environment variables ${missing.join(", ")} must have a value.`,
+    );
+  }
+  return {
+{% for key, variable in variables %}
+    {{ key }}: process.env.{{ variable }} ?? "",
+{% endfor %}
+  };
+}

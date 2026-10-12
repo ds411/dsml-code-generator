@@ -1,0 +1,22 @@
+{#- The ESLint configuration of the Next.js target (PRD-APP-301, Q64): the
+    type-aware rules of typescript-eslint. The type-aware rules need the
+    TypeScript project, thus ESLint does not examine this JavaScript file.
+    ESLint does not examine the output of "next build" in .next/ and the
+    file next-env.d.ts that "next build" writes. -#}
+{% include "common/header.j2" %}
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config(
+  { ignores: [".next/", "eslint.config.js", "next-env.d.ts"] },
+  js.configs.recommended,
+  ...tseslint.configs.strictTypeChecked,
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+);

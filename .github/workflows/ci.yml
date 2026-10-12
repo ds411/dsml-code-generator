@@ -299,8 +299,7 @@ jobs:
         run: |
           test "$(docker run --rm --entrypoint id order-api:test -u)" != "0"
           docker run --detach --name order-api --publish 8000:8000 \
-            --env APP_ENVIRONMENT=ci --env AWS_REGION=eu-west-1 \
-            --env COGNITO_USER_POOL_ID=eu-west-1_ci --env COGNITO_APP_CLIENT_ID=ci \
+            --env AWS_REGION=eu-west-1 --env COGNITO_USER_POOL_ID=eu-west-1_ci --env COGNITO_APP_CLIENT_ID=ci \
             --env DATABASE_HOST=db.invalid --env DATABASE_NAME=orders \
             --env DATABASE_USER=app --env DATABASE_PASSWORD=ci order-api:test
           for attempt in $(seq 1 30); do
@@ -491,6 +490,116 @@ jobs:
             echo "::error::The build contains an environment value."
             exit 1
           fi
+
+  # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-010, PRD-APP-012, PRD-APP-013
+  # trace: PRD-APP-015, PRD-APP-301, PRD-APP-325, PRD-APP-333
+  #
+  # The golden project of the Next.js generator (story #180) must pass the
+  # tools of the generated project. Prettier must find no change in the
+  # golden files (PRD-CORE-035). The project is in a temporary folder,
+  # because "pnpm install" writes a lockfile and the generator does not
+  # write lockfiles (PRD-CORE-036). This job needs the network to install
+  # the dependencies of the generated project and to build the container
+  # image. The generator does not use the network (PRD-TOP-004).
+  nextjs-golden:
+    name: Next.js golden project (linux-x64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PROJECT: ${{ github.workspace }}/../order-web
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The action reads the pnpm version from the "packageManager" field
+      # of package.json.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      # pnpm also installs the Node.js runtime that package.json gives.
+      - name: Install the Node.js dev tools
+        run: pnpm install --frozen-lockfile
+
+      - name: Check the format of the golden files
+        run: pnpm exec prettier --check tests/golden/nextjs
+
+      - name: Copy the golden project
+        run: cp -r tests/golden/nextjs/order-web "$PROJECT"
+
+      # The project has no lockfile, thus pnpm makes it.
+      - name: Install the dependencies
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Check the types
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm exec eslint .
+
+      - name: Check the FSD rules with Steiger
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm exec steiger ./src
+
+      - name: Test
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm exec vitest run
+
+      # "next build" must not change tsconfig.json. The build must not
+      # contain environment values (PRD-APP-010, PRD-APP-325): the marker
+      # values of the environment must not go into .next/.
+      - name: Build the application
+        working-directory: ${{ env.PROJECT }}
+        env:
+          AWS_REGION: dsml-environment-marker
+          COGNITO_USER_POOL_ID: dsml-environment-marker-pool
+          NEXT_PUBLIC_USER_POOL_ID: dsml-environment-marker-pool
+        run: |
+          pnpm build
+          test -f .next/standalone/server.js
+          diff "$GITHUB_WORKSPACE/tests/golden/nextjs/order-web/tsconfig.json" tsconfig.json
+          if grep -r -l "dsml-environment-marker" .next; then
+            echo "::error::The build contains an environment value."
+            exit 1
+          fi
+
+      # The image installs the dependencies from the lockfile of the
+      # install step.
+      - name: Build the container image
+        working-directory: ${{ env.PROJECT }}
+        run: docker build --tag order-web:test .
+
+      # The container must answer GET /healthz with HTTP 200 and no token
+      # (PRD-APP-012). Its user must not be root (PRD-APP-013). The log
+      # line of the request must be JSON with the request ID (PRD-APP-015).
+      # The root layout must give the public runtime values of the
+      # environment of the container to the page (PRD-APP-325).
+      - name: Start the container and get GET /healthz
+        run: |
+          test "$(docker run --rm --entrypoint id order-web:test -u)" != "0"
+          docker run --detach --name order-web --publish 3000:3000 \
+            --env AWS_REGION=eu-west-1 --env COGNITO_USER_POOL_ID=eu-west-1_runtimeMarker \
+            --env COGNITO_APP_CLIENT_ID=ci --env COGNITO_LOGIN_DOMAIN=login.ci order-web:test
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail --header "X-Request-ID: ci-healthz" http://127.0.0.1:3000/healthz; then
+              echo
+              curl --silent http://127.0.0.1:3000/ > page.html || true
+              docker logs order-web > logs.txt
+              cat logs.txt
+              docker rm --force order-web
+              grep --quiet "eu-west-1_runtimeMarker" page.html
+              grep '"requestId":"ci-healthz"' logs.txt | jq --exit-status '.path == "/healthz" and .status == 200'
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs order-web
+          exit 1
 
   # trace: PRD-IAC-003, PRD-IAC-039, PRD-IAC-040, PRD-CORE-035
   #

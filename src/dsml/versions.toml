@@ -414,6 +414,29 @@ version = "8.23.1"
 line = "8"
 version = "8.23.1"
 
+# The items of the Next.js project files (story #180). "server-only" stops
+# the import of a server-only module in a client component (PRD-APP-305).
+# "tailwindcss-postcss" is the Tailwind CSS plugin of the PostCSS step of
+# Next.js. "types-node" holds the type declarations of the Node.js API.
+# Its line is the line of Node.js.
+[server-only]
+line = "0.0"
+version = "0.0.1"
+
+[tailwindcss-postcss]
+line = "4"
+version = "4.3.3"
+
+[types-node]
+line = "26"
+version = "26.6.5"
+
+# The base image of the Dockerfile of the Next.js target, pinned by digest
+# (PRD-APP-013, story #180). The digest is the digest of the multi-platform
+# image index.
+[node-image]
+value = "node:26.11.1-trixie-slim@sha256:193fe51b64e77981119c98c2002c9e32a70e2f006fb4d25068ce0558998917f0"
+
 # The linters, the formatter and the test runner of the targets
 # (PRD-CORE-011). The toolchain CI uses the same versions in package.json.
 # The generated projects must also add "steiger-toolkit", because the

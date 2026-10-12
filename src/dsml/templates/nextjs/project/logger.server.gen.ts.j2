@@ -1,0 +1,81 @@
+{#- The JSON logs of the Next.js target (PRD-APP-015). -#}
+{% include "common/header.j2" %}
+import "server-only";
+
+import { AsyncLocalStorage } from "node:async_hooks";
+
+import { REQUEST_ID_HEADER, requestIdOf } from "./request-id.gen";
+
+/** The level of a log line. */
+export type LogLevel = "DEBUG" | "INFO" | "WARNING" | "ERROR";
+
+const requestIds = new AsyncLocalStorage<string>();
+
+/**
+ * Write one log line on standard output as one JSON object. A line of a
+ * request has the request ID of the request. The fields must not contain
+ * tokens or secret values.
+ */
+export function log(
+  level: LogLevel,
+  message: string,
+  fields: Record<string, unknown> = {},
+): void {
+  const entry = {
+    time: new Date().toISOString(),
+    level,
+    logger: "app",
+    message,
+    requestId: requestIds.getStore() ?? null,
+    ...fields,
+  };
+  process.stdout.write(`${JSON.stringify(entry)}\n`);
+}
+
+/** Give the request ID of the request that runs now, or null. */
+export function currentRequestId(): string | null {
+  return requestIds.getStore() ?? null;
+}
+
+/**
+ * Give each request of a route handler a request ID and write one log line
+ * for each request. The line does not contain headers, query parameters or
+ * bodies, so it does not contain tokens or secret values. An error that the
+ * handler does not catch gives HTTP 500 with problem details.
+ */
+export function withRequestLog<Context>(
+  handler: (request: Request, context: Context) => Promise<Response>,
+): (request: Request, context: Context) => Promise<Response> {
+  return async (request, context) => {
+    const requestId = requestIdOf(request.headers);
+    const start = performance.now();
+    return requestIds.run(requestId, async () => {
+      let response: Response;
+      try {
+        response = await handler(request, context);
+      } catch (error) {
+        log("ERROR", "The request caused an error.", {
+          exception:
+            error instanceof Error
+              ? (error.stack ?? error.message)
+              : String(error),
+        });
+        response = Response.json(
+          { type: "about:blank", title: "Internal Server Error", status: 500 },
+          {
+            status: 500,
+            headers: { "Content-Type": "application/problem+json" },
+          },
+        );
+      }
+      response.headers.set(REQUEST_ID_HEADER, requestId);
+      log("INFO", "Request complete.", {
+        method: request.method,
+        path: new URL(request.url).pathname,
+        status: response.status,
+        durationMs: Math.round((performance.now() - start) * 1000) / 1000,
+      });
+      return response;
+    });
+  };
+}

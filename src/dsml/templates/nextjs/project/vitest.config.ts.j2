@@ -1,0 +1,14 @@
+{#- The Vitest configuration of the Next.js target (PRD-APP-301, Q64). The
+    alias "@/" refers to "src/" (PRD-APP-303). -#}
+{% include "common/header.j2" %}
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  resolve: {
+    alias: [{ find: /^@\//, replacement: "/src/" }],
+  },
+  test: {
+    environment: "node",
+    passWithNoTests: true,
+  },
+});

@@ -1,0 +1,4 @@
+{#- The route file of the root layout (PRD-APP-302). It re-exports the root
+    layout of the layer _app. -#}
+{% include "common/header.j2" %}
+export { metadata, RootLayout as default } from "{{ layout.import_path("app") }}/layout/root-layout.gen";
