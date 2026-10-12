@@ -1,0 +1,65 @@
+{#- The ui segment of the widget slice of a detail view: the fields of one
+    entity (PRD-APP-210). The widget reads the data with the query options
+    of the entity slice. Data: "widget" (a
+    dsml.generate.react_widgets.WidgetSlice). -#}
+{% include "common/header.j2" %}
+{% for line in widget.import_lines() %}
+{{ line }}
+{% endfor %}
+
+/** The properties of the details of the entity {{ widget.entity.name }}. */
+export interface {{ widget.component }}Props {
+  /** The key of the entity that the details show. */
+  {{ widget.key }}: {{ widget.key_type }};
+}
+
+/** Show an error of the query. A problem details response gives the title and the detail. */
+function QueryError({ error }: { error: Error }): ReactNode {
+  const title = error instanceof ApiError ? error.title : error.message;
+  const detail = error instanceof ApiError ? error.detail : undefined;
+  return (
+    <Alert variant="destructive">
+      <AlertTitle>{title}</AlertTitle>
+      {detail === undefined ? null : (
+        <AlertDescription>{detail}</AlertDescription>
+      )}
+    </Alert>
+  );
+}
+{% if widget.uses_yes_no %}
+
+/** Give the text of a Boolean value. A null value gives an empty text. */
+function yesNo(value: boolean | null): string {
+  if (value === null) {
+    return "";
+  }
+  return value ? "Yes" : "No";
+}
+{% endif %}
+
+/** The details of one entity {{ widget.entity.name }}: {{ widget.route }}. */
+{% for line in widget.component_lines() %}
+{{ line }}
+{% endfor %}
+{% for line in widget.query_lines() %}
+{{ line }}
+{% endfor %}
+  if (query.error !== null) {
+    return <QueryError error={query.error} />;
+  }
+  if (query.data === undefined) {
+    return (
+      <p role="status" className="text-muted-foreground text-sm">
+        Wait for the data.
+      </p>
+    );
+  }
+  const item = query.data;
+  return (
+    <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+{% for line in widget.detail_lines("      ") %}
+{{ line }}
+{% endfor %}
+    </dl>
+  );
+}
