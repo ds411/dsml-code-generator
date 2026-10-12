@@ -278,4 +278,5 @@ def test_modules_are_in_the_order_of_their_calls() -> None:
         "relational-database",
         "user-directory",
         "container-service",
+        "static-site",
     ]
