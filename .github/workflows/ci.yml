@@ -299,7 +299,8 @@ jobs:
         run: |
           test "$(docker run --rm --entrypoint id order-api:test -u)" != "0"
           docker run --detach --name order-api --publish 8000:8000 \
-            --env AWS_REGION=eu-west-1 --env COGNITO_USER_POOL_ID=eu-west-1_ci --env COGNITO_APP_CLIENT_ID=ci \
+            --env APP_ENVIRONMENT=ci --env AWS_REGION=eu-west-1 \
+            --env COGNITO_USER_POOL_ID=eu-west-1_ci --env COGNITO_APP_CLIENT_ID=ci \
             --env DATABASE_HOST=db.invalid --env DATABASE_NAME=orders \
             --env DATABASE_USER=app --env DATABASE_PASSWORD=ci order-api:test
           for attempt in $(seq 1 30); do
