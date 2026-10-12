@@ -383,13 +383,8 @@ jobs:
       - name: Check the format of the golden files
         run: pnpm exec prettier --check tests/golden/react tests/react
 
-      # The stand-in of the API client in tests/react/stubs/ goes into the
-      # copy only if the golden project has no file with the same path.
-      # The shared layer story (#169) writes the real client.
       - name: Copy the golden project
-        run: |
-          cp -r tests/golden/react/order-portal "$PROJECT"
-          cp -r --update=none tests/react/stubs/src/. "$PROJECT/src/"
+        run: cp -r tests/golden/react/order-portal "$PROJECT"
 
       # The project has no lockfile, thus pnpm makes one.
       - name: Install the dependencies
@@ -416,20 +411,36 @@ jobs:
 
       # The Zod schemas must accept and refuse the same values as the
       # Pydantic models (PRD-APP-211). tests/test_react_entities.py gives
-      # the same values to the Pydantic models.
-      - name: Copy the field rule tests
-        run: cp -r tests/react/field-rules "$PROJECT/tests/"
+      # the same values to the Pydantic models. The shared layer tests
+      # examine the runtime configuration, Amplify Auth and the API client
+      # (PRD-APP-227, PRD-APP-230, PRD-APP-231, PRD-APP-232).
+      - name: Copy the Vitest tests
+        run: |
+          mkdir -p "$PROJECT/tests"
+          cp -r tests/react/field-rules tests/react/shared "$PROJECT/tests/"
 
       - name: Test
         working-directory: ${{ env.PROJECT }}
         run: pnpm exec vitest run
 
-      # "pnpm build" must write the static files to dist/ (PRD-APP-233).
+      # "pnpm build" must write the static files to dist/. The build must
+      # not contain environment values (PRD-APP-233). The marker values
+      # must not go into dist/, and dist/ must have no config.json: the
+      # deployment pipeline writes it for each environment.
       - name: Build the static files
         working-directory: ${{ env.PROJECT }}
+        env:
+          VITE_API_BASE_URL: https://dsml-environment-marker.example
+          VITE_USER_POOL_ID: dsml-environment-marker-pool
+          API_BASE_URL: https://dsml-environment-marker.example
         run: |
           pnpm build
           test -f dist/index.html
+          test ! -e dist/config.json
+          if grep -r -l -E "dsml-environment-marker|amazoncognito\.com" dist; then
+            echo "::error::The build contains an environment value."
+            exit 1
+          fi
 
   # trace: PRD-IAC-003, PRD-IAC-039, PRD-IAC-040, PRD-CORE-035
   #
