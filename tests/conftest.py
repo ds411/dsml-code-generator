@@ -67,7 +67,7 @@ def run_rule(rule_engine: Engine) -> RunRule:
         parsed = rule_engine.parse_texts(
             [library_document(), (name, path.read_text(encoding="utf-8"))]
         )
-        ir = build_ir(parsed, [name])
+        ir = build_ir(parsed, [name], PROJECT_ROOT)
         check = registry()[rule]
         settings = Configuration() if configuration is None else configuration
         if check.rule.optional:

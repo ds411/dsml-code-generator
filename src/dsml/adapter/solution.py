@@ -50,7 +50,7 @@ from dsml.validate.rules.syn import SYN_001
 
 # trace: PRD-DSML-020, PRD-DSML-022, PRD-DSML-027, PRD-DSML-028, PRD-DSML-033
 # trace: PRD-DSML-031, PRD-DSML-035, PRD-DSML-037, PRD-DSML-041, PRD-DSML-042, PRD-DSML-043
-# trace: PRD-DSML-045
+# trace: PRD-DSML-045, PRD-DSML-058
 KEYWORDS: dict[str, ElementKind] = {
     "Application": "Application",
     "Entity": "Entity",
@@ -58,6 +58,7 @@ KEYWORDS: dict[str, ElementKind] = {
     "Operation": "Operation",
     "Roles": "Roles",
     "View": "View",
+    "ExternalApi": "ExternalApi",
     "Network": "Network",
     "ContainerService": "ContainerService",
     "RelationalDatabase": "RelationalDatabase",
@@ -83,6 +84,7 @@ _BASE_TYPES: dict[ElementKind, str] = {
     "Exposed": "DSML::BaseTypes::exposures",
     "Operation": "DSML::BaseTypes::Operation",
     "View": "DSML::BaseTypes::View",
+    "ExternalApi": "DSML::BaseTypes::ExternalApi",
     "AwsVpc": "DSML::BaseTypes::AwsVpc",
     "AwsEcsService": "DSML::BaseTypes::AwsEcsService",
     "AwsRdsPostgres": "DSML::BaseTypes::AwsRdsPostgres",

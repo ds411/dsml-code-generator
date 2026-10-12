@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from pathlib import PurePosixPath
 from typing import Final
 
+from dsml.ir.external import imported
 from dsml.ir.model import Element, ElementKind, Ir, ListValue, StringValue
 from dsml.trace.comments import TraceComment
 from dsml.trace.graph import LinkGraph
@@ -73,6 +74,7 @@ SOLUTION_KINDS: Final[frozenset[ElementKind]] = frozenset(
         "AwsVpc",
         "ContainerService",
         "Entity",
+        "ExternalApi",
         "Network",
         "Operation",
         "RelationalDatabase",
@@ -83,7 +85,9 @@ SOLUTION_KINDS: Final[frozenset[ElementKind]] = frozenset(
 """The application and infrastructure elements that the orphans report examines.
 
 The members of these elements, for example a field of an entity or an
-exposed part of an application, are not in the report. An element satisfies
+exposed part of an application, are not in the report. The entities and the
+operations that the OpenAPI file of an external API gives are also not in
+the report: the external API is the element of the model. An element satisfies
 a requirement if a requirement is upstream of it: through a `satisfy` link,
 or through an `allocate` or a `#Realizes` link to an element that satisfies
 a requirement.
@@ -181,7 +185,10 @@ def orphans_report(data: TraceData) -> Report:
     for requirement in _of_kind(data.ir, "Requirement"):
         if not graph.needs_of(requirement.identity):
             rows.append((REQUIREMENT_WITHOUT_NEED, requirement.identity, _location(requirement)))
+    outside = imported(data.ir)
     for element in data.ir.elements:
+        if element.identity in outside:
+            continue
         if element.kind in SOLUTION_KINDS and not graph.requirements_of(element.identity):
             rows.append((ELEMENT_WITHOUT_REQUIREMENT, element.identity, _location(element)))
     names = _names(data.ir)

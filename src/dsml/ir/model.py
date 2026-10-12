@@ -51,6 +51,7 @@ type ElementKind = Literal[
     "Enumeration",
     "Environment",
     "Exposed",
+    "ExternalApi",
     "Field",
     "Need",
     "Network",

@@ -1,10 +1,10 @@
 // The DSML library, version 1.1.0.
 //
 // trace: PRD-DSML-001, PRD-DSML-002, PRD-DSML-003, PRD-DSML-009, PRD-DSML-056
-// trace: PRD-DSML-057
+// trace: PRD-DSML-057, PRD-DSML-058
 //
-// Version 1.1.0 adds the phase 2 keywords #View, #StaticSite and
-// #AwsStaticSite, and the navigation of an application. A model of version
+// Version 1.1.0 adds the phase 2 keywords #View, #StaticSite,
+// #AwsStaticSite and #ExternalApi, and the navigation of an application. A model of version
 // 1.0 stays valid (PRD-DSML-057).
 //
 // A model imports the library with "private import DSML::*;". Each element
@@ -196,6 +196,15 @@ library package DSML {
         }
         abstract part views : View [*];
 
+        // trace: PRD-DSML-058
+        // Phase 2: an external API that an imported OpenAPI 3.1 JSON file
+        // gives. openApiFile is the path of the file, relative to the
+        // repository root. A react application calls it with #Calls.
+        part def ExternalApi {
+            attribute openApiFile : String;
+        }
+        abstract part externalApis : ExternalApi [*];
+
         // trace: PRD-DSML-033
         // The roles enumeration of a model specializes this definition.
         attribute def Roles;
@@ -377,6 +386,15 @@ library package DSML {
          * application. Give the kind, and the entity or the operation.
          */
         :>> baseType = BaseTypes::views meta SysML::Usage;
+    }
+
+    // trace: PRD-DSML-058
+    metadata def ExternalApi :> SemanticMetadata {
+        doc /*
+         * Phase 2: an external API that an imported OpenAPI file gives. Use
+         * it on a part usage. Give the path of the file in openApiFile.
+         */
+        :>> baseType = BaseTypes::externalApis meta SysML::Usage;
     }
 
     // trace: PRD-DSML-034

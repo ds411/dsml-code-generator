@@ -570,6 +570,22 @@
                 "level": "error"
               },
               "help": {
+                "text": "Correct the path in openApiFile. Use only the OpenAPI subset of docs/notes/openapi-import.md in the file."
+              },
+              "id": "STR-017",
+              "name": "STR017",
+              "properties": {
+                "category": "STR"
+              },
+              "shortDescription": {
+                "text": "An imported OpenAPI file does not exist, or it contains an item that the toolchain cannot read."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "help": {
                 "text": "Correct the SysML v2 text or the name at the location of the finding."
               },
               "id": "SYN-001",
@@ -714,7 +730,7 @@
                 "level": "error"
               },
               "help": {
-                "text": "Add a `#Calls` dependency from the `react` application to the application that it calls."
+                "text": "Add a `#Calls` dependency from the `react` application to the application or the `#ExternalApi` that it calls."
               },
               "id": "XLY-005",
               "name": "XLY005",

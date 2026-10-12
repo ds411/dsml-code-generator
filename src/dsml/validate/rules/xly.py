@@ -1,12 +1,13 @@
-# trace: PRD-VAL-015, PRD-DSML-030, PRD-DSML-037, PRD-DSML-039, PRD-DSML-040
+# trace: PRD-VAL-015, PRD-DSML-030, PRD-DSML-037, PRD-DSML-039, PRD-DSML-040, PRD-DSML-058
 """The rules of the category XLY. They examine links between the layers.
 
 The rules read the `allocate`, `realizes`, `uses` and `calls` links of the IR
 (`docs/notes/ir-solution-layers.md`). A `react` application is allocated to a
 `#StaticSite`, and a `#AwsStaticSite` realizes the static site.
 
-The IR has no imported OpenAPI file yet. Thus XLY-005 accepts only a `#Calls`
-dependency. The import story of milestone M9 adds the imported file.
+A `react` application calls an application or an external API with
+`#Calls`. An external API gives its imported OpenAPI file in `openApiFile`
+(PRD-DSML-058). Thus XLY-005 accepts a `#Calls` dependency to each of the two.
 """
 
 from collections.abc import Iterator
@@ -90,7 +91,8 @@ XLY_005 = Rule(
     severity="error",
     message="A `react` application has no `#Calls` dependency and no imported OpenAPI file.",
     fix_hint=(
-        "Add a `#Calls` dependency from the `react` application to the application that it calls."
+        "Add a `#Calls` dependency from the `react` application to the application or the "
+        "`#ExternalApi` that it calls."
     ),
 )
 
@@ -259,13 +261,13 @@ def xly_004(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
                 )
 
 
-# trace: PRD-DSML-030
+# trace: PRD-DSML-030, PRD-DSML-058
 @implements(XLY_005)
 def xly_005(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
     graph = _Graph(ir)
     for application in _react_applications(graph):
         calls = graph.links_from(application.identity, "calls")
-        if not any(graph.kind(link.target) == "Application" for link in calls):
+        if not any(graph.kind(link.target) in ("Application", "ExternalApi") for link in calls):
             yield Hit(location=application.location, element=application.identity)
 
 

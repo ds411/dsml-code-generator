@@ -20,7 +20,7 @@ The IR holds identities and qualified names only, not the internal IDs of OpenSy
 
 | IR kind | Model element |
 | --- | --- |
-| `Application`, `Entity`, `Exposed`, `Operation`, `Roles`, `View` | An element with the keyword of the same name. |
+| `Application`, `Entity`, `Exposed`, `Operation`, `Roles`, `View`, `ExternalApi` | An element with the keyword of the same name. |
 | `Network`, `ContainerService`, `RelationalDatabase`, `UserDirectory`, `SecretStore`, `StaticSite` | A logical element with the keyword of the same name. |
 | `AwsVpc`, `AwsEcsService`, `AwsRdsPostgres`, `AwsCognito`, `AwsSecrets`, `AwsStaticSite` | An AWS realization with the keyword of the same name. |
 | `Environment`, `Override`, `ToolingAccount`, `Verification` | An element with the keyword of the same name. |
@@ -28,6 +28,8 @@ The IR holds identities and qualified names only, not the internal IDs of OpenSy
 | `Field` | A named attribute usage of an entity. |
 | `Relation` | A named reference usage or part usage of an entity that an entity types. |
 | `Parameter` | A named `in`, `out` or `inout` parameter of an operation. |
+
+An external API also gives the `Entity`, `Field`, `Relation`, `Operation` and `Parameter` elements of its OpenAPI file (story #163). `docs/notes/openapi-import.md` gives these elements.
 
 The location of an element is the first character of its declaration. If the declaration starts with a keyword, for example `#Entity`, the location is the `#` character.
 

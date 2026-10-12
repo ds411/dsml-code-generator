@@ -2,6 +2,8 @@
 
 - The registry contains each rule of the catalog in
   `docs/prd/06-validation-prd.md`, with its default severity (PRD-VAL-015).
+  The catalog has two sections: the rules of phase 1 and the rules that
+  phase 2 adds (PRD-VAL-016, story #163).
 - Each rule has one model that it accepts and one model that it rejects in
   `tests/models/rules/<rule>/` (PRD-VAL-008). The test module of each
   category runs the rule on these models.
@@ -25,7 +27,7 @@ from dsml.validate.rules import registry
 
 ROOT = Path(__file__).resolve().parent.parent
 VALIDATION_PRD = ROOT / "docs" / "prd" / "06-validation-prd.md"
-CATALOG_HEADING = "## Rule catalog for phase 1"
+CATALOG_HEADINGS = ("## Rule catalog for phase 1", "## Rule catalog additions for phase 2")
 CATALOG_ROW = re.compile(r"\| (?P<rule>[A-Z]{3}-[0-9]{3}) \| (?P<severity>error|warning|info) \|")
 
 
@@ -44,22 +46,24 @@ write_golden_findings: Any = _load_script()
 
 
 def _catalog() -> dict[str, str]:
-    """Give the default severity of each rule in the catalog table of the validation PRD."""
+    """Give the default severity of each rule in the catalog tables of the validation PRD."""
     text = VALIDATION_PRD.read_text(encoding="utf-8")
-    section = text.split(CATALOG_HEADING, 1)[1].split("\n## ", 1)[0]
     catalog: dict[str, str] = {}
-    for line in section.splitlines():
-        found = CATALOG_ROW.match(line)
-        if found:
-            assert found["rule"] not in catalog, f"The catalog has the rule {found['rule']} twice."
-            catalog[found["rule"]] = found["severity"]
+    for heading in CATALOG_HEADINGS:
+        section = text.split(heading, 1)[1].split("\n## ", 1)[0]
+        for line in section.splitlines():
+            found = CATALOG_ROW.match(line)
+            if found:
+                rule = found["rule"]
+                assert rule not in catalog, f"The catalog has the rule {rule} twice."
+                catalog[rule] = found["severity"]
     return catalog
 
 
-# trace: PRD-VAL-002, PRD-VAL-015
+# trace: PRD-VAL-002, PRD-VAL-015, PRD-VAL-016
 def test_registry_contains_each_rule_of_the_catalog_with_its_severity() -> None:
     catalog = _catalog()
-    assert len(catalog) == 45
+    assert len(catalog) == 46
     rules = {rule_id: check.rule.severity for rule_id, check in registry().items()}
     assert rules == catalog
 

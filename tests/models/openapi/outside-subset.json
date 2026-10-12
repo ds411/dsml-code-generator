@@ -1,0 +1,33 @@
+{
+  "components": {
+    "schemas": {
+      "Order": {
+        "properties": {
+          "id": {"format": "uuid", "type": "string"},
+          "status": {"enum": ["open", "shipped"], "type": "string"}
+        },
+        "required": ["id", "status"],
+        "type": "object"
+      }
+    }
+  },
+  "info": {"title": "orders", "version": "1.0.0"},
+  "openapi": "3.1.0",
+  "paths": {
+    "/orders/{id}": {
+      "get": {
+        "operationId": "readOrder",
+        "parameters": [
+          {"in": "path", "name": "id", "required": true, "schema": {"format": "uuid", "type": "string"}},
+          {"in": "header", "name": "X-Tenant", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Order"}}},
+            "description": "The order."
+          }
+        }
+      }
+    }
+  }
+}

@@ -21,7 +21,7 @@ MODELS = Path(__file__).resolve().parent / "models" / "dsml"
 
 SEMANTIC_METADATA = "Metaobjects::SemanticMetadata"
 
-# The keywords of element kinds of the stories #13 and #157. Each one
+# The keywords of element kinds of the stories #13, #157 and #163. Each one
 # specializes Metaobjects::SemanticMetadata (PRD-DSML-009).
 ELEMENT_KIND_KEYWORDS = {
     "Application",
@@ -35,6 +35,7 @@ ELEMENT_KIND_KEYWORDS = {
     "Entity",
     "Environment",
     "Exposed",
+    "ExternalApi",
     "Key",
     "Need",
     "Network",
@@ -227,7 +228,7 @@ def test_model_with_the_phase_2_keywords_parses_and_resolves(phase_2_model: Pars
     assert phase_2_model.diagnostics == ()
 
 
-# trace: PRD-DSML-003, PRD-DSML-009, PRD-DSML-031, PRD-DSML-035, PRD-DSML-037
+# trace: PRD-DSML-003, PRD-DSML-009, PRD-DSML-031, PRD-DSML-035, PRD-DSML-037, PRD-DSML-058
 @pytest.mark.parametrize(
     ("element", "keyword", "path"),
     [
@@ -236,6 +237,7 @@ def test_model_with_the_phase_2_keywords_parses_and_resolves(phase_2_model: Pars
         ("orderPortal::placeOrderForm", "View", "orderPortal.placeOrderForm"),
         ("portalSite", "StaticSite", "portalSite"),
         ("portalSiteAws", "AwsStaticSite", "portalSiteAws"),
+        ("paymentApi", "ExternalApi", "paymentApi"),
     ],
 )
 def test_phase_2_keyword_gives_the_base_type(
@@ -253,7 +255,7 @@ def test_aws_static_site_is_an_aws_realization(phase_2_model: ParsedModel) -> No
     )
 
 
-# trace: PRD-DSML-031, PRD-DSML-033
+# trace: PRD-DSML-031, PRD-DSML-033, PRD-DSML-058
 @pytest.mark.parametrize(
     "expression",
     [
@@ -265,6 +267,7 @@ def test_aws_static_site_is_an_aws_realization(phase_2_model: ParsedModel) -> No
         "orderPortal.placeOrderForm.operation istype PlaceOrder",
         "orderPortal.orderList.'public' == true",
         "orderPortal.orderDetail.'public' == false",
+        'paymentApi.openApiFile == "apis/payments.openapi.json"',
     ],
 )
 def test_view_gives_its_kind_reference_and_access(
