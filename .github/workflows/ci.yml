@@ -493,8 +493,8 @@ jobs:
           fi
 
   # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-010, PRD-APP-012, PRD-APP-013
-  # trace: PRD-APP-015, PRD-APP-128, PRD-APP-301, PRD-APP-325, PRD-APP-331, PRD-APP-332
-  # trace: PRD-APP-333
+  # trace: PRD-APP-015, PRD-APP-016, PRD-APP-128, PRD-APP-301, PRD-APP-306, PRD-APP-325
+  # trace: PRD-APP-331, PRD-APP-332, PRD-APP-333
   #
   # The golden project of the Next.js generator (story #180) must pass the
   # tools of the generated project. Prettier must find no change in the
@@ -525,13 +525,19 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      PROJECT: ${{ github.workspace }}/../order-web
+      CHECK: ${{ github.workspace }}/../check-web
+      PROJECT: ${{ github.workspace }}/../check-web/apps/order-web
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.0"
 
       # The action reads the pnpm version from the "packageManager" field
       # of package.json.
@@ -545,25 +551,25 @@ jobs:
       - name: Check the format of the golden files
         run: pnpm exec prettier --check tests/golden/nextjs tests/nextjs '!**/.dsml/**'
 
+      # The configuration file of the order web gives the output folder
+      # apps/order-web for the application orderWeb.
       - name: Copy the golden project
-        run: cp -r tests/golden/nextjs/order-web "$PROJECT"
+        run: |
+          mkdir -p "$CHECK/apps"
+          cp docs/model/examples/order-web/dsml.toml docs/model/examples/order-web/order-web.sysml "$CHECK/"
+          cp -r tests/golden/nextjs/order-web "$PROJECT"
 
       # The project has no lockfile, thus pnpm makes it.
       - name: Install the dependencies
         working-directory: ${{ env.PROJECT }}
         run: pnpm install --no-frozen-lockfile
 
-      - name: Check the types
-        working-directory: ${{ env.PROJECT }}
-        run: pnpm exec tsc --noEmit
-
-      - name: Lint
-        working-directory: ${{ env.PROJECT }}
-        run: pnpm exec eslint .
-
-      - name: Check the FSD rules with Steiger
-        working-directory: ${{ env.PROJECT }}
-        run: pnpm exec steiger ./src
+      # dsml check-output runs tsc, ESLint and Steiger from
+      # node_modules/.bin of the Next.js application (PRD-CORE-011,
+      # PRD-APP-016, PRD-APP-306, story #185).
+      - name: Check the project with dsml check-output
+        working-directory: ${{ env.CHECK }}
+        run: uv run --project "$GITHUB_WORKSPACE" dsml check-output --application orderWeb
 
       # The auth tests examine the role check, the server helper authorize
       # with test tokens and the redirect of the request interceptor

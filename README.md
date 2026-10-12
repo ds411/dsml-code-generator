@@ -102,7 +102,7 @@ The command `dsml` has seven subcommands (PRD-CORE-001). `dsml --help` lists the
 | `init` | Writes a starter configuration file and a starter model as create-once files. See "Command `dsml init`". |
 | `validate` | Runs the validation rules on the model and writes the findings as text, JSON or SARIF. See "Command `dsml validate`". |
 | `trace` | Writes the coverage report or the orphans report as JSON or as CSV. See "Command `dsml trace`". |
-| `check-output` | Runs the language tools on the generated code: ruff and pyright on each FastAPI application, and `tofu fmt`, `tofu init`, `tofu validate` and `tflint` on the infrastructure. A tool error or a missing tool gives exit code 1. `docs/notes/check-output.md` gives the rules. |
+| `check-output` | Runs the language tools on the generated code: ruff and pyright on each FastAPI application, `tsc`, ESLint and Steiger on each React and Next.js application, and `tofu fmt`, `tofu init`, `tofu validate` and `tflint` on the infrastructure. A tool error or a missing tool gives exit code 1. `docs/notes/check-output.md` gives the rules. |
 | `generate` | Validates the model, then writes the generated files through the file writer and keeps the manifest `.dsml/generated.json`. An error finding stops it before it writes a file. The infrastructure generator writes the root modules of the environments and the local modules of the databases and the user directories. The other generators come in M6. `docs/notes/file-writer.md` gives the rules. |
 | `ir` | Writes the IR of the model files as JSON. See "Command `dsml ir`". |
 | `version` | Writes the versions of the toolchain, the DSML library, OpenSysML and the IR schema. |
@@ -123,16 +123,18 @@ No subcommand reads from a terminal (PRD-CORE-009).
 
 ### Command `dsml init`
 
-`dsml init [--target fastapi|react]` writes two starter files in the current folder:
+`dsml init [--target fastapi|react|nextjs]` writes two starter files in the current folder:
 
 - `dsml.toml`: a configuration file that reads the model in the folder `model`.
 - `model/model.sysml`: a model with one stakeholder, one need, one requirement and the `@DsmlVersion` metadata. It parses and resolves with the DSML library.
 
 With `--target react`, the starter model also has a FastAPI application `itemApi` and a React application `itemPortal` that calls it. It also has the infrastructure, the tooling account and the environments `dev`, `staging` and `prod`. Replace the account IDs, the regions and the domains with real values. `dsml.toml` gives the output folders `services/item-api` and `apps/item-portal`. `dsml validate` finds no error, and `dsml generate` writes the two projects.
 
+With `--target nextjs`, the starter model has one Next.js application `itemWeb`. It also has the infrastructure, the tooling account and the environments `dev`, `staging` and `prod`. `dsml.toml` gives the output folder `apps/item-web`. `dsml validate` finds no error, and `dsml generate` writes the Next.js project.
+
 The files are create-once files (PRD-CORE-044). The command writes a file only if no file exists at its path. For a file that exists, the report gives the line `keep <path>: The file exists. The command did not change it.` The command writes no manifest. `dsml generate` writes the manifest.
 
-- The command accepts the targets `fastapi` and `react`. The default target is `fastapi`. M11 adds the target `nextjs`.
+- The command accepts the targets `fastapi`, `react` and `nextjs`. The default target is `fastapi`.
 - With `--config <file>`, the command writes the configuration file at this path, and the model in the folder of this file.
 - The starter files are package data in `src/dsml/starter/<target>/`.
 

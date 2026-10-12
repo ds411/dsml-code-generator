@@ -1,4 +1,4 @@
-"""Tests of `dsml check-output` with fake tools on PATH (stories #134 and #170).
+"""Tests of `dsml check-output` with fake tools on PATH (stories #134, #170 and #185).
 
 Each fake tool is a shell script. It writes its arguments and its folder to
 a log file. It stops with exit code 1 and a message if the environment
@@ -66,6 +66,7 @@ def project(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     root = tmp_path / "project"
     (root / "services" / "orders" / "app").mkdir(parents=True)
     (root / "apps" / "portal" / "src").mkdir(parents=True)
+    (root / "apps" / "site" / "src").mkdir(parents=True)
     for module in ROOT_MODULES:
         (root / module).mkdir(parents=True)
         (root / module / "versions.gen.tf").write_text("terraform {}\n", encoding="utf-8")
@@ -75,6 +76,7 @@ def project(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         'schema = 1\n\n[model]\npaths = ["model.sysml"]\n\n'
         '[applications.orders]\noutput = "services/orders"\n\n'
         '[applications.portal]\noutput = "apps/portal"\n\n'
+        '[applications.site]\noutput = "apps/site"\n\n'
         '[infrastructure]\noutput = "infra"\n',
         encoding="utf-8",
     )
@@ -88,6 +90,7 @@ def configuration(root: Path) -> Configuration:
         applications=(
             Application("orders", PurePosixPath("services/orders")),
             Application("portal", PurePosixPath("apps/portal")),
+            Application("site", PurePosixPath("apps/site")),
         ),
         infrastructure=PurePosixPath("infra"),
     )
@@ -95,6 +98,7 @@ def configuration(root: Path) -> Configuration:
 
 ORDERS = ApplicationCode("orders", "fastapi", PurePosixPath("services/orders"))
 PORTAL = ApplicationCode("portal", "react", PurePosixPath("apps/portal"))
+SITE = ApplicationCode("site", "nextjs", PurePosixPath("apps/site"))
 
 
 def application(name: str, target: str) -> Element:
@@ -231,11 +235,11 @@ def test_tflint_configuration_has_the_pinned_aws_rule_set() -> None:
     assert 'source  = "github.com/terraform-linters/tflint-ruleset-aws"' in text
 
 
-def test_application_of_a_later_phase_is_an_error(project: Path, fake_tools: Path) -> None:
-    web = ApplicationCode("web", "nextjs", None)
+def test_application_with_no_target_is_an_error(project: Path, fake_tools: Path) -> None:
+    web = ApplicationCode("web", None, None)
     results = check_output(configuration(project), [web], infrastructure=False)
-    assert statuses(results) == ["error web: nextjs"]
-    assert 'It has no tools for the target "nextjs".' in results[0].output
+    assert statuses(results) == ["error web: none"]
+    assert 'It has no tools for the target "none".' in results[0].output
 
 
 def test_react_tools_pass(project: Path, fake_tools: Path) -> None:
@@ -393,3 +397,69 @@ def test_missing_output_folder_gives_exit_code_2(
     )
     assert main(["check-output", "--infrastructure"]) == 2
     assert 'The infrastructure folder "deploy" does not exist.' in capsys.readouterr().err
+
+
+# trace: PRD-CORE-011, PRD-APP-306
+def test_nextjs_tools_pass(project: Path, fake_tools: Path) -> None:
+    results = check_output(configuration(project), [SITE], infrastructure=False)
+    assert statuses(results) == [
+        "pass apps/site: eslint",
+        "pass apps/site: steiger",
+        "pass apps/site: tsc",
+    ]
+    lines = fake_tools.read_text(encoding="utf-8").splitlines()
+    calls = {line.split(" | ")[0].strip(): Path(line.split(" | ")[1]) for line in lines}
+    folder = project / "apps" / "site"
+    assert calls == {"tsc --noEmit": folder, "eslint .": folder, "steiger ./src": folder}
+
+
+# trace: PRD-CORE-011
+def test_nextjs_tools_come_first_from_node_modules(project: Path, fake_tools: Path) -> None:
+    tools = project / "apps" / "site" / "node_modules" / ".bin"
+    tools.mkdir(parents=True)
+    script = tools / "steiger"
+    script.write_text(
+        '#!/bin/sh\necho "project steiger" >> "$FAKE_LOG"\nexit 0\n', encoding="utf-8"
+    )
+    script.chmod(0o755)
+    results = check_output(configuration(project), [SITE], infrastructure=False)
+    assert passed(results)
+    calls = fake_tools.read_text(encoding="utf-8").splitlines()
+    assert "project steiger" in calls
+    assert not any(call.startswith("steiger ") for call in calls)
+
+
+# trace: PRD-CORE-011
+@pytest.mark.parametrize("tool", ["tsc", "eslint", "steiger"])
+def test_missing_nextjs_tool_is_an_error_with_the_tool_name(
+    project: Path, fake_tools: Path, tool: str
+) -> None:
+    (Path(os.environ["PATH"]) / tool).unlink()
+    results = check_output(configuration(project), [SITE], infrastructure=False)
+    found = {result.tool: result for result in results}
+    assert found[tool].status == Status.ERROR
+    assert found[tool].output == (
+        f'The tool "{tool}" is missing. '
+        f'Run "pnpm install" in "apps/site", or put "{tool}" on PATH.\n'
+    )
+    assert [result.status for result in results if result.tool != tool] == [Status.PASS] * 2
+
+
+# trace: PRD-CORE-002, PRD-CORE-011, PRD-APP-306
+def test_nextjs_steiger_error_gives_exit_code_1(
+    project: Path,
+    fake_tools: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    ir = Ir(elements=(application("portal", "react"), application("site", "nextjs")))
+    monkeypatch.setattr(cli, "read_model", model_of(ir))
+    monkeypatch.setenv("FAKE_FAIL", "steiger-./src")
+    assert main(["check-output", "--application", "site"]) == 1
+    assert capsys.readouterr().out == (
+        "pass apps/site: eslint\n"
+        "error apps/site: steiger\n"
+        "    steiger-./src found an error\n"
+        "pass apps/site: tsc\n"
+        "The check found errors. 1 step of 3 did not pass.\n"
+    )

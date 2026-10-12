@@ -14,13 +14,17 @@ React application that calls it (PRD-DSML-030, PRD-DSML-031, PRD-DSML-039).
 It also has the infrastructure and the environments, because the validation
 rules need them. The model validates with no finding, and `dsml generate`
 writes the two projects.
+
+The starter model of the target `nextjs` has one Next.js application, with
+the infrastructure and the environments. The model validates with no
+finding, and `dsml generate` writes the Next.js project.
 """
 
 from importlib import resources
 from typing import Final
 
-TARGETS: Final = ("fastapi", "react")
-"""The targets that `dsml init --target` accepts. M11 adds Next.js."""
+TARGETS: Final = ("fastapi", "react", "nextjs")
+"""The targets that `dsml init --target` accepts."""
 
 DEFAULT_TARGET: Final = "fastapi"
 """The target of `dsml init` if the command line gives no `--target`."""

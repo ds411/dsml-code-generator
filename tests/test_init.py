@@ -1,4 +1,4 @@
-"""Tests of the subcommand `dsml init` (stories #38 and #171).
+"""Tests of the subcommand `dsml init` (stories #38, #171 and #185).
 
 Some tests start a private `sysml-grpc` child process. If the binary is not
 in the cache, the `opensysml` client downloads it one time.
@@ -61,11 +61,17 @@ def test_init_accepts_the_target_react(folder: Path, capsys: pytest.CaptureFixtu
 
 
 # trace: PRD-CORE-001
-@pytest.mark.parametrize("target", ["nextjs", "unknown"])
+def test_init_accepts_the_target_nextjs(folder: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    assert main(["init", "--target", "nextjs"]) == 0
+    assert capsys.readouterr().out == f"add {CONFIG}\nadd {MODEL}\n"
+    assert _files(folder) == starter.starter_files("nextjs")
+
+
+# trace: PRD-CORE-001
 def test_init_refuses_a_target_that_has_no_starter_files(
-    target: str, folder: Path, capsys: pytest.CaptureFixture[str]
+    folder: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    assert main(["init", "--target", target]) == 2
+    assert main(["init", "--target", "unknown"]) == 2
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err.startswith("usage: dsml init")
@@ -187,10 +193,11 @@ def test_ir_of_the_starter_files_has_no_finding(
 
 
 # trace: PRD-CORE-001, PRD-DSML-030, PRD-DSML-031, PRD-DSML-039
-def test_react_starter_model_validates_with_no_finding(
-    folder: Path, capsys: pytest.CaptureFixture[str]
+@pytest.mark.parametrize("target", ["react", "nextjs"])
+def test_starter_model_with_applications_validates_with_no_finding(
+    target: str, folder: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    assert main(["init", "--target", "react"]) == 0
+    assert main(["init", "--target", target]) == 0
     capsys.readouterr()
     assert main(["validate"]) == 0
     captured = capsys.readouterr()
@@ -215,6 +222,24 @@ def test_generate_on_the_react_starter_writes_the_two_projects(
     ]:
         assert (folder / path).is_file(), path
     assert _files(folder / "model") == {"model.sysml": starter.starter_files("react")[MODEL]}
+
+
+# trace: PRD-CORE-001, PRD-APP-002
+def test_generate_on_the_nextjs_starter_writes_the_project(
+    folder: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    assert main(["init", "--target", "nextjs"]) == 0
+    assert main(["generate"]) == 0
+    capsys.readouterr()
+    for path in [
+        "apps/item-web/package.json",
+        "apps/item-web/steiger.config.ts",
+        "apps/item-web/proxy.ts",
+        "apps/item-web/src/entities/item/model/item.gen.ts",
+        "apps/item-web/src/shared/db/schema.gen.ts",
+    ]:
+        assert (folder / path).is_file(), path
+    assert _files(folder / "model") == {"model.sysml": starter.starter_files("nextjs")[MODEL]}
 
 
 # trace: PRD-CORE-044
