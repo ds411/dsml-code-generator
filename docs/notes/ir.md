@@ -127,7 +127,7 @@ A change of the IR version also changes the golden IR files (PRD-CORE-027).
 | Version | Story | Change |
 | --- | --- | --- |
 | 1.0.0 | #28 | The first version. |
-| 1.1.0 | #159 | The element kinds `View`, `StaticSite` and `AwsStaticSite`. A view has the attributes `entity` or `operation`, and an application has the attribute `navigation` (`docs/notes/ir-solution-layers.md`). | A minor or patch release of the toolchain must not change the IR of an unchanged model, except to fix a defect that its release notes name (PRD-CORE-037).
+| 1.1.0 | #159, #163 | The element kinds `View`, `StaticSite` and `AwsStaticSite`. A view has the attributes `entity` or `operation`, and an application has the attribute `navigation` (`docs/notes/ir-solution-layers.md`). Story #163 added the element kind `ExternalApi` and the elements of its OpenAPI file (`docs/notes/openapi-import.md`). Version 1.1.0 is not in a release yet, thus the version did not change. | A minor or patch release of the toolchain must not change the IR of an unchanged model, except to fix a defect that its release notes name (PRD-CORE-037).
 
 ## Conversion of the needs and requirements layers (story #30)
 

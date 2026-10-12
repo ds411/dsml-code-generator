@@ -1,7 +1,8 @@
 // Test model of story #157: the phase 2 keywords of the DSML library 1.1.
 // OpenSysML and the OMG pilot implementation must parse and resolve it with
 // the library and give no diagnostic. It has a list view, a detail view, a
-// form view, a navigation list and a static site.
+// form view, a navigation list, a static site and an external API (story #163).
+// The parse does not read the OpenAPI file of the external API.
 package PhaseTwo {
     private import DSML::*;
     private import ScalarValues::*;
@@ -53,6 +54,11 @@ package PhaseTwo {
         :>> navigation = (orderList, orderDetail, placeOrderForm);
     }
     #Calls dependency from orderPortal to orderApi;
+
+    #ExternalApi part paymentApi {
+        :>> openApiFile = "apis/payments.openapi.json";
+    }
+    #Calls dependency from orderPortal to paymentApi;
 
     // Infrastructure layer
     #ContainerService part apiService;

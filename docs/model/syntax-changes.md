@@ -96,6 +96,7 @@ The DSML PRD gives no sketch for views, navigation and static sites. Story #157 
 | Navigation (PRD-DSML-032) | The application redefines the ordered reference `navigation` with a list of its views: `:>> navigation = (orderList, orderDetail, placeOrderForm);`. | The list keeps the order of the model. The chain `orderPortal.navigation#(1)` gives the first view. |
 | `#StaticSite` | A part usage, as the other logical kinds: `#StaticSite part portalSite;`. A `react` application is allocated to it with `allocate orderPortal to portalSite;` (PRD-DSML-039). | This is the form of the other logical kinds (PRD-DSML-035). |
 | `#AwsStaticSite` | A part usage with no attribute and a `#Realizes` dependency to the static site. | The static site module (PRD-IAC-021) needs no AWS attribute, and PRD-DSML-042 gives none for a static site. |
+| `#ExternalApi` (PRD-DSML-058, story #163) | A part usage with `:>> openApiFile = "<path>";`. A `react` application calls it with `#Calls dependency from orderPortal to orderApi;`. | This is the form of decision Q65 (#151). `#Calls` is a plain metadata on a dependency, so it needs no change. |
 
 ### Rule for models
 

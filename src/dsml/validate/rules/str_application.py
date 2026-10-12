@@ -1,14 +1,20 @@
-# trace: PRD-VAL-015
-"""The STR rules of the application layer: STR-005 to STR-010.
+# trace: PRD-VAL-015, PRD-VAL-016
+"""The STR rules of the application layer: STR-005 to STR-010, and STR-017.
 
 The rules read only the IR (PRD-VAL-001, PRD-CORE-026). STR-010 examines the
 exposed entities, the exposed operations and the views.
+
+STR-005 to STR-008 examine only the elements of the model. The elements that
+the OpenAPI file of an external API gives are not elements of the model. For
+example, an OpenAPI schema has no `#Key` field. The IR adapter reads the
+OpenAPI files and writes the STR-017 findings into the IR (PRD-CORE-055).
 """
 
 from collections.abc import Iterator
 from typing import Final
 
 from dsml.config import Configuration
+from dsml.ir.external import imported
 from dsml.ir.model import BooleanValue, Element, EnumValue, Ir, ListValue
 from dsml.ir.operations import Endpoint, attribute, endpoints, method_of, path_of
 from dsml.validate.rule import Hit, Rule, implements
@@ -88,10 +94,28 @@ STR_010 = Rule(
     "or set public = true.",
 )
 
+# trace: PRD-CORE-055, PRD-DSML-058
+STR_017 = Rule(
+    id="STR-017",
+    severity="error",
+    message=(
+        "An imported OpenAPI file does not exist, or it contains an item that the toolchain "
+        "cannot read."
+    ),
+    fix_hint="Correct the path in openApiFile. Use only the OpenAPI subset of "
+    "docs/notes/openapi-import.md in the file.",
+)
+
 
 def _of_kind(ir: Ir, kind: str) -> Iterator[Element]:
-    """Give the elements of one kind, sorted by identity."""
-    return iter(sorted((item for item in ir.elements if item.kind == kind), key=Element.sort_key))
+    """Give the elements of the model of one kind, sorted by identity."""
+    outside = imported(ir)
+    return iter(
+        sorted(
+            (item for item in ir.elements if item.kind == kind and item.identity not in outside),
+            key=Element.sort_key,
+        )
+    )
 
 
 # trace: PRD-DSML-020
@@ -229,5 +253,14 @@ def str_010(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
         )
 
 
-RULES = (str_005, str_006, str_007, str_008, str_009, str_010)
+# trace: PRD-CORE-055, PRD-VAL-016
+@implements(STR_017)
+def str_017(ir: Ir, configuration: Configuration) -> Iterator[Hit]:
+    """Give the STR-017 findings that the IR adapter wrote."""
+    for finding in ir.findings:
+        if finding.rule == STR_017.id:
+            yield Hit(finding.message, finding.location, finding.element)
+
+
+RULES = (str_005, str_006, str_007, str_008, str_009, str_010, str_017)
 """The rules of this module."""

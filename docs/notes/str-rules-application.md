@@ -1,8 +1,8 @@
 # STR rules of the applications and the environments
 
-Story #60 added the rules STR-005 to STR-012 (PRD-VAL-015). All of them have the default severity `error`. Story #161 added the views to STR-010.
+Story #60 added the rules STR-005 to STR-012 (PRD-VAL-015). All of them have the default severity `error`. Story #161 added the views to STR-010. Story #163 added STR-017 (error) for the imported OpenAPI files (PRD-VAL-016, `docs/notes/openapi-import.md`).
 
-- Rules STR-005 to STR-010: `src/dsml/validate/rules/str_application.py`.
+- Rules STR-005 to STR-010 and STR-017: `src/dsml/validate/rules/str_application.py`. STR-005 to STR-008 do not examine the elements of an imported OpenAPI file. The IR adapter writes the STR-017 findings into the IR, and STR-017 reads them.
 - Rules STR-011 and STR-012: `src/dsml/validate/rules/str_environment.py`.
 - Operations, methods and paths of an application: `src/dsml/ir/operations.py`.
 - Test models: `tests/models/rules/STR-005/` to `tests/models/rules/STR-012/`. The models `accept-views.sysml` and `reject-views.sysml` of STR-010 have views.

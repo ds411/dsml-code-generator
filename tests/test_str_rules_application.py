@@ -32,9 +32,9 @@ def _error(rule: str, message: str, line: int, column: int, element: str) -> Fin
 
 
 # trace: PRD-VAL-015
-def test_registry_contains_str_005_to_str_012_with_their_default_severities() -> None:
+def test_registry_contains_str_005_to_str_012_and_str_017_with_their_default_severities() -> None:
     rules = registry()
-    assert sorted(RULES) == [f"STR-{number:03d}" for number in range(5, 13)]
+    assert sorted(RULES) == [*(f"STR-{number:03d}" for number in range(5, 13)), "STR-017"]
     for rule_id, check in RULES.items():
         assert rules[rule_id] is check
         assert check.rule.severity == "error"

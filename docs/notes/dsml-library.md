@@ -1,6 +1,6 @@
 # DSML library 1.1.0: design and results
 
-Story #13 added the DSML library 1.0.0. Story #157 added the phase 2 keywords in version 1.1.0 (see "Version 1.1.0"). This document gives the design of the library, the results of the parse with OpenSysML 0.9.2 and the limits that the story found.
+Story #13 added the DSML library 1.0.0. Story #157 added the phase 2 keywords in version 1.1.0 (see "Version 1.1.0"). Story #163 added the keyword `#ExternalApi` to version 1.1.0. This document gives the design of the library, the results of the parse with OpenSysML 0.9.2 and the limits that the story found.
 
 - Library source: `src/dsml/library/DSML.sysml`.
 - Python access: `dsml.library.library_text()` and `dsml.library.library_document()`.
@@ -31,7 +31,7 @@ The definition in `BaseTypes` has the same name as its keyword, for example `DSM
 
 | Form | Keywords | Reason |
 | --- | --- | --- |
-| Specializes `Metaobjects::SemanticMetadata`. The base type is an abstract usage in `BaseTypes`. | `Stakeholder`, `Need`, `Requirement`, `Application`, `Entity`, `Key`, `Exposed`, `Operation`, `Roles`, `View`, `Network`, `ContainerService`, `RelationalDatabase`, `UserDirectory`, `SecretStore`, `StaticSite`, `AwsVpc`, `AwsEcsService`, `AwsRdsPostgres`, `AwsCognito`, `AwsSecrets`, `AwsStaticSite`, `Environment`, `Override`, `ToolingAccount`, `Verification` | Element kinds. The base type gives the attributes to the element (PRD-DSML-009). |
+| Specializes `Metaobjects::SemanticMetadata`. The base type is an abstract usage in `BaseTypes`. | `Stakeholder`, `Need`, `Requirement`, `Application`, `Entity`, `Key`, `Exposed`, `Operation`, `Roles`, `View`, `ExternalApi`, `Network`, `ContainerService`, `RelationalDatabase`, `UserDirectory`, `SecretStore`, `StaticSite`, `AwsVpc`, `AwsEcsService`, `AwsRdsPostgres`, `AwsCognito`, `AwsSecrets`, `AwsStaticSite`, `Environment`, `Override`, `ToolingAccount`, `Verification` | Element kinds. The base type gives the attributes to the element (PRD-DSML-009). |
 | Plain metadata definition. | `Calls`, `Realizes`, `Uses` | These go on a dependency. OpenSysML 0.9.2 refuses semantic metadata on a dependency ("Cannot annotate Dependency", code `metadata-annotated-element`). |
 | Plain metadata definition with attributes. | `Waiver`, `DsmlVersion`, `FieldRules`, `Destructive` | The attributes belong to the metadata usage, not to the annotated element. |
 
@@ -63,6 +63,7 @@ Story #157 added the phase 2 keywords. Version 1.1.0 is a minor version: it only
 | Navigation | `Application` has the reference `navigation : View [0..*] ordered`. A phase 1 model does not give it. | PRD-DSML-032 |
 | `#StaticSite` | Semantic metadata. The base type is `BaseTypes::staticSites : StaticSite [*]`. `StaticSite` specializes `LogicalElement`. | PRD-DSML-035, PRD-DSML-039, PRD-DSML-040 |
 | `#AwsStaticSite` | Semantic metadata. The base type is `BaseTypes::awsStaticSites : AwsStaticSite [*]`, which subsets `awsRealizations`. `AwsStaticSite` specializes `AwsRealization` and has no attribute. | PRD-DSML-037, PRD-DSML-038 |
+| `#ExternalApi` | Semantic metadata (story #163). The base type is `BaseTypes::externalApis : ExternalApi [*]`. `ExternalApi` has `openApiFile : String`. `docs/notes/openapi-import.md` gives the import of the file. | PRD-DSML-058 |
 
 `#Uses` already permits a static site as its client (PRD-DSML-040). A model gives the entity of a view and the operation of a form view as the type of the reference, for example `ref :>> entity : Order;`. `docs/model/syntax-changes.md` ("Forms of the phase 2 keywords") gives each form and its reason.
 
@@ -74,6 +75,7 @@ Results:
 - The test model `tests/models/dsml/phase-2.sysml` has a list view, a detail view, a form view, a navigation list and a static site. OpenSysML parses and resolves it with no diagnostic. The tests evaluate the kind, the entity, the operation, `'public'` and the order of the navigation.
 - The pilot kernel accepts the library 1.1.0, `phase-2.sysml`, the example model and the PRD model. The CI job "Pilot" now also checks `phase-2.sysml`.
 - The IR adapter does not read the new keywords yet. Story #159 adds them to the IR.
+- Story #163 added `#ExternalApi` and an external API to `phase-2.sysml`. The library version stays 1.1.0, because version 1.1.0 is not in a release yet.
 
 ## SysML keywords as names
 

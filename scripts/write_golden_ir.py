@@ -6,6 +6,8 @@ tests/test_ir_command.py compares the output of `dsml ir` with these files.
 Story #159 added the golden IR file of a test model. Story #160 added the
 order portal, the reference model of phase 2. The test
 tests/test_solution_layers.py compares the IR of the test model with it.
+Story #163 added the golden IR file of a model with an imported OpenAPI file.
+The test tests/test_openapi_import.py compares the IR of that model with it.
 Run this script from the root of the repository after a change that changes
 the IR, for example a new OpenSysML version (PRD-CORE-027):
 
@@ -33,9 +35,10 @@ REFERENCE_MODELS: dict[str, tuple[str, ...]] = {
 """The model files of each reference model, relative to the repository root."""
 
 TEST_MODELS: dict[str, tuple[str, ...]] = {
+    "openapi": ("tests/models/openapi/order-portal.sysml",),
     "views": ("tests/models/ir/views.sysml",),
 }
-"""The model files of each test model with a golden IR file (story #159)."""
+"""The model files of each test model with a golden IR file (stories #159 and #163)."""
 
 
 def golden_file(name: str) -> Path:

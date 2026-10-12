@@ -1,0 +1,1392 @@
+{
+  "constraintResults": [],
+  "elements": [
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal",
+      "kind": "Package",
+      "location": {
+        "column": 1,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 4
+      },
+      "multiplicity": null,
+      "name": "OpenApiPortal",
+      "owner": null,
+      "qualifiedName": "OpenApiPortal",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "tests/models/openapi/order-portal.sysml",
+            "line": 10
+          },
+          "name": "openApiFile",
+          "value": {
+            "type": "string",
+            "value": "tests/golden/fastapi/order-service/services/order-api/openapi.gen.json"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi",
+      "kind": "ExternalApi",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "orderApi",
+      "owner": "OpenApiPortal",
+      "qualifiedName": "OpenApiPortal::orderApi",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": "The output of the operation: one entity. A related entity is its key.",
+      "identity": "OpenApiPortal::orderApi::CancelOrderOutput",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "CancelOrderOutput",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::CancelOrderOutput",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CancelOrderOutput::id",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OpenApiPortal::orderApi::CancelOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CancelOrderOutput::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CancelOrderOutput::note",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OpenApiPortal::orderApi::CancelOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CancelOrderOutput::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "open"
+              },
+              {
+                "type": "string",
+                "value": "shipped"
+              },
+              {
+                "type": "string",
+                "value": "cancelled"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CancelOrderOutput::status",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OpenApiPortal::orderApi::CancelOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CancelOrderOutput::status",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CancelOrderOutput::total",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OpenApiPortal::orderApi::CancelOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CancelOrderOutput::total",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": "The request body. The key `id` is not in the body.",
+      "identity": "OpenApiPortal::orderApi::CreateOrderInput",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "CreateOrderInput",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderInput",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CreateOrderInput::note",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OpenApiPortal::orderApi::CreateOrderInput",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderInput::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "open"
+              },
+              {
+                "type": "string",
+                "value": "shipped"
+              },
+              {
+                "type": "string",
+                "value": "cancelled"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CreateOrderInput::status",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OpenApiPortal::orderApi::CreateOrderInput",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderInput::status",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CreateOrderInput::total",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OpenApiPortal::orderApi::CreateOrderInput",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderInput::total",
+      "shortName": null,
+      "types": [
+        "DSML::Decimal"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": "The entity Order in a response.",
+      "identity": "OpenApiPortal::orderApi::CreateOrderOutput",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "CreateOrderOutput",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderOutput",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CreateOrderOutput::id",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OpenApiPortal::orderApi::CreateOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderOutput::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CreateOrderOutput::note",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OpenApiPortal::orderApi::CreateOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderOutput::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "open"
+              },
+              {
+                "type": "string",
+                "value": "shipped"
+              },
+              {
+                "type": "string",
+                "value": "cancelled"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CreateOrderOutput::status",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OpenApiPortal::orderApi::CreateOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderOutput::status",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::CreateOrderOutput::total",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OpenApiPortal::orderApi::CreateOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::CreateOrderOutput::total",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": "The response of `GET /healthz`.",
+      "identity": "OpenApiPortal::orderApi::Health",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "Health",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::Health",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::Health::status",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OpenApiPortal::orderApi::Health",
+      "qualifiedName": "OpenApiPortal::orderApi::Health::status",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": "The entity Order in a response.",
+      "identity": "OpenApiPortal::orderApi::ListOrderOutput",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "ListOrderOutput",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderOutput",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ListOrderOutput::id",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OpenApiPortal::orderApi::ListOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderOutput::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ListOrderOutput::note",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OpenApiPortal::orderApi::ListOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderOutput::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "open"
+              },
+              {
+                "type": "string",
+                "value": "shipped"
+              },
+              {
+                "type": "string",
+                "value": "cancelled"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ListOrderOutput::status",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OpenApiPortal::orderApi::ListOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderOutput::status",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ListOrderOutput::total",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OpenApiPortal::orderApi::ListOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderOutput::total",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": "One page of the entities, sorted by key, and the number of all entities.",
+      "identity": "OpenApiPortal::orderApi::ListOrderPage",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "ListOrderPage",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderPage",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ListOrderPage::items",
+      "kind": "Relation",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": null
+      },
+      "name": "items",
+      "owner": "OpenApiPortal::orderApi::ListOrderPage",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderPage::items",
+      "shortName": null,
+      "types": [
+        "OpenApiPortal::orderApi::ListOrderOutput"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ListOrderPage::total",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OpenApiPortal::orderApi::ListOrderPage",
+      "qualifiedName": "OpenApiPortal::orderApi::ListOrderPage::total",
+      "shortName": null,
+      "types": [
+        "ScalarValues::Integer"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": "The entity Order in a response.",
+      "identity": "OpenApiPortal::orderApi::ReadOrderOutput",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "ReadOrderOutput",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::ReadOrderOutput",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ReadOrderOutput::id",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OpenApiPortal::orderApi::ReadOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ReadOrderOutput::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ReadOrderOutput::note",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OpenApiPortal::orderApi::ReadOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ReadOrderOutput::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "open"
+              },
+              {
+                "type": "string",
+                "value": "shipped"
+              },
+              {
+                "type": "string",
+                "value": "cancelled"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ReadOrderOutput::status",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OpenApiPortal::orderApi::ReadOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ReadOrderOutput::status",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::ReadOrderOutput::total",
+      "kind": "Field",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OpenApiPortal::orderApi::ReadOrderOutput",
+      "qualifiedName": "OpenApiPortal::orderApi::ReadOrderOutput::total",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "post",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders/{orderId}/cancel"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "cancel_order_orders__orderId__cancel_post",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "path"
+          }
+        }
+      ],
+      "direction": "in",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post::orderId",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "orderId",
+      "owner": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post",
+      "qualifiedName": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post::orderId",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "response"
+          }
+        }
+      ],
+      "direction": "out",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post::response",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "response",
+      "owner": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post",
+      "qualifiedName": "OpenApiPortal::orderApi::cancel_order_orders__orderId__cancel_post::response",
+      "shortName": null,
+      "types": [
+        "OpenApiPortal::orderApi::CancelOrderOutput"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "post",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::create_order_orders_post",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "create_order_orders_post",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::create_order_orders_post",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "body"
+          }
+        }
+      ],
+      "direction": "in",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::create_order_orders_post::body",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "body",
+      "owner": "OpenApiPortal::orderApi::create_order_orders_post",
+      "qualifiedName": "OpenApiPortal::orderApi::create_order_orders_post::body",
+      "shortName": null,
+      "types": [
+        "OpenApiPortal::orderApi::CreateOrderInput"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "response"
+          }
+        }
+      ],
+      "direction": "out",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::create_order_orders_post::response",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "response",
+      "owner": "OpenApiPortal::orderApi::create_order_orders_post",
+      "qualifiedName": "OpenApiPortal::orderApi::create_order_orders_post::response",
+      "shortName": null,
+      "types": [
+        "OpenApiPortal::orderApi::CreateOrderOutput"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "get",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/healthz"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::healthz_healthz_get",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "healthz_healthz_get",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::healthz_healthz_get",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "response"
+          }
+        }
+      ],
+      "direction": "out",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::healthz_healthz_get::response",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "response",
+      "owner": "OpenApiPortal::orderApi::healthz_healthz_get",
+      "qualifiedName": "OpenApiPortal::orderApi::healthz_healthz_get::response",
+      "shortName": null,
+      "types": [
+        "OpenApiPortal::orderApi::Health"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "get",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::list_order_orders_get",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "list_order_orders_get",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::list_order_orders_get",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "query"
+          }
+        }
+      ],
+      "direction": "in",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::list_order_orders_get::limit",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "limit",
+      "owner": "OpenApiPortal::orderApi::list_order_orders_get",
+      "qualifiedName": "OpenApiPortal::orderApi::list_order_orders_get::limit",
+      "shortName": null,
+      "types": [
+        "ScalarValues::Integer"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "query"
+          }
+        }
+      ],
+      "direction": "in",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::list_order_orders_get::offset",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "offset",
+      "owner": "OpenApiPortal::orderApi::list_order_orders_get",
+      "qualifiedName": "OpenApiPortal::orderApi::list_order_orders_get::offset",
+      "shortName": null,
+      "types": [
+        "ScalarValues::Integer"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "response"
+          }
+        }
+      ],
+      "direction": "out",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::list_order_orders_get::response",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "response",
+      "owner": "OpenApiPortal::orderApi::list_order_orders_get",
+      "qualifiedName": "OpenApiPortal::orderApi::list_order_orders_get::response",
+      "shortName": null,
+      "types": [
+        "OpenApiPortal::orderApi::ListOrderPage"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "get",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders/{id}"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::read_order_orders__id__get",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": null,
+      "name": "read_order_orders__id__get",
+      "owner": "OpenApiPortal::orderApi",
+      "qualifiedName": "OpenApiPortal::orderApi::read_order_orders__id__get",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "path"
+          }
+        }
+      ],
+      "direction": "in",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::read_order_orders__id__get::id",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OpenApiPortal::orderApi::read_order_orders__id__get",
+      "qualifiedName": "OpenApiPortal::orderApi::read_order_orders__id__get::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "in",
+          "value": {
+            "type": "string",
+            "value": "response"
+          }
+        }
+      ],
+      "direction": "out",
+      "doc": null,
+      "identity": "OpenApiPortal::orderApi::read_order_orders__id__get::response",
+      "kind": "Parameter",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 9
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "response",
+      "owner": "OpenApiPortal::orderApi::read_order_orders__id__get",
+      "qualifiedName": "OpenApiPortal::orderApi::read_order_orders__id__get::response",
+      "shortName": null,
+      "types": [
+        "OpenApiPortal::orderApi::ReadOrderOutput"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 37,
+            "file": "tests/models/openapi/order-portal.sysml",
+            "line": 7
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "react",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OpenApiPortal::orderPortal",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 7
+      },
+      "multiplicity": null,
+      "name": "orderPortal",
+      "owner": "OpenApiPortal",
+      "qualifiedName": "OpenApiPortal::orderPortal",
+      "shortName": null,
+      "types": []
+    }
+  ],
+  "files": [
+    "tests/models/openapi/order-portal.sysml"
+  ],
+  "findings": [],
+  "irVersion": "1.1.0",
+  "links": [
+    {
+      "location": {
+        "column": 5,
+        "file": "tests/models/openapi/order-portal.sysml",
+        "line": 13
+      },
+      "source": "OpenApiPortal::orderPortal",
+      "target": "OpenApiPortal::orderApi",
+      "type": "calls"
+    }
+  ]
+}
