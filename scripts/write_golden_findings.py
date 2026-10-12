@@ -26,6 +26,7 @@ GOLDEN = ROOT / "tests" / "golden" / "validate"
 REFERENCE_MODELS: dict[str, str] = {
     "order-portal": "docs/model/examples/order-portal/dsml.toml",
     "order-service": "docs/model/examples/dsml.toml",
+    "order-web": "docs/model/examples/order-web/dsml.toml",
     "prd": "docs/model/prd/dsml.toml",
 }
 """The configuration file of each reference model, relative to the repository root."""

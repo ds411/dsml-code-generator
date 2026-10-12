@@ -178,3 +178,70 @@ def test_order_portal_views_and_navigation(portal: ParsedModel, expression: str)
 def test_formal_constraint_of_the_order_portal_holds(portal: ParsedModel) -> None:
     result = portal.evaluate_requirement(f"{PORTAL_NAMESPACE}::orderDataSafe")
     assert result == ConstraintResult(value="true")
+
+
+# The phase 3 reference model "order web" (story #178).
+WEB = ROOT / "docs" / "model" / "examples" / "order-web" / "order-web.sysml"
+WEB_NAMESPACE = "OrderWeb"
+
+
+@pytest.fixture(scope="module")
+def web() -> Iterator[ParsedModel]:
+    document = (WEB.relative_to(ROOT).as_posix(), WEB.read_text(encoding="utf-8"))
+    with Engine() as engine:
+        yield engine.parse_texts([library_document(), document])
+
+
+# trace: PRD-TOP-011
+def test_order_web_parses_and_resolves(web: ParsedModel) -> None:
+    assert [str(item) for item in web.diagnostics] == []
+
+
+# trace: PRD-DSML-020, PRD-DSML-027, PRD-DSML-028, PRD-DSML-031, PRD-DSML-033
+# trace: PRD-DSML-039, PRD-DSML-040
+@pytest.mark.parametrize(
+    ("element", "keyword"),
+    [
+        ("Clerk", "Stakeholder"),
+        ("manageOrdersOnWeb", "Need"),
+        ("manageOrderData", "Requirement"),
+        ("cancelOrderOnWeb", "Requirement"),
+        ("AppRoles", "Roles"),
+        ("Order", "Entity"),
+        ("CancelOrder", "Operation"),
+        ("orderWeb", "Application"),
+        ("orderWeb::orders", "Exposed"),
+        ("orderWeb::cancelOrder", "Exposed"),
+        ("orderWeb::orderList", "View"),
+        ("orderWeb::orderDetail", "View"),
+        ("orderWeb::cancelOrderForm", "View"),
+        ("webService", "ContainerService"),
+        ("secrets", "SecretStore"),
+        ("secretsAws", "AwsSecrets"),
+        ("showOrdersTest", "Verification"),
+        ("cancelOrderTest", "Verification"),
+    ],
+)
+def test_order_web_element_has_its_keyword(web: ParsedModel, element: str, keyword: str) -> None:
+    assert web.has_metadata(element, f"DSML::{keyword}", WEB_NAMESPACE)
+
+
+# trace: PRD-DSML-020, PRD-DSML-031, PRD-DSML-032
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "orderWeb.target == DSML::Target::nextjs",
+        "orderWeb.orderList.entity istype Order",
+        "orderWeb.orderDetail.entity istype Order",
+        "orderWeb.cancelOrderForm.operation istype CancelOrder",
+        "orderWeb.navigation#(1) == orderWeb.orderList",
+    ],
+)
+def test_order_web_application_and_views(web: ParsedModel, expression: str) -> None:
+    assert web.evaluate_bool(expression, WEB_NAMESPACE)
+
+
+# trace: PRD-CORE-054
+def test_formal_constraint_of_the_order_web_holds(web: ParsedModel) -> None:
+    result = web.evaluate_requirement(f"{WEB_NAMESPACE}::orderDataSafe")
+    assert result == ConstraintResult(value="true")

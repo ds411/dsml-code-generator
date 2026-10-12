@@ -19,6 +19,7 @@ from dsml.validate.rules import load_rules, registry
 
 ROOT = Path(__file__).resolve().parent.parent
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
+ORDER_WEB_CONFIG = ROOT / "docs" / "model" / "examples" / "order-web" / "dsml.toml"
 SYN_002_REJECT = RULE_MODELS / "SYN-002" / "reject.sysml"
 
 
@@ -387,3 +388,16 @@ def test_generate_writes_no_file_when_there_is_an_error_finding(
     assert "error: SYN-002: " in captured.err
     assert captured.err.endswith("No file was written.\n")
     assert not (tmp_path / ".dsml").exists()
+
+
+# trace: PRD-VAL-003, PRD-VAL-015
+def test_order_web_model_has_no_error_finding(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    output = tmp_path / "findings.json"
+    config = ORDER_WEB_CONFIG.relative_to(ROOT).as_posix()
+    assert main(["validate", "--config", config, "--format", "json", "--output", str(output)]) == 0
+    findings = json.loads(output.read_bytes())["findings"]
+    assert findings
+    assert {finding["severity"] for finding in findings} == {"warning"}
+    assert {finding["rule"] for finding in findings} == {"COV-006"}

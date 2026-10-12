@@ -26,6 +26,7 @@ GOLDEN = ROOT / "tests" / "golden" / "ir"
 REFERENCE_MODELS: dict[str, tuple[str, ...]] = {
     "order-portal": ("docs/model/examples/order-portal/order-portal.sysml",),
     "order-service": ("docs/model/examples/order-service.sysml",),
+    "order-web": ("docs/model/examples/order-web/order-web.sysml",),
     "prd": tuple(
         sorted(
             path.relative_to(ROOT).as_posix() for path in (ROOT / "docs/model/prd").glob("*.sysml")
