@@ -5,9 +5,9 @@
 import { type ErrorComponentProps, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
-import { ApiError } from "@/shared/api";
-import type { Session } from "@/shared/auth";
-import { Alert, AlertDescription, AlertTitle } from "@/shared/ui";
+import { ApiError } from "{{ layout.import_path("shared", "api") }}";
+import type { Session } from "{{ layout.import_path("shared", "auth") }}";
+import { Alert, AlertDescription, AlertTitle } from "{{ layout.import_path("shared", "ui") }}";
 
 import { LoginStartedError, NotPermittedError } from "../router/access.gen";
 import { APPLICATION_TITLE } from "./app-layout.gen";

@@ -3,7 +3,7 @@
 {% include "common/header.j2" %}
 import { Link } from "@tanstack/react-router";
 
-import type { Session } from "@/shared/auth";
+import type { Session } from "{{ layout.import_path("shared", "auth") }}";
 
 import { isPermitted } from "../router/access.gen";
 import { NAVIGATION } from "../router/views.gen";

@@ -5,8 +5,8 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
-import { logout, type Session, startLogin } from "@/shared/auth";
-import { Button } from "@/shared/ui";
+import { logout, type Session, startLogin } from "{{ layout.import_path("shared", "auth") }}";
+import { Button } from "{{ layout.import_path("shared", "ui") }}";
 
 import { Navigation } from "./navigation.gen";
 

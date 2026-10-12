@@ -29,10 +29,11 @@ from typing import Final
 from dsml.errors import ToolchainError
 from dsml.generate.fastapi_slices import LIMIT_DEFAULT, LIMIT_MAX
 from dsml.generate.react_common import (
+    REACT_LAYOUT,
+    FsdLayout,
     ReactContext,
     file_name,
     public_api_files,
-    slice_folder,
     slice_name,
 )
 from dsml.generate.react_entities import (
@@ -57,8 +58,8 @@ _OPERATIONS: Final = {"list": "list", "detail": "read"}
 """The operation of the entity slice that the widget of each view kind uses."""
 
 
-def _ui_import_lines(names: Sequence[str]) -> list[str]:
-    return import_lines(sorted(names), "@/shared/ui")
+def _ui_import_lines(names: Sequence[str], layout: FsdLayout) -> list[str]:
+    return import_lines(sorted(names), layout.import_path("shared", "ui"))
 
 
 # trace: PRD-APP-210, PRD-APP-228
@@ -111,9 +112,9 @@ class WidgetSlice:
         """The name of the slice folder, for example `order-list`."""
         return slice_name(f"{self.entity.name} {WIDGET_KINDS[self.kind][0]}")
 
-    @property
-    def folder(self) -> str:
-        return slice_folder(LAYER, f"{self.entity.name} {WIDGET_KINDS[self.kind][0]}")
+    def folder(self, layout: FsdLayout = REACT_LAYOUT) -> str:
+        """Give the folder of the slice in the project, with the layer name of the layout."""
+        return layout.slice_folder(LAYER, f"{self.entity.name} {WIDGET_KINDS[self.kind][0]}")
 
     @property
     def ui_module(self) -> str:
@@ -159,7 +160,7 @@ class WidgetSlice:
 
     # The lines of the ui file.
 
-    def import_lines(self) -> list[str]:
+    def import_lines(self, layout: FsdLayout = REACT_LAYOUT) -> list[str]:
         """Give the import statements of the ui file, in groups with an empty line between."""
         entity = self.entity
         if self.kind == "list":
@@ -180,10 +181,10 @@ class WidgetSlice:
             "",
             *import_lines(
                 sorted(names, key=lambda name: name.removeprefix("type ")),
-                f"@/entities/{entity.slice}",
+                layout.import_path("entities", entity.slice),
             ),
-            *import_lines(["ApiError"], "@/shared/api"),
-            *_ui_import_lines(ui),
+            *import_lines(["ApiError"], layout.import_path("shared", "api")),
+            *_ui_import_lines(ui, layout),
         ]
 
     def header_lines(self, indent: str) -> list[str]:
@@ -314,12 +315,16 @@ def widgets_files(context: ReactContext) -> list[OutputFile]:
     for widget in widget_slices(context.ir, context.application):
         template = "table" if widget.kind == "list" else "details"
         file = context.generated_file(
-            f"{widget.folder}/{widget.ui_module}.tsx",
+            f"{widget.folder(context.layout)}/{widget.ui_module}.tsx",
             f"react/widgets/{template}.gen.tsx.j2",
             {"widget": widget},
             widget.elements,
         )
         symbols = typescript_symbols(file.content, tuple(widget.elements))
         files.append(OutputFile(file.path, file.content, file.kind, file.part, symbols))
-        files.extend(public_api_files(context, widget.folder, [widget.ui_module], widget.elements))
+        files.extend(
+            public_api_files(
+                context, widget.folder(context.layout), [widget.ui_module], widget.elements
+            )
+        )
     return files

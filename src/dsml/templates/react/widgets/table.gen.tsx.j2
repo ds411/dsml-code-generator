@@ -5,7 +5,7 @@
     reach each control with the keyboard (PRD-APP-228). Data: "widget" (a
     dsml.generate.react_widgets.WidgetSlice). -#}
 {% include "common/header.j2" %}
-{% for line in widget.import_lines() %}
+{% for line in widget.import_lines(layout) %}
 {{ line }}
 {% endfor %}
 

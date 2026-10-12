@@ -2,8 +2,8 @@
     reads the runtime configuration and configures Amplify Auth
     (PRD-APP-230, PRD-APP-231). Data: none. -#}
 {% include "common/header.j2" %}
-import { configureAuth } from "@/shared/auth";
-import { loadRuntimeConfig } from "@/shared/config";
+import { configureAuth } from "{{ layout.import_path("shared", "auth") }}";
+import { loadRuntimeConfig } from "{{ layout.import_path("shared", "config") }}";
 
 /**
  * Read /config.json and configure Amplify Auth. The entry module must call

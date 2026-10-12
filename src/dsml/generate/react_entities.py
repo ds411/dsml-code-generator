@@ -41,10 +41,11 @@ from dsml.generate.fastapi_examples import Rules
 from dsml.generate.fastapi_slices import LIMIT_DEFAULT, LIMIT_MAX, SchemaField, Slice, slices
 from dsml.generate.names import camel_case, pascal_case
 from dsml.generate.react_common import (
+    REACT_LAYOUT,
+    FsdLayout,
     ReactContext,
     file_name,
     public_api_files,
-    slice_folder,
     slice_name,
 )
 from dsml.generate.react_external import (
@@ -203,9 +204,9 @@ class EntitySlice:
         """The name of the slice folder and the entity of the query keys, for example `order`."""
         return slice_name(self.name)
 
-    @property
-    def folder(self) -> str:
-        return slice_folder(LAYER, self.name)
+    def folder(self, layout: FsdLayout = REACT_LAYOUT) -> str:
+        """Give the folder of the slice in the project, with the layer name of the layout."""
+        return layout.slice_folder(LAYER, self.name)
 
     @property
     def model_module(self) -> str:
@@ -495,9 +496,9 @@ class ExternalEntitySlice:
     def slice(self) -> str:
         return slice_name(self.name)
 
-    @property
-    def folder(self) -> str:
-        return slice_folder(LAYER, self.name)
+    def folder(self, layout: FsdLayout = REACT_LAYOUT) -> str:
+        """Give the folder of the slice in the project, with the layer name of the layout."""
+        return layout.slice_folder(LAYER, self.name)
 
     @property
     def model_module(self) -> str:
@@ -666,7 +667,7 @@ def entities_files(context: ReactContext) -> list[OutputFile]:
         files.append(
             _source_file(
                 context,
-                f"{item.folder}/{item.model_module}.ts",
+                f"{item.folder(context.layout)}/{item.model_module}.ts",
                 "react/entities/external-model.gen.ts.j2",
                 item,
             )
@@ -676,18 +677,18 @@ def entities_files(context: ReactContext) -> list[OutputFile]:
             files.append(
                 _source_file(
                     context,
-                    f"{item.folder}/{item.queries_module}.ts",
+                    f"{item.folder(context.layout)}/{item.queries_module}.ts",
                     "react/entities/external-queries.gen.ts.j2",
                     item,
                 )
             )
-        files.extend(public_api_files(context, item.folder, modules, item.elements))
+        files.extend(public_api_files(context, item.folder(context.layout), modules, item.elements))
     for entity in entities:
         modules = [entity.model_module]
         files.append(
             _source_file(
                 context,
-                f"{entity.folder}/{entity.model_module}.ts",
+                f"{entity.folder(context.layout)}/{entity.model_module}.ts",
                 "react/entities/model.gen.ts.j2",
                 entity,
             )
@@ -697,12 +698,14 @@ def entities_files(context: ReactContext) -> list[OutputFile]:
             files.append(
                 _source_file(
                     context,
-                    f"{entity.folder}/{entity.queries_module}.ts",
+                    f"{entity.folder(context.layout)}/{entity.queries_module}.ts",
                     "react/entities/queries.gen.ts.j2",
                     entity,
                 )
             )
-        files.extend(public_api_files(context, entity.folder, modules, entity.elements))
+        files.extend(
+            public_api_files(context, entity.folder(context.layout), modules, entity.elements)
+        )
     return files
 
 

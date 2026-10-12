@@ -5,7 +5,7 @@
     (PRD-APP-227). Data: "feature" (a
     dsml.generate.react_features.FeatureSlice). -#}
 {% include "common/header.j2" %}
-{% for line in feature.ui_import_lines() %}
+{% for line in feature.ui_import_lines(layout) %}
 {{ line }}
 {% endfor %}
 

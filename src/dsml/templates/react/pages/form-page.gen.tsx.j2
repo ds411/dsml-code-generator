@@ -3,7 +3,7 @@
     shows a status message. Data: "page" (a
     dsml.generate.react_pages.PageSlice). -#}
 {% include "common/header.j2" %}
-{% for line in page.import_lines() %}
+{% for line in page.import_lines(layout) %}
 {{ line }}
 {% endfor %}
 {% if page.description is not none %}

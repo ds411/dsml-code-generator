@@ -52,10 +52,11 @@ from dsml.generate.fastapi_operations import CustomSlice, ParameterField, custom
 from dsml.generate.fastapi_slices import Slice, slices
 from dsml.generate.names import camel_case, pascal_case, words
 from dsml.generate.react_common import (
+    REACT_LAYOUT,
+    FsdLayout,
     ReactContext,
     file_name,
     public_api_files,
-    slice_folder,
     slice_name,
 )
 from dsml.generate.react_entities import (
@@ -336,9 +337,9 @@ class FeatureSlice:
     def slice(self) -> str:
         return slice_name(self.name)
 
-    @property
-    def folder(self) -> str:
-        return slice_folder(LAYER, self.name)
+    def folder(self, layout: FsdLayout = REACT_LAYOUT) -> str:
+        """Give the folder of the slice in the project, with the layer name of the layout."""
+        return layout.slice_folder(LAYER, self.name)
 
     @property
     def camel(self) -> str:
@@ -445,26 +446,27 @@ class FeatureSlice:
 
     # The lines of the mutation file.
 
-    def api_import_lines(self) -> list[str]:
+    def api_import_lines(self, layout: FsdLayout = REACT_LAYOUT) -> list[str]:
         """Give the lines of the imports of the mutation file, after the import of React Query."""
         result: list[str] = []
         if self.entity is None and self.uses_zod:
             result.extend(('import { z } from "zod";', ""))
         by_source: dict[str, set[str]] = {}
         if self.entity is not None:
-            names = by_source.setdefault(f"@/entities/{self.entity.slice}", set())
+            names = by_source.setdefault(layout.import_path("entities", self.entity.slice), set())
             names.add(f"{self.entity.camel}QueryKey")
             if self.input_type is not None and self.input_schema is not None:
                 names.update((f"type {self.input_type}", self.input_schema))
             if self.output_schema is not None:
                 names.update((f"type {self.output_type}", self.output_schema))
         for entity in self.changed:
-            by_source.setdefault(f"@/entities/{entity.slice}", set()).add(f"{entity.camel}QueryKey")
+            source = layout.import_path("entities", entity.slice)
+            by_source.setdefault(source, set()).add(f"{entity.camel}QueryKey")
         if self.response is not None:
-            by_source.setdefault(f"@/entities/{self.response.slice}", set()).add(
+            by_source.setdefault(layout.import_path("entities", self.response.slice), set()).add(
                 self.response.schema
             )
-        by_source["@/shared/api"] = {"apiRequest"}
+        by_source[layout.import_path("shared", "api")] = {"apiRequest"}
         for source in sorted(by_source):
             result.extend(import_lines(sorted(by_source[source], key=_import_key), source))
         return result
@@ -646,7 +648,7 @@ class FeatureSlice:
 
     # The lines of the form file and of the button file.
 
-    def ui_import_lines(self) -> list[str]:
+    def ui_import_lines(self, layout: FsdLayout = REACT_LAYOUT) -> list[str]:
         """Give the lines of the imports of the form file or of the button file."""
         lines: list[str] = []
         if self.kind == "delete":
@@ -659,10 +661,10 @@ class FeatureSlice:
                     "",
                 )
             )
-        by_source: dict[str, set[str]] = {"@/shared/api": {"ApiError"}}
+        by_source: dict[str, set[str]] = {layout.import_path("shared", "api"): {"ApiError"}}
         local: set[str] = {self.hook}
         if self.entity is not None and self.kind != "delete":
-            names = by_source.setdefault(f"@/entities/{self.entity.slice}", set())
+            names = by_source.setdefault(layout.import_path("entities", self.entity.slice), set())
             assert self.input_type is not None and self.input_schema is not None
             names.update((f"type {self.input_type}", self.input_schema, f"type {self.output_type}"))
         elif self.kind == "update" or self.entity is None:
@@ -670,7 +672,7 @@ class FeatureSlice:
             local.update((f"type {self.input_type}", self.input_schema))
             if self.output_type != "void":
                 local.add(f"type {self.output_type}")
-        by_source["@/shared/ui"] = self.ui_components
+        by_source[layout.import_path("shared", "ui")] = self.ui_components
         for source in sorted(by_source):
             lines.extend(import_lines(sorted(by_source[source], key=_import_key), source))
         lines.append("")
@@ -1079,7 +1081,7 @@ def features_files(context: ReactContext) -> list[OutputFile]:
         files.append(
             _source_file(
                 context,
-                f"{feature.folder}/{feature.api_module}.ts",
+                f"{feature.folder(context.layout)}/{feature.api_module}.ts",
                 "react/features/mutation.gen.ts.j2",
                 feature,
             )
@@ -1087,13 +1089,15 @@ def features_files(context: ReactContext) -> list[OutputFile]:
         files.append(
             _source_file(
                 context,
-                f"{feature.folder}/{feature.ui_module}.tsx",
+                f"{feature.folder(context.layout)}/{feature.ui_module}.tsx",
                 f"react/features/{ui_template}.gen.tsx.j2",
                 feature,
             )
         )
         modules = [feature.api_module, feature.ui_module]
-        files.extend(public_api_files(context, feature.folder, modules, feature.elements))
+        files.extend(
+            public_api_files(context, feature.folder(context.layout), modules, feature.elements)
+        )
     return files
 
 

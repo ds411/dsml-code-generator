@@ -46,9 +46,28 @@ The generator calls the function of each layer module, from the lowest to the hi
 `react_common.py` gives the rules that all layers use:
 
 - `slice_name` and `file_name` give the kebab case of a model element name, for example `order-list` and `order-list-page` (PRD-APP-206).
-- `slice_folder` gives the folder of a slice, for example `src/pages/order-list`. The layers `app` and `shared` have no slices.
+- `FsdLayout` gives the layout of the layers (story #179). See "Layout of the layers" below.
+- `slice_folder` gives the folder of a slice in the React layout, for example `src/pages/order-list`. The layers `app` and `shared` have no slices.
 - `public_api_files` gives the public API of a slice: a generated `index.gen.ts` that re-exports the modules of the slice, and a create-once `index.ts` that re-exports `index.gen.ts` (PRD-APP-204, PRD-CORE-044). A create-once file has no header, because a developer owns it.
-- `ReactContext.generated_file` renders a template into a generated file with the header.
+- `ReactContext.generated_file` renders a template into a generated file with the header. Each template also gets the layout as `layout`.
+
+### Layout of the layers
+
+Story #179 lets the layer modules write the layer names of the Next.js target (PRD-APP-303 to PRD-APP-305). The layer modules use the standard layer names of `LAYERS`. The layout of the context gives the rest:
+
+| Item | `REACT_LAYOUT` | `NEXTJS_LAYOUT` |
+| --- | --- | --- |
+| Folder of the layer `app` | `src/app` | `src/_app` |
+| Folder of the layer `pages` | `src/pages` | `src/_pages` |
+| Folders of the other layers | `src/<layer>` | `src/<layer>` |
+| Path alias of `src/` | `@/` | `@/` |
+| Server-only public API `index.server.ts` | No | Yes |
+
+- `layer_folder` gives the folder of a layer. `slice_folder` gives the folder of a slice. The method `folder(layout)` of each slice class uses it.
+- `import_path` gives the import path of a layer or of a slice with the alias, for example `@/_pages/order-list`. The import methods of the slice classes and the templates of the layers use it. The project templates of the React target, for example `main.gen.tsx.j2`, keep the React layer names.
+- `public_api_files` accepts server-only modules. It writes a generated `index.server.gen.ts` and a create-once `index.server.ts` that re-exports it (PRD-APP-305). With the React layout, a server-only module is an error.
+- The React generator gives `REACT_LAYOUT`. The default layout of `ReactContext` is also `REACT_LAYOUT`. The golden React output did not change.
+- `tests/test_react_layout.py` runs the layer modules on the order portal with the two layouts. With the Next.js layout, only the folders of `app` and `pages` and their import paths change.
 
 ## Entities layer
 

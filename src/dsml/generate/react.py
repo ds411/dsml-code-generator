@@ -14,7 +14,8 @@ project files into the output folder of the application (PRD-APP-002):
 Then it calls one module for each FSD layer, from the lowest to the highest
 layer (PRD-APP-202): `react_shared`, `react_entities`, `react_features`,
 `react_widgets`, `react_pages` and `react_app`. Each module gives the files
-of its layer.
+of its layer. The generator gives the React layout `REACT_LAYOUT` to the
+layer modules: the standard layer names and the path alias `@/`.
 
 The versions come from the version baseline `versions.toml` (PRD-APP-201,
 PRD-TOP-008). The generator does not write `pnpm-lock.yaml` (PRD-CORE-036).
@@ -28,7 +29,7 @@ from dsml.errors import ToolchainError
 from dsml.generate.fastapi import output_folder
 from dsml.generate.names import kebab_case
 from dsml.generate.react_app import app_files
-from dsml.generate.react_common import ReactContext
+from dsml.generate.react_common import REACT_LAYOUT, ReactContext
 from dsml.generate.react_entities import entities_files
 from dsml.generate.react_features import features_files
 from dsml.generate.react_pages import pages_files
@@ -153,6 +154,7 @@ class ReactGenerator:
                 configuration,
                 output_folder(application, configuration),
                 part,
+                REACT_LAYOUT,
             )
             files.extend(application_files(context))
         return files
