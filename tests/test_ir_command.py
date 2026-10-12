@@ -94,6 +94,29 @@ def test_order_of_the_files_does_not_change_the_ir(tmp_path: Path) -> None:
     assert output.read_bytes() == write_golden_ir.golden_file("prd").read_bytes()
 
 
+# trace: PRD-DSML-039, PRD-DSML-040
+def test_ir_of_order_web_allocates_the_nextjs_application_to_a_container_service() -> None:
+    data = json.loads(write_golden_ir.golden_file("order-web").read_bytes())
+    kinds = {element["identity"]: element["kind"] for element in data["elements"]}
+    links = {(link["type"], link["source"], link["target"]) for link in data["links"]}
+    application = "OrderWeb::orderWeb"
+    target = next(
+        attribute["value"]["literal"]
+        for element in data["elements"]
+        if element["identity"] == application
+        for attribute in element["attributes"]
+        if attribute["name"] == "target"
+    )
+    assert target == "nextjs"
+    assert ("allocate", application, "OrderWeb::webService") in links
+    assert kinds["OrderWeb::webService"] == "ContainerService"
+    uses = sorted(
+        kinds[t] for kind, source, t in links if (kind, source) == ("uses", "OrderWeb::webService")
+    )
+    assert uses == ["RelationalDatabase", "SecretStore", "UserDirectory"]
+    assert data["findings"] == []
+
+
 # trace: PRD-CORE-002
 def test_syn_error_gives_exit_code_1_and_the_ir(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]

@@ -1,0 +1,9 @@
+# The configuration of the phase 3 reference model "order web" (story
+# #178). The model has one Next.js application.
+schema = 1
+
+[model]
+paths = ["order-web.sysml"]
+
+[applications.orderWeb]
+output = "apps/order-web"

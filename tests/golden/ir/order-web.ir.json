@@ -1,0 +1,2398 @@
+{
+  "constraintResults": [
+    {
+      "environment": "OrderWeb::dev",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 48
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    },
+    {
+      "environment": "OrderWeb::prod",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 48
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    },
+    {
+      "environment": "OrderWeb::staging",
+      "index": 1,
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 48
+      },
+      "missingFeatures": [],
+      "requirement": "R-002",
+      "value": "true"
+    }
+  ],
+  "elements": [
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 16
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 17
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 15
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Track orders"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The shop owner must see the status of each order.",
+      "identity": "N-001",
+      "kind": "Need",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 13
+      },
+      "multiplicity": null,
+      "name": "trackOrders",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::trackOrders",
+      "shortName": "N-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 25
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 26
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 24
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Manage orders on the web"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "A clerk must see, change and cancel orders in a web application.",
+      "identity": "N-002",
+      "kind": "Need",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 22
+      },
+      "multiplicity": null,
+      "name": "manageOrdersOnWeb",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::manageOrdersOnWeb",
+      "shortName": "N-002",
+      "types": []
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 20,
+                "file": "docs/model/examples/order-web/order-web.sysml",
+                "line": 7
+              },
+              "name": "major",
+              "value": {
+                "type": "integer",
+                "value": 1
+              }
+            },
+            {
+              "location": {
+                "column": 31,
+                "file": "docs/model/examples/order-web/order-web.sysml",
+                "line": 7
+              },
+              "name": "minor",
+              "value": {
+                "type": "integer",
+                "value": 1
+              }
+            }
+          ],
+          "location": {
+            "column": 5,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 7
+          },
+          "name": "DsmlVersion"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb",
+      "kind": "Package",
+      "location": {
+        "column": 1,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 4
+      },
+      "multiplicity": null,
+      "name": "OrderWeb",
+      "owner": null,
+      "qualifiedName": "OrderWeb",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::AppRoles",
+      "kind": "Roles",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 70
+      },
+      "multiplicity": null,
+      "name": "AppRoles",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::AppRoles",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 83
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::HttpMethod",
+            "literal": "post",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 84
+          },
+          "name": "path",
+          "value": {
+            "type": "string",
+            "value": "/orders/{orderId}/cancel"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::CancelOrder",
+      "kind": "Operation",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 80
+      },
+      "multiplicity": null,
+      "name": "CancelOrder",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::CancelOrder",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "out",
+      "doc": null,
+      "identity": "OrderWeb::CancelOrder::order",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 82
+      },
+      "multiplicity": null,
+      "name": "order",
+      "owner": "OrderWeb::CancelOrder",
+      "qualifiedName": "OrderWeb::CancelOrder::order",
+      "shortName": null,
+      "types": [
+        "OrderWeb::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": "in",
+      "doc": null,
+      "identity": "OrderWeb::CancelOrder::orderId",
+      "kind": "Parameter",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 81
+      },
+      "multiplicity": null,
+      "name": "orderId",
+      "owner": "OrderWeb::CancelOrder",
+      "qualifiedName": "OrderWeb::CancelOrder::orderId",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::Clerk",
+      "kind": "Stakeholder",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 11
+      },
+      "multiplicity": null,
+      "name": "Clerk",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::Clerk",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::Order",
+      "kind": "Entity",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 73
+      },
+      "multiplicity": null,
+      "name": "Order",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::Order",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [],
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 74
+          },
+          "name": "Key"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::Order::id",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 74
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "id",
+      "owner": "OrderWeb::Order",
+      "qualifiedName": "OrderWeb::Order::id",
+      "shortName": null,
+      "types": [
+        "DSML::Uuid"
+      ]
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 56,
+                "file": "docs/model/examples/order-web/order-web.sysml",
+                "line": 77
+              },
+              "name": "maxLength",
+              "value": {
+                "type": "integer",
+                "value": 500
+              }
+            }
+          ],
+          "location": {
+            "column": 42,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 77
+          },
+          "name": "FieldRules"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::Order::note",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 77
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": 1
+      },
+      "name": "note",
+      "owner": "OrderWeb::Order",
+      "qualifiedName": "OrderWeb::Order::note",
+      "shortName": null,
+      "types": [
+        "ScalarValues::String"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::Order::status",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 75
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "status",
+      "owner": "OrderWeb::Order",
+      "qualifiedName": "OrderWeb::Order::status",
+      "shortName": null,
+      "types": [
+        "OrderWeb::OrderStatus"
+      ]
+    },
+    {
+      "annotations": [
+        {
+          "attributes": [
+            {
+              "location": {
+                "column": 55,
+                "file": "docs/model/examples/order-web/order-web.sysml",
+                "line": 76
+              },
+              "name": "minValue",
+              "value": {
+                "type": "integer",
+                "value": 0
+              }
+            }
+          ],
+          "location": {
+            "column": 41,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 76
+          },
+          "name": "FieldRules"
+        }
+      ],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::Order::total",
+      "kind": "Field",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 76
+      },
+      "multiplicity": {
+        "lower": 1,
+        "upper": 1
+      },
+      "name": "total",
+      "owner": "OrderWeb::Order",
+      "qualifiedName": "OrderWeb::Order::total",
+      "shortName": null,
+      "types": [
+        "DSML::Decimal"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": null,
+          "name": "literals",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderWeb::OrderStatus",
+                "literal": "open",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderWeb::OrderStatus",
+                "literal": "shipped",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderWeb::OrderStatus",
+                "literal": "cancelled",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::OrderStatus",
+      "kind": "Enumeration",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 71
+      },
+      "multiplicity": null,
+      "name": "OrderStatus",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::OrderStatus",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::ShopOwner",
+      "kind": "Stakeholder",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 10
+      },
+      "multiplicity": null,
+      "name": "ShopOwner",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::ShopOwner",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 29,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 144
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "222222222222"
+          }
+        },
+        {
+          "location": {
+            "column": 87,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 144
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "web.dev.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 61,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 144
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::dev",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 144
+      },
+      "multiplicity": null,
+      "name": "dev",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::dev",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::network",
+      "kind": "Network",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 121
+      },
+      "multiplicity": null,
+      "name": "network",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::network",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::networkAws",
+      "kind": "AwsVpc",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 132
+      },
+      "multiplicity": null,
+      "name": "networkAws",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::networkAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::orderDb",
+      "kind": "RelationalDatabase",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 123
+      },
+      "multiplicity": null,
+      "name": "orderDb",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::orderDb",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 39,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 134
+          },
+          "name": "instanceClass",
+          "value": {
+            "type": "string",
+            "value": "db.t4g.micro"
+          }
+        },
+        {
+          "location": {
+            "column": 83,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 134
+          },
+          "name": "multiAz",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::orderDbAws",
+      "kind": "AwsRdsPostgres",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 134
+      },
+      "multiplicity": null,
+      "name": "orderDbAws",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::orderDbAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 114
+          },
+          "name": "navigation",
+          "value": {
+            "items": [
+              {
+                "target": "OrderWeb::orderWeb::orderList",
+                "type": "reference"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 88
+          },
+          "name": "target",
+          "value": {
+            "enumeration": "DSML::Target",
+            "literal": "nextjs",
+            "type": "enum"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::orderWeb",
+      "kind": "Application",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 87
+      },
+      "multiplicity": null,
+      "name": "orderWeb",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::orderWeb",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 94
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::orderWeb::cancelOrder",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 93
+      },
+      "multiplicity": null,
+      "name": "cancelOrder",
+      "owner": "OrderWeb::orderWeb",
+      "qualifiedName": "OrderWeb::orderWeb::cancelOrder",
+      "shortName": null,
+      "types": [
+        "OrderWeb::CancelOrder"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 112
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 110
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "form",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 111
+          },
+          "name": "operation",
+          "value": {
+            "target": "OrderWeb::CancelOrder",
+            "type": "reference"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The form that cancels an order.",
+      "identity": "OrderWeb::orderWeb::cancelOrderForm",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 108
+      },
+      "multiplicity": null,
+      "name": "cancelOrderForm",
+      "owner": "OrderWeb::orderWeb",
+      "qualifiedName": "OrderWeb::orderWeb::cancelOrderForm",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 106
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 105
+          },
+          "name": "entity",
+          "value": {
+            "target": "OrderWeb::Order",
+            "type": "reference"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 104
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "detail",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The details of one order.",
+      "identity": "OrderWeb::orderWeb::orderDetail",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 102
+      },
+      "multiplicity": null,
+      "name": "orderDetail",
+      "owner": "OrderWeb::orderWeb",
+      "qualifiedName": "OrderWeb::orderWeb::orderDetail",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 100
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 99
+          },
+          "name": "entity",
+          "value": {
+            "target": "OrderWeb::Order",
+            "type": "reference"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 98
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::ViewKind",
+            "literal": "list",
+            "type": "enum"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The list of the orders.",
+      "identity": "OrderWeb::orderWeb::orderList",
+      "kind": "View",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 96
+      },
+      "multiplicity": null,
+      "name": "orderList",
+      "owner": "OrderWeb::orderWeb",
+      "qualifiedName": "OrderWeb::orderWeb::orderList",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 91
+          },
+          "name": "allowedRoles",
+          "value": {
+            "items": [
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "clerk",
+                "type": "enum"
+              },
+              {
+                "enumeration": "OrderWeb::AppRoles",
+                "literal": "admin",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 13,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 90
+          },
+          "name": "crud",
+          "value": {
+            "items": [
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "create",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "read",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "update",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "delete",
+                "type": "enum"
+              },
+              {
+                "enumeration": "DSML::CrudKind",
+                "literal": "list",
+                "type": "enum"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "crudDefaults",
+          "value": {
+            "items": [
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "create",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "post",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "read",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}/{id}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "update",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "patch",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}/{id}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "delete",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "delete",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}/{id}"
+                  }
+                ],
+                "type": "list"
+              },
+              {
+                "items": [
+                  {
+                    "enumeration": "DSML::CrudKind",
+                    "literal": "list",
+                    "type": "enum"
+                  },
+                  {
+                    "enumeration": "DSML::HttpMethod",
+                    "literal": "get",
+                    "type": "enum"
+                  },
+                  {
+                    "type": "string",
+                    "value": "/{entities}"
+                  }
+                ],
+                "type": "list"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": null,
+          "name": "public",
+          "value": {
+            "type": "boolean",
+            "value": false
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::orderWeb::orders",
+      "kind": "Exposed",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 89
+      },
+      "multiplicity": {
+        "lower": 0,
+        "upper": null
+      },
+      "name": "orders",
+      "owner": "OrderWeb::orderWeb",
+      "qualifiedName": "OrderWeb::orderWeb::orders",
+      "shortName": null,
+      "types": [
+        "OrderWeb::Order"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 147
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "444444444444"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 149
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "web.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 148
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::prod",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 146
+      },
+      "multiplicity": null,
+      "name": "prod",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::prod",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 52,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 151
+          },
+          "name": "multiAz",
+          "value": {
+            "type": "boolean",
+            "value": true
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::prod::orderDbProd",
+      "kind": "Override",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 151
+      },
+      "multiplicity": null,
+      "name": "orderDbProd",
+      "owner": "OrderWeb::prod",
+      "qualifiedName": "OrderWeb::prod::orderDbProd",
+      "shortName": null,
+      "types": [
+        "OrderWeb::orderDbAws"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 58,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 150
+          },
+          "name": "desiredCount",
+          "value": {
+            "type": "integer",
+            "value": 3
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::prod::webServiceProd",
+      "kind": "Override",
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 150
+      },
+      "multiplicity": null,
+      "name": "webServiceProd",
+      "owner": "OrderWeb::prod",
+      "qualifiedName": "OrderWeb::prod::webServiceProd",
+      "shortName": null,
+      "types": [
+        "OrderWeb::webServiceAws"
+      ]
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::secrets",
+      "kind": "SecretStore",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 125
+      },
+      "multiplicity": null,
+      "name": "secrets",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::secrets",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::secretsAws",
+      "kind": "AwsSecrets",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 136
+      },
+      "multiplicity": null,
+      "name": "secretsAws",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::secretsAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 33,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 145
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "333333333333"
+          }
+        },
+        {
+          "location": {
+            "column": 91,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 145
+          },
+          "name": "domain",
+          "value": {
+            "type": "string",
+            "value": "web.staging.example.com"
+          }
+        },
+        {
+          "location": {
+            "column": 65,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 145
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::staging",
+      "kind": "Environment",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 145
+      },
+      "multiplicity": null,
+      "name": "staging",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::staging",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 36,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 143
+          },
+          "name": "accountId",
+          "value": {
+            "type": "string",
+            "value": "111111111111"
+          }
+        },
+        {
+          "location": {
+            "column": 68,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 143
+          },
+          "name": "region",
+          "value": {
+            "type": "string",
+            "value": "eu-west-1"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::tooling",
+      "kind": "ToolingAccount",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 143
+      },
+      "multiplicity": null,
+      "name": "tooling",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::tooling",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::users",
+      "kind": "UserDirectory",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 124
+      },
+      "multiplicity": null,
+      "name": "users",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::users",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::usersAws",
+      "kind": "AwsCognito",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 135
+      },
+      "multiplicity": null,
+      "name": "usersAws",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::usersAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::webService",
+      "kind": "ContainerService",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 122
+      },
+      "multiplicity": null,
+      "name": "webService",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::webService",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 41,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 133
+          },
+          "name": "cpu",
+          "value": {
+            "type": "integer",
+            "value": 512
+          }
+        },
+        {
+          "location": {
+            "column": 91,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 133
+          },
+          "name": "desiredCount",
+          "value": {
+            "type": "integer",
+            "value": 1
+          }
+        },
+        {
+          "location": {
+            "column": 64,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 133
+          },
+          "name": "memory",
+          "value": {
+            "type": "integer",
+            "value": 1024
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "OrderWeb::webServiceAws",
+      "kind": "AwsEcsService",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 133
+      },
+      "multiplicity": null,
+      "name": "webServiceAws",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::webServiceAws",
+      "shortName": null,
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 35
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 36
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 37
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 34
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Manage order data"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The web application must create, read, update, delete and list orders through its API.",
+      "identity": "R-001",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 32
+      },
+      "multiplicity": null,
+      "name": "manageOrderData",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::manageOrderData",
+      "shortName": "R-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 44
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "constraint",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 45
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 46
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 43
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order data in two zones"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "In prod, the order database must continue to operate after the loss of one availability zone.",
+      "identity": "R-002",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 41
+      },
+      "multiplicity": null,
+      "name": "orderDataSafe",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::orderDataSafe",
+      "shortName": "R-002",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 54
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 55
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 56
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 53
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Show orders on the web"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The web application must show the list of the orders and the details of one order.",
+      "identity": "R-003",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 51
+      },
+      "multiplicity": null,
+      "name": "showOrdersOnWeb",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::showOrdersOnWeb",
+      "shortName": "R-003",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 63
+          },
+          "name": "kind",
+          "value": {
+            "enumeration": "DSML::RequirementKind",
+            "literal": "functional",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 64
+          },
+          "name": "priority",
+          "value": {
+            "enumeration": "DSML::Priority",
+            "literal": "must",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 65
+          },
+          "name": "status",
+          "value": {
+            "enumeration": "DSML::Status",
+            "literal": "approved",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 62
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Cancel an order on the web"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "The web application must have a form that cancels an order. Only an admin can cancel an order.",
+      "identity": "R-004",
+      "kind": "Requirement",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 60
+      },
+      "multiplicity": null,
+      "name": "cancelOrderOnWeb",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::cancelOrderOnWeb",
+      "shortName": "R-004",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 159
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "test",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 160
+          },
+          "name": "testFiles",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "apps/order-web/tests/api/orders.test.ts"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 158
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order API test"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "V-001",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 157
+      },
+      "multiplicity": null,
+      "name": "orderDataTest",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::orderDataTest",
+      "shortName": "V-001",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 166
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "analysis",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 165
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order database in two zones analysis"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": "Evidence: the IR adapter evaluates the formal constraint of R-002 on the prod override orderDbProd. The result is true.",
+      "identity": "V-002",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 163
+      },
+      "multiplicity": null,
+      "name": "orderDataSafeAnalysis",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::orderDataSafeAnalysis",
+      "shortName": "V-002",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 171
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "test",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 172
+          },
+          "name": "testFiles",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "apps/order-web/tests/pages/pages.test.tsx"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 170
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Order list and order details test"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "V-003",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 169
+      },
+      "multiplicity": null,
+      "name": "showOrdersTest",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::showOrdersTest",
+      "shortName": "V-003",
+      "types": []
+    },
+    {
+      "annotations": [],
+      "attributes": [
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 177
+          },
+          "name": "method",
+          "value": {
+            "enumeration": "DSML::VerificationMethod",
+            "literal": "test",
+            "type": "enum"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 178
+          },
+          "name": "testFiles",
+          "value": {
+            "items": [
+              {
+                "type": "string",
+                "value": "apps/order-web/tests/features/features.test.tsx"
+              },
+              {
+                "type": "string",
+                "value": "apps/order-web/tests/api/cancel-order.test.ts"
+              }
+            ],
+            "type": "list"
+          }
+        },
+        {
+          "location": {
+            "column": 9,
+            "file": "docs/model/examples/order-web/order-web.sysml",
+            "line": 176
+          },
+          "name": "title",
+          "value": {
+            "type": "string",
+            "value": "Cancel order form and API test"
+          }
+        }
+      ],
+      "direction": null,
+      "doc": null,
+      "identity": "V-004",
+      "kind": "Verification",
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 175
+      },
+      "multiplicity": null,
+      "name": "cancelOrderTest",
+      "owner": "OrderWeb",
+      "qualifiedName": "OrderWeb::cancelOrderTest",
+      "shortName": "V-004",
+      "types": []
+    }
+  ],
+  "files": [
+    "docs/model/examples/order-web/order-web.sysml"
+  ],
+  "findings": [],
+  "irVersion": "1.1.0",
+  "links": [
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 19
+      },
+      "source": "N-001",
+      "target": "OrderWeb::ShopOwner",
+      "type": "stakeholder"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 28
+      },
+      "source": "N-002",
+      "target": "OrderWeb::Clerk",
+      "type": "stakeholder"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 137
+      },
+      "source": "OrderWeb::networkAws",
+      "target": "OrderWeb::network",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 139
+      },
+      "source": "OrderWeb::orderDbAws",
+      "target": "OrderWeb::orderDb",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 129
+      },
+      "source": "OrderWeb::orderWeb",
+      "target": "OrderWeb::webService",
+      "type": "allocate"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 116
+      },
+      "source": "OrderWeb::orderWeb",
+      "target": "R-001",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 117
+      },
+      "source": "OrderWeb::orderWeb",
+      "target": "R-003",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 118
+      },
+      "source": "OrderWeb::orderWeb",
+      "target": "R-004",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 153
+      },
+      "source": "OrderWeb::prod::orderDbProd",
+      "target": "R-002",
+      "type": "satisfy"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 141
+      },
+      "source": "OrderWeb::secretsAws",
+      "target": "OrderWeb::secrets",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 140
+      },
+      "source": "OrderWeb::usersAws",
+      "target": "OrderWeb::users",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 126
+      },
+      "source": "OrderWeb::webService",
+      "target": "OrderWeb::orderDb",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 128
+      },
+      "source": "OrderWeb::webService",
+      "target": "OrderWeb::secrets",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 127
+      },
+      "source": "OrderWeb::webService",
+      "target": "OrderWeb::users",
+      "type": "uses"
+    },
+    {
+      "location": {
+        "column": 5,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 138
+      },
+      "source": "OrderWeb::webServiceAws",
+      "target": "OrderWeb::webService",
+      "type": "realizes"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 38
+      },
+      "source": "R-001",
+      "target": "N-002",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 47
+      },
+      "source": "R-002",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 57
+      },
+      "source": "R-003",
+      "target": "N-001",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 9,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 66
+      },
+      "source": "R-004",
+      "target": "N-002",
+      "type": "frame"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 161
+      },
+      "source": "V-001",
+      "target": "R-001",
+      "type": "verify"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 167
+      },
+      "source": "V-002",
+      "target": "R-002",
+      "type": "verify"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 173
+      },
+      "source": "V-003",
+      "target": "R-003",
+      "type": "verify"
+    },
+    {
+      "location": {
+        "column": 21,
+        "file": "docs/model/examples/order-web/order-web.sysml",
+        "line": 179
+      },
+      "source": "V-004",
+      "target": "R-004",
+      "type": "verify"
+    }
+  ]
+}
