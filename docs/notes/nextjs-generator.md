@@ -109,7 +109,7 @@ The first call of `getSession` reads the user pool ID and the app client ID with
 
 The pinned Next.js 16 uses the name `proxy.ts`, not `middleware.ts` (PRD-APP-323). The matcher has the route of each view that is not public, sorted: `/<entities>` for a list view, `/<entities>/:id` for a detail view and `/<operation>` for a form view (PRD-APP-221). The name comes from the `#Exposed` element of the application that exposes the entity or the operation. If the application does not expose it, `dsml generate` stops with an error. If each view is public, the generator does not write `proxy.ts`.
 
-The interceptor calls `requireSession`. With no session, it sends HTTP 307 to `/auth/login` with the requested path and query in `next`. It does not check the roles. `GET /healthz`, the route handlers in `app/api/` and the auth pages are not in the matcher.
+The interceptor calls `requireSession`. With no session, it sends HTTP 307 to `/auth/login` with the requested path and query in `next`. It does not check the roles. `GET /healthz`, the route handlers in `app/api/` and the auth pages are not in the matcher. The `.dockerignore` lists `proxy.ts`, thus the image contains the interceptor.
 
 ### Tests
 
