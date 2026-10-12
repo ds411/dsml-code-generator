@@ -1,5 +1,5 @@
 {#- The tests of the shared code of the FastAPI target (PRD-APP-004, PRD-APP-012,
-    PRD-APP-132, PRD-APP-135). -#}
+    PRD-APP-132, PRD-APP-135, PRD-APP-136). -#}
 {% include "common/header.j2" %}
 """Tests of the generated shared code of {{ application }}.
 
@@ -19,10 +19,18 @@ from app.shared.errors_gen import PROBLEM_MEDIA_TYPE
 
 ENVIRON = {
 {% for variable in variables if variable.mandatory %}
-    "{{ variable.name }}": "test",
+    "{{ variable.name }}": "{{ variable.test_value }}",
 {% endfor %}
 }
 """A value for each mandatory environment variable."""
+{% if cors %}
+
+PERMITTED_ORIGIN = "{{ cors_origin }}"
+"""The origin that the variable CORS_ALLOWED_ORIGINS of ENVIRON permits."""
+
+OTHER_ORIGIN = "https://other.test"
+"""An origin that the configuration does not permit."""
+{% endif %}
 
 OPENAPI_DOCUMENT = Path(__file__).resolve().parent.parent / "openapi.gen.json"
 """The OpenAPI document that the generator writes from the model."""
@@ -87,3 +95,52 @@ def test_openapi_document_agrees_with_openapi_gen_json() -> None:
     assert response.status_code == 200
     expected = json.loads(OPENAPI_DOCUMENT.read_text(encoding="utf-8"))
     assert response.json() == expected
+{% if cors %}
+
+
+def test_permitted_origin_gets_the_cors_headers() -> None:
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.get("/healthz", headers={"Origin": PERMITTED_ORIGIN})
+    assert response.status_code == 200
+    assert response.headers["Access-Control-Allow-Origin"] == PERMITTED_ORIGIN
+    assert "Access-Control-Allow-Credentials" not in response.headers
+
+
+def test_other_origin_gets_no_cors_headers() -> None:
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.get("/healthz", headers={"Origin": OTHER_ORIGIN})
+    assert response.status_code == 200
+    assert "Access-Control-Allow-Origin" not in response.headers
+
+
+def test_preflight_of_permitted_origin_permits_the_authorization_header() -> None:
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.options(
+        "/healthz",
+        headers={
+            "Origin": PERMITTED_ORIGIN,
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "Authorization",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["Access-Control-Allow-Origin"] == PERMITTED_ORIGIN
+    assert "authorization" in response.headers["Access-Control-Allow-Headers"].lower()
+    assert "Access-Control-Allow-Credentials" not in response.headers
+
+
+def test_preflight_of_other_origin_gets_no_cors_headers() -> None:
+    client = TestClient(create_app(load_settings(ENVIRON)))
+    response = client.options(
+        "/healthz",
+        headers={"Origin": OTHER_ORIGIN, "Access-Control-Request-Method": "GET"},
+    )
+    assert response.status_code == 400
+    assert "Access-Control-Allow-Origin" not in response.headers
+
+
+@pytest.mark.parametrize("value", ["*", "portal.test", "https://portal.test/app", " , "])
+def test_origin_that_is_not_correct_stops_the_app(value: str) -> None:
+    with pytest.raises(ConfigurationError, match="CORS_ALLOWED_ORIGINS"):
+        load_settings({**ENVIRON, "CORS_ALLOWED_ORIGINS": value})
+{% endif %}

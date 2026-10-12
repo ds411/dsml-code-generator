@@ -1,0 +1,270 @@
+{
+  "createOnce": [
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/cancel_order/handler.py"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/place_order/handler.py"
+    }
+  ],
+  "generated": [
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/.dockerignore",
+      "sha256": "440da59d94cbe7d0b7bf2e9a897cd0fa3d9d6f17b1e0b7c5e885e36ff5edecff"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/.dsml/schema-snapshot.json",
+      "sha256": "b9d89a2ce6a00742d5a051b2ce13a864eab6c7960445b2dc7c94195a59595685"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/Dockerfile",
+      "sha256": "7ead6060e63d995bafd7857297df411a9a35e17805b812c6d635c8d5b8358cda"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/alembic.ini",
+      "sha256": "30526447b3841c56d22487cd6d61480a3f50c8c779fb408c93b739b09fff8212"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/__init__.py",
+      "sha256": "0ad293139ccb12e2af95da6b6cf28693b9445809f5328b55db34f1b988e9a3b4"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/__init__.py",
+      "sha256": "0ad293139ccb12e2af95da6b6cf28693b9445809f5328b55db34f1b988e9a3b4"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/__init__.py",
+      "sha256": "b4bf006d709fb93049a1dea79585768ad94864b62abdca939ba914c3767d3b96"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/cancel_order/__init__.py",
+      "sha256": "70467e50029c63e6ae1c269c556070319ceecc11f6035b6376b2f17e9a12468e"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/cancel_order/endpoint_gen.py",
+      "sha256": "53c2a9c8d43a681bfdb3c9f53dd33ef3bad93b7fecdd1771b5dc4bb59c0e2154"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/cancel_order/schemas_gen.py",
+      "sha256": "d253707ff558b81eaa10ae869882f3d2e50cee3df69837465a659bc7f6053516"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/create_order/__init__.py",
+      "sha256": "b4bf006d709fb93049a1dea79585768ad94864b62abdca939ba914c3767d3b96"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/create_order/endpoint_gen.py",
+      "sha256": "22c58a4b9056c36c59dcac45649692c9d95f572523d1ed01c5a199df58947c55"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/create_order/handler_gen.py",
+      "sha256": "04663f1c6d6b65baaf7c621154a41f1afc7ce552caaac4e84ca8c35f649a4fb5"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/create_order/schemas_gen.py",
+      "sha256": "b2414dda562562acdbafff4b726545272cb84cdf7e05b51b0f0382a756554638"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/list_order/__init__.py",
+      "sha256": "b4bf006d709fb93049a1dea79585768ad94864b62abdca939ba914c3767d3b96"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/list_order/endpoint_gen.py",
+      "sha256": "45618b92b92c869ade1aa3b3b7adfb251ae7ca258cc49c7ff4308a1d570cc38f"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/list_order/handler_gen.py",
+      "sha256": "ede4a1383aaaaa781f1b8b46fc58a51b058a7f204b68476850d95b2ab9333c8b"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/list_order/schemas_gen.py",
+      "sha256": "7e2a2ccf502d6988c4df032f2c1877ac09e28c0b6afbf654b16505479a2ce29a"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/place_order/__init__.py",
+      "sha256": "4c0013f586d6d5cb77a062e1e50539fa39e56c639dcb74bc0d3eeece3de494de"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/place_order/endpoint_gen.py",
+      "sha256": "3f98e7210d1c0ec1aef5e6a6b8f7bd90e98a78c49550b2031892e5a910544680"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/place_order/schemas_gen.py",
+      "sha256": "3e75d08f96552f92de20d20398e82d235cd5ee417d8239bdab95535c3436094d"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/read_order/__init__.py",
+      "sha256": "b4bf006d709fb93049a1dea79585768ad94864b62abdca939ba914c3767d3b96"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/read_order/endpoint_gen.py",
+      "sha256": "b5b1341980d634d6723c0ba323c270d57bfe02d94ba5002673075a7f0ffcaee4"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/read_order/handler_gen.py",
+      "sha256": "c8c0bc8249e7bd362a468a24211631eec843c11418a0f3c4b3c6bca35cfbcb2b"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/features/order/read_order/schemas_gen.py",
+      "sha256": "aaef9c0438474bf2ce400386302d4957ae4a96e27360c45504100a1b3e581566"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/main_gen.py",
+      "sha256": "9875b5972a541ca14a4a153563716428ee8ad2974136dceaecbafb8d4bdbc321"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/migrate_gen.py",
+      "sha256": "898ebedf50864423a7bc6123eeefc4e2ff29d7f5aaefe369d121c9cde9d26f4f"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/__init__.py",
+      "sha256": "0ad293139ccb12e2af95da6b6cf28693b9445809f5328b55db34f1b988e9a3b4"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/auth/__init__.py",
+      "sha256": "0ad293139ccb12e2af95da6b6cf28693b9445809f5328b55db34f1b988e9a3b4"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/auth/cognito_gen.py",
+      "sha256": "2c447d463b46ba77accb482d209709002a9cd986fdfb6f9ae5ffa107110678ce"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/config_gen.py",
+      "sha256": "9c6e3daa2fa50b74b4f7e9472671eec1ff4d592d666d15d6db2e1a1e32f274e7"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/__init__.py",
+      "sha256": "0ad293139ccb12e2af95da6b6cf28693b9445809f5328b55db34f1b988e9a3b4"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/base_gen.py",
+      "sha256": "9e1a2e6ed2367bba34ae80fd8169be2a4d4d2ff55d8d044fc7fb1a407c15a625"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/commit_gen.py",
+      "sha256": "ac8d7091645ddb9024794f075352ad997f40a79127102f3744ffbe11c71ff6ec"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/models/__init__.py",
+      "sha256": "0ad293139ccb12e2af95da6b6cf28693b9445809f5328b55db34f1b988e9a3b4"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/models/order_gen.py",
+      "sha256": "4d8f7d0cbf71aec0d35bf0c10cabf7fceb36738a3b1431aae65b9b650ef9f1d0"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/db/session_gen.py",
+      "sha256": "592ce878742e04b3bb92fbc8aa3f3d4b8c33f2096ecc4b3356a4297ecf1ce0b6"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/errors_gen.py",
+      "sha256": "a4bbca24db93e7a4009b83139b77e76917365a087167ddc3c007af3122c31f66"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/app/shared/logs_gen.py",
+      "sha256": "48b9c28b5510fe1e82fccbd952b8265c01bbb6a6be24f45e62db4af6575c73ec"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/migrations/env.py",
+      "sha256": "8578995a00d0d0e6e6c4131aa1b2e8b1c56524c3c41707bd72f808617b3cd06d"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/migrations/versions/0001_create_order_gen.py",
+      "sha256": "5f7326102f13ca0f452fb6493dc4d591c2c6b5e613bc10f98949267030d5f2d8"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/openapi.gen.json",
+      "sha256": "baa58352cbea261ba452109cd9474127037e80d09c41228764a859f8350d32c1"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/pyproject.toml",
+      "sha256": "d05f01b920b2dbc111936d9fda08a97605d3780d7d3901930a36971cd33432b9"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/http_support_gen.py",
+      "sha256": "54d4984d6ffbba24642ff2f83358bd6c5366fd1b73f5f215f1b192e747a8020b"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_app_gen.py",
+      "sha256": "8537a8b8b36fd098f57fc3eb13e9ea06f1c1b004979bc66561c42042e011cfaf"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_auth_gen.py",
+      "sha256": "4e1dd3773fee6487ab088cca00e24929bee2686060e50abc43ecc2aeccc9017c"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_cancel_order_http_gen.py",
+      "sha256": "aa4571a41a1eca9c175496d6900c3c1cb7af6b243a7ddcf86412bddf706fe339"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_db_gen.py",
+      "sha256": "790d37d0b38c5d0ea06c67411a9b84a68689d5b4b0f8fdce3fe7f86906d92d9b"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_migrations_gen.py",
+      "sha256": "c87cbf3676b8459d78855039ba11bf0506a85eeeb9511eb5503139c74fd79dcc"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_orders_http_gen.py",
+      "sha256": "8103f2e337425c6da20081e72a80ab077f27921cb233c9fc2382df03a44e1363"
+    },
+    {
+      "part": "application/orderApi",
+      "path": "services/order-api/tests/test_place_order_http_gen.py",
+      "sha256": "f35216097a369c2b50b10e645faf5d93407f6c89b0821899713fb32ab018e7da"
+    }
+  ],
+  "manifestVersion": 1
+}

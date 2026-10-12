@@ -71,6 +71,7 @@ module "api_service" {
     AWS_REGION            = local.aws_region
     COGNITO_APP_CLIENT_ID = module.users.app_client_ids["order_api"]
     COGNITO_USER_POOL_ID  = module.users.user_pool_id
+    CORS_ALLOWED_ORIGINS  = "https://order-portal.portal.dev.example.com"
     DATABASE_HOST         = module.order_db.address
     DATABASE_NAME         = module.order_db.database_name
     DATABASE_PORT         = tostring(module.order_db.port)

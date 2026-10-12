@@ -1,0 +1,1503 @@
+{
+  "elements": [
+    {
+      "element": "OrderPortal::CancelOrder",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/cancel_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "cancel_order"
+            },
+            {
+              "firstLine": 33,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "POST /orders/{orderId}/cancel"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/cancel_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CancelOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_cancel_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 63,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::Order",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/cancel_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "cancel_order"
+            },
+            {
+              "firstLine": 33,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "POST /orders/{orderId}/cancel"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/cancel_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CancelOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "create_order"
+            },
+            {
+              "firstLine": 28,
+              "kind": "route",
+              "lastLine": 38,
+              "name": "POST /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CreateOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CreateOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "list_order"
+            },
+            {
+              "firstLine": 33,
+              "kind": "route",
+              "lastLine": 44,
+              "name": "GET /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ListOrderOutput"
+            },
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ListOrderPage"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/place_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "place_order"
+            },
+            {
+              "firstLine": 36,
+              "kind": "route",
+              "lastLine": 44,
+              "name": "POST /orders/place"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/place_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "PlaceOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "PlaceOrderBody"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 45,
+              "name": "PlaceOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 37,
+              "name": "read_order"
+            },
+            {
+              "firstLine": 28,
+              "kind": "route",
+              "lastLine": 37,
+              "name": "GET /orders/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ReadOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/db/models/order_gen.py",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "class",
+              "lastLine": 38,
+              "name": "Order"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_cancel_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 63,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_orders_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 68,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "rows"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 75,
+              "name": "body"
+            },
+            {
+              "firstLine": 78,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 89,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 92,
+              "kind": "function",
+              "lastLine": 97,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 106,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 109,
+              "kind": "function",
+              "lastLine": 113,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 116,
+              "kind": "function",
+              "lastLine": 119,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 122,
+              "kind": "function",
+              "lastLine": 130,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 133,
+              "kind": "function",
+              "lastLine": 142,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 145,
+              "kind": "function",
+              "lastLine": 151,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 154,
+              "kind": "function",
+              "lastLine": 161,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_place_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 53,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 65,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::PlaceOrder",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/place_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "place_order"
+            },
+            {
+              "firstLine": 36,
+              "kind": "route",
+              "lastLine": 44,
+              "name": "POST /orders/place"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/place_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "PlaceOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "PlaceOrderBody"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 45,
+              "name": "PlaceOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_place_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 53,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 65,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi",
+      "files": [
+        {
+          "path": "services/order-api/app/main_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "class",
+              "lastLine": 39,
+              "name": "Health"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 45,
+              "name": "healthz"
+            },
+            {
+              "firstLine": 42,
+              "kind": "route",
+              "lastLine": 45,
+              "name": "GET /healthz"
+            },
+            {
+              "firstLine": 48,
+              "kind": "function",
+              "lastLine": 89,
+              "name": "create_app"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/migrate_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 40,
+              "name": "alembic_config"
+            },
+            {
+              "firstLine": 43,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "missing_revisions"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 63,
+              "name": "migrate"
+            },
+            {
+              "firstLine": 66,
+              "kind": "function",
+              "lastLine": 77,
+              "name": "main"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/auth/cognito_gen.py",
+          "symbols": [
+            {
+              "firstLine": 60,
+              "kind": "class",
+              "lastLine": 61,
+              "name": "TokenError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "class",
+              "lastLine": 65,
+              "name": "JwksError"
+            },
+            {
+              "firstLine": 68,
+              "kind": "class",
+              "lastLine": 77,
+              "name": "User"
+            },
+            {
+              "firstLine": 80,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "user_pool_issuer"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 95,
+              "name": "jwks_from_url"
+            },
+            {
+              "firstLine": 98,
+              "kind": "class",
+              "lastLine": 185,
+              "name": "TokenVerifier"
+            },
+            {
+              "firstLine": 188,
+              "kind": "function",
+              "lastLine": 199,
+              "name": "token_verifier"
+            },
+            {
+              "firstLine": 202,
+              "kind": "function",
+              "lastLine": 221,
+              "name": "current_user"
+            },
+            {
+              "firstLine": 224,
+              "kind": "function",
+              "lastLine": 239,
+              "name": "require_roles"
+            },
+            {
+              "firstLine": 242,
+              "kind": "function",
+              "lastLine": 250,
+              "name": "_unauthorized"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/config_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 20,
+              "name": "ConfigurationError"
+            },
+            {
+              "firstLine": 23,
+              "kind": "class",
+              "lastLine": 61,
+              "name": "Settings"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 95,
+              "name": "load_settings"
+            },
+            {
+              "firstLine": 98,
+              "kind": "function",
+              "lastLine": 119,
+              "name": "allowed_origins"
+            },
+            {
+              "firstLine": 122,
+              "kind": "function",
+              "lastLine": 128,
+              "name": "_mandatory"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/db/base_gen.py",
+          "symbols": [
+            {
+              "firstLine": 22,
+              "kind": "class",
+              "lastLine": 25,
+              "name": "Base"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/db/commit_gen.py",
+          "symbols": [
+            {
+              "firstLine": 25,
+              "kind": "function",
+              "lastLine": 46,
+              "name": "commit"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/db/session_gen.py",
+          "symbols": [
+            {
+              "firstLine": 27,
+              "kind": "function",
+              "lastLine": 37,
+              "name": "database_url"
+            },
+            {
+              "firstLine": 40,
+              "kind": "function",
+              "lastLine": 42,
+              "name": "create_engine"
+            },
+            {
+              "firstLine": 45,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "create_session_factory"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 58,
+              "name": "get_session"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/errors_gen.py",
+          "symbols": [
+            {
+              "firstLine": 55,
+              "kind": "class",
+              "lastLine": 61,
+              "name": "ProblemError"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 80,
+              "name": "problem_response"
+            },
+            {
+              "firstLine": 83,
+              "kind": "function",
+              "lastLine": 91,
+              "name": "problem_responses"
+            },
+            {
+              "firstLine": 94,
+              "kind": "function",
+              "lastLine": 113,
+              "name": "register_error_handlers"
+            },
+            {
+              "firstLine": 116,
+              "kind": "function",
+              "lastLine": 118,
+              "name": "_problem"
+            },
+            {
+              "firstLine": 121,
+              "kind": "function",
+              "lastLine": 125,
+              "name": "_http"
+            },
+            {
+              "firstLine": 128,
+              "kind": "function",
+              "lastLine": 130,
+              "name": "_not_implemented"
+            },
+            {
+              "firstLine": 133,
+              "kind": "function",
+              "lastLine": 145,
+              "name": "_validation"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/shared/logs_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "class",
+              "lastLine": 52,
+              "name": "JsonFormatter"
+            },
+            {
+              "firstLine": 55,
+              "kind": "function",
+              "lastLine": 67,
+              "name": "configure_logging"
+            },
+            {
+              "firstLine": 70,
+              "kind": "function",
+              "lastLine": 101,
+              "name": "request_context"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/migrations/env.py",
+          "symbols": [
+            {
+              "firstLine": 24,
+              "kind": "function",
+              "lastLine": 32,
+              "name": "run_migrations_offline"
+            },
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 39,
+              "name": "run_migrations"
+            },
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 53,
+              "name": "run_migrations_online"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/migrations/versions/0001_create_order_gen.py",
+          "symbols": [
+            {
+              "firstLine": 25,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "upgrade"
+            },
+            {
+              "firstLine": 41,
+              "kind": "function",
+              "lastLine": 43,
+              "name": "downgrade"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/http_support_gen.py",
+          "symbols": [
+            {
+              "firstLine": 72,
+              "kind": "function",
+              "lastLine": 77,
+              "name": "database_settings"
+            },
+            {
+              "firstLine": 84,
+              "kind": "function",
+              "lastLine": 91,
+              "name": "engine"
+            },
+            {
+              "firstLine": 94,
+              "kind": "function",
+              "lastLine": 97,
+              "name": "jwks"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 114,
+              "name": "headers"
+            },
+            {
+              "firstLine": 117,
+              "kind": "function",
+              "lastLine": 134,
+              "name": "insert"
+            },
+            {
+              "firstLine": 137,
+              "kind": "function",
+              "lastLine": 148,
+              "name": "api"
+            },
+            {
+              "firstLine": 151,
+              "kind": "function",
+              "lastLine": 162,
+              "name": "same"
+            },
+            {
+              "firstLine": 165,
+              "kind": "function",
+              "lastLine": 169,
+              "name": "assert_same"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_app_gen.py",
+          "symbols": [
+            {
+              "firstLine": 42,
+              "kind": "function",
+              "lastLine": 47,
+              "name": "test_healthz_returns_200_with_no_token"
+            },
+            {
+              "firstLine": 50,
+              "kind": "function",
+              "lastLine": 53,
+              "name": "test_request_id_of_the_request_is_in_the_response"
+            },
+            {
+              "firstLine": 56,
+              "kind": "function",
+              "lastLine": 61,
+              "name": "test_unknown_path_returns_problem_details"
+            },
+            {
+              "firstLine": 64,
+              "kind": "function",
+              "lastLine": 74,
+              "name": "test_not_implemented_error_returns_501"
+            },
+            {
+              "firstLine": 77,
+              "kind": "function",
+              "lastLine": 81,
+              "name": "test_missing_mandatory_variable_stops_the_app"
+            },
+            {
+              "firstLine": 84,
+              "kind": "function",
+              "lastLine": 86,
+              "name": "test_log_level_that_is_not_correct_stops_the_app"
+            },
+            {
+              "firstLine": 89,
+              "kind": "function",
+              "lastLine": 100,
+              "name": "test_openapi_document_agrees_with_openapi_gen_json"
+            },
+            {
+              "firstLine": 103,
+              "kind": "function",
+              "lastLine": 108,
+              "name": "test_permitted_origin_gets_the_cors_headers"
+            },
+            {
+              "firstLine": 111,
+              "kind": "function",
+              "lastLine": 115,
+              "name": "test_other_origin_gets_no_cors_headers"
+            },
+            {
+              "firstLine": 118,
+              "kind": "function",
+              "lastLine": 131,
+              "name": "test_preflight_of_permitted_origin_permits_the_authorization_header"
+            },
+            {
+              "firstLine": 134,
+              "kind": "function",
+              "lastLine": 141,
+              "name": "test_preflight_of_other_origin_gets_no_cors_headers"
+            },
+            {
+              "firstLine": 144,
+              "kind": "function",
+              "lastLine": 147,
+              "name": "test_origin_that_is_not_correct_stops_the_app"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_auth_gen.py",
+          "symbols": [
+            {
+              "firstLine": 50,
+              "kind": "class",
+              "lastLine": 69,
+              "name": "Jwks"
+            },
+            {
+              "firstLine": 72,
+              "kind": "function",
+              "lastLine": 73,
+              "name": "new_key"
+            },
+            {
+              "firstLine": 79,
+              "kind": "function",
+              "lastLine": 97,
+              "name": "token"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 119,
+              "name": "client"
+            },
+            {
+              "firstLine": 122,
+              "kind": "function",
+              "lastLine": 123,
+              "name": "get"
+            },
+            {
+              "firstLine": 126,
+              "kind": "function",
+              "lastLine": 129,
+              "name": "assert_unauthorized"
+            },
+            {
+              "firstLine": 132,
+              "kind": "function",
+              "lastLine": 135,
+              "name": "test_valid_token_with_a_permitted_role_returns_200"
+            },
+            {
+              "firstLine": 138,
+              "kind": "function",
+              "lastLine": 140,
+              "name": "test_public_operation_needs_no_token"
+            },
+            {
+              "firstLine": 143,
+              "kind": "function",
+              "lastLine": 144,
+              "name": "test_no_token_returns_401"
+            },
+            {
+              "firstLine": 147,
+              "kind": "function",
+              "lastLine": 151,
+              "name": "test_other_scheme_returns_401"
+            },
+            {
+              "firstLine": 154,
+              "kind": "function",
+              "lastLine": 155,
+              "name": "test_text_that_is_not_a_token_returns_401"
+            },
+            {
+              "firstLine": 158,
+              "kind": "function",
+              "lastLine": 159,
+              "name": "test_bad_signature_returns_401"
+            },
+            {
+              "firstLine": 162,
+              "kind": "function",
+              "lastLine": 176,
+              "name": "test_token_with_a_wrong_claim_returns_401"
+            },
+            {
+              "firstLine": 179,
+              "kind": "function",
+              "lastLine": 182,
+              "name": "test_no_permitted_group_returns_403"
+            },
+            {
+              "firstLine": 185,
+              "kind": "function",
+              "lastLine": 187,
+              "name": "test_no_group_returns_403"
+            },
+            {
+              "firstLine": 190,
+              "kind": "function",
+              "lastLine": 204,
+              "name": "test_jwks_is_read_again_only_for_an_unknown_key_id"
+            },
+            {
+              "firstLine": 207,
+              "kind": "function",
+              "lastLine": 212,
+              "name": "test_jwks_is_not_read_again_before_the_minimum_interval"
+            },
+            {
+              "firstLine": 215,
+              "kind": "function",
+              "lastLine": 229,
+              "name": "test_jwks_that_the_application_cannot_get_returns_503"
+            },
+            {
+              "firstLine": 232,
+              "kind": "function",
+              "lastLine": 243,
+              "name": "test_verifier_of_the_configuration_uses_the_user_pool_of_the_environment"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_db_gen.py",
+          "symbols": [
+            {
+              "firstLine": 60,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "test_each_entity_has_a_model_with_its_table"
+            },
+            {
+              "firstLine": 65,
+              "kind": "function",
+              "lastLine": 76,
+              "name": "test_columns_have_the_postgresql_types_of_the_model"
+            },
+            {
+              "firstLine": 79,
+              "kind": "function",
+              "lastLine": 84,
+              "name": "test_database_url_uses_psycopg_and_the_configuration"
+            },
+            {
+              "firstLine": 87,
+              "kind": "function",
+              "lastLine": 89,
+              "name": "test_password_is_not_in_the_text_of_the_settings"
+            },
+            {
+              "firstLine": 92,
+              "kind": "function",
+              "lastLine": 94,
+              "name": "test_database_port_that_is_not_a_number_stops_the_app"
+            },
+            {
+              "firstLine": 97,
+              "kind": "function",
+              "lastLine": 99,
+              "name": "test_app_has_a_session_factory"
+            },
+            {
+              "firstLine": 102,
+              "kind": "function",
+              "lastLine": 108,
+              "name": "test_enumeration_columns_permit_only_their_values"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_migrations_gen.py",
+          "symbols": [
+            {
+              "firstLine": 18,
+              "kind": "function",
+              "lastLine": 20,
+              "name": "test_migrations_have_one_head"
+            },
+            {
+              "firstLine": 23,
+              "kind": "function",
+              "lastLine": 28,
+              "name": "test_each_migration_has_the_revision_before_it"
+            },
+            {
+              "firstLine": 31,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "test_migrations_give_sql_with_no_database"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi::cancelOrder",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/cancel_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 41,
+              "name": "cancel_order"
+            },
+            {
+              "firstLine": 33,
+              "kind": "route",
+              "lastLine": 41,
+              "name": "POST /orders/{orderId}/cancel"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/cancel_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CancelOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CancelOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_cancel_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 48,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 51,
+              "kind": "function",
+              "lastLine": 54,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 57,
+              "kind": "function",
+              "lastLine": 60,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 63,
+              "kind": "function",
+              "lastLine": 68,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi::orders",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/create_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 38,
+              "name": "create_order"
+            },
+            {
+              "firstLine": 28,
+              "kind": "route",
+              "lastLine": 38,
+              "name": "POST /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 17,
+              "kind": "function",
+              "lastLine": 22,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/create_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "CreateOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 37,
+              "name": "CreateOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 33,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "list_order"
+            },
+            {
+              "firstLine": 33,
+              "kind": "route",
+              "lastLine": 44,
+              "name": "GET /orders"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 15,
+              "kind": "function",
+              "lastLine": 21,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/list_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ListOrderOutput"
+            },
+            {
+              "firstLine": 30,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "ListOrderPage"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 28,
+              "kind": "function",
+              "lastLine": 37,
+              "name": "read_order"
+            },
+            {
+              "firstLine": 28,
+              "kind": "route",
+              "lastLine": 37,
+              "name": "GET /orders/{id}"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/handler_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "function",
+              "lastLine": 26,
+              "name": "handle"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/read_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 19,
+              "kind": "class",
+              "lastLine": 27,
+              "name": "ReadOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_orders_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 68,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "rows"
+            },
+            {
+              "firstLine": 73,
+              "kind": "function",
+              "lastLine": 75,
+              "name": "body"
+            },
+            {
+              "firstLine": 78,
+              "kind": "function",
+              "lastLine": 82,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 85,
+              "kind": "function",
+              "lastLine": 89,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 92,
+              "kind": "function",
+              "lastLine": 97,
+              "name": "test_create_returns_201_with_the_new_entity"
+            },
+            {
+              "firstLine": 100,
+              "kind": "function",
+              "lastLine": 106,
+              "name": "test_create_with_a_value_that_breaks_a_rule_returns_422"
+            },
+            {
+              "firstLine": 109,
+              "kind": "function",
+              "lastLine": 113,
+              "name": "test_read_returns_200_with_the_entity"
+            },
+            {
+              "firstLine": 116,
+              "kind": "function",
+              "lastLine": 119,
+              "name": "test_read_of_an_unknown_key_returns_404"
+            },
+            {
+              "firstLine": 122,
+              "kind": "function",
+              "lastLine": 130,
+              "name": "test_list_returns_the_entities_sorted_by_key_and_the_total"
+            },
+            {
+              "firstLine": 133,
+              "kind": "function",
+              "lastLine": 142,
+              "name": "test_list_gives_the_page_of_limit_and_offset"
+            },
+            {
+              "firstLine": 145,
+              "kind": "function",
+              "lastLine": 151,
+              "name": "test_list_with_a_limit_or_an_offset_out_of_range_returns_422"
+            },
+            {
+              "firstLine": 154,
+              "kind": "function",
+              "lastLine": 161,
+              "name": "test_list_limit_has_the_default_50_and_the_maximum_200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "OrderPortal::orderApi::placeOrder",
+      "files": [
+        {
+          "path": "services/order-api/app/features/order/place_order/endpoint_gen.py",
+          "symbols": [
+            {
+              "firstLine": 36,
+              "kind": "function",
+              "lastLine": 44,
+              "name": "place_order"
+            },
+            {
+              "firstLine": 36,
+              "kind": "route",
+              "lastLine": 44,
+              "name": "POST /orders/place"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/app/features/order/place_order/schemas_gen.py",
+          "symbols": [
+            {
+              "firstLine": 21,
+              "kind": "class",
+              "lastLine": 26,
+              "name": "PlaceOrderInput"
+            },
+            {
+              "firstLine": 29,
+              "kind": "class",
+              "lastLine": 34,
+              "name": "PlaceOrderBody"
+            },
+            {
+              "firstLine": 37,
+              "kind": "class",
+              "lastLine": 45,
+              "name": "PlaceOrderOutput"
+            }
+          ]
+        },
+        {
+          "path": "services/order-api/tests/test_place_order_http_gen.py",
+          "symbols": [
+            {
+              "firstLine": 35,
+              "kind": "function",
+              "lastLine": 50,
+              "name": "handler_is_the_stub"
+            },
+            {
+              "firstLine": 53,
+              "kind": "function",
+              "lastLine": 56,
+              "name": "test_operation_without_a_token_returns_401"
+            },
+            {
+              "firstLine": 59,
+              "kind": "function",
+              "lastLine": 62,
+              "name": "test_operation_without_a_permitted_role_returns_403"
+            },
+            {
+              "firstLine": 65,
+              "kind": "function",
+              "lastLine": 70,
+              "name": "test_stub_returns_501"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "traceVersion": 1
+}

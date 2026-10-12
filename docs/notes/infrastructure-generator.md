@@ -118,4 +118,4 @@ The product is the kebab case of the name of the root package of the model, for 
 - The main pipeline (#87) must give `<application>_image_digest`. It must run the migration task with the outputs `<service>_cluster_name`, `<service>_migration_task_definition`, `<service>_private_subnet_ids` and `<service>_security_group_id`, and then set the task definition of the service.
 - The arguments function of a `LocalModule` gets a `CallContext` with the IR, the environment element and the product. A `LocalModule` can also give template data for its module files, for example the PostgreSQL version, and root module variables, for example the image digest.
 - The pipeline story of M9 (#165) must upload the static files to `<site>_bucket_name` and invalidate `<site>_distribution_id`. The deploy role permits the two actions.
-- The CORS story of M9 (#164) can get the site domain of a `react` application from `dsml.generate.infrastructure.modules.site_domain`.
+- The CORS story of M9 (#164) sets `CORS_ALLOWED_ORIGINS` of a container service to `https://<site domain>` of each `react` application that calls its application (PRD-APP-136).

@@ -101,6 +101,22 @@ If the application has entities, it also reads these variables:
 
 The infrastructure generator must set these variables in the task definition. The container service module (story #80) sets them from the outputs of the database module.
 
+## Calls from React applications (CORS)
+
+Story #164 added CORS for the calls across domains (PRD-APP-136, Q66). If one or more `react` applications call the application (`#Calls`), the application also reads this variable:
+
+| Variable | Mandatory | Default | Use |
+| --- | --- | --- | --- |
+| `CORS_ALLOWED_ORIGINS` | Yes | None | The permitted browser origins, separated by commas, for example `https://order-portal.portal.dev.example.com`. |
+
+- `app/shared/config_gen.py` reads the variable at start. Each origin must start with `https://` or `http://` and must not have a path or `*`. If an origin is not correct, the application stops with a message that names the variable.
+- `app/main_gen.py` adds the CORS middleware of FastAPI. The middleware sends the CORS headers only for a permitted origin.
+- The permitted request headers are `Authorization`, `Content-Type` and `X-Request-ID`. The browser sends the access token in the header `Authorization`. The middleware does not permit credentials in cookies (`allow_credentials=False`).
+- `tests/test_app_gen.py` shows the CORS headers for a permitted origin and no CORS headers for a different origin.
+- The container service module sets the variable in each environment. The value is `https://<site domain>` of each calling `react` application, sorted and separated by commas. `dsml.generate.infrastructure.modules.site_domain` gives the site domain.
+
+An application that no `react` application calls has no CORS middleware and no variable `CORS_ALLOWED_ORIGINS`. The golden output of the order service does not have CORS. The golden output of the order portal (`tests/golden/fastapi/order-portal/`) has CORS.
+
 ## Token check and role check
 
 `app/shared/auth/cognito_gen.py` supplies the FastAPI dependencies of the token check (PRD-APP-008, PRD-APP-130, PRD-APP-131, Q42). The slices of the CRUD story use them.

@@ -167,10 +167,13 @@ jobs:
   # install the dependencies of the generated projects. The generator does
   # not use the network (PRD-TOP-004).
   #
-  # The golden projects are the example model (order-api) and the test
-  # model tests/models/fastapi/shop.sysml (shop-api, story #84). Their HTTP
-  # tests and their migrations (story #85) use the PostgreSQL 18 service
-  # container. The image has a pinned digest.
+  # The golden projects are the example model (order-service), the test
+  # model tests/models/fastapi/shop.sysml (shop, story #84) and the order
+  # portal model (order-portal, story #164). The tests of the order portal
+  # project show the CORS headers (PRD-APP-136). The HTTP tests and the
+  # migrations (story #85) use the PostgreSQL 18 service container. The
+  # image has a pinned digest. Each project gets the folder and the
+  # database of its golden name.
   fastapi-golden:
     name: FastAPI golden project (linux-x64)
     runs-on: ubuntu-24.04
@@ -190,8 +193,8 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      PROJECT: ${{ github.workspace }}/../order-api
-      PROJECTS: order-service/services/order-api shop/services/shop-api
+      PROJECT: ${{ github.workspace }}/../order-service
+      PROJECTS: order-service/services/order-api shop/services/shop-api order-portal/services/order-api
       DATABASE_HOST: 127.0.0.1
       DATABASE_USER: app
       DATABASE_PASSWORD: ci
@@ -210,13 +213,13 @@ jobs:
       - name: Copy the golden projects
         run: |
           for project in $PROJECTS; do
-            cp -r "tests/golden/fastapi/$project" "$GITHUB_WORKSPACE/../$(basename "$project")"
+            cp -r "tests/golden/fastapi/$project" "$GITHUB_WORKSPACE/../${project%%/*}"
           done
 
       - name: Lock and install the dependencies
         run: |
           for project in $PROJECTS; do
-            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            cd "$GITHUB_WORKSPACE/../${project%%/*}"
             uv lock
             uv sync --frozen
           done
@@ -224,21 +227,21 @@ jobs:
       - name: Lint
         run: |
           for project in $PROJECTS; do
-            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            cd "$GITHUB_WORKSPACE/../${project%%/*}"
             uv run --frozen ruff check --output-format=github
           done
 
       - name: Check the format
         run: |
           for project in $PROJECTS; do
-            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            cd "$GITHUB_WORKSPACE/../${project%%/*}"
             uv run --frozen ruff format --check
           done
 
       - name: Check the types
         run: |
           for project in $PROJECTS; do
-            cd "$GITHUB_WORKSPACE/../$(basename "$project")"
+            cd "$GITHUB_WORKSPACE/../${project%%/*}"
             uv run --frozen pyright
           done
 
@@ -248,9 +251,9 @@ jobs:
         run: |
           set -o pipefail
           for project in $PROJECTS; do
-            name="$(basename "$project")"
+            name="${project%%/*}"
             cd "$GITHUB_WORKSPACE/../$name"
-            export DATABASE_NAME="${name%-api}"
+            export DATABASE_NAME="${name//-/_}"
             PGPASSWORD="$DATABASE_PASSWORD" psql --host "$DATABASE_HOST" --username "$DATABASE_USER" \
               --dbname app --command "CREATE DATABASE \"$DATABASE_NAME\""
             uv run --frozen pytest -p no:cacheprovider | tee "$RUNNER_TEMP/pytest-$name.txt"
@@ -270,12 +273,13 @@ jobs:
           AWS_REGION: eu-west-1
           COGNITO_USER_POOL_ID: eu-west-1_ci
           COGNITO_APP_CLIENT_ID: ci
+          CORS_ALLOWED_ORIGINS: https://portal.ci
         run: |
           set -o pipefail
           for project in $PROJECTS; do
-            name="$(basename "$project")"
+            name="${project%%/*}"
             cd "$GITHUB_WORKSPACE/../$name"
-            export DATABASE_NAME="${name%-api}_migrations"
+            export DATABASE_NAME="${name//-/_}_migrations"
             PGPASSWORD="$DATABASE_PASSWORD" psql --host "$DATABASE_HOST" --username "$DATABASE_USER" \
               --dbname app --command "CREATE DATABASE \"$DATABASE_NAME\""
             uv run --frozen python -m app.migrate_gen | tee "$RUNNER_TEMP/first-$name.txt"
