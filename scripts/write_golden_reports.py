@@ -1,5 +1,5 @@
 # trace: PRD-CORE-030, PRD-TRACE-013, PRD-TRACE-017, PRD-TRACE-018
-"""Write the golden trace reports of the example model and of the order portal again.
+"""Write the golden trace reports of the example model and of the reference models again.
 
 Story #72 added the golden coverage and orphans reports in
 tests/golden/trace/. Story #74 added the HTML reports, and story #73 added
@@ -38,15 +38,24 @@ does not commit the output of `dsml generate`: its `.gitignore` names the
 output folders. Thus a change to a generator does not change the commit
 hashes in these reports. The script runs `dsml generate` after the second
 commit, so the impact report reads the trace manifest of the changed model.
+
+The phase 3 exit story (#189) added the golden reports of the order web
+model docs/model/examples/order-web/order-web.sysml as
+tests/golden/trace/order-web.*, in the same way. The project has the full
+output: the Next.js application, the infrastructure and the workflows. The
+test folder of the application has the Vitest tests of tests/nextjs/, as in
+the CI job "Next.js golden project".
 """
 
 import contextlib
+import dataclasses
+import functools
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from pathlib import Path
 
 from dsml.cli import main as dsml
@@ -56,8 +65,10 @@ ROOT = Path(__file__).resolve().parent.parent
 GOLDEN = ROOT / "tests" / "golden" / "trace"
 EXAMPLE_MODEL = ROOT / "docs" / "model" / "examples" / "order-service.sysml"
 PORTAL_MODEL = ROOT / "docs" / "model" / "examples" / "order-portal" / "order-portal.sysml"
+WEB_MODEL = ROOT / "docs" / "model" / "examples" / "order-web" / "order-web.sysml"
 EXAMPLE = "order-service"
 PORTAL = "order-portal"
+WEB = "order-web"
 REPORTS = ("coverage", "orphans")
 CHANGE_REPORTS = ("impact", "suspect")
 FORMATS = ("csv", "html", "json")
@@ -126,24 +137,85 @@ tests = ["apps/order-portal/tests"]
 """
 """The configuration file of the order portal project: all output of the model."""
 
-PORTAL_TESTS = ROOT / "tests" / "react"
-PORTAL_TEST_FOLDERS = ("app", "features", "field-rules", "shared", "widgets")
-"""The Vitest tests of the order portal. The project has them in `apps/order-portal/tests/`."""
+WEB_CONFIGURATION = """\
+schema = 1
 
-PORTAL_IGNORE = "/.dsml/\n/.github/\n/apps/\n/infra/\n/services/\n"
-"""The `.gitignore` of the Git repository of the impact and suspect reports of the order portal.
+[model]
+paths = ["model"]
 
-The repository keeps only the configuration and the model.
+[applications.orderWeb]
+output = "apps/order-web"
+
+[infrastructure]
+output = "infra"
+
+[pipelines]
+output = ".github/workflows"
+
+[trace]
+tests = ["apps/order-web/tests"]
 """
+"""The configuration file of the order web project: all output of the model."""
 
-PORTAL_MODEL_CHANGES = (
-    (
-        "The portal must have a form that places an order.",
-        "The portal must have a form that places an order with a note.",
+
+@dataclasses.dataclass(frozen=True)
+class FullModel:
+    """A reference model with the full output of `dsml generate` in its report projects."""
+
+    model: Path
+    configuration: str
+    tests: Path
+    """The folder of the Vitest tests in the repository."""
+    test_folders: tuple[str, ...]
+    """The folders of `tests` that the project has in the test folder of the application."""
+    test_folder: str
+    """The test folder of the application in the project."""
+    ignore: str
+    """The `.gitignore` of the Git repository of the impact and suspect reports.
+
+    The repository keeps only the configuration and the model.
+    """
+    changes: tuple[tuple[str, str], ...]
+    """The changes of the second commit of the Git repository."""
+
+
+FULL_MODELS = {
+    PORTAL: FullModel(
+        PORTAL_MODEL,
+        PORTAL_CONFIGURATION,
+        ROOT / "tests" / "react",
+        ("app", "features", "field-rules", "shared", "widgets"),
+        "apps/order-portal/tests",
+        "/.dsml/\n/.github/\n/apps/\n/infra/\n/services/\n",
+        (
+            (
+                "The portal must have a form that places an order.",
+                "The portal must have a form that places an order with a note.",
+            ),
+            ("maxLength = 500;", "maxLength = 1000;"),
+        ),
     ),
-    ("maxLength = 500;", "maxLength = 1000;"),
-)
-"""The changes of the second commit: the requirement R-004 and the field `Order::note`."""
+    WEB: FullModel(
+        WEB_MODEL,
+        WEB_CONFIGURATION,
+        ROOT / "tests" / "nextjs",
+        ("auth", "features", "pages", "routes", "widgets"),
+        "apps/order-web/tests",
+        "/.dsml/\n/.github/\n/apps/\n/infra/\n",
+        (
+            (
+                "The web application must have a form that cancels an order.",
+                "The web application must have a form that cancels an open order.",
+            ),
+            ("maxLength = 500;", "maxLength = 1000;"),
+        ),
+    ),
+}
+"""The order portal (story #177) and the order web (story #189).
+
+The changes of the second commit change the requirement R-004 and the field
+`Order::note` of each model.
+"""
 
 
 def generate(folder: Path) -> int:
@@ -152,42 +224,43 @@ def generate(folder: Path) -> int:
         return dsml(["generate", "--output", os.devnull])
 
 
-def write_portal_files(folder: Path, tests: bool = True) -> None:
+def write_full_files(folder: Path, name: str, tests: bool = True) -> None:
     """Write the configuration, the model and, if `tests` is true, the Vitest tests."""
-    (folder / "dsml.toml").write_text(PORTAL_CONFIGURATION, encoding="utf-8", newline="\n")
+    reference = FULL_MODELS[name]
+    (folder / "dsml.toml").write_text(reference.configuration, encoding="utf-8", newline="\n")
     (folder / "model").mkdir()
-    shutil.copyfile(PORTAL_MODEL, folder / "model" / PORTAL_MODEL.name)
+    shutil.copyfile(reference.model, folder / "model" / reference.model.name)
     if not tests:
         return
-    test_folder = folder / "apps" / "order-portal" / "tests"
-    for name in PORTAL_TEST_FOLDERS:
-        shutil.copytree(PORTAL_TESTS / name, test_folder / name)
+    for test_folder in reference.test_folders:
+        shutil.copytree(reference.tests / test_folder, folder / reference.test_folder / test_folder)
 
 
-def write_portal_project(folder: Path) -> None:
-    """Write the order portal project and run `dsml generate` in it."""
-    write_portal_files(folder)
+def write_full_project(folder: Path, name: str) -> None:
+    """Write the project of a reference model and run `dsml generate` in it."""
+    write_full_files(folder, name)
     if generate(folder) != 0:
-        raise RuntimeError("dsml generate did not write the output of the order portal.")
+        raise RuntimeError(f"dsml generate did not write the output of the model {name}.")
 
 
-def write_portal_change_project(folder: Path) -> None:
-    """Write the Git repository of the impact and suspect reports of the order portal.
+def write_full_change_project(folder: Path, name: str) -> None:
+    """Write the Git repository of the impact and suspect reports of a reference model.
 
     The first commit has the configuration, the model and `.gitignore`, and
     the tag `v1.0.0`. The second commit changes the model. Then the function
     runs `dsml generate`. The output is not in a commit. These reports do not
     read the test files, thus the repository has no tests.
     """
+    reference = FULL_MODELS[name]
     git(folder, "init", "--quiet", "--initial-branch=main")
-    write_portal_files(folder, tests=False)
-    (folder / ".gitignore").write_text(PORTAL_IGNORE, encoding="utf-8", newline="\n")
-    commit(folder, "Add the order portal project.")
+    write_full_files(folder, name, tests=False)
+    (folder / ".gitignore").write_text(reference.ignore, encoding="utf-8", newline="\n")
+    commit(folder, f"Add the {name.replace('-', ' ')} project.")
     git(folder, "tag", BASELINE_TAG)
-    change_model(folder, PORTAL_MODEL, PORTAL_MODEL_CHANGES)
+    change_model(folder, reference.model, reference.changes)
     commit(folder, "Change R-004 and Order::note.")
     if generate(folder) != 0:
-        raise RuntimeError("dsml generate did not write the output of the order portal.")
+        raise RuntimeError(f"dsml generate did not write the output of the model {name}.")
 
 
 BASELINE_TAG = "v1.0.0"
@@ -316,10 +389,17 @@ def main() -> int:
     """Write each golden report with `dsml trace`."""
     GOLDEN.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as temporary, outside_git():
-        projects = (
-            (EXAMPLE, write_project, write_change_project),
-            (PORTAL, write_portal_project, write_portal_change_project),
-        )
+        projects: list[tuple[str, Callable[[Path], None], Callable[[Path], None]]] = [
+            (EXAMPLE, write_project, write_change_project)
+        ]
+        for full in FULL_MODELS:
+            projects.append(
+                (
+                    full,
+                    functools.partial(write_full_project, name=full),
+                    functools.partial(write_full_change_project, name=full),
+                )
+            )
         for name, write, write_change in projects:
             project = Path(temporary) / name / "project"
             project.mkdir(parents=True)

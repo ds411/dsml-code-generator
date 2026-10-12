@@ -27,7 +27,7 @@
             }
           ],
           "message": {
-            "text": "The verification V-001 refers to the test file \"apps/order-web/tests/api/orders.test.ts\". This file does not exist."
+            "text": "The verification V-001 refers to the test file \"apps/order-web/tests/routes/routes.test.ts\". This file does not exist."
           },
           "ruleId": "COV-006",
           "ruleIndex": 10
@@ -70,6 +70,34 @@
                 },
                 "region": {
                   "startColumn": 9,
+                  "startLine": 172
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "V-003"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "The verification V-003 refers to the test file \"apps/order-web/tests/widgets/widgets.test.tsx\". This file does not exist."
+          },
+          "ruleId": "COV-006",
+          "ruleIndex": 10
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "order-web.sysml"
+                },
+                "region": {
+                  "startColumn": 9,
                   "startLine": 178
                 }
               }
@@ -83,7 +111,7 @@
             }
           ],
           "message": {
-            "text": "The verification V-004 refers to the test file \"apps/order-web/tests/api/cancel-order.test.ts\". This file does not exist."
+            "text": "The verification V-004 refers to the test file \"apps/order-web/tests/auth/auth.test.ts\". This file does not exist."
           },
           "ruleId": "COV-006",
           "ruleIndex": 10

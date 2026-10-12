@@ -1949,7 +1949,7 @@
             "items": [
               {
                 "type": "string",
-                "value": "apps/order-web/tests/api/orders.test.ts"
+                "value": "apps/order-web/tests/routes/routes.test.ts"
               }
             ],
             "type": "list"
@@ -2057,6 +2057,10 @@
               {
                 "type": "string",
                 "value": "apps/order-web/tests/pages/pages.test.tsx"
+              },
+              {
+                "type": "string",
+                "value": "apps/order-web/tests/widgets/widgets.test.tsx"
               }
             ],
             "type": "list"
@@ -2118,11 +2122,11 @@
             "items": [
               {
                 "type": "string",
-                "value": "apps/order-web/tests/features/features.test.tsx"
+                "value": "apps/order-web/tests/auth/auth.test.ts"
               },
               {
                 "type": "string",
-                "value": "apps/order-web/tests/api/cancel-order.test.ts"
+                "value": "apps/order-web/tests/features/features.test.tsx"
               }
             ],
             "type": "list"

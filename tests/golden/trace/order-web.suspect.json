@@ -1,0 +1,83 @@
+{
+  "baselineCommit": "f8b37e2b07b740554901a1bd8b72021915710eea",
+  "columns": [
+    "linkType",
+    "source",
+    "target",
+    "changedEnds",
+    "changedElements"
+  ],
+  "modelCommit": "6570a3c3fd34de0bd33c9b9741d9e7e73d4ffebf",
+  "report": "suspect",
+  "reportVersion": 1,
+  "rows": [
+    {
+      "changedElements": [
+        "OrderWeb::Order::note"
+      ],
+      "changedEnds": [
+        "source"
+      ],
+      "linkType": "allocate",
+      "source": "OrderWeb::orderWeb",
+      "target": "OrderWeb::webService"
+    },
+    {
+      "changedElements": [
+        "R-004"
+      ],
+      "changedEnds": [
+        "source"
+      ],
+      "linkType": "frame",
+      "source": "R-004",
+      "target": "N-002"
+    },
+    {
+      "changedElements": [
+        "OrderWeb::Order::note"
+      ],
+      "changedEnds": [
+        "source"
+      ],
+      "linkType": "satisfy",
+      "source": "OrderWeb::orderWeb",
+      "target": "R-001"
+    },
+    {
+      "changedElements": [
+        "OrderWeb::Order::note"
+      ],
+      "changedEnds": [
+        "source"
+      ],
+      "linkType": "satisfy",
+      "source": "OrderWeb::orderWeb",
+      "target": "R-003"
+    },
+    {
+      "changedElements": [
+        "OrderWeb::Order::note",
+        "R-004"
+      ],
+      "changedEnds": [
+        "source",
+        "target"
+      ],
+      "linkType": "satisfy",
+      "source": "OrderWeb::orderWeb",
+      "target": "R-004"
+    },
+    {
+      "changedElements": [
+        "R-004"
+      ],
+      "changedEnds": [
+        "target"
+      ],
+      "linkType": "verify",
+      "source": "V-004",
+      "target": "R-004"
+    }
+  ]
+}

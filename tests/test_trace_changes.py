@@ -7,7 +7,7 @@ local `git` command and no network (PRD-TOP-004).
 import contextlib
 import json
 import re
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
 
@@ -193,25 +193,40 @@ def test_baseline_that_does_not_exist_gives_exit_code_2(
 
 
 @pytest.fixture(scope="module")
-def portal_repository(tmp_path_factory: pytest.TempPathFactory) -> Path:
-    """The Git repository of the changed order portal model, with the output of `dsml generate`."""
-    folder = tmp_path_factory.mktemp("order-portal") / "repository"
-    folder.mkdir()
-    with script.outside_git():
-        script.write_portal_change_project(folder)
-    return folder
+def full_repositories(tmp_path_factory: pytest.TempPathFactory) -> Callable[[str], Path]:
+    """Give the Git repository of a changed reference model, with the output of `dsml generate`.
+
+    The fixture writes each repository one time for the tests of this module.
+    """
+    repositories: dict[str, Path] = {}
+
+    def repository(name: str) -> Path:
+        if name not in repositories:
+            folder = tmp_path_factory.mktemp(name) / "repository"
+            folder.mkdir()
+            with script.outside_git():
+                script.write_full_change_project(folder, name)
+            repositories[name] = folder
+        return repositories[name]
+
+    return repository
 
 
 # trace: PRD-CORE-030, PRD-TRACE-013, PRD-TRACE-015, PRD-TRACE-016, PRD-TRACE-017
+@pytest.mark.parametrize("name", sorted(script.FULL_MODELS))
 @pytest.mark.parametrize("report_format", script.FORMATS)
 @pytest.mark.parametrize("report", script.CHANGE_REPORTS)
-def test_report_of_changed_order_portal_agrees_with_golden_file(
-    report: str, report_format: str, portal_repository: Path, tmp_path: Path
+def test_report_of_changed_reference_model_agrees_with_golden_file(
+    report: str,
+    report_format: str,
+    name: str,
+    full_repositories: Callable[[str], Path],
+    tmp_path: Path,
 ) -> None:
     output = tmp_path / f"report.{report_format}"
-    with script.outside_git(), contextlib.chdir(portal_repository):
+    with script.outside_git(), contextlib.chdir(full_repositories(name)):
         assert main(["trace", report, "--format", report_format, "--output", str(output)]) == 0
-    golden: Path = script.golden_file(report, report_format, script.PORTAL)
+    golden: Path = script.golden_file(report, report_format, name)
     assert output.read_bytes() == golden.read_bytes(), (
         f"The {report} report is not the same as {golden.relative_to(script.ROOT)}. "
         "If the change is correct, run scripts/write_golden_reports.py."
@@ -229,8 +244,19 @@ def test_impact_report_of_order_portal_gives_the_react_files() -> None:
     assert "services/order-api/app/shared/db/models/order_gen.py" in note
 
 
+# trace: PRD-TRACE-015, PRD-TRACE-016
+def test_impact_report_of_order_web_gives_the_nextjs_files() -> None:
+    data = json.loads(script.golden_file("impact", "json", script.WEB).read_bytes())
+    rows = _rows(data, "element")
+    assert sorted(rows) == ["OrderWeb::Order::note", "R-004"]
+    assert rows["R-004"]["verifications"] == ["V-004"]
+    note = rows["OrderWeb::Order::note"]["generatedFiles"]
+    assert "apps/order-web/src/entities/order/model/order.gen.ts" in note
+    assert "apps/order-web/src/shared/db/schema.gen.ts" in note
+
+
 # trace: PRD-TRACE-018
-@pytest.mark.parametrize("name", [script.EXAMPLE, script.PORTAL])
+@pytest.mark.parametrize("name", [script.EXAMPLE, script.PORTAL, script.WEB])
 @pytest.mark.parametrize("report_format", script.FORMATS)
 @pytest.mark.parametrize("report", script.CHANGE_REPORTS)
 def test_golden_report_gives_both_commits_and_no_date_or_time(

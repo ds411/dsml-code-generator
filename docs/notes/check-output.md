@@ -69,6 +69,6 @@ The job "Infrastructure golden HCL" of `.github/workflows/ci.yml` runs `dsml che
 
 The job "React golden project" runs `dsml check-output` on the full output of the order portal (stories #170 and #177). The job writes the output with `dsml generate` in a temporary folder, with the order portal model and its configuration file. It runs `pnpm install` in `apps/order-portal` and `uv sync` in `services/order-api` first. The command checks the FastAPI application `orderApi` and the React application `orderPortal`. The job also runs `dsml check-output --application petPortal` on the golden output of the external API model (story #175).
 
-The job "Next.js golden project" runs `dsml check-output --application orderWeb` on a copy of the golden order web (story #185). The step copies the order web model and its configuration file to the folder of the copy. It runs `pnpm install` first.
+The job "Next.js golden project" runs `dsml check-output` on the full output of the order web (stories #185 and #189). The job writes the output with `dsml generate` in a temporary folder, with the order web model and its configuration file. It runs `pnpm install` first.
 
 The generated workflow `pr.gen.yml` runs `dsml check-output` through the toolchain action (PRD-CICD-005). The job installs the tools first (story #140, `docs/notes/pipeline-generator.md`).

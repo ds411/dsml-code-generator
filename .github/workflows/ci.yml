@@ -495,13 +495,17 @@ jobs:
   # trace: PRD-CORE-011, PRD-CORE-030, PRD-CORE-035, PRD-APP-010, PRD-APP-012, PRD-APP-013
   # trace: PRD-APP-015, PRD-APP-016, PRD-APP-128, PRD-APP-301, PRD-APP-306, PRD-APP-325
   # trace: PRD-APP-331, PRD-APP-332, PRD-APP-333, PRD-APP-009, PRD-APP-314, PRD-APP-320
-  # trace: PRD-APP-324
+  # trace: PRD-APP-324, PRD-CORE-029
   #
   # The golden project of the Next.js generator (story #180) must pass the
   # tools of the generated project. Prettier must find no change in the
   # golden files (PRD-CORE-035). The schema snapshot in .dsml/ is canonical
   # JSON (Q16), thus Prettier does not examine it. The migrations of the
   # golden project (story #182) use the PostgreSQL 18 service container.
+  # Story #189: the job writes the full output of the order web with "dsml
+  # generate", and the output must agree with the golden files. Then dsml
+  # check-output runs on the full output, and the container starts with
+  # PostgreSQL after the migrations.
   # The image has a pinned digest. The project is in a temporary folder,
   # because "pnpm install" writes a lockfile and the generator does not
   # write lockfiles (PRD-CORE-036). This job needs the network to install
@@ -554,11 +558,17 @@ jobs:
 
       # The configuration file of the order web gives the output folder
       # apps/order-web for the application orderWeb.
-      - name: Copy the golden project
+      - name: Write the full output of the order web
         run: |
-          mkdir -p "$CHECK/apps"
+          mkdir -p "$CHECK"
           cp docs/model/examples/order-web/dsml.toml docs/model/examples/order-web/order-web.sysml "$CHECK/"
-          cp -r tests/golden/nextjs/order-web "$PROJECT"
+          cd "$CHECK"
+          uv run --project "$GITHUB_WORKSPACE" dsml generate
+
+      # The golden manifests are in tests/golden/nextjs/.dsml/. In the full
+      # output, the manifests are in the folder of the configuration file.
+      - name: Compare the Next.js output with the golden files
+        run: diff -r tests/golden/nextjs/order-web "$PROJECT"
 
       # The project has no lockfile, thus pnpm makes it.
       - name: Install the dependencies
@@ -567,10 +577,11 @@ jobs:
 
       # dsml check-output runs tsc, ESLint and Steiger from
       # node_modules/.bin of the Next.js application (PRD-CORE-011,
-      # PRD-APP-016, PRD-APP-306, story #185).
-      - name: Check the project with dsml check-output
+      # PRD-APP-016, PRD-APP-306, story #185). With no option, the command
+      # checks each application of the full output (story #189).
+      - name: Check the full output with dsml check-output
         working-directory: ${{ env.CHECK }}
-        run: uv run --project "$GITHUB_WORKSPACE" dsml check-output --application orderWeb
+        run: uv run --project "$GITHUB_WORKSPACE" dsml check-output
 
       # The auth tests examine the role check, the server helper authorize
       # with test tokens and the redirect of the request interceptor
@@ -691,6 +702,32 @@ jobs:
             --command "SELECT string_agg(column_name, ',' ORDER BY column_name) FROM information_schema.columns WHERE table_name = 'order'" \
             | tee columns.txt
           grep --quiet "id,note,status,total" columns.txt
+
+      # Story #189: the container starts with the database of the previous
+      # step, after the migrations. It must answer GET /healthz with HTTP
+      # 200, and a route handler under /api must give HTTP 401 with no
+      # session (PRD-APP-012, PRD-APP-332).
+      - name: Start the container with PostgreSQL and get GET /healthz
+        run: |
+          docker run --detach --name order-web-database --network host \
+            --env DATABASE_HOST=127.0.0.1 --env DATABASE_NAME=order_web_migrations \
+            --env DATABASE_USER=app --env DATABASE_PASSWORD=ci --env DATABASE_SSL_MODE=disable \
+            --env AWS_REGION=eu-west-1 --env COGNITO_USER_POOL_ID=eu-west-1_ci \
+            --env COGNITO_APP_CLIENT_ID=ci --env COGNITO_LOGIN_DOMAIN=login.ci order-web:test
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:3000/healthz; then
+              echo
+              code="$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:3000/api/orders)"
+              docker logs order-web-database
+              docker rm --force order-web-database
+              echo "Status of /api/orders: $code"
+              test "$code" = "401"
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs order-web-database
+          exit 1
 
   # trace: PRD-IAC-003, PRD-IAC-039, PRD-IAC-040, PRD-CORE-035
   #

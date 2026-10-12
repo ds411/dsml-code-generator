@@ -1,0 +1,733 @@
+{
+  "createOnce": [
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/styles/index.css"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/cancel-order-form/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/order-detail/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/order-list/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/entities/order/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/cancel-order/api/cancel-order.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/cancel-order/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/cancel-order/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/create-order/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/create-order/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/delete-order/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/delete-order/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/list-order/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/read-order/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/update-order/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/update-order/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/access/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/access/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/api/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/config/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/config/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/db/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/db/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/http/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/lib/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/lib/utils.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/log/index.server.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/log/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/alert-dialog.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/alert.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/button.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/card.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/field.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/input.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/label.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/native-select.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/separator.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/table.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/textarea.tsx"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/widgets/order-details/index.ts"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/widgets/order-list/index.ts"
+    }
+  ],
+  "generated": [
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/.dockerignore",
+      "sha256": "65fa3c460d0b6cb5ada0cb8b98a074d0e1e1d9ec9de02951f9f191ce95b8034d"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/.dsml/schema-snapshot.json",
+      "sha256": "b9d89a2ce6a00742d5a051b2ce13a864eab6c7960445b2dc7c94195a59595685"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/Dockerfile",
+      "sha256": "5789103b474902d8f6304849ae79a022d7d8e7c257326f4d332fd092a767e6b9"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/api/orders/[id]/cancel/route.ts",
+      "sha256": "0b1a3ba2d056d7e808fb5ad182f7c19f35ae12a05c5588126442b9ba1fa5b97c"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/api/orders/[id]/route.ts",
+      "sha256": "7ad6b7d15f3d637df0f8868d010e38ac71820c6c9956219ac36ba7fc17838daf"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/api/orders/route.ts",
+      "sha256": "9e5375da6f0519b2be41b4c692f497d2a2bf2e62681b03957dc7d17b706097ee"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/auth/callback/page.tsx",
+      "sha256": "79db79531b8fc05306705c5054c926503a90e9ebee2abc6e518f674185633f89"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/auth/login/page.tsx",
+      "sha256": "02098419eefb8cf317b686f34e2087634a624d1fe5cc781059b003a8a9058273"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/cancel-order/page.tsx",
+      "sha256": "5f0c83311773bb70c4f2ed78cccf2b91d97f3891f58f88742010b3f09391d543"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/healthz/route.ts",
+      "sha256": "bbe9052eec82bdd27aa9db75f75e104db58329f93cdb4288ebd5a432c8bab90d"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/layout.tsx",
+      "sha256": "90298033016ba6bf2571a86efb0453c1092e244266f9b52986aaffbc8cb7e989"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/not-found.tsx",
+      "sha256": "6e90180453e2fc1d4b0d524563775aaea8125a6ec14a525bdbcbf81fbd1ff790"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/orders/[id]/page.tsx",
+      "sha256": "41f61ed41d477a0bbc6b40e53ec79be3635effc830406e3f839be7e12bc1b0f8"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/orders/page.tsx",
+      "sha256": "310408e25fd1a032d7b459987397de6a61d987baa05b6b28d63540033f76c816"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/app/page.tsx",
+      "sha256": "eddee04836564e61e091aae15c8fcb3cd83ec980983576f19d845cdab4c8d21b"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/components.json",
+      "sha256": "e4bbbc30c956c8da78e747cd2ce78c73451d6eebc92638b3b1e0fbf913d48467"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/drizzle.config.ts",
+      "sha256": "937b86289e45595521e9fa2510c62b77a820ec46f731dbc12e1fc9ef0a6fa0e9"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/eslint.config.js",
+      "sha256": "7fb9e7de13b14353050a83d3abacc8b3091aba849e76ea770a072aa73c632c39"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/migrate.gen.mjs",
+      "sha256": "e3dea89dad63cb7a690b9540e9f543cdb9cabef135dbedf81703615f7f17f4c1"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/migrations/0001_create_order.gen.sql",
+      "sha256": "93e9e9f2b4b07d59696fc2166e8fe2e00552c6a1a776ddee83441ac23682aba4"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/migrations/meta/_journal.json",
+      "sha256": "50d452a9c6f14b96dfde5cfe299e0a22d04a00c5e1051c11e02aaff3d6634321"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/next.config.ts",
+      "sha256": "76d4acbfa40f8a256af4d8664d728be0aa97d303ff66a839383151749fa0f5d2"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/openapi.gen.json",
+      "sha256": "01c449ac27c8d9b5895133b4ee388b89956dbb6a4433e3d934904c5c9a9b6563"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/package.json",
+      "sha256": "f23705beef0cae2a0ae8cdc1c9444cc97fa7df3777db3698445d527f3498f6d8"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/proxy.ts",
+      "sha256": "7e8d79f725d63b2e558562b1253d379903fec483c121b6893e1813a81d96a45e"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/api-routes/cancel-order.gen.ts",
+      "sha256": "3eef8d678a5bdafd56b91ac6333db4757356f731d601d92a4b838043421fef8b"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/api-routes/create-order.gen.ts",
+      "sha256": "ab29a7c56bcae32ce8a25a98ba76b4c7ccf8f2bc716ca7092c2ec57a595a4794"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/api-routes/delete-order.gen.ts",
+      "sha256": "1c302385d69404529f0e83402a9d70a7baad5a3403e2b69f5c7043e935375a5e"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/api-routes/healthz.gen.ts",
+      "sha256": "7324a39282fa6c95057704ce422b326948443bc95ef9f4d354848a920d19d1b6"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/api-routes/list-order.gen.ts",
+      "sha256": "008e044da406e4df07c6c2fc792fa9670852946593fe8c7a1847ec3e710c25c7"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/api-routes/read-order.gen.ts",
+      "sha256": "917880cd66fcec9d14fd8f0d6bfb698853eaf1306bca516959b7fe637b9be814"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/api-routes/update-order.gen.ts",
+      "sha256": "a8b18405b04ceed61257ef55d92654de3c81bc9004c401c148930e89e84aaeb0"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/layout/app-layout.gen.tsx",
+      "sha256": "11437e68f0190e9b45bd9cab89d8f54fd381c0aee96e673c18b9df70c3235ce8"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/layout/logout-button.gen.tsx",
+      "sha256": "fb38dd7860439b9a75517707407e40de2324652450f0ea336c5aa7ebcb688777"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/layout/navigation.gen.tsx",
+      "sha256": "7a82a94da1af7aa7c98a68eb862813e16957728b4ac4fb17c73a0b6ff77a5331"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/layout/root-layout.gen.tsx",
+      "sha256": "6bfebc53ce8eaaceff8d90233609c1648dc3b39e23b5a11c59a2b63b79e838b4"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/layout/status-pages.gen.tsx",
+      "sha256": "0718d8eb2c83a01c3225381bf50c4bbf9136e6b8c4792368d11f35dc545364cc"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/providers/app-providers.gen.tsx",
+      "sha256": "dcd5aae1aa01a1ebf01a79b497caea4b0063636ec54c5c6a2e70138b31118b80"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_app/providers/query-client.gen.ts",
+      "sha256": "cfc240bf81c307381b72e9798f625a2272c5b9e97bb814208a08f7a894f70d8f"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/cancel-order-form/index.server.gen.ts",
+      "sha256": "2f554a3d72c2ab7061688cfbf0b2ff63a5cfed53c69bf70807652845d41ed1ee"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-content.gen.tsx",
+      "sha256": "828c5201b0e1f5294e86a66baf4302e72ece9710e18c2c96008965a4c2f1af7a"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/cancel-order-form/ui/cancel-order-form-page.server.gen.tsx",
+      "sha256": "9bd37ca7e2195696fccdf48c974c7d768aa48a8c1e08c8ed96df8855c278da1b"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/order-detail/index.server.gen.ts",
+      "sha256": "21d2ce620a465babb69e0b426f419cd2da648bd12f82dd49cbec3daecc589a45"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/order-detail/ui/order-detail-page.server.gen.tsx",
+      "sha256": "dfd8f10adc4ee96a378021ee81bb6ec64014bbc3b9313e3a57ea011ed47f0cd4"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/order-list/index.server.gen.ts",
+      "sha256": "eb797b55ec9ef0ca9c41c0461eebff32caca7d17d97639ef1098970d3ea64dfc"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/order-list/ui/order-list-content.gen.tsx",
+      "sha256": "cbe8354b64f4233e4955332fff257a67cbb8a4569f93e649108c65ce9261b8c2"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/_pages/order-list/ui/order-list-page.server.gen.tsx",
+      "sha256": "48842586bd6f44811a9db7ec72f0ef756fb91e80589fc1d9d3c23ca4bd23dd6a"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/entities/order/api/order-queries.gen.ts",
+      "sha256": "9a45f2cd25463bafcffb5cec38c0813ff3fd61fed1e6da4c29131dfe10e2c428"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/entities/order/index.gen.ts",
+      "sha256": "633c1d65629031b5f17cdf87143b4476ed7ac2c74cf9e056e52acd9c9518cc95"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/entities/order/model/order.gen.ts",
+      "sha256": "6c436320cce2fe47875bbfddcf8aa47af9c310bc13ddaba289a35e954d79f140"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/cancel-order/api/cancel-order.gen.ts",
+      "sha256": "706df37e2d243d17f7cad083c4830f7a781ed699987ebee7a884160a700d609f"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/cancel-order/index.gen.ts",
+      "sha256": "c6bc4130e90cbd6f5797859a45ef594b7d1acbc20577469e3d89c23af4ee8e8c"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/cancel-order/index.server.gen.ts",
+      "sha256": "a504602de17badf9e4b41ca9143d4206671121502b9777e9924dd64106875623"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/cancel-order/ui/cancel-order-form.gen.tsx",
+      "sha256": "3d0cf4248f30ff227d7fe4b61a7fc10f7ecfb6708503718200899675aa19dbaf"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/create-order/api/create-order.gen.ts",
+      "sha256": "8a91e38cc345e0e40971644b489f10d0c00b718d4b809ef8fac74a903a7348c4"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/create-order/api/create-order.server.gen.ts",
+      "sha256": "fed2c10255d9819d772f4368d7bc4c4773984c8817148a47e7efb46a57684a26"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/create-order/index.gen.ts",
+      "sha256": "686482ae426e93d09a43aa4633dce25945d4f4a60ae841f2b1ef5170929bbdc7"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/create-order/index.server.gen.ts",
+      "sha256": "6db6c4cda1ed3bf0d77247d46d922bfc629d84c29fbb9a1b47e10580a6d7aee0"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/create-order/ui/create-order-form.gen.tsx",
+      "sha256": "6b77ef9dbcb951bdf0ee9387096ee6579c027b6c540c50f5889f01aed1582265"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/delete-order/api/delete-order.gen.ts",
+      "sha256": "3f9ef14c92a3d2e4dd28fbd26106c448601d5278b8be134ee1348c50ba7faba2"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/delete-order/api/delete-order.server.gen.ts",
+      "sha256": "11099704eab55b07ef9418d74d39941cebc2da8008e9731b1a9f10fe59dfea79"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/delete-order/index.gen.ts",
+      "sha256": "3bf6ddaceadadd884724c0825bdc7063c6f0cee6bdd323b12d13b1edc8aad868"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/delete-order/index.server.gen.ts",
+      "sha256": "1fbffac04801e7d89e5e3b9e2c1dd46bda8f8575e72d4a1c7385d58332abc833"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/delete-order/ui/delete-order-button.gen.tsx",
+      "sha256": "c694acaf3af7468b292a3d06fe929ebf0d42219f4ff6e5c59f5bf460453e4eda"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/list-order/api/list-order.server.gen.ts",
+      "sha256": "bf10266de76a9d62b72ede37dc6b2ad9f2368a2d42f5fbb3a9b76a09ce651264"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/list-order/index.server.gen.ts",
+      "sha256": "072df874689110dd2cd51ddf6853bbcb9c270c1930bf6c2d002b268290e47856"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/read-order/api/read-order.server.gen.ts",
+      "sha256": "081e592ba40a867950ea395e720fed4cdb925c4597c31eef945cb79a4e132896"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/read-order/index.server.gen.ts",
+      "sha256": "81d5fcb47db6aaf18d266c094858f20dfcdd88794a862e81aec6a124bf482b1f"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/update-order/api/update-order.gen.ts",
+      "sha256": "0b0472e715bd3321c206ac147e639d7711cc1c5d53e7e06148b1dc9e6ff9129d"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/update-order/api/update-order.server.gen.ts",
+      "sha256": "ffb07e366d95f41dfa974d613341deea15bac8986d1d42a6cc027688adf2b729"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/update-order/index.gen.ts",
+      "sha256": "f8233b4606cf809342c24ed01212b44c841f3cfdf09d5f3d84f8b82e2faab66b"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/update-order/index.server.gen.ts",
+      "sha256": "c541bdfa28680377fe32ea9a9ee57f30d29cab38e574da68bf16d3dbb1597d7e"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/features/update-order/ui/update-order-form.gen.tsx",
+      "sha256": "86970b2dcd87c4dfa9807273abc11f6058ec41f58f38455b0ef527394a93807e"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/access/index.gen.ts",
+      "sha256": "f30fad6a8b503b8f86606ba352ae69f1722948124653c81be1b8f1f6bc50f2c1"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/access/index.server.gen.ts",
+      "sha256": "18f4fbc6259e4116f78e06bf3f76f68bfd2b4f8350302de9d8f6f611c9f6dc1f"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/access/not-permitted-page.gen.tsx",
+      "sha256": "8df2d2d522c2ea24637d85cd7bb9e841cdb48c77d747cc691329bf93d13db5bd"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/access/view-access.server.gen.ts",
+      "sha256": "c29f624b43ea126e52070e8322f159aa03ca0dd2bfec9c7c7e620ddb3d558974"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/api/client.gen.ts",
+      "sha256": "7c9d4200a75078bb2278b1c9c28243d39491701198ef77dcae962f9851f8549b"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/api/index.gen.ts",
+      "sha256": "1cbe151b60a5c5145278cb64c59261d61fbdb3b293aa3da8c3a9b641992732d8"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/access.gen.ts",
+      "sha256": "10274eee989660bc2f6738d18846a5f3c2deb9193acfc54a6d3dd2ad86adc6b9"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/amplify.gen.ts",
+      "sha256": "d482d1781a62195675f5922431f1c38606156d09539f07156da7bd0bf9595b0f"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/callback-page.gen.tsx",
+      "sha256": "65761b9f9c87069ae4b4fde28cb6e19072a2750d7770539f8ca62c37dc06c44a"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/index.gen.ts",
+      "sha256": "74d64fa2cc872b0a0484bafe9635850a6c182d8de1d296f10f099246e86da0f2"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/index.server.gen.ts",
+      "sha256": "a98990b89e7479b0efc3e8166d04688c0b548b4f94b3355c011b3f56be8f7ad0"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/login-page.gen.tsx",
+      "sha256": "eb41316d6c2ce60ae8139a8091eb81aece6fcea020883b56cc67d4c38887f8fa"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/auth/session.server.gen.ts",
+      "sha256": "a4100d0ef8b7099d411c2709016c984ba58570e91240fe8f0f8839b41da799ec"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/config/index.gen.ts",
+      "sha256": "f4d6df1a5c82cc1b84d2576f40addab5382bbcdf005c46838ac00aa6519635a6"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/config/index.server.gen.ts",
+      "sha256": "3d564f5523e0ae9b3882565cb6404db6d18a5f9345c5385a6a93faad81c28c56"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/config/public-config.gen.tsx",
+      "sha256": "060bb5f17ccf889b2086fb307b09a1f2ad5c9a4b3cf67ba050470ba5c558bfcc"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/config/public-config.server.gen.ts",
+      "sha256": "931c1b5a65be7030b34b917a4dd100e0d97c39526d0b808c3ebfa879cdb8ee1a"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/db/client.server.gen.ts",
+      "sha256": "6487cde15e19bbec83cc8ab0c1af5ca0c61ad661fbf135332523fa1eb5dda5e4"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/db/index.gen.ts",
+      "sha256": "22fb67744eba7291e901dee5a3a00d4805f3434098446356af6dfbc100e230f2"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/db/index.server.gen.ts",
+      "sha256": "97e67af8fbc2017cfdfb5763b81a6ff571688b411b8d7448408984a526fec60f"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/db/schema.gen.ts",
+      "sha256": "c13ae26b8783a29056ebaf595750b8731e693a712f84cd67fb5acfbd3a7e5527"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/http/index.server.gen.ts",
+      "sha256": "a043479600117c059060c80d76741c3441a6e2bfeadab1f0292dc966ac89f4bd"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/http/route.server.gen.ts",
+      "sha256": "c028989afdd2f654c71adc2c84ded9775ccad78829373bd7f4a4d5fec78d594a"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/lib/index.gen.ts",
+      "sha256": "82895f60eb98f18339090e276a97078155041035fc3aed015df48e012d2f580f"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/log/index.gen.ts",
+      "sha256": "2aec75f9bf455473a43d80e77fbff7a420e250323338309f9bf318988b9922bf"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/log/index.server.gen.ts",
+      "sha256": "5ed457924c80547286cbf2847c63446f34acc2074bedd6c33a3e05aaff9d8049"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/log/logger.server.gen.ts",
+      "sha256": "97ec9ebe1e85c096783f157dc8f6680d0819e6081ec7b541a1f997e134c330fd"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/log/request-id.gen.ts",
+      "sha256": "34baa0828aff0b13b8c19b56da91089ebf9f925a26ea931a6e0d0ad1707698a3"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/shared/ui/index.gen.ts",
+      "sha256": "77c037bf65dabc93c40ff85379e62e3221c9c5453a744583e9ffaba61f344df0"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/widgets/order-details/index.gen.ts",
+      "sha256": "9a2137d0717e58bc6a51a7e0af0926bfd55940e07fb557041b41ea0f7e2c6b69"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/widgets/order-details/ui/order-details.gen.tsx",
+      "sha256": "9cd76482ea87089e35524f07290f56045562a0bef7a5e0d76ef71bb0e8912526"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/widgets/order-list/index.gen.ts",
+      "sha256": "7ff3729eb89b2fdc3d8aa02953bfb8121125f4ea42cd53a011437d74f86acc0e"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/src/widgets/order-list/ui/order-table.gen.tsx",
+      "sha256": "3b9a0275e1af900ee530baeeb1401ce0f26b147d07fcf519542210a5d830a889"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/standalone-migrate.gen.mjs",
+      "sha256": "d22626de58a60be9566f2245c89b65068b0a3c80069e27a09487eec00a91c8bd"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/steiger.config.ts",
+      "sha256": "aed4926094fbd3c34440c31f605a0f3c70070630595ad3064e16485adb6fcd34"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/tsconfig.json",
+      "sha256": "e450365ee92f88754196c21478b4cfc16933767150cf63024588eb26a13cf3e3"
+    },
+    {
+      "part": "application/orderWeb",
+      "path": "order-web/vitest.config.ts",
+      "sha256": "230920fcaf6a644b34a81f0acb4db0cfffdeca92e1eb505a837406b0373a5269"
+    }
+  ],
+  "manifestVersion": 1
+}
