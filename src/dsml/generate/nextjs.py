@@ -1,4 +1,4 @@
-# trace: PRD-APP-001, PRD-APP-002, PRD-APP-010, PRD-APP-012, PRD-APP-013, PRD-APP-015
+# trace: PRD-APP-001, PRD-APP-002, PRD-APP-004, PRD-APP-010, PRD-APP-012, PRD-APP-013, PRD-APP-015
 # trace: PRD-APP-017, PRD-APP-301, PRD-APP-302, PRD-APP-303, PRD-APP-325, PRD-APP-333
 # trace: PRD-APP-334, PRD-CORE-036, PRD-CORE-039, PRD-CORE-046, PRD-TOP-008
 """The Next.js generator (phase 3).
@@ -26,27 +26,39 @@ module gives the files of its part. The generator gives the Next.js layout
 `NEXTJS_LAYOUT` to the modules: the layers `_app` and `_pages`, and the
 server-only public API `index.server.ts` (PRD-APP-303, PRD-APP-305).
 
+At the end, the generator writes the OpenAPI document `openapi.gen.json` at
+the root of the project with the writer of the FastAPI target
+(`dsml.generate.fastapi_openapi`, PRD-APP-004). The paths of the operations
+start with the prefix `/api`, as the route files in `app/api/` do
+(PRD-APP-311). The file has the Prettier format of the project
+(`dsml.generate.prettier_json`).
+
 The versions come from the version baseline `versions.toml` (PRD-APP-301,
 PRD-TOP-008). The generator does not write `pnpm-lock.yaml` (PRD-CORE-036).
 """
 
 from collections.abc import Callable, Collection, Sequence
-from typing import Final
+from typing import Final, cast
 
 from dsml.config import Configuration
 from dsml.database.snapshot import SNAPSHOT_PATH
 from dsml.generate.fastapi import output_folder
+from dsml.generate.fastapi_openapi import OPENAPI_PATH, openapi_document
+from dsml.generate.fastapi_operations import CustomSlice
+from dsml.generate.fastapi_slices import Slice
 from dsml.generate.names import kebab_case
 from dsml.generate.nextjs_auth import auth_files
 from dsml.generate.nextjs_database import database_files
 from dsml.generate.nextjs_pages import pages_files
-from dsml.generate.nextjs_routes import routes_files
+from dsml.generate.nextjs_routes import API_PREFIX, application_operations, routes_files
 from dsml.generate.nextjs_slices import slices_files
+from dsml.generate.prettier_json import prettier_json
 from dsml.generate.react import dependencies
 from dsml.generate.react_common import NEXTJS_LAYOUT, ReactContext, public_api_files
 from dsml.generate.templates import TemplateEngine
-from dsml.generate.writer import OutputFile, application_part
+from dsml.generate.writer import Kind, OutputFile, application_part
 from dsml.ir.model import Element, EnumValue, Ir
+from dsml.ir.writer import JsonValue
 from dsml.versions import load_baseline, pinned_version
 
 TARGET: Final = "nextjs"
@@ -250,7 +262,7 @@ def _target(application: Element) -> str | None:
 
 # trace: PRD-APP-002, PRD-APP-010, PRD-APP-012, PRD-APP-013, PRD-APP-015, PRD-APP-017
 # trace: PRD-APP-301, PRD-APP-302, PRD-APP-325, PRD-APP-333, PRD-CORE-036, PRD-CORE-046
-# trace: PRD-TRACE-005
+# trace: PRD-APP-004, PRD-APP-311, PRD-TRACE-005
 def application_files(context: ReactContext) -> list[OutputFile]:
     """Give the project files and the files of each part of one application."""
     baseline = load_baseline()
@@ -294,4 +306,18 @@ def application_files(context: ReactContext) -> list[OutputFile]:
     )
     for part_files in PART_FUNCTIONS:
         files.extend(part_files(context))
+    files.append(openapi_output(context))
     return sorted(files, key=lambda file: file.path)
+
+
+# trace: PRD-APP-004, PRD-APP-311
+def openapi_output(context: ReactContext) -> OutputFile:
+    """Give `openapi.gen.json`: the REST contract of the route handlers under `/api`."""
+    routers: list[Slice | CustomSlice] = []
+    for operation in application_operations(context):
+        item = operation.crud or operation.custom
+        if item is not None:
+            routers.append(item)
+    document = openapi_document(context.application.name, PROJECT_VERSION, routers, API_PREFIX)
+    content = prettier_json(cast(JsonValue, document))
+    return OutputFile(f"{context.folder}{OPENAPI_PATH}", content, Kind.GENERATED, context.part, ())

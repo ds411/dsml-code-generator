@@ -153,6 +153,7 @@ PART_FOLDERS = (
     "app/page.tsx",
     "migrate.gen.mjs",
     "migrations/",
+    "openapi.gen.json",
     "proxy.ts",
     "src/_app/api-routes/",
     "src/_app/layout/app-layout.gen.tsx",
@@ -513,6 +514,7 @@ def test_generator_writes_into_the_output_folder_of_each_application() -> None:
             *SLICE_FILES,
             *ROUTE_FILES,
             *PAGE_FILES,
+            "openapi.gen.json",
         ]
     )
     assert {file.part for file in files} == {application_part("orderWeb")}

@@ -62,7 +62,10 @@ from dsml.generate.react_features import FeatureSlice, custom_feature_slice
 from dsml.generate.typescript_symbols import typescript_symbols
 from dsml.generate.writer import Kind, OutputFile
 
-API_FOLDER: Final = "app/api"
+API_PREFIX: Final = "/api"
+"""The path prefix of the operations (PRD-APP-311)."""
+
+API_FOLDER: Final = f"app{API_PREFIX}"
 """The folder of the route files of the operations: the path prefix `/api` (PRD-APP-311)."""
 
 ROUTES_SEGMENT: Final = "src/_app/api-routes"

@@ -1,4 +1,4 @@
-# trace: PRD-APP-004, PRD-CORE-028, PRD-CORE-031, PRD-CORE-034
+# trace: PRD-APP-004, PRD-APP-311, PRD-CORE-028, PRD-CORE-031, PRD-CORE-034
 """The OpenAPI document of the FastAPI generator: `openapi.gen.json`.
 
 The generator writes the OpenAPI 3.1 document of an application from the
@@ -131,23 +131,32 @@ def openapi_file(application: str, version: str, routers: Sequence[Slice | Custo
     return canonical_json(cast(JsonValue, openapi_document(application, version, routers)))
 
 
-# trace: PRD-APP-004, PRD-APP-008, PRD-APP-014, PRD-APP-110
+# trace: PRD-APP-004, PRD-APP-008, PRD-APP-014, PRD-APP-110, PRD-APP-311
 def openapi_document(
-    application: str, version: str, routers: Sequence[Slice | CustomSlice]
+    application: str,
+    version: str,
+    routers: Sequence[Slice | CustomSlice],
+    prefix: str = "",
 ) -> Json:
-    """Give the OpenAPI document of an application with its slices."""
+    """Give the OpenAPI document of an application with its slices.
+
+    The path of each operation starts with `prefix`, for example `/api` for
+    the Next.js target (PRD-APP-311). The path `/healthz` has no prefix. The
+    operation ID contains the full path, as FastAPI gives it for a router
+    with a prefix.
+    """
     paths: dict[str, Json] = {"/healthz": dict(_HEALTH_PATH)}
     schemas: dict[str, object] = {"Health": _HEALTH_SCHEMA, "Problem": PROBLEM_SCHEMA}
     secured = False
     for item in routers:
         if isinstance(item, Slice):
-            operation = _crud_operation(item, schemas)
+            operation = _crud_operation(item, prefix, schemas)
         else:
-            operation = _custom_operation(item, schemas)
+            operation = _custom_operation(item, prefix, schemas)
         if not item.public:
             operation["security"] = [{SECURITY_SCHEME: []}]
             secured = True
-        paths.setdefault(item.path, {})[item.method] = operation
+        paths.setdefault(f"{prefix}{item.path}", {})[item.method] = operation
     components: Json = {"schemas": schemas}
     if secured:
         components["securitySchemes"] = {
@@ -165,7 +174,7 @@ def openapi_document(
     }
 
 
-def _crud_operation(item: Slice, schemas: dict[str, object]) -> Json:
+def _crud_operation(item: Slice, prefix: str, schemas: dict[str, object]) -> Json:
     parameters: list[Json] = []
     if item.parameter is not None:
         parameters.append(_path_parameter(item.parameter, item.key.rules.kind, ()))
@@ -205,10 +214,10 @@ def _crud_operation(item: Slice, schemas: dict[str, object]) -> Json:
         status = "201"
     if item.operation == "delete":
         status = "204"
-    return _operation(item, item.endpoint_doc, parameters, body, status, result)
+    return _operation(item, prefix, item.endpoint_doc, parameters, body, status, result)
 
 
-def _custom_operation(item: CustomSlice, schemas: dict[str, object]) -> Json:
+def _custom_operation(item: CustomSlice, prefix: str, schemas: dict[str, object]) -> Json:
     parameters = [
         _path_parameter(field.name, field.rules.kind, field.rules.values)
         for field in item.path_fields
@@ -236,16 +245,17 @@ def _custom_operation(item: CustomSlice, schemas: dict[str, object]) -> Json:
             fields = [_parameter_field(field, "serialization") for field in item.outputs]
         schemas[item.output_class] = _object_schema(item.output_class, item.output_doc, fields)
         result = _reference(item.output_class)
-        title = _title(f"Response_{_operation_id(item)}")
+        title = _title(f"Response_{_operation_id(item, prefix)}")
         if item.entity_many:
             result = {**_array(result), "title": title}
         elif item.entity_optional:
             result = {"anyOf": [result, {"type": "null"}], "title": title}
-    return _operation(item, item.endpoint_doc, parameters, body, status, result)
+    return _operation(item, prefix, item.endpoint_doc, parameters, body, status, result)
 
 
 def _operation(
     item: Slice | CustomSlice,
+    prefix: str,
     description: str,
     parameters: list[Json],
     body: str | None,
@@ -263,7 +273,7 @@ def _operation(
         }
     operation: Json = {
         "description": description,
-        "operationId": _operation_id(item),
+        "operationId": _operation_id(item, prefix),
         "responses": responses,
         "summary": _summary(item.name),
         "tags": [item.collection],
@@ -278,9 +288,9 @@ def _operation(
     return operation
 
 
-def _operation_id(item: Slice | CustomSlice) -> str:
+def _operation_id(item: Slice | CustomSlice, prefix: str) -> str:
     """Give the operation ID that FastAPI gives: the function name, the path and the method."""
-    return f"{_NOT_WORD.sub('_', f'{item.name}{item.path}')}_{item.method}"
+    return f"{_NOT_WORD.sub('_', f'{item.name}{prefix}{item.path}')}_{item.method}"
 
 
 def _summary(name: str) -> str:
