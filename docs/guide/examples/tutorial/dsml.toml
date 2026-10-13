@@ -1,0 +1,15 @@
+# The configuration file of the DSML toolchain.
+# docs/configuration.md in the toolchain repository gives all keys.
+schema = 1
+
+[model]
+paths = ["model"]
+
+[applications.loanApi]
+output = "services/loan-api"
+
+[infrastructure]
+output = "infra"
+
+[pipelines]
+output = ".github/workflows"
