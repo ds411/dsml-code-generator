@@ -8,6 +8,7 @@ The server has these resources:
 | `dsml://reference/keywords` | `keywords` | The DSML keywords, their forms and attributes. |
 | `dsml://reference/rules` | `rules` | The rule catalog of the validator. |
 | `dsml://reference/commands` | `commands` | The subcommands of `dsml` and their options. |
+| `dsml://reference/configuration` | `configuration` | The keys of `dsml.toml`. |
 | `dsml://reference/examples` | `examples` | The example models with their keywords. |
 | `dsml://reference/patterns` | `patterns` | A short model pattern for each layer. |
 | `dsml://examples/<target>` | `example-<target>` | The starter model of the target. |
@@ -65,6 +66,12 @@ REFERENCE: Final[tuple[ReferenceFile, ...]] = (
         "dsml-cli",
         "Each subcommand of the dsml CLI and its options. Each MCP tool has the name "
         "of a subcommand.",
+    ),
+    ReferenceFile(
+        "configuration",
+        "dsml-cli",
+        "Each key of the configuration file dsml.toml with its type, its default value and "
+        "its description. Also an example file.",
     ),
     ReferenceFile(
         "examples",

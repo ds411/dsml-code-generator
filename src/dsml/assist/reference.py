@@ -1,13 +1,14 @@
 # trace: PRD-AI-007, PRD-AI-015, PRD-TOP-005, PRD-TOP-009
 """The DSML reference for AI agents, as Markdown from the installed toolchain.
 
-The reference has four parts. Each part has one function:
+The reference has five parts. Each part has one function:
 
 | Part | Function | Source |
 | --- | --- | --- |
 | `keywords` | `keywords()` | The DSML library source in `dsml.library` |
 | `rules` | `rules()` | The rule registry in `dsml.validate.rules` |
 | `commands` | `commands()` | The argument parser of `dsml.cli` |
+| `configuration` | `configuration()` | The key catalog in `dsml.config` |
 | `examples` | `examples()` | The starter models in `dsml.starter` |
 
 The skills and the MCP resources use this text. Thus they agree with the
@@ -32,7 +33,12 @@ from typing import Final
 
 from dsml import starter
 from dsml.cli import build_parser
-from dsml.config import OPTIONAL_RULE_SETS
+from dsml.config import (
+    CONFIGURATION_KEYS,
+    EXAMPLE_CONFIGURATION,
+    OPTIONAL_RULE_SETS,
+    SCHEMA_VERSION,
+)
 from dsml.library import LIBRARY_VERSION, library_text
 from dsml.validate.rules import registry
 
@@ -591,6 +597,54 @@ def commands() -> str:
     return _document("DSML commands", introduction, sections)
 
 
+# trace: PRD-AI-007, PRD-AI-015, PRD-CORE-013, PRD-CORE-028
+def configuration() -> str:
+    """Give the `configuration` part: each key of the configuration file `dsml.toml`."""
+    rows = [
+        "| Key | Type | Default | Description |",
+        "| --- | --- | --- | --- |",
+    ]
+    for item in CONFIGURATION_KEYS:
+        rows.append(
+            f"| `{item.key}` | {_cell(item.type)} | {_cell(item.default)} "
+            f"| {_cell(item.description)} |"
+        )
+    sections = [
+        "## Keys\n\nAll keys are optional, except `schema`. "
+        "A key that is not in this table is an error.\n\n" + "\n".join(rows),
+        "## Example\n\nThis file gives each key of the schema.\n\n"
+        f"```toml\n{EXAMPLE_CONFIGURATION.rstrip()}\n```",
+        "\n".join(
+            [
+                "## Rules for the values",
+                "",
+                '- Each path is relative to the folder of the configuration file. Use "/" '
+                'as the separator. Do not use an absolute path or "..".',
+                "- Each list is sorted when the toolchain reads it. A duplicate item has "
+                "no effect.",
+                "- Do not put a secret value in the file. The schema has no key for a secret "
+                "value, so a secret value gives an error.",
+                "- If the file is not correct, each command stops with exit code 2. "
+                "It gives one line for each error, with the file, the line and the key.",
+                "- For each application of the model that `dsml generate` writes, add a table "
+                "`[applications.<name>]` with the key `output`.",
+            ]
+        ),
+    ]
+    introduction = "\n".join(
+        [
+            f"This part gives the keys of the configuration file `{starter.CONFIG_FILE}`, "
+            f"schema version {SCHEMA_VERSION}.",
+            f"`dsml init` writes a starter `{starter.CONFIG_FILE}`. Each command reads "
+            f"`{starter.CONFIG_FILE}` in the current folder. The option `--config` "
+            "selects a different file.",
+            "A key in the table `[model]` has the dotted name `model.<key>`. "
+            "A word in angle brackets, for example `<name>`, is a name that you select.",
+        ]
+    )
+    return _document("DSML configuration file", introduction, sections)
+
+
 # trace: PRD-AI-007, PRD-AI-015, PRD-CORE-028
 def examples() -> str:
     """Give the `examples` part: the example models that the package contains."""
@@ -623,6 +677,7 @@ def examples() -> str:
 
 PARTS: Final[Mapping[str, Callable[[], str]]] = {
     "commands": commands,
+    "configuration": configuration,
     "examples": examples,
     "keywords": keywords,
     "rules": rules,

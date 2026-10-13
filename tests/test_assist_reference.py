@@ -19,6 +19,7 @@ from dsml import starter
 from dsml.adapter import needs, solution
 from dsml.assist import reference
 from dsml.cli import build_parser
+from dsml.config import CONFIGURATION_KEYS, EXAMPLE_CONFIGURATION, parse_configuration
 from dsml.library import library_text
 from dsml.validate.rules import registry
 
@@ -135,6 +136,21 @@ def test_each_subcommand_is_in_the_reference() -> None:
     assert "| `--config` | `<file>` |" in text
 
 
+# trace: PRD-AI-007, PRD-CORE-013
+def test_each_key_of_the_configuration_is_in_the_reference() -> None:
+    text = reference.configuration()
+    for item in CONFIGURATION_KEYS:
+        assert f"| `{item.key}` |" in text, item.key
+
+
+# trace: PRD-AI-007, PRD-CORE-013
+def test_configuration_example_in_the_reference_is_accepted() -> None:
+    text = reference.configuration()
+    examples = re.findall(r"```toml\n(.*?)```", text, re.DOTALL)
+    assert examples == [EXAMPLE_CONFIGURATION]
+    parse_configuration(EXAMPLE_CONFIGURATION, Path("dsml.toml"))
+
+
 def test_each_starter_model_is_in_the_reference() -> None:
     text = reference.examples()
     for target in starter.TARGETS:
@@ -203,5 +219,5 @@ def test_script_writes_byte_identical_files(tmp_path: Path) -> None:
             }
         )
     assert runs[0] == runs[1]
-    assert len(runs[0]) == 4 + 4
+    assert len(runs[0]) == len(reference.PARTS) + 4
     assert list(reference.stale_reference_files(tmp_path / "first" / "skills")) == []

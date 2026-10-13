@@ -39,7 +39,7 @@ The command replaces only the folders `dsml-cli` and `dsml-modeling` in the dest
 
 ### Install the skills again after an upgrade
 
-The reference files of the skills come from the installed toolchain. They give the DSML keywords, the validation rules and the `dsml` subcommands of that version. After each upgrade of the toolchain, do these steps:
+The reference files of the skills come from the installed toolchain. They give the DSML keywords, the validation rules, the `dsml` subcommands and the keys of `dsml.toml` of that version. After each upgrade of the toolchain, do these steps:
 
 1. Run `dsml skills install` again, with the same `--output` option as before.
 2. Commit the changed files.
@@ -117,7 +117,7 @@ The server writes its MCP messages to standard output and reads the messages of 
 | Skill | What it tells the agent |
 | --- | --- |
 | `dsml-modeling` | How to write or change a model in the five layers with the DSML keywords. Its reference files give the keywords, a short pattern for each layer, the validation rules and the starter models. |
-| `dsml-cli` | How to use `dsml init`, `dsml validate`, `dsml generate`, `dsml check-output` and `dsml trace coverage`. It gives a loop that corrects the findings until `dsml validate` finds no error. Its reference files give the subcommands and the validation rules. |
+| `dsml-cli` | How to use `dsml init`, `dsml validate`, `dsml generate`, `dsml check-output` and `dsml trace coverage`. It gives a loop that corrects the findings until `dsml validate` finds no error. It tells how to configure `dsml.toml`. Its reference files give the subcommands, the keys of `dsml.toml` and the validation rules. |
 
 The agent selects a skill from its description. For example, ask the agent: "Write a DSML model for a service that keeps a list of tasks." The agent then uses the skill `dsml-modeling`. You can also tell the agent the name of the skill.
 
@@ -158,6 +158,7 @@ The MCP resources are read-only texts. The agent reads them when it needs them. 
 | `keywords` | `dsml://reference/keywords` | Each DSML keyword with its layer, its form and its attributes, and the enumerations. |
 | `rules` | `dsml://reference/rules` | Each validation rule with its ID, severity, message and correction. |
 | `commands` | `dsml://reference/commands` | Each `dsml` subcommand with its options. |
+| `configuration` | `dsml://reference/configuration` | Each key of `dsml.toml` with its type, its default value and an example file. |
 | `examples` | `dsml://reference/examples` | The starter models that `dsml init` writes. |
 | `patterns` | `dsml://reference/patterns` | A short model pattern for each layer. The procedure of `create_model` starts with it. |
 | `example-fastapi`, `example-nextjs`, `example-react` | `dsml://examples/<target>` | The text of the starter model of one target. |

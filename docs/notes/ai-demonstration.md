@@ -53,7 +53,7 @@ The account IDs, the Region and the domains are the example values of the skill 
 
 The agent told where the skills did not give sufficient data. These items are not errors of the model. A later story can use them to make the skills better.
 
-- The skills do not give the keys of `dsml.toml`. The starter `dsml.toml` refers to `docs/configuration.md` in the toolchain repository, and an agent with only the skills cannot read it. The agent used the commented example `[applications.<name>]` in the starter file.
+- The skills do not give the keys of `dsml.toml`. The starter `dsml.toml` refers to `docs/configuration.md` in the toolchain repository, and an agent with only the skills cannot read it. The agent used the commented example `[applications.<name>]` in the starter file. Story #262 corrected this item: the CLI skill has the reference file `references/configuration.md` and the section "Configure the project", and the starter `dsml.toml` refers to the skill.
 - The modeling skill does not tell if one entity can have two `#Exposed` parts with different `crud` values and roles.
 - The modeling skill tells the agent to give the status `draft` to a new need, but the patterns use `approved` with no explanation.
 - No pattern shows a verification with the method `test` and no `testFiles`.

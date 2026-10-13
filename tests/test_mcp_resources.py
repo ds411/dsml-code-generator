@@ -50,6 +50,7 @@ def test_server_has_one_resource_for_each_reference_part_and_each_example_model(
     found, _ = _read_all(tmp_path)
     expected = {
         "dsml://reference/commands": "commands",
+        "dsml://reference/configuration": "configuration",
         "dsml://reference/examples": "examples",
         "dsml://reference/keywords": "keywords",
         "dsml://reference/patterns": "patterns",
