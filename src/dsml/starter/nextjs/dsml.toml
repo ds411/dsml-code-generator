@@ -1,5 +1,7 @@
 # The configuration of the DSML toolchain.
-# docs/configuration.md in the toolchain repository gives all keys.
+# The reference file configuration.md of the skill dsml-cli gives all keys.
+# Run "dsml skills install" to install the skill. docs/configuration.md in
+# the toolchain repository gives the same keys.
 schema = 1
 
 [model]

@@ -8,6 +8,8 @@ import pytest
 
 from dsml.cli import main
 from dsml.config import (
+    CONFIGURATION_KEYS,
+    EXAMPLE_CONFIGURATION,
     Application,
     Configuration,
     ConfigurationError,
@@ -15,6 +17,7 @@ from dsml.config import (
     OpenTofuOptions,
     Rules,
     Trace,
+    known_keys,
     load_configuration,
     parse_configuration,
 )
@@ -287,27 +290,40 @@ def test_example_in_the_key_reference_is_correct() -> None:
 
 
 # trace: PRD-CORE-013
-def test_key_reference_gives_each_key() -> None:
+def test_key_reference_gives_each_key_of_the_catalog() -> None:
     text = REFERENCE.read_text(encoding="utf-8")
-    keys = [
+    documented = re.findall(r"^\| `([^`]+)` \|", text, re.MULTILINE)
+    assert documented == [item.key for item in CONFIGURATION_KEYS]
+
+
+# trace: PRD-CORE-013, PRD-AI-007
+def test_reader_accepts_each_key_of_the_catalog() -> None:
+    configuration = parse_configuration(EXAMPLE_CONFIGURATION, FILE)
+    assert configuration.application("orders") is not None
+    assert configuration.opentofu is not None
+    for item in CONFIGURATION_KEYS:
+        parts = [part for part in item.parts if not part.startswith("<")]
+        assert all(part in EXAMPLE_CONFIGURATION for part in parts), item.key
+
+
+# trace: PRD-CORE-013
+def test_known_keys_come_from_the_catalog() -> None:
+    assert known_keys(()) == {
+        "aws",
+        "applications",
+        "iac",
+        "ids",
+        "infrastructure",
+        "model",
+        "pipelines",
+        "rules",
         "schema",
-        "model.paths",
-        "applications.<name>.output",
-        "applications.<name>.dependencies",
-        "infrastructure.output",
-        "pipelines.output",
-        "ids.need",
-        "ids.requirement",
-        "ids.verification",
-        "rules.optional",
-        "rules.severity.<rule>",
-        "trace.baseline",
-        "trace.tests",
-        "aws.regions",
-        "iac.opentofu.state_encryption",
-    ]
-    for key in keys:
-        assert f"`{key}`" in text, key
+        "trace",
+    }
+    assert known_keys(("applications", "orders")) == {"dependencies", "output"}
+    assert known_keys(("rules",)) == {"optional", "severity"}
+    assert known_keys(("iac", "opentofu")) == {"state_encryption"}
+    assert known_keys(("model", "paths")) == frozenset()
 
 
 # The command line.

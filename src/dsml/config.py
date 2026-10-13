@@ -2,8 +2,8 @@
 """Read and check the configuration file `dsml.toml`.
 
 The reader gives a typed `Configuration`. The other parts of the toolchain
-read only this data, not the TOML text. `docs/configuration.md` gives all
-keys of the schema.
+read only this data, not the TOML text. `CONFIGURATION_KEYS` gives all keys
+of the schema, and `docs/configuration.md` gives them to a human reader.
 
 The reader reports each error with the file, the line and the key: a TOML
 syntax error, an unknown key, a wrong type, a wrong value or an unknown
@@ -38,6 +38,189 @@ _RULE_ID = re.compile(r"[A-Z]{3}-[0-9]{3}")
 _NAME = re.compile(r"[A-Za-z][A-Za-z0-9_-]*")
 
 KeyPath = tuple[str, ...]
+
+
+# trace: PRD-CORE-013, PRD-AI-007
+@dataclass(frozen=True, slots=True)
+class ConfigurationKey:
+    """One key of the configuration file, for the reader and for the reference.
+
+    A part of `key` in angle brackets, for example `<name>`, is a name that
+    the user selects.
+    """
+
+    key: str
+    type: str
+    default: str
+    description: str
+
+    @property
+    def parts(self) -> KeyPath:
+        """Give the parts of the dotted key."""
+        return tuple(self.key.split("."))
+
+
+# trace: PRD-CORE-013, PRD-CORE-014, PRD-AI-007
+CONFIGURATION_KEYS: Final[tuple[ConfigurationKey, ...]] = (
+    ConfigurationKey(
+        "schema",
+        "integer",
+        "None. The key is mandatory.",
+        f"The schema version of the file. This toolchain reads schema version {SCHEMA_VERSION}.",
+    ),
+    ConfigurationKey(
+        "model.paths",
+        "list of paths",
+        "No path",
+        "The files and the folders of the model. The toolchain reads each `.sysml` file "
+        "in a folder and in its subfolders.",
+    ),
+    ConfigurationKey(
+        "applications.<name>.output",
+        "path",
+        "No folder",
+        "The output folder of the application `<name>`. `<name>` is the name of the "
+        'application in the model. It starts with a letter, then has letters, digits, "_" '
+        'or "-". `dsml generate` stops with an error if an application of the run has no '
+        "output folder.",
+    ),
+    ConfigurationKey(
+        "applications.<name>.dependencies",
+        "list of texts",
+        "No dependency",
+        "The extra dependencies of the application. The generator adds them to the "
+        "dependency list of the target.",
+    ),
+    ConfigurationKey(
+        "infrastructure.output",
+        "path",
+        "No folder",
+        "The output folder of the infrastructure code. Without this key, `dsml generate` "
+        "writes no infrastructure file.",
+    ),
+    ConfigurationKey(
+        "pipelines.output",
+        "path",
+        "No folder",
+        "The output folder of the pipelines.",
+    ),
+    *(
+        ConfigurationKey(
+            f"ids.{kind}",
+            "regular expression",
+            f"`{pattern}`",
+            f"The pattern of the ID of a {kind}. The full ID must match the pattern.",
+        )
+        for kind, pattern in DEFAULT_ID_PATTERNS.items()
+    ),
+    ConfigurationKey(
+        "rules.optional",
+        "list of texts",
+        "No rule set",
+        "The optional rule sets to turn on. The optional rule sets are: "
+        + ", ".join(f"`{name}`" for name in OPTIONAL_RULE_SETS)
+        + ".",
+    ),
+    ConfigurationKey(
+        "rules.severity.<rule>",
+        "text",
+        "The default severity of the rule",
+        "The severity of the rule `<rule>`, for example `COV-003`: "
+        + ", ".join(f"`{level}`" for level in RULE_SEVERITIES)
+        + ". You cannot decrease the severity of a rule with the default severity `error`.",
+    ),
+    ConfigurationKey(
+        "trace.baseline",
+        "text",
+        "The newest release tag `v*` before `HEAD`",
+        "The default trace baseline, a Git reference, for example the tag `trace-baseline`. "
+        "If you set it, `dsml validate` runs the IDN rules with this baseline. "
+        "If you do not set it, the IDN rules do not run.",
+    ),
+    ConfigurationKey(
+        "trace.tests",
+        "list of paths",
+        "No folder",
+        "The folders of the hand-written tests. The toolchain reads the trace comments "
+        "in these folders.",
+    ),
+    ConfigurationKey(
+        "aws.regions",
+        "list of texts",
+        "No Region",
+        "The permitted AWS Regions. If the key is missing or the list is empty, "
+        "the rule AWS-002 gives no finding.",
+    ),
+    ConfigurationKey(
+        "iac.opentofu.state_encryption",
+        "boolean",
+        "`false`",
+        "Turn on OpenTofu state encryption. Only OpenTofu accepts the output with this option.",
+    ),
+)
+"""Each key of schema version 1, in the order of the reference.
+
+The reader accepts only these keys. The reference part `configuration` of
+`dsml.assist.reference` and `docs/configuration.md` give the same keys.
+"""
+
+EXAMPLE_CONFIGURATION: Final = """\
+schema = 1
+
+[model]
+paths = ["model"]
+
+[applications.orders]
+output = "services/orders"
+dependencies = ["httpx==0.28.1"]
+
+[infrastructure]
+output = "infra"
+
+[pipelines]
+output = ".github/workflows"
+
+[ids]
+need = "N-[0-9]{3,}"
+requirement = "R-[0-9]{3,}"
+verification = "V-[0-9]{3,}"
+
+[rules]
+optional = ["TXT"]
+
+[rules.severity]
+"COV-003" = "error"
+
+[trace]
+baseline = "trace-baseline"
+tests = ["tests"]
+
+[aws]
+regions = ["eu-central-1", "eu-west-1"]
+
+[iac.opentofu]
+state_encryption = false
+"""
+"""A configuration file with each key of the schema. The reader accepts it."""
+
+
+# trace: PRD-CORE-013
+def known_keys(at: KeyPath) -> frozenset[str]:
+    """Give the names of the keys that the table at `at` can contain.
+
+    A part of a key in angle brackets agrees with each name.
+    """
+    names: set[str] = set()
+    for item in CONFIGURATION_KEYS:
+        parts = item.parts
+        if len(parts) <= len(at):
+            continue
+        if all(
+            part.startswith("<") or part == name
+            for part, name in zip(parts[: len(at)], at, strict=True)
+        ):
+            names.add(parts[len(at)])
+    return frozenset(names)
 
 
 # trace: PRD-CORE-014
@@ -230,7 +413,7 @@ class _Reader:
     # The tables of the schema.
 
     def _model(self, at: KeyPath, table: dict[str, object]) -> None:
-        for key, value in self._keys(at, table, {"paths"}):
+        for key, value in self._keys(at, table):
             paths = self._paths((*at, key), value)
             if paths is not None:
                 self.values["model"] = paths
@@ -251,7 +434,7 @@ class _Reader:
                 continue
             output: PurePosixPath | None = None
             dependencies: tuple[str, ...] = ()
-            for key, item in self._keys(app_at, app, {"output", "dependencies"}):
+            for key, item in self._keys(app_at, app):
                 if key == "output":
                     output = self._path((*app_at, key), item)
                 else:
@@ -260,16 +443,16 @@ class _Reader:
         self.values["applications"] = tuple(sorted(applications, key=lambda app: app.name))
 
     def _infrastructure(self, at: KeyPath, table: dict[str, object]) -> None:
-        for key, value in self._keys(at, table, {"output"}):
+        for key, value in self._keys(at, table):
             self.values["infrastructure"] = self._path((*at, key), value)
 
     def _pipelines(self, at: KeyPath, table: dict[str, object]) -> None:
-        for key, value in self._keys(at, table, {"output"}):
+        for key, value in self._keys(at, table):
             self.values["pipelines"] = self._path((*at, key), value)
 
     def _ids(self, at: KeyPath, table: dict[str, object]) -> None:
         patterns = dict(DEFAULT_ID_PATTERNS)
-        for key, value in self._keys(at, table, set(DEFAULT_ID_PATTERNS)):
+        for key, value in self._keys(at, table):
             pattern = self._text((*at, key), value)
             if pattern is None:
                 continue
@@ -284,7 +467,7 @@ class _Reader:
     def _rules(self, at: KeyPath, table: dict[str, object]) -> None:
         optional: tuple[str, ...] = ()
         severity: list[tuple[str, RuleSeverity]] = []
-        for key, value in self._keys(at, table, {"optional", "severity"}):
+        for key, value in self._keys(at, table):
             if key == "optional":
                 sets = self._texts((*at, key), value) or ()
                 unknown = [name for name in sets if name not in OPTIONAL_RULE_SETS]
@@ -317,7 +500,7 @@ class _Reader:
     def _trace(self, at: KeyPath, table: dict[str, object]) -> None:
         baseline: str | None = None
         tests: tuple[PurePosixPath, ...] = ()
-        for key, value in self._keys(at, table, {"baseline", "tests"}):
+        for key, value in self._keys(at, table):
             if key == "baseline":
                 baseline = self._text((*at, key), value)
             else:
@@ -325,25 +508,27 @@ class _Reader:
         self.values["trace"] = Trace(baseline, tests)
 
     def _aws(self, at: KeyPath, table: dict[str, object]) -> None:
-        for key, value in self._keys(at, table, {"regions"}):
+        for key, value in self._keys(at, table):
             self.values["regions"] = self._texts((*at, key), value) or ()
 
     def _iac(self, at: KeyPath, table: dict[str, object]) -> None:
-        for key, value in self._keys(at, table, {"opentofu"}):
+        for key, value in self._keys(at, table):
             options = self._table((*at, key), value)
             if options is None:
                 continue
             encryption = False
-            for name, item in self._keys((*at, key), options, {"state_encryption"}):
+            for name, item in self._keys((*at, key), options):
                 encryption = bool(self._bool((*at, key, name), item))
             self.values["opentofu"] = OpenTofuOptions(state_encryption=encryption)
 
     # The checks of one value.
 
-    def _keys(
-        self, at: KeyPath, table: dict[str, object], known: set[str]
-    ) -> Iterator[tuple[str, object]]:
-        """Give the known keys of a table. Report each unknown key."""
+    def _keys(self, at: KeyPath, table: dict[str, object]) -> Iterator[tuple[str, object]]:
+        """Give the known keys of a table. Report each unknown key.
+
+        `CONFIGURATION_KEYS` gives the known keys of each table.
+        """
+        known = known_keys(at)
         for key, value in table.items():
             if key in known:
                 yield key, value

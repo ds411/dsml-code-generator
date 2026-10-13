@@ -4,13 +4,14 @@ Story #228 added the module `src/dsml/assist/reference.py`. It writes the DSML r
 
 ## Parts
 
-The reference has four parts. Each part has one function and one golden file in `tests/golden/assist/`.
+The reference has five parts. Each part has one function and one golden file in `tests/golden/assist/`.
 
 | Part | Function | Source | Contents |
 | --- | --- | --- | --- |
 | `keywords` | `keywords()` | `src/dsml/library/DSML.sysml` | Each keyword with its layer, its form, its attributes and its `doc` text. Then the enumerations and the attribute types of the library. |
 | `rules` | `rules()` | The rule registry of `src/dsml/validate/rules/` | Each rule with its ID, severity, message and correction (the `fix_hint` of the rule). An optional rule also gives its rule set. |
 | `commands` | `commands()` | `build_parser()` of `src/dsml/cli.py` | The common options, then each `dsml` subcommand with its arguments and options. |
+| `configuration` | `configuration()` | `CONFIGURATION_KEYS` and `EXAMPLE_CONFIGURATION` of `src/dsml/config.py` | Each key of `dsml.toml` with its type, its default value and its description. Then an example file with each key, and the rules for the values. Story #262 added this part. |
 | `examples` | `examples()` | The starter models of `src/dsml/starter/` | Each starter model with its target, its keywords and its text. |
 
 `part(name)` gives the text of one part. `PARTS` lists the part names.
@@ -66,8 +67,12 @@ The script writes the golden files in `tests/golden/assist/` and the reference f
 `tests/test_assist_reference.py` makes sure of these items:
 
 - Each part agrees with its golden file.
-- Each keyword of the library is in the `keywords` part. Each rule of the catalog is in the `rules` part, with its severity, message and correction. Each subcommand of the parser is in the `commands` part.
+- Each keyword of the library is in the `keywords` part. Each rule of the catalog is in the `rules` part, with its severity, message and correction. Each subcommand of the parser is in the `commands` part. Each key of the configuration catalog is in the `configuration` part, and the configuration reader accepts its example file.
 - Two runs give the same bytes.
 - Each reference file in `src/dsml/skills/` is current. The test fails if a reference file is missing or not current (PRD-AI-007).
 
-A story that changes the library, a rule or the CLI also changes the golden files and the reference files. Run the script to write them again.
+A story that changes the library, a rule, the CLI or a key of the configuration file also changes the golden files and the reference files. Run the script to write them again.
+
+## Configuration keys
+
+The tuple `CONFIGURATION_KEYS` in `src/dsml/config.py` gives each key of `dsml.toml` (story #262). The configuration reader gets the known keys of each table from this tuple, so a new key must go in the tuple first. `tests/test_config.py` makes sure that `docs/configuration.md` gives the same keys in the same order, and that the reader accepts `EXAMPLE_CONFIGURATION`.

@@ -12,6 +12,7 @@ The CLI does not use the network or an AI model. Each command gives the same out
 ## Reference files
 
 - `references/commands.md` gives each subcommand and its options.
+- `references/configuration.md` gives each key of the configuration file `dsml.toml`.
 - `references/rules.md` gives each validation rule, its message and its correction.
 
 The toolchain writes these files from the installed version. They agree with the CLI that the project uses. Read them when you are not sure about an option or a rule.
@@ -47,6 +48,37 @@ Do these steps in an empty folder:
 4. Validate the starter model. The section "Validate the model" gives the steps.
 
 The starter model is `model/model.sysml`. It has one stakeholder, one need and one requirement. Then change the model for the product of the user. The modeling skill tells you how.
+
+## Configure the project
+
+The configuration file `dsml.toml` tells the toolchain where the model is and where to write the generated files. `references/configuration.md` gives all keys. Do not use a key that is not in that file. The command stops with exit code 2 if it finds an unknown key.
+
+Do these steps after you write the model:
+
+1. Make sure that `model.paths` gives the files or the folders of the model.
+2. For each application of the model, add a table `[applications.<name>]` with the key `output`. `<name>` is the name of the application in the model.
+3. If the model has an infrastructure layer, add the key `output` to the table `[infrastructure]`.
+4. To generate the GitHub Actions pipelines, add the key `output` to the table `[pipelines]`.
+5. Do not put a secret value in the file.
+6. Run `dsml validate`. Exit code 2 with a message about `dsml.toml` tells you that a key or a value is not correct.
+
+For example:
+
+```toml
+schema = 1
+
+[model]
+paths = ["model"]
+
+[applications.loanApi]
+output = "services/loanApi"
+
+[infrastructure]
+output = "infra"
+
+[pipelines]
+output = ".github/workflows"
+```
 
 ## Validate the model
 

@@ -15,6 +15,7 @@ import pytest
 from dsml import skills
 from dsml.assist import reference
 from dsml.cli import build_parser
+from dsml.config import parse_configuration
 
 ROOT = Path(__file__).resolve().parent.parent
 FOLDER = ROOT / "src" / "dsml" / "skills" / "dsml-cli"
@@ -65,7 +66,7 @@ def test_package_contains_the_skill() -> None:
 
 def test_parts_of_the_skill() -> None:
     parts = (FOLDER / "references" / reference.PARTS_FILE).read_text(encoding="utf-8")
-    assert parts.split() == ["commands", "rules"]
+    assert parts.split() == ["commands", "configuration", "rules"]
 
 
 def test_skill_has_command_lines() -> None:
@@ -100,3 +101,15 @@ def test_skill_is_portable_text() -> None:
     data.decode("utf-8")
     assert b"\r" not in data
     assert data.endswith(b"\n") and not data.endswith(b"\n\n")
+
+
+# trace: PRD-AI-003, PRD-CORE-013
+def test_configuration_examples_are_accepted() -> None:
+    blocks = [block for language, block in _FENCE.findall(_text()) if language == "toml"]
+    assert blocks, "The skill must give an example of dsml.toml."
+    for block in blocks:
+        parse_configuration(block, Path("dsml.toml"))
+
+
+def test_skill_names_the_configuration_reference() -> None:
+    assert "references/configuration.md" in _text()
