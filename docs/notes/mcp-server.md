@@ -1,6 +1,6 @@
 # Command `dsml mcp`: local MCP server
 
-Story #229 added the frame of the local MCP server (PRD-AI-008 to PRD-AI-010, PRD-AI-014, Q69). The server has no MCP tool, MCP resource or MCP prompt yet. The stories of steps 3 and 4 of M12 (#226) add them.
+Story #229 added the frame of the local MCP server (PRD-AI-008 to PRD-AI-010, PRD-AI-014, Q69). Stories #232, #233 and #234 added the MCP tools, the MCP resources and the MCP prompts. Story #236 added the end-to-end test.
 
 ## Use
 
@@ -57,6 +57,23 @@ The server gives the name `dsml` and the version of the toolchain package to the
 - The tests that need the SDK have the mark `mcp`. Without the SDK, these tests are skipped.
 - In CI, the step "Test" runs without the group `mcp`. Then the step "Install the MCP SDK" installs the group, and the step "Test the MCP server" runs `pytest -m mcp`. A later MCP test file needs only the mark `mcp`, and no change to the CI workflow.
 - The step "Check the types" runs after the step "Install the MCP SDK", because pyright must find the SDK.
+
+### End-to-end test
+
+`tests/test_mcp_end_to_end.py` (story #236) does the full work cycle of an AI agent through the stdio transport. The CI job "MCP end to end" runs it. The step "Test the MCP server" of the job "Check" does not run it.
+
+1. The test starts `dsml mcp` as a child process in an empty temporary project folder.
+2. An MCP client calls `init`. The CLI runs `dsml init` in a second folder. The two folders must have the same files.
+3. The test replaces the starter model with the order service model and writes its configuration in the two folders.
+4. The client calls `validate`, `ir`, `generate`, `generate` with `check`, `trace` and `version`. The test compares each result with the result of the CLI. For `generate`, the CLI writes into the second folder, and the two folders must have the same bytes.
+
+A small launcher starts the server with a Python audit hook (`sys.addaudithook`). The hook records each socket event and each file write of the server process. On Linux, a thread of the test also reads the sockets of the server process from `/proc` while the cycle runs. The `/proc` check also finds the sockets of the gRPC library, which the audit hook does not see. The tests then make sure of these conditions:
+
+- The Python code of the server makes only Unix domain sockets, for example the socket pair of the event loop. It binds no socket.
+- The server has no listening socket. Its only internet socket is the connection to the private OpenSysML child process on the loopback interface (PRD-TOP-005, PRD-AI-017). This connection does not leave the computer.
+- The server writes no file outside the project folder (PRD-AI-014). There are two permitted items outside the folder: `os.devnull`, and the lock file of the OpenSysML client in its binary cache folder. Each subcommand also locks this file before it starts `sysml-grpc`. The lock does not change the cache.
+
+The job "MCP end to end" also installs the skills two times into empty folders with `dsml skills install`, and compares the two folders with `diff -r`. `tests/test_skills_command.py` does the same check with the skills of the package.
 
 ## Versions and licenses
 
