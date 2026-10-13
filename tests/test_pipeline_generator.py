@@ -18,6 +18,7 @@ from typing import Any
 import pytest
 
 from dsml.adapter.convert import make_ir
+from dsml.cli import toolchain_version
 from dsml.config import Application, Configuration
 from dsml.errors import ToolchainError
 from dsml.generate.generators import GENERATORS
@@ -259,7 +260,8 @@ def test_each_third_party_action_has_a_full_commit_sha_and_a_version_comment() -
     uses = re.findall(r"^ +(?:- )?uses: (.+)$", text, flags=re.MULTILINE)
     toolchain = [value for value in uses if value.startswith(f"{TOOLCHAIN_ACTION}@")]
     third_party = [value for value in uses if value not in toolchain]
-    assert toolchain == [toolchain_action("0.1.0")] * 3
+    # The golden files have the version of the installed toolchain.
+    assert toolchain == [toolchain_action(toolchain_version())] * 3
     assert third_party
     baseline = load_baseline()
     pinned = {pinned_action(item, baseline).uses for item in ACTIONS.values()}

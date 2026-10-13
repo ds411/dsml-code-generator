@@ -14,7 +14,7 @@
     {
       "part": "pipelines",
       "path": ".github/workflows/pr.gen.yml",
-      "sha256": "de154e861af168ea9a390225559e4d4ccbb50aa91df732719e0b78822b6f6001"
+      "sha256": "21709ef6d687331113a39eedc122217cbcba313e7d4b3b823653941cd2e82c6f"
     },
     {
       "part": "pipelines",
