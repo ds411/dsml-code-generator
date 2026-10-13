@@ -109,8 +109,9 @@ jobs:
       - name: Check the types
         run: pnpm typecheck
 
+      # The job "MCP end to end" runs tests/test_mcp_end_to_end.py.
       - name: Test the MCP server
-        run: uv run --frozen --extra mcp pytest -m mcp
+        run: uv run --frozen --extra mcp pytest -m mcp --ignore=tests/test_mcp_end_to_end.py
 
       # The example model must have no error finding (story #68). The
       # findings of the reference models are also golden files, which the
@@ -168,6 +169,55 @@ jobs:
       # The release workflow must have no actionlint error (story #141).
       - name: Lint the release workflow
         run: '"$RUNNER_TEMP/actionlint" -color .github/workflows/release.yml'
+
+  # trace: PRD-AI-004, PRD-AI-006, PRD-AI-012, PRD-AI-014, PRD-AI-017
+  #
+  # The full work cycle of an AI agent through the MCP server (story #236).
+  # The test starts "dsml mcp" with the stdio transport, calls init,
+  # validate, ir, generate, trace and version, and compares each result with
+  # the CLI. It also makes sure that the server opens no network socket and
+  # writes no file outside the project folder. The second step installs the
+  # skills two times into empty folders and compares the files. CI runs only
+  # on Linux x64 (Q62, decision record 07).
+  mcp-end-to-end:
+    name: MCP end to end (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux-x64
+            runner: ubuntu-24.04
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: "0.13.0"
+
+      - name: Install the Python dependencies with the MCP SDK
+        run: uv sync --frozen --extra mcp
+
+      # After this step, a start of OpenSysML does not use the network.
+      - name: Get sysml-grpc and check its hash
+        run: uv run --frozen --extra mcp python -m dsml.adapter.binary
+
+      - name: Test the work cycle through the MCP server
+        run: uv run --frozen --extra mcp pytest -m mcp tests/test_mcp_end_to_end.py
+
+      - name: Install the skills two times and compare the files
+        run: |
+          mkdir "$RUNNER_TEMP/skills-1" "$RUNNER_TEMP/skills-2"
+          uv run --frozen dsml skills install --output "$RUNNER_TEMP/skills-1"
+          uv run --frozen dsml skills install --output "$RUNNER_TEMP/skills-2"
+          test -f "$RUNNER_TEMP/skills-1/dsml-modeling/SKILL.md"
+          test -f "$RUNNER_TEMP/skills-1/dsml-cli/SKILL.md"
+          diff -r "$RUNNER_TEMP/skills-1" "$RUNNER_TEMP/skills-2"
 
   # trace: PRD-CORE-030, PRD-APP-012, PRD-APP-013, PRD-APP-113, PRD-APP-114, PRD-APP-124,
   # PRD-APP-128, PRD-APP-132, PRD-APP-133, PRD-APP-135

@@ -119,3 +119,27 @@ def test_install_stops_with_exit_code_2_if_it_cannot_write(
 def test_skills_needs_an_action(capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["skills"]) == 2
     assert "the following arguments are required: <action>" in capsys.readouterr().err
+
+
+# trace: PRD-AI-001, PRD-AI-004, PRD-AI-006
+def test_install_writes_both_skills_of_the_package_with_the_same_bytes_at_each_run(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    first, second = tmp_path / "first", tmp_path / "second"
+    for output in (first, second):
+        output.mkdir()
+        assert main(["skills", "install", "--output", str(output)]) == 0
+    assert capsys.readouterr().out == "".join(
+        f"install {(output / name).as_posix()}\n"
+        for output in (first, second)
+        for name in ("dsml-cli", "dsml-modeling")
+    )
+    tree = _tree(first)
+    assert sorted({name.split("/")[0] for name in tree}) == ["dsml-cli", "dsml-modeling"]
+    assert {"dsml-cli/SKILL.md", "dsml-modeling/SKILL.md"} <= set(tree)
+    assert _tree(second) == tree
+    assert main(["skills", "install", "--output", str(first)]) == 0
+    assert _tree(first) == tree
+    for skill in skills.package_skills():
+        for path, data in skill.files:
+            assert tree[f"{skill.name}/{path.as_posix()}"] == data
