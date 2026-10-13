@@ -153,13 +153,14 @@ The server operates only in its project folder. Each path that the agent gives t
 
 The MCP resources are read-only texts. The agent reads them when it needs them. They have the same text as the reference files of the skills.
 
-| MCP resource | Contents |
-| --- | --- |
-| `keywords` | Each DSML keyword with its layer, its form and its attributes, and the enumerations. |
-| `rules` | Each validation rule with its ID, severity, message and correction. |
-| `commands` | Each `dsml` subcommand with its options. |
-| `examples` | The starter models that `dsml init` writes. |
-| One resource for each example model | The text of one example model of the package. The package has a starter model for each target: `fastapi`, `react` and `nextjs`. |
+| MCP resource | URI | Contents |
+| --- | --- | --- |
+| `keywords` | `dsml://reference/keywords` | Each DSML keyword with its layer, its form and its attributes, and the enumerations. |
+| `rules` | `dsml://reference/rules` | Each validation rule with its ID, severity, message and correction. |
+| `commands` | `dsml://reference/commands` | Each `dsml` subcommand with its options. |
+| `examples` | `dsml://reference/examples` | The starter models that `dsml init` writes. |
+| `patterns` | `dsml://reference/patterns` | A short model pattern for each layer. The procedure of `create_model` starts with it. |
+| `example-fastapi`, `example-nextjs`, `example-react` | `dsml://examples/<target>` | The text of the starter model of one target. |
 
 ## The MCP prompts
 
@@ -167,7 +168,7 @@ An MCP prompt is a prompt template. In most clients, you select a prompt from a 
 
 | MCP prompt | Argument | What it tells the agent |
 | --- | --- | --- |
-| `create_model` | Your description of the product. | The procedure of the skill `dsml-modeling`: write a model in the five layers from the description, then validate it. |
+| `create_model` | `description`: your description of the product. | The procedure of the skill `dsml-modeling`: write a model in the five layers from the description, then validate it. |
 | `fix_findings` | None | The procedure that corrects the findings of the tool `validate`, until it finds no error. |
 | `generate_code` | None | The procedure of the skill `dsml-cli` for the tools `generate` and `check_output`. |
 
