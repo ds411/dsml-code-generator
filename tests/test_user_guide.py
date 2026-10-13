@@ -9,11 +9,14 @@ For each page of the guide, the tests make sure of these items:
 - Each `dsml` command line uses a subcommand and options that the parser of
   the CLI accepts. A command line is a line that starts with `dsml ` in a
   code block with the language `shell`, or an inline code span that starts
-  with `dsml `.
+  with `dsml `. The name of a subcommand alone, for example `dsml trace` in a
+  heading of the reference, is a name and not a command line. The parser
+  must know the subcommand.
 
 The `sysml` test starts a private `sysml-grpc` child process.
 """
 
+import argparse
 import re
 import shlex
 from collections.abc import Iterator
@@ -114,10 +117,22 @@ def test_the_sysml_blocks_of_a_page_validate_with_no_error(engine: Engine, page:
     assert [f"{item.rule}: {item.message}" for item in findings if item.severity == "error"] == []
 
 
+def _subcommand_names() -> set[str]:
+    """Give the names of the subcommands of the parser of the CLI."""
+    for action in build_parser()._actions:  # pyright: ignore[reportPrivateUsage]
+        if isinstance(action, argparse._SubParsersAction):  # pyright: ignore[reportPrivateUsage]
+            return set(action.choices)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+    return set()
+
+
 # trace: PRD-TOP-013, PRD-CORE-001
 @pytest.mark.parametrize("page", PAGES, ids=_name)
 def test_each_dsml_command_line_parses(page: Path) -> None:
+    names = _subcommand_names()
     for line in _command_lines(page.read_text(encoding="utf-8")):
+        words = shlex.split(line)[1:]
+        if len(words) == 1 and words[0] in names:
+            continue
         try:
             build_parser().parse_args(shlex.split(line)[1:])
         except UsageError as error:
