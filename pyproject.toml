@@ -1,6 +1,6 @@
 [project]
 name = "dsml"
-version = "0.1.0"
+version = "0.2.0"
 description = "DSML toolchain: validation, traceability and code generation for SysML v2 models."
 readme = "README.md"
 license = "Apache-2.0"

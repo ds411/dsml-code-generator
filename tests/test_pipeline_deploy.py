@@ -14,6 +14,7 @@ from pathlib import Path, PurePosixPath
 import pytest
 
 from dsml.adapter.convert import make_ir
+from dsml.cli import toolchain_version
 from dsml.config import Application, Configuration
 from dsml.errors import ToolchainError
 from dsml.generate.infrastructure import names
@@ -598,7 +599,8 @@ WEB_CONFIGURATION = Configuration(
 @pytest.fixture(scope="module")
 def web_workflows() -> dict[str, str]:
     ir = make_ir([WEB], ROOT)
-    files = PipelineGenerator(version="0.1.0").generate(ir, WEB_CONFIGURATION, None)
+    # The golden files have the version of the installed toolchain.
+    files = PipelineGenerator(version=toolchain_version()).generate(ir, WEB_CONFIGURATION, None)
     return {file.path: file.content.decode("utf-8") for file in files}
 
 
